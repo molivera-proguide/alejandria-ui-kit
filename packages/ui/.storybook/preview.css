@@ -1,0 +1,29 @@
+html,
+body,
+#storybook-root {
+  min-height: 100%;
+}
+
+body.sb-show-main {
+  background:
+    radial-gradient(circle at 70% 12%, rgb(39 117 155 / 0.08), transparent 34rem),
+    linear-gradient(90deg, rgb(31 48 52 / 0.06) 1px, transparent 1px) 0 0 / 30px 30px,
+    linear-gradient(rgb(31 48 52 / 0.06) 1px, transparent 1px) 0 0 / 30px 30px,
+    var(--ds-color-paper) !important;
+  color: #11191c;
+}
+
+.sb-main-centered #storybook-root {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 48px;
+  width: 100%;
+}
+
+.sb-main-padded #storybook-root {
+  box-sizing: border-box;
+  min-height: 100vh;
+}

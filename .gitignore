@@ -1,0 +1,13 @@
+node_modules
+dist
+storybook-static
+.turbo
+.vite
+tmp
+*.tsbuildinfo
+*.local
+*.tgz
+coverage
+.env
+.env.*
+!.env.example

@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "paths": {
+      "@alejandria/ui-kit": ["../../packages/ui/src/index.ts"],
+      "@alejandria/ui-kit/style.css": ["../../packages/ui/src/styles.css"]
+    },
+    "types": ["vite/client", "node"]
+  },
+  "include": ["src", "vite.config.ts", "../../packages/ui/src"],
+  "exclude": ["../../packages/ui/src/**/*.stories.tsx"]
+}

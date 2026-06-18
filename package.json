@@ -1,0 +1,20 @@
+{
+  "name": "alejandria-ui-kit",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.5.0",
+  "scripts": {
+    "dev:web": "pnpm --filter @alejandria/web dev",
+    "storybook": "pnpm --filter @alejandria/ui-kit storybook",
+    "build": "pnpm -r build",
+    "build:ui": "pnpm --filter @alejandria/ui-kit build",
+    "build:web": "pnpm --filter @alejandria/web build",
+    "build-storybook": "pnpm --filter @alejandria/ui-kit build-storybook",
+    "pack:ui": "pnpm --filter @alejandria/ui-kit pack"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.3",
+    "typescript": "^6.0.3"
+  }
+}
