@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Capa_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 50 50">
+  <!-- Generator: Adobe Illustrator 30.5.1, SVG Export Plug-In . SVG Version: 2.1.4 Build 3)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: #8a8b87;
+        stroke: #000;
+        stroke-width: .1px;
+      }
+
+      .st0, .st1 {
+        stroke-miterlimit: 10;
+      }
+
+      .st1 {
+        fill: none;
+        stroke: #8a8b87;
+        stroke-width: .75px;
+      }
+    </style>
+  </defs>
+  <polygon class="st1" points="14.94 15.04 13.53 28.36 13.53 34.96 36.37 34.96 36.37 28.24 34.66 15.04 14.94 15.04"/>
+  <polygon class="st0" points="36.47 34.96 13.54 34.96 13.54 28.25 19.74 28.25 21.31 30.49 28.56 30.49 30.02 28.25 36.47 28.25 36.47 34.96"/>
+</svg>

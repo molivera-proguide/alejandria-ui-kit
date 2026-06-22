@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Capa_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 50 50">
+  <!-- Generator: Adobe Illustrator 30.5.1, SVG Export Plug-In . SVG Version: 2.1.4 Build 3)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+        stroke: #8a8b87;
+        stroke-miterlimit: 10;
+        stroke-width: .75px;
+      }
+    </style>
+  </defs>
+  <circle class="st0" cx="19.62" cy="31.73" r=".89"/>
+  <circle class="st0" cx="31.15" cy="31.77" r=".89"/>
+  <g>
+    <path class="st0" d="M17.23,34.93h3.01v1.7c0,.6-.48,1.08-1.08,1.08h-.85c-.6,0-1.08-.48-1.08-1.08v-1.7h0Z"/>
+    <path class="st0" d="M30.42,34.93h3.01v1.7c0,.6-.48,1.08-1.08,1.08h-.85c-.6,0-1.08-.48-1.08-1.08v-1.7h0Z"/>
+  </g>
+  <line class="st0" x1="14.34" y1="26.04" x2="35.66" y2="26.04"/>
+  <path class="st0" d="M14.37,16.59v17.04c0,.7.57,1.27,1.27,1.27h18.71c.7,0,1.27-.57,1.27-1.27v-17.04c0-.53-.22-1.03-.61-1.38-1.14-1.03-4.05-2.91-10.01-2.91s-8.87,1.88-10.01,2.91c-.39.35-.61.85-.61,1.38Z"/>
+  <line class="st0" x1="14.34" y1="17.55" x2="35.66" y2="17.55"/>
+  <g>
+    <path class="st0" d="M11.96,19.77h1.64c.42,0,.75.34.75.75v2.76c0,1.04-.85,1.89-1.89,1.89h-.51v-5.4h0Z" transform="translate(26.32 44.94) rotate(-180)"/>
+    <path class="st0" d="M35.65,19.77h.51c1.04,0,1.89.85,1.89,1.89v2.76c0,.42-.34.75-.75.75h-1.64v-5.4h0Z"/>
+  </g>
+</svg>
