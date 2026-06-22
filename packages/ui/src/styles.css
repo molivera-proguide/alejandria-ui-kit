@@ -531,6 +531,101 @@
     text-transform: uppercase;
   }
 
+  .ds-module-card {
+    background: #060606;
+    border: 0.75px solid #c1c1c1;
+    border-radius: var(--ds-radius-xs);
+    color: var(--ds-color-ink);
+    display: grid;
+    gap: 20px;
+    min-height: 260px;
+    padding: 10px 20px 25px 20px;
+    text-align: center;
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    min-width: 260px;
+  }
+
+  .ds-module-card:hover {
+    border-color: var(--ds-color-teal);
+    box-shadow: 0 16px 42px rgb(0 0 0 / 0.22);
+    transform: translateY(-2px);
+  }
+
+  .ds-module-card:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgb(108 224 199 / 0.24);
+  }
+
+  .ds-module-card__icon {
+    align-items: center;
+    display: grid;
+    justify-content: center;
+    min-height: 140px;
+  }
+
+  .ds-module-card__icon img {
+    height: 110px;
+    width: 110px;
+    object-fit: contain;
+  }
+
+  .ds-module-card__headline {
+    display: grid;
+    gap: 8px;
+  }
+
+  .ds-module-card__title {
+    color: #c1c1c1;
+    display: block;
+    font-family: var(--ds-font-mono);
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .ds-module-card__divider {
+    border: none;
+    border-top: 1px solid #8a8b87;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .ds-module-card__metrics {
+    display: grid;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .ds-module-card__metric {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .ds-module-card__metric-label {
+    color: #8a8b87;
+    display: block;
+    font-family: var(--ds-font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  .ds-module-card__metric-value {
+    color: #ffffff;
+    display: block;
+    font-family: var(--ds-font-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1;
+    text-align: right;
+    min-width: 32px;
+  }
+
   .ds-task {
     --task-accent: var(--ds-color-blue);
     background:
