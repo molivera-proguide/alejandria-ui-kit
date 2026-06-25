@@ -1101,6 +1101,142 @@
     text-align: right;
   }
 
+  .ds-chart-card {
+    background: rgb(6 6 6 / 0.2);
+    border: 1px solid rgb(193 193 193 / 0.6);
+    border-radius: var(--ds-radius-xs);
+    color: var(--ds-color-ink);
+    display: grid;
+    gap: 10px;
+    min-width: 220px;
+    padding: 10px;
+  }
+
+  .ds-chart-card__title {
+    color: #8a8b87;
+    font-family: var(--ds-font-display);
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    line-height: 1.25;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .ds-chart-card__body {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    min-height: 120px;
+  }
+
+  .ds-chart-card__footer {
+    color: #ffffff;
+    font-family: var(--ds-font-body);
+    font-size: 0.9rem;
+    font-weight: 300;
+  }
+
+  .ds-bar-chart,
+  .ds-donut-chart,
+  .ds-line-chart {
+    display: block;
+    height: auto;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .ds-bar-chart__label,
+  .ds-line-chart__label {
+    fill: #8a8b87;
+    font-family: var(--ds-font-display);
+    font-size: 8px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .ds-donut-chart__track {
+    stroke: #8a8b87;
+    stroke-opacity: 0.25;
+  }
+
+  .ds-donut-chart__segment {
+    transform: rotate(-90deg);
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .ds-donut-chart__layout {
+    min-height: 132px;
+    position: relative;
+    width: 100%;
+  }
+
+  .ds-donut-chart__layout .ds-donut-chart {
+    display: block;
+    height: auto;
+    left: 90px;
+    max-width: 120px;
+    position: relative;
+    top: 0;
+    width: 120px;
+  }
+
+  .ds-donut-chart__stat {
+    display: grid;
+    gap: 2px;
+    position: absolute;
+  }
+
+  .ds-donut-chart__stat strong {
+    color: #fff;
+    font-family: var(--ds-font-body);
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.05;
+  }
+
+  .ds-donut-chart__stat span {
+    color: #8a8b87;
+    font-family: var(--ds-font-body);
+    font-size: 0.75rem;
+    font-weight: 300;
+    line-height: 1.25;
+  }
+
+  .ds-donut-chart__stat--primary {
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .ds-donut-chart__stat--secondary {
+    bottom: 0;
+    left: 0;
+  }
+
+  .ds-donut-chart__stat--secondary strong {
+    font-size: 1.35rem;
+  }
+
+  .ds-line-chart__grid {
+    stroke: rgb(255 255 255 / 0.08);
+    stroke-width: 1;
+  }
+
+  .ds-line-chart__area {
+    opacity: 0.18;
+  }
+
+  .ds-line-chart__line {
+    fill: none;
+    stroke-width: 2;
+  }
+
+  
+
   @keyframes ds-spin {
     to {
       transform: rotate(360deg);

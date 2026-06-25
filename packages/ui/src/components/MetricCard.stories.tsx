@@ -12,8 +12,7 @@ const meta = {
     tone: {
       control: "select",
       options: ["neutral", "good", "watch", "critical"]
-    },
-    icon: { control: false }
+    }
   },
   args: {
     label: "Riesgo operativo",
