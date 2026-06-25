@@ -444,9 +444,7 @@
 
   .ds-metric {
     --metric-accent: var(--ds-color-blue);
-    background:
-      linear-gradient(180deg, rgb(255 255 255 / 0.045), transparent),
-      var(--ds-color-surface-glass);
+    background: rgb(0 0 0 / 20%);
     border: 1px solid var(--ds-color-line);
     border-radius: var(--ds-radius-xs);
     box-shadow: var(--ds-shadow-sm);
@@ -454,11 +452,11 @@
     display: grid;
     gap: 11px;
     min-height: 132px;
-    padding: 16px;
+    padding: 10px;
     position: relative;
   }
 
-  .ds-metric::before {
+  /* .ds-metric::before {
     background: var(--metric-accent);
     box-shadow: 0 0 18px color-mix(in srgb, var(--metric-accent), transparent 54%);
     content: "";
@@ -467,7 +465,7 @@
     position: absolute;
     right: 14px;
     top: 10px;
-  }
+  } */
 
   .ds-metric--good {
     --metric-accent: var(--ds-color-green);
@@ -481,24 +479,25 @@
     --metric-accent: var(--ds-color-danger);
   }
 
-  .ds-metric__topline {
+  /* .ds-metric__topline {
     align-items: center;
     display: flex;
     gap: 10px;
     justify-content: space-between;
     padding-top: 8px;
-  }
+  } */
 
   .ds-metric__label {
-    color: var(--ds-color-ink-soft);
+    color: var(--ds-color-ink-muted);
     font-family: var(--ds-font-mono);
-    font-size: 0.68rem;
+    font-size: 0.7rem;
     font-weight: 700;
     line-height: 1.25;
     text-transform: uppercase;
+    letter-spacing: 0.4em;
   }
 
-  .ds-metric__icon {
+  /* .ds-metric__icon {
     align-items: center;
     background: rgb(255 255 255 / 0.045);
     border: 1px solid var(--ds-color-line);
@@ -508,27 +507,28 @@
     height: 32px;
     justify-content: center;
     width: 32px;
-  }
+  } */
 
-  .ds-metric__icon svg {
+  /* .ds-metric__icon svg {
     height: 17px;
     width: 17px;
-  }
+  } */
 
   .ds-metric__value {
-    font-family: var(--ds-font-display);
-    font-size: 2.4rem;
+    font-family: var(--ds-font-body);
+    font-size: 2.9rem;
     font-weight: 700;
     letter-spacing: 0;
     line-height: 0.95;
   }
 
   .ds-metric__change {
-    color: var(--metric-accent);
-    font-family: var(--ds-font-mono);
-    font-size: 0.72rem;
+    /* color: var(--metric-accent); */
+    font-family: var(--ds-font-body);
+    font-size: 0.9rem;
     font-weight: 700;
     text-transform: uppercase;
+    
   }
 
   .ds-module-card {
