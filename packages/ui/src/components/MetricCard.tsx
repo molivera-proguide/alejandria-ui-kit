@@ -8,7 +8,6 @@ export interface MetricCardProps extends HTMLAttributes<HTMLDivElement> {
   value: string;
   change?: string;
   tone?: MetricTone;
-  icon?: ReactNode;
 }
 
 export function MetricCard({
@@ -16,7 +15,6 @@ export function MetricCard({
   value,
   change,
   tone = "neutral",
-  icon,
   className,
   ...props
 }: MetricCardProps) {
@@ -24,7 +22,6 @@ export function MetricCard({
     <div className={cn("ds-metric", `ds-metric--${tone}`, className)} {...props}>
       <div className="ds-metric__topline">
         <span className="ds-metric__label">{label}</span>
-        {icon ? <span className="ds-metric__icon">{icon}</span> : null}
       </div>
       <strong className="ds-metric__value">{value}</strong>
       {change ? <span className="ds-metric__change">{change}</span> : null}

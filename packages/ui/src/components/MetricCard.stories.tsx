@@ -12,8 +12,7 @@ const meta = {
     tone: {
       control: "select",
       options: ["neutral", "good", "watch", "critical"]
-    },
-    icon: { control: false }
+    }
   },
   args: {
     label: "Riesgo operativo",
@@ -38,10 +37,10 @@ export const Playground: Story = {};
 export const Tones: Story = {
   render: () => (
     <div style={{ display: "grid", gap: 14, gridTemplateColumns: "repeat(4, minmax(180px, 1fr))" }}>
-      <MetricCard label="Riesgo operativo" value="87%" change="critico" tone="critical" icon={<AlertTriangle />} />
-      <MetricCard label="Unidades activas" value="50" change="en campo" tone="good" icon={<Shield />} />
-      <MetricCard label="Alertas abiertas" value="23" change="7 sin leer" tone="watch" icon={<RadioTower />} />
-      <MetricCard label="Nodos enlazados" value="15" change="red viva" icon={<Activity />} />
+      <MetricCard label="Riesgo operativo" value="87%" change="critico" tone="critical"/>
+      <MetricCard label="Unidades activas" value="50" change="en campo" tone="good"/>
+      <MetricCard label="Alertas abiertas" value="23" change="7 sin leer" tone="watch"/>
+      <MetricCard label="Nodos enlazados" value="15" change="red viva"/>
     </div>
   )
 };
