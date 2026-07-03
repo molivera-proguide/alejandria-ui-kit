@@ -33,7 +33,7 @@ tags:
   - presentational
   - molecule
 
-last_reviewed: 2026-07-02
+last_reviewed: 2026-07-03
 ---
 
 # MetricCard
@@ -78,7 +78,7 @@ Documenta los comportamientos públicos en los que el consumidor puede confiar.
 - Define interactividad, manejadores de clic ni semántica de botón o enlace.
 - Aplica estilos responsivos propios (sin media queries en `.ds-metric`).
 - Define roles ARIA, etiquetas accesibles ni manejo de teclado propios.
-- Diferencia visualmente los tonos `good`, `watch`, `critical` ni `neutral` mediante CSS en la implementación actual.
+- Diferencia visualmente los tonos `good` ni `watch` (sin color PDF definido). `critical` colorea el valor en `#ff0404`; `neutral` usa valor `#ffffff`.
 
 ---
 
@@ -99,7 +99,7 @@ siempre seguir estas reglas.
 
 - Inventar props que no existan en `MetricCardProps` (`icon`, `variant`, `size`, `children`, `footer`, etc.).
 - Pasar `icon` u otras props no declaradas esperando renderizado interno; atributos desconocidos se reenvían al `<div>` raíz sin efecto visual.
-- Asumir que `tone` altera colores o acentos visuales (no hay reglas CSS para `.ds-metric--*`).
+- Asumir que `tone="good"` o `tone="watch"` alteran el color del valor (solo `critical` aplica `#ff0404` al valor).
 - Anidar otro `MetricCard` como hijo (no hay slot `children`).
 - Confiar en formato automático de números, fechas ni tendencias.
 
@@ -149,8 +149,8 @@ Tipos exportados:
 |------|------|----------|----------|-------------|
 | `label` | `string` | — | sí | Etiqueta de la métrica. Renderizada en `<span class="ds-metric__label">` dentro de `.ds-metric__topline`. Mayúsculas vía CSS (`text-transform: uppercase`). |
 | `value` | `string` | — | sí | Valor principal de la métrica. Renderizado en `<strong class="ds-metric__value">`. |
-| `change` | `string` | — | no | Texto de contexto o variación. Renderizado en `<span class="ds-metric__change">` solo si es truthy. Mayúsculas vía CSS. |
-| `tone` | `MetricTone` | `"neutral"` | no | Tono semántico. Aplica clase `ds-metric--{tone}` en la raíz. Valores: `"neutral"`, `"good"`, `"watch"`, `"critical"`. |
+| `change` | `string` | — | no | Texto de referencia/contexto. Renderizado en `<span class="ds-metric__change">` solo si es truthy. Estilo Montserrat Extralight 16px `#ffffff` (sin `text-transform`). |
+| `tone` | `MetricTone` | `"neutral"` | no | Tono semántico. Aplica clase `ds-metric--{tone}` en la raíz. Solo `critical` cambia el color del valor a `#ff0404`. |
 | `className` | `string` | — | no | Clases adicionales fusionadas con `ds-metric` y el modificador de tono en el `<div>` raíz. |
 | `...props` | `HTMLAttributes<HTMLDivElement>` | — | no | Atributos nativos del `<div>` raíz (`id`, `style`, `data-*`, `aria-*`, etc.). |
 
@@ -158,10 +158,10 @@ Tipos exportados:
 
 | Value | Description |
 |-------|-------------|
-| `"neutral"` | Valor por defecto. Clase `ds-metric--neutral`. |
-| `"good"` | Clase `ds-metric--good`. Usado en demos para métricas positivas (p. ej. unidades activas). |
-| `"watch"` | Clase `ds-metric--watch`. Usado en demos para métricas en observación (p. ej. alertas abiertas). |
-| `"critical"` | Clase `ds-metric--critical`. Usado en demos para métricas críticas (p. ej. riesgo operativo). |
+| `"neutral"` | Valor por defecto. Clase `ds-metric--neutral`. Valor en `#ffffff`. |
+| `"good"` | Clase `ds-metric--good`. Sin acento de color en PDF; valor permanece `#ffffff`. |
+| `"watch"` | Clase `ds-metric--watch`. Sin acento de color en PDF; valor permanece `#ffffff`. |
+| `"critical"` | Clase `ds-metric--critical`. Valor en `#ff0404` (PDF MÉTRICAS). |
 
 ---
 
@@ -171,9 +171,9 @@ Describe every public visual variant.
 
 ## Default
 
-Única apariencia visual implementada en CSS mediante `.ds-metric` y sus elementos internos. Fondo semitransparente (`rgb(0 0 0 / 20%)`), borde con token de línea, sombra pequeña, `min-height: 132px`, layout en grid con `gap: 11px`.
+Apariencia de reporting PDF (MÉTRICAS): fondo `rgb(6 6 6 / 0.2)`, borde `0.75px solid #e6e6e6`, padding `10px`, `min-height: 132px`, layout en grid con `gap: 11px`. Etiqueta Source Code Pro Bold 16px `#8a8b87` uppercase con `letter-spacing: 0.41em`. Valor Montserrat Bold 84px `#ffffff`. Referencia (`change`) Montserrat Extralight (200) 16px `#ffffff`.
 
-La prop `tone` expone cuatro valores públicos (`neutral`, `good`, `watch`, `critical`) que añaden clases BEM (`ds-metric--*`) en la raíz, pero **no existen reglas CSS** para esas clases en `styles.css`; todas las instancias comparten la misma apariencia base.
+`tone="critical"` aplica `.ds-metric--critical` y colorea `.ds-metric__value` en `#ff0404`. Los tonos `good` y `watch` no tienen acento de color en el PDF y comparten el valor blanco de `neutral`.
 
 ---
 
@@ -277,7 +277,7 @@ Document only responsive behavior implemented by the component itself.
 
 ## Labels
 
-- `label`: descriptor breve de la métrica (p. ej. `"Riesgo operativo"`, `"Unidades activas"`, `"Alertas abiertas"`). El CSS aplica `text-transform: uppercase` y `letter-spacing: 0.4em` en `.ds-metric__label`; no es obligatorio escribir en mayúsculas en la prop.
+- `label`: descriptor breve de la métrica (p. ej. `"Riesgo operativo"`, `"Unidades activas"`, `"Alertas abiertas"`). El CSS aplica `text-transform: uppercase` y `letter-spacing: 0.41em` (interlettering PDF 410) en `.ds-metric__label`; no es obligatorio escribir en mayúsculas en la prop.
 
 ## Values
 
@@ -286,7 +286,6 @@ Document only responsive behavior implemented by the component itself.
 ## Icons
 
 - `MetricCard` no expone prop `icon` ni slot para iconos.
-- Demos en `Components.stories.tsx` y `apps/web/src/App.tsx` pasan `icon` en el spread de datos, pero el componente no lo consume; no tiene efecto visual.
 
 ## Localization
 
@@ -311,7 +310,7 @@ import { MetricCard } from "@alejandria/ui-kit";
 
 ## Variant
 
-La prop `tone` selecciona la clase modificadora; la apariencia visual base es la misma para todos los tonos en la implementación actual.
+La prop `tone` selecciona la clase modificadora. Solo `critical` cambia el color del valor (`#ff0404`); el resto mantiene valor blanco.
 
 ```tsx
 <MetricCard label="Unidades activas" value="50" change="en campo" tone="good" />
@@ -376,11 +375,11 @@ Colorear la métrica crítica en rojo según el tono.
 
 ### Recommended Components
 
-- `MetricCard` con `tone="critical"` (sin diferenciación visual actual)
+- `MetricCard` con `tone="critical"`
 
 ### Why
 
-La prop `tone` existe y aplica `ds-metric--critical`, pero no hay reglas CSS asociadas. La diferenciación por color requeriría extender `styles.css` o CSS externo no cubierto por la API actual.
+`tone="critical"` aplica `.ds-metric--critical` y colorea el valor en `#ff0404` según el PDF MÉTRICAS.
 
 ---
 
@@ -404,15 +403,12 @@ Only include tokens directly consumed by the component.
 
 | Token | Category | Usage |
 |--------|----------|-------|
-| `--ds-color-line` | color | `border` de `.ds-metric` |
 | `--ds-radius-xs` | radius | `border-radius` de `.ds-metric` |
-| `--ds-shadow-sm` | shadow | `box-shadow` de `.ds-metric` |
 | `--ds-color-ink` | color | `color` base de `.ds-metric` |
-| `--ds-color-ink-muted` | color | `color` de `.ds-metric__label` |
-| `--ds-font-mono` | typography | `font-family` de `.ds-metric__label` |
-| `--ds-font-body` | typography | `font-family` de `.ds-metric__value` y `.ds-metric__change` |
+| `--ds-font-mono` | typography | `font-family` de `.ds-metric__label` (Source Code Pro) |
+| `--ds-font-body` | typography | `font-family` de `.ds-metric__value` y `.ds-metric__change` (Montserrat) |
 
-Nota: el fondo de `.ds-metric` está hardcodeado (`rgb(0 0 0 / 20%)`) y no usa token del sistema. La regla comentada `color: var(--metric-accent)` en `.ds-metric__change` referencia una variable no definida en `:root`. Las clases `ds-metric--*` no consumen tokens adicionales porque no tienen reglas CSS.
+Nota: colores de reporting PDF están hardcodeados (`rgb(6 6 6 / 0.2)`, `#e6e6e6`, `#8a8b87`, `#ffffff`, `#ff0404`) y no usan tokens del sistema.
 
 ---
 
@@ -451,26 +447,23 @@ div.ds-metric.ds-metric--{tone}
 
 # Known Limitations
 
-- La prop `tone` aplica clases `ds-metric--neutral`, `ds-metric--good`, `ds-metric--watch` y `ds-metric--critical`, pero no existen reglas CSS para ellas; no hay diferenciación visual por tono.
+- Solo `tone="critical"` tiene acento de color PDF (`#ff0404` en el valor). `good` y `watch` no tienen color definido en el PDF.
+- No implementa la variante ficha del PDF (label Extralight 16pt / value Bold 52pt); la API actual es la variante reporting.
 - No expone prop `icon`, `children`, slots de acciones ni pie de tarjeta.
 - No formatea ni localiza valores numéricos.
 - `.ds-metric__topline` no tiene reglas CSS propias; actúa solo como contenedor estructural.
-- `.ds-metric__change` no aplica color de acento; la referencia a `--metric-accent` está comentada y la variable no existe en tokens.
 - Sin estados interactivos (`hover`, `focus`, `disabled`) ni semántica de control.
 - Sin tests unitarios ni de integración en el repositorio.
-- Demos en `Components.stories.tsx` y `apps/web` pasan `icon` al spread de props; el componente no lo renderiza y el atributo se reenvía al `<div>` raíz como prop HTML no estándar.
-- La story `Tones` no pasa `tone` en cada instancia; todas usan el default `"neutral"` a pesar del nombre de la story.
-- Fondo hardcodeado; migración incompleta a tokens del design system para superficies.
+- Etiquetas con `letter-spacing: 0.41em` pueden desbordar anchos estrechos en grids de 4 columnas.
+- Colores hardcodeados; migración incompleta a tokens del design system.
 
 ---
 
 # Future Improvements
 
-- [ ] Reglas CSS para `.ds-metric--good`, `.ds-metric--watch`, `.ds-metric--critical` y `.ds-metric--neutral`
-- [ ] Token `--metric-accent` o uso de tokens existentes (`--ds-color-danger`, `--ds-color-green`, etc.) en `.ds-metric__change`
-- [ ] Estilos para `.ds-metric__topline` si se requiere layout de icono o acciones
-- [ ] Migrar fondo hardcodeado a token de superficie (`--ds-color-surface-glass` u equivalente)
-- [ ] Alinear demos (`icon` en spread) con la API real o añadir soporte de icono si se define en el diseño
+- [ ] Acentos PDF para `good` / `watch` si el diseño los define
+- [ ] Variante ficha (52pt value) si se añade a la API sin romper reporting
+- [ ] Migrar colores hardcodeados a tokens del design system
 - [ ] Documentación JSDoc en `MetricCard.tsx` según convenciones del repositorio
 
 ---
@@ -480,3 +473,4 @@ div.ds-metric.ds-metric--{tone}
 | Version | Change |
 |----------|--------|
 | 0.1.0 | Implementación inicial de `MetricCard`, `MetricCardProps` y `MetricTone` con estilos `ds-metric` y stories en Storybook (`Playground`, `Tones`). Uso en `Components.stories.tsx` → `OperationsConsole` y `apps/web/src/App.tsx`. |
+| 0.1.0 | Refinamiento visual PDF (MÉTRICAS reporting): borde `#e6e6e6` 0.75px, label 16px Bold interlettering 410, value 84px Montserrat Bold, reference Extralight 16px, `critical` → `#ff0404`, sin sombra, Storybook fondo oscuro. |

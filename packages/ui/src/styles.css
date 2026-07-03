@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&family=Source+Code+Pro:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;700&family=Source+Code+Pro:wght@400;600;700&display=swap');
 
 @layer ds.tokens, ds.components;
 
@@ -443,10 +443,9 @@
   }
 
   .ds-metric {
-    background: rgb(0 0 0 / 20%);
-    border: 1px solid var(--ds-color-line);
+    background: rgb(6 6 6 / 0.2);
+    border: 0.75px solid #e6e6e6;
     border-radius: var(--ds-radius-xs);
-    box-shadow: var(--ds-shadow-sm);
     color: var(--ds-color-ink);
     display: grid;
     gap: 11px;
@@ -456,30 +455,34 @@
   }
 
   .ds-metric__label {
-    color: var(--ds-color-ink-muted);
+    color: #8a8b87;
     font-family: var(--ds-font-mono);
-    font-size: 0.7rem;
+    font-size: 12px;
     font-weight: 700;
+    letter-spacing: 0.41em;
     line-height: 1.25;
     text-transform: uppercase;
-    letter-spacing: 0.4em;
   }
 
   .ds-metric__value {
+    color: #ffffff;
     font-family: var(--ds-font-body);
-    font-size: 2.9rem;
+    font-size: 84px;
     font-weight: 700;
     letter-spacing: 0;
     line-height: 0.95;
   }
 
+  .ds-metric--critical .ds-metric__value {
+    color: #ff0404;
+  }
+
   .ds-metric__change {
-    /* color: var(--metric-accent); */
+    color: #ffffff;
     font-family: var(--ds-font-body);
-    font-size: 0.9rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    
+    font-size: 16px;
+    font-weight: 200;
+    line-height: 1.2;
   }
 
   .ds-module-card {

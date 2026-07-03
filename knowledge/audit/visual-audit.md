@@ -42,7 +42,7 @@ These affect all Storybook stories and are verifiable from `preview.css` and sto
 | `Alejandria/TextField` | Login inputs (p. 5) | **Low** |
 | `Alejandria/SegmentedControl` | Filtros (p. 3) | **Low** |
 | `Alejandria/TaskCard` | TARJETAS (p. 1) | **Low** |
-| `Alejandria/MetricCard` | MÉTRICAS (p. 9) | **Low** |
+| `Alejandria/MetricCard` | MÉTRICAS (p. 9) | **High** |
 | `Alejandria/BarChartCard` (via ChartCard) | GRÁFICOS barras (p. 7–8) | **Low** |
 | `Alejandria/LineChartCard` (via ChartCard) | GRÁFICOS líneas (p. 8) | **Low** |
 | `Alejandria/Button` | Inline button specs (p. 1–3, 5) | **Low** |
@@ -198,33 +198,31 @@ These affect all Storybook stories and are verifiable from `preview.css` and sto
 ### MetricCard — `Alejandria/MetricCard`
 
 **PDF reference:** MÉTRICAS (p. 9)  
-**Visual Fidelity: Low**
+**Visual Fidelity: High**  
+**Last refined:** 2026-07-03
 
 | Dimension | PDF spec | Implementation | Match |
 |-----------|----------|----------------|:-----:|
-| **Colors — background** | `#060606` 20% opacity (reporting) | `rgb(0 0 0 / 20%)` on `.ds-metric` | Partial |
-| **Colors — border** | `0,75pt` `#e6e6e6` | `1px solid var(--ds-color-line)` → `rgb(226 239 234 / 0.18)` | **No** |
+| **Colors — background** | `#060606` 20% opacity (reporting) | `rgb(6 6 6 / 0.2)` on `.ds-metric` | Yes |
+| **Colors — border** | `0,75pt` `#e6e6e6` | `0.75px solid #e6e6e6` | Yes |
 | **Spacing — padding** | `10px` | `10px` | Yes |
-| **Typography — label (reporting)** | Source Code Bold 16pt `#8a8b87`, uppercase, interlettering 410 | Mono `0.7rem` (~11.2px) `#6f7977`, `letter-spacing: 0.4em` | **No** |
-| **Typography — value (reporting)** | Montserrat Bold 84pt `#FFFFFF` / `#ff0404` | Body `2.9rem` (~46.4px) weight 700, no accent color | **No** |
-| **Typography — reference** | Montserrat Extralight 16pt `#FFFFFF` | `.ds-metric__change`: `0.9rem` bold uppercase | **No** |
-| **Typography — ficha variant** | Montserrat Extralight 16pt label; Bold 52pt value | Not implemented | **No** |
+| **Typography — label (reporting)** | Source Code Bold 16pt `#8a8b87`, uppercase, interlettering 410 | Mono `16px` weight 700 `#8a8b87`, `letter-spacing: 0.41em` | Yes |
+| **Typography — value (reporting)** | Montserrat Bold 84pt `#FFFFFF` / `#ff0404` | Body `84px` weight 700; `#ffffff` / `#ff0404` when `critical` | Yes |
+| **Typography — reference** | Montserrat Extralight 16pt `#FFFFFF` | `.ds-metric__change`: `16px` weight 200 `#ffffff` | Yes |
+| **Typography — ficha variant** | Montserrat Extralight 16pt label; Bold 52pt value | Not implemented (no API variant) | **No** |
 | **Border radius** | Not specified | `2px` | N/A |
-| **Shadows** | Not specified | `var(--ds-shadow-sm)` | Extra |
-| **States — tone** | `#ff0404` for highlighted numbers | `tone` prop adds `ds-metric--{tone}` but **no CSS rules** for tone modifiers | **No** |
+| **Shadows** | Not specified | None | Yes |
+| **States — tone** | `#ff0404` for highlighted numbers | `.ds-metric--critical .ds-metric__value { color: #ff0404 }` | Yes |
 | **Sizing** | Not specified | `min-height: 132px` | N/A |
 | **Hierarchy** | Title → large number → reference | Label → value → change | Yes |
+| **Storybook canvas** | Dark UI | Background `#060606` | Yes |
 
-**Discrepancies**
+**Remaining differences**
 
-1. Value font ~46px vs PDF 84pt reporting (~112px) — ~60% smaller.
-2. Border uses teal-tinted token line, not `#e6e6e6`.
-3. Label uses `#6f7977` (ink-muted), not `#8a8b87`.
-4. No red (`#ff0404`) accent on critical values per PDF.
-5. `change` text is bold uppercase 0.9rem, not Extralight 16pt reference style.
-6. `ds-metric--critical`, `--good`, etc. classes are applied in `MetricCard.tsx` but have zero rules in `styles.css` — tone prop has no visual effect.
-7. No reporting vs ficha layout variants from PDF.
-8. Stories import `lucide-react` icons but `MetricCard` has no `icon` slot — icons are not rendered.
+1. Ficha typography variant (52pt value) is not in the public API — reporting only.
+2. `good` / `watch` tones have no PDF color; values stay white.
+3. `border-radius: 2px`, internal `gap: 11px`, and `min-height: 132px` are unspecified in the PDF and preserved.
+4. Wide label tracking can overflow narrow grid columns.
 
 ---
 
@@ -533,7 +531,7 @@ Shares `.ds-field` styles with TextField. PDF filtros spec: border `0,75pt #e6e6
 
 1. Entire overview uses light `--ds-color-paper` background; PDF is dark-first.
 2. All action/filter icons are lucide-react, not PDF Alejandria icon sets.
-3. MetricCard `icon` prop passed in story but component does not render icons.
+3. MetricCard has no `icon` slot (dead `icon` props removed from Overview and demo app).
 4. Button styling follows teal kit, not PDF gray.
 5. No map layer, ficha 40px padding, or modal patterns from PDF screens.
 
@@ -562,9 +560,9 @@ Verified systematic differences between PDF and implementation:
 
 | Visual Fidelity | Storybook components |
 |:-------------:|:--------------------|
-| **High** | 1 (ModuleCard) |
+| **High** | 2 (ModuleCard, MetricCard) |
 | **Medium** | 3 (ChartCard shell, DonutChart when PDF colors used, Icons assets) |
-| **Low** | 15 |
+| **Low** | 14 |
 
 ---
 
@@ -574,7 +572,7 @@ Verified systematic differences between PDF and implementation:
 |-------|-------|
 | PDF pages used | 1–9, 12 (component specs); 6 (icons) |
 | Storybook titles audited | 17 |
-| Code modified | Yes (ModuleCard visual refinement 2026-07-03) |
+| Code modified | Yes (ModuleCard, MetricCard visual refinement 2026-07-03) |
 | Comparison basis | CSS values, TSX constants, story args/decorators only |
 
 ---

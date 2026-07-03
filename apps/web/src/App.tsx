@@ -1,6 +1,4 @@
 import {
-  Activity,
-  AlertTriangle,
   Bell,
   BookOpen,
   ClipboardList,
@@ -11,9 +9,7 @@ import {
   Layers3,
   Lock,
   MapPin,
-  RadioTower,
   Search,
-  Shield,
   Target,
   Users
 } from "lucide-react";
@@ -29,10 +25,10 @@ const navItems = [
 ];
 
 const metrics = [
-  { label: "Riesgo operativo", value: "87%", change: "critico", tone: "critical" as const, icon: <AlertTriangle /> },
-  { label: "Unidades activas", value: "50", change: "en campo", tone: "good" as const, icon: <Shield /> },
-  { label: "Alertas abiertas", value: "23", change: "7 sin leer", tone: "watch" as const, icon: <RadioTower /> },
-  { label: "Nodos enlazados", value: "15", change: "red viva", tone: "neutral" as const, icon: <Activity /> }
+  { label: "Riesgo operativo", value: "87%", change: "critico", tone: "critical" as const },
+  { label: "Unidades activas", value: "50", change: "en campo", tone: "good" as const },
+  { label: "Alertas abiertas", value: "23", change: "7 sin leer", tone: "watch" as const },
+  { label: "Nodos enlazados", value: "15", change: "red viva", tone: "neutral" as const }
 ];
 
 const tasks = [

@@ -19,7 +19,7 @@ Horizontal KPI strip for at-a-glance operational health (risk, units, alerts, no
 
 - Present multiple equal-weight metrics in one scan line.
 - Encode each KPI as label, large value, and change text via `MetricCard`.
-- Support optional tone props for semantic emphasis (visual effect depends on component styling).
+- Support optional tone props for semantic emphasis (`critical` uses PDF red `#ff0404` on the value).
 
 ## Layout structure
 
@@ -34,7 +34,7 @@ Each cell is one `MetricCard`. No section heading or wrapper component.
 
 | Component | Role |
 |-----------|------|
-| `MetricCard` ×4 | KPI cells (label, value, change, optional tone/icon) |
+| `MetricCard` ×4 | KPI cells (label, value, change, optional tone) |
 
 ## Composition rules
 
@@ -67,7 +67,7 @@ No breakpoints in Storybook. Fixed four-column grids will compress or overflow o
 ## Known limitations
 
 - No `MetricsRow` wrapper component; layout is inline in stories.
-- Tone styling on `MetricCard` may be ineffective (see visual audit).
-- `icon` prop accepted in Operations Console but not rendered by `MetricCard`.
+- Only `tone="critical"` changes value color; `good` / `watch` share neutral white.
+- Wide label tracking (`0.41em`) can overflow narrow columns.
 - Responsive collapse exists only in `apps/web`, not Storybook.
 ---

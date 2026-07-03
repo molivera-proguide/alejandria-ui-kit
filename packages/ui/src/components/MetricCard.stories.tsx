@@ -1,12 +1,18 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Activity, AlertTriangle, RadioTower, Shield } from "lucide-react";
 import { MetricCard } from "./MetricCard";
 
 const meta = {
   title: "Alejandria/MetricCard",
   component: MetricCard,
   parameters: {
-    layout: "centered"
+    layout: "centered",
+    backgrounds: {
+      default: "alejandria-dark",
+      values: [
+        { name: "alejandria-dark", value: "#060606" },
+        { name: "alejandria-paper", value: "#eef4f3" }
+      ]
+    }
   },
   argTypes: {
     tone: {
@@ -36,11 +42,18 @@ export const Playground: Story = {};
 
 export const Tones: Story = {
   render: () => (
-    <div style={{ display: "grid", gap: 14, gridTemplateColumns: "repeat(4, minmax(180px, 1fr))" }}>
-      <MetricCard label="Riesgo operativo" value="87%" change="critico"/>
-      <MetricCard label="Unidades activas" value="50" change="en campo"/>
-      <MetricCard label="Alertas abiertas" value="23" change="7 sin leer"/>
-      <MetricCard label="Nodos enlazados" value="15" change="red viva"/>
+    <div
+      style={{
+        display: "grid",
+        gap: 14,
+        gridTemplateColumns: "repeat(4, minmax(180px, 1fr))",
+        width: "100%"
+      }}
+    >
+      <MetricCard label="Riesgo operativo" value="87%" change="critico" tone="critical" />
+      <MetricCard label="Unidades activas" value="50" change="en campo" tone="good" />
+      <MetricCard label="Alertas abiertas" value="23" change="7 sin leer" tone="watch" />
+      <MetricCard label="Nodos enlazados" value="15" change="red viva" tone="neutral" />
     </div>
   )
 };

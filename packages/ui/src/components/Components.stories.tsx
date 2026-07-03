@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Activity, AlertTriangle, ArrowRight, Crosshair, Filter, RadioTower, Search, Shield } from "lucide-react";
+import { ArrowRight, Crosshair, Filter, Search } from "lucide-react";
 import { Badge } from "./Badge";
 import { Button } from "./Button";
 import { Card } from "./Card";
@@ -57,10 +57,10 @@ export const OperationsConsole: Story = {
       </div>
 
       <div style={{ display: "grid", gap: 14, gridTemplateColumns: "repeat(4, minmax(0, 1fr))" }}>
-        <MetricCard label="Riesgo operativo" value="87%" change="critico" tone="critical" icon={<AlertTriangle />} />
-        <MetricCard label="Unidades activas" value="50" change="en campo" tone="good" icon={<Shield />} />
-        <MetricCard label="Alertas abiertas" value="23" change="7 sin leer" tone="watch" icon={<RadioTower />} />
-        <MetricCard label="Nodos enlazados" value="15" change="red viva" icon={<Activity />} />
+        <MetricCard label="Riesgo operativo" value="87%" change="critico" tone="critical" />
+        <MetricCard label="Unidades activas" value="50" change="en campo" tone="good" />
+        <MetricCard label="Alertas abiertas" value="23" change="7 sin leer" tone="watch" />
+        <MetricCard label="Nodos enlazados" value="15" change="red viva" />
       </div>
 
       <div style={{ alignItems: "start", display: "grid", gap: 16, gridTemplateColumns: "1.3fr .7fr" }}>
