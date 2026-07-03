@@ -1,0 +1,217 @@
+{
+  "version": "0.1.0",
+  "package": "@alejandria/ui-kit",
+  "generated": "2026-07-03",
+  "entry": "knowledge/index.md",
+  "components": [
+    {
+      "id": "alert-banner",
+      "name": "AlertBanner",
+      "path": "knowledge/components/AlertBanner.md",
+      "export": "packages/ui/src/components/AlertBanner.tsx",
+      "storybook": "Alejandria/AlertBanner"
+    },
+    {
+      "id": "badge",
+      "name": "Badge",
+      "path": "knowledge/components/Badge.md",
+      "export": "packages/ui/src/components/Badge.tsx",
+      "storybook": "Alejandria/Badge Chip"
+    },
+    {
+      "id": "bar-chart-card",
+      "name": "BarChartCard",
+      "path": "knowledge/components/BarChartCard.md",
+      "export": "packages/ui/src/components/BarChartCard.tsx",
+      "storybook": "Alejandria/ChartCard"
+    },
+    {
+      "id": "button",
+      "name": "Button",
+      "path": "knowledge/components/Button.md",
+      "export": "packages/ui/src/components/Button.tsx",
+      "storybook": "Alejandria/Button"
+    },
+    {
+      "id": "card",
+      "name": "Card",
+      "path": "knowledge/components/Card.md",
+      "export": "packages/ui/src/components/Card.tsx",
+      "storybook": "Alejandria/Card"
+    },
+    {
+      "id": "chart-card",
+      "name": "ChartCard",
+      "path": "knowledge/components/ChartCard.md",
+      "export": "packages/ui/src/components/ChartCard.tsx",
+      "storybook": "Alejandria/ChartCard"
+    },
+    {
+      "id": "data-table",
+      "name": "DataTable",
+      "path": "knowledge/components/DataTable.md",
+      "export": "packages/ui/src/components/DataTable.tsx",
+      "storybook": "Alejandria/DataTable"
+    },
+    {
+      "id": "donut-chart-card",
+      "name": "DonutChartCard",
+      "path": "knowledge/components/DonutChartCard.md",
+      "export": "packages/ui/src/components/DonutChartCard.tsx",
+      "storybook": "Alejandria/ChartCard"
+    },
+    {
+      "id": "line-chart-card",
+      "name": "LineChartCard",
+      "path": "knowledge/components/LineChartCard.md",
+      "export": "packages/ui/src/components/LineChartCard.tsx",
+      "storybook": "Alejandria/ChartCard"
+    },
+    {
+      "id": "metric-card",
+      "name": "MetricCard",
+      "path": "knowledge/components/MetricCard.md",
+      "export": "packages/ui/src/components/MetricCard.tsx",
+      "storybook": "Alejandria/MetricCard"
+    },
+    {
+      "id": "module-card",
+      "name": "ModuleCard",
+      "path": "knowledge/components/ModuleCard.md",
+      "export": "packages/ui/src/components/ModuleCard.tsx",
+      "storybook": "Alejandria/ModuleCard"
+    },
+    {
+      "id": "progress-ring",
+      "name": "ProgressRing",
+      "path": "knowledge/components/ProgressRing.md",
+      "export": "packages/ui/src/components/ProgressRing.tsx",
+      "storybook": "Alejandria/ProgressRing"
+    },
+    {
+      "id": "segmented-control",
+      "name": "SegmentedControl",
+      "path": "knowledge/components/SegmentedControl.md",
+      "export": "packages/ui/src/components/SegmentedControl.tsx",
+      "storybook": "Alejandria/SegmentedControl"
+    },
+    {
+      "id": "select-field",
+      "name": "SelectField",
+      "path": "knowledge/components/SelectField.md",
+      "export": "packages/ui/src/components/SelectField.tsx",
+      "storybook": "Alejandria/SelectField"
+    },
+    {
+      "id": "switch",
+      "name": "Switch",
+      "path": "knowledge/components/Switch.md",
+      "export": "packages/ui/src/components/Switch.tsx",
+      "storybook": "Alejandria/Switch"
+    },
+    {
+      "id": "task-card",
+      "name": "TaskCard",
+      "path": "knowledge/components/TaskCard.md",
+      "export": "packages/ui/src/components/TaskCard.tsx",
+      "storybook": "Alejandria/TaskCard"
+    },
+    {
+      "id": "text-field",
+      "name": "TextField",
+      "path": "knowledge/components/TextField.md",
+      "export": "packages/ui/src/components/TextField.tsx",
+      "storybook": "Alejandria/TextField"
+    }
+  ],
+  "patterns": [
+    {
+      "id": "operations-console",
+      "name": "Operations Console",
+      "path": "knowledge/patterns/operations-console.md",
+      "storybook": "Alejandria/Overview/OperationsConsole",
+      "source": "packages/ui/src/components/Components.stories.tsx"
+    },
+    {
+      "id": "command-header",
+      "name": "Command Header",
+      "path": "knowledge/patterns/command-header.md",
+      "storybook": "Alejandria/Overview/OperationsConsole",
+      "source": "packages/ui/src/components/Components.stories.tsx"
+    },
+    {
+      "id": "metrics-row",
+      "name": "Metrics Row",
+      "path": "knowledge/patterns/metrics-row.md",
+      "storybook": "Alejandria/MetricCard/Tones",
+      "source": "packages/ui/src/components/MetricCard.stories.tsx"
+    },
+    {
+      "id": "task-board",
+      "name": "Task Board",
+      "path": "knowledge/patterns/task-board.md",
+      "storybook": "Alejandria/TaskCard/Tones",
+      "source": "packages/ui/src/components/TaskCard.stories.tsx"
+    },
+    {
+      "id": "module-grid",
+      "name": "Module Grid",
+      "path": "knowledge/patterns/module-grid.md",
+      "storybook": "Alejandria/ModuleCard/GridExample",
+      "source": "packages/ui/src/components/ModuleCard.stories.tsx"
+    },
+    {
+      "id": "chart-gallery",
+      "name": "Chart Gallery",
+      "path": "knowledge/patterns/chart-gallery.md",
+      "storybook": "Alejandria/ChartCard/Gallery",
+      "source": "packages/ui/src/components/ChartCard.stories.tsx"
+    },
+    {
+      "id": "mission-panel",
+      "name": "Mission Panel",
+      "path": "knowledge/patterns/mission-panel.md",
+      "storybook": "Alejandria/Card/WithActionsAndFooter",
+      "source": "packages/ui/src/components/Card.stories.tsx"
+    },
+    {
+      "id": "alert-stack",
+      "name": "Alert Stack",
+      "path": "knowledge/patterns/alert-stack.md",
+      "storybook": "Alejandria/AlertBanner/Tones",
+      "source": "packages/ui/src/components/AlertBanner.stories.tsx"
+    },
+    {
+      "id": "actionable-alert",
+      "name": "Actionable Alert",
+      "path": "knowledge/patterns/actionable-alert.md",
+      "storybook": "Alejandria/AlertBanner/WithAction",
+      "source": "packages/ui/src/components/AlertBanner.stories.tsx"
+    },
+    {
+      "id": "filter-pair",
+      "name": "Filter Pair",
+      "path": "knowledge/patterns/filter-pair.md",
+      "storybook": "Alejandria/SelectField/CompactFilters",
+      "source": "packages/ui/src/components/SelectField.stories.tsx"
+    },
+    {
+      "id": "operational-table",
+      "name": "Operational Table",
+      "path": "knowledge/patterns/operational-table.md",
+      "storybook": "Alejandria/DataTable/DenseOperationalRows",
+      "source": "packages/ui/src/components/DataTable.stories.tsx"
+    }
+  ],
+  "screens": [
+    {
+      "id": "operations-console-screen",
+      "name": "Operations Console",
+      "path": "knowledge/screens/operations-console.md",
+      "storybook": "Alejandria/Overview/OperationsConsole",
+      "source": "packages/ui/src/components/Components.stories.tsx"
+    }
+  ],
+  "tokens": [],
+  "guidelines": []
+}
