@@ -443,7 +443,6 @@
   }
 
   .ds-metric {
-    --metric-accent: var(--ds-color-blue);
     background: rgb(0 0 0 / 20%);
     border: 1px solid var(--ds-color-line);
     border-radius: var(--ds-radius-xs);
@@ -456,37 +455,6 @@
     position: relative;
   }
 
-  /* .ds-metric::before {
-    background: var(--metric-accent);
-    box-shadow: 0 0 18px color-mix(in srgb, var(--metric-accent), transparent 54%);
-    content: "";
-    height: 3px;
-    left: 14px;
-    position: absolute;
-    right: 14px;
-    top: 10px;
-  } */
-
-  .ds-metric--good {
-    --metric-accent: var(--ds-color-green);
-  }
-
-  .ds-metric--watch {
-    --metric-accent: var(--ds-color-amber);
-  }
-
-  .ds-metric--critical {
-    --metric-accent: var(--ds-color-danger);
-  }
-
-  /* .ds-metric__topline {
-    align-items: center;
-    display: flex;
-    gap: 10px;
-    justify-content: space-between;
-    padding-top: 8px;
-  } */
-
   .ds-metric__label {
     color: var(--ds-color-ink-muted);
     font-family: var(--ds-font-mono);
@@ -496,23 +464,6 @@
     text-transform: uppercase;
     letter-spacing: 0.4em;
   }
-
-  /* .ds-metric__icon {
-    align-items: center;
-    background: rgb(255 255 255 / 0.045);
-    border: 1px solid var(--ds-color-line);
-    border-radius: var(--ds-radius-sm);
-    color: var(--metric-accent);
-    display: inline-flex;
-    height: 32px;
-    justify-content: center;
-    width: 32px;
-  } */
-
-  /* .ds-metric__icon svg {
-    height: 17px;
-    width: 17px;
-  } */
 
   .ds-metric__value {
     font-family: var(--ds-font-body);
