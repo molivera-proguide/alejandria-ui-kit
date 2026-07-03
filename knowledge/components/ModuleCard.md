@@ -33,7 +33,7 @@ tags:
   - interactive
   - molecule
 
-last_reviewed: 2026-07-02
+last_reviewed: 2026-07-03
 ---
 
 # ModuleCard
@@ -62,7 +62,7 @@ Documenta los comportamientos públicos en los que el consumidor puede confiar.
 - El contenedor del icono lleva `aria-hidden="true"`.
 - Fusión de `className` externa con `ds-module-card` mediante `cn()`.
 - Repaso de atributos nativos de `ButtonHTMLAttributes<HTMLButtonElement>` al botón raíz vía `...props` (`disabled`, `aria-label`, `id`, `data-*`, etc.).
-- Estilos de hover y `:focus-visible` definidos en `.ds-module-card:hover` y `.ds-module-card:focus-visible`.
+- Estilos de hover y `:focus-visible` definidos en `.ds-module-card:hover` y `.ds-module-card:focus-visible` (acento en paleta PDF `#c1c1c1` / `#ffffff`, sin teal).
 
 ## This component never
 
@@ -100,9 +100,9 @@ siempre seguir estas reglas.
 ## Recommendations
 
 - Proporcionar `onClick` cuando la tarjeta deba navegar o ejecutar una acción.
-- Agrupar instancias en un contenedor con grid CSS, como en la story `GridExample` (`repeat(auto-fit, minmax(240px, 1fr))`).
+- Agrupar instancias en un contenedor con grid CSS, como en la story `GridExample` (`repeat(auto-fit, minmax(260px, 1fr))`).
 - Pasar `aria-label` explícito si el título visible no describe suficientemente la acción del botón.
-- Usar iconos de módulo de `packages/ui/src/Icons` (180×180 px) como en las stories de Storybook.
+- Usar iconos de módulo de `packages/ui/src/Icons` (SVG 180×180) como en las stories de Storybook; el CSS los renderiza a 180×180 px.
 
 ---
 
@@ -164,7 +164,7 @@ No existen variantes públicas. El componente aplica una única apariencia media
 
 ## Default
 
-Única variante visual implementada. Fondo oscuro (`#060606`), borde gris, icono centrado, título en mono mayúsculas, divisor horizontal y filas de métricas con etiqueta a la izquierda y valor a la derecha.
+Única variante visual implementada. Fondo oscuro (`#060606`), borde `#c1c1c1` a `0.75px`, icono centrado 180×180, título Source Code Pro Regular 24px en mayúsculas, divisor `#8a8b87` a `0.75px`, y filas de métricas Montserrat (label Light / value Bold) a 16px.
 
 ---
 
@@ -172,9 +172,9 @@ No existen variantes públicas. El componente aplica una única apariencia media
 
 | State | Description |
 |--------|-------------|
-| Default | Apariencia base de `.ds-module-card`. `min-width: 260px`, `min-height: 260px`, borde `#c1c1c1`. |
-| Hover | Borde `var(--ds-color-teal)`, sombra `0 16px 42px rgb(0 0 0 / 0.22)`, `transform: translateY(-2px)`. |
-| Focus-visible | `outline: none`, anillo de enfoque `box-shadow: 0 0 0 3px rgb(108 224 199 / 0.24)`. |
+| Default | Apariencia base de `.ds-module-card`. `min-width: 260px`, `min-height: 260px`, padding `50px 20px 25px 20px`, borde `0.75px solid #c1c1c1`. |
+| Hover | Borde `#ffffff`, sombra `0 16px 42px rgb(0 0 0 / 0.22)`, `transform: translateY(-2px)`. |
+| Focus-visible | `outline: none`, anillo de enfoque `box-shadow: 0 0 0 3px rgb(193 193 193 / 0.35)`. |
 | Disabled | Atributo `disabled` nativo del `<button>` vía `...props`. Sin reglas CSS específicas en `.ds-module-card:disabled`. |
 
 ---
@@ -216,8 +216,8 @@ Documenta solo el comportamiento responsivo implementado por el componente mismo
 | Contexto | Behavior |
 |----------|----------|
 | Componente | Sin breakpoints. Tamaño mínimo fijo; el ancho efectivo lo define el contenedor padre. |
-| Storybook `GridExample` | Contenedor padre con `gridTemplateColumns: repeat(auto-fit, minmax(240px, 1fr))` y `gap: 20`; el colapso responsivo depende del grid del padre, no del componente. |
-| Icono `<img>` | `.ds-module-card__icon img` fija `height` y `width` a 110px con `object-fit: contain`. |
+| Storybook `GridExample` | Contenedor padre con `gridTemplateColumns: repeat(auto-fit, minmax(260px, 1fr))` y `gap: 20`; el colapso responsivo depende del grid del padre, no del componente. |
+| Icono `<img>` / `svg` | `.ds-module-card__icon img` y `svg` fijan `height` y `width` a 180px con `object-fit: contain`. |
 
 ---
 
@@ -279,7 +279,7 @@ Documenta solo el comportamiento responsivo implementado por el componente mismo
 
 ## Icons
 
-- Demos de Storybook usan `<img src={Icons.*Icon} alt="..." />` importados desde `../Icons` (SVG de módulo 180×180 px). El CSS escala imágenes dentro del icono a 110×110 px.
+- Demos de Storybook usan `<img src={Icons.*Icon} alt="" />` importados desde `../Icons` (SVG de módulo 180×180). El CSS renderiza el icono a 180×180 px. Stories usan fondo oscuro `#060606` para alinear el contraste con el PDF.
 - Cualquier `ReactNode` es válido en `icon`; el contenedor reserva `min-height: 140px` centrado.
 
 ## Localization
@@ -328,7 +328,7 @@ No existen variantes públicas. Todas las instancias usan la apariencia por defe
   style={{
     display: "grid",
     gap: 20,
-    gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
     width: "100%"
   }}
 >
@@ -418,11 +418,10 @@ Solo incluye tokens consumidos directamente por el componente.
 |--------|----------|-------|
 | `--ds-radius-xs` | radius | `border-radius` de `.ds-module-card` |
 | `--ds-color-ink` | color | `color` base de `.ds-module-card` |
-| `--ds-color-teal` | color | `border-color` en `.ds-module-card:hover` |
-| `--ds-font-mono` | typography | `font-family` de `.ds-module-card__title` y `.ds-module-card__metric-label` |
-| `--ds-font-display` | typography | `font-family` de `.ds-module-card__metric-value` |
+| `--ds-font-mono` | typography | `font-family` de `.ds-module-card__title` (Source Code Pro) |
+| `--ds-font-body` | typography | `font-family` de `.ds-module-card__metric-label` y `.ds-module-card__metric-value` (Montserrat) |
 
-Nota: la mayoría de colores del componente están hardcodeados (`#060606`, `#c1c1c1`, `#8a8b87`, `#ffffff`) y no usan tokens del sistema. El anillo de foco usa `rgb(108 224 199 / 0.24)` inline, equivalente a `--ds-focus-ring`, pero no referencia la variable CSS.
+Nota: la mayoría de colores del componente están hardcodeados (`#060606`, `#c1c1c1`, `#8a8b87`, `#ffffff`) y no usan tokens del sistema. Hover y focus usan acentos de la paleta PDF (`#ffffff`, `rgb(193 193 193 / 0.35)`), no teal.
 
 ---
 
@@ -483,7 +482,6 @@ button.ds-module-card
 
 - [ ] Estilos `:disabled` coherentes con el design system
 - [ ] Migrar colores hardcodeados a tokens (`--ds-color-*`)
-- [ ] Usar `var(--ds-focus-ring)` en lugar del valor inline en `:focus-visible`
 - [ ] Prop opcional de tono o variante visual por módulo
 - [ ] Clave estable alternativa a `metric.label` para listas con etiquetas repetidas
 
@@ -494,3 +492,4 @@ button.ds-module-card
 | Version | Change |
 |----------|--------|
 | 0.1.0 | Implementación inicial de `ModuleCard`, `ModuleCardProps` y `ModuleMetric` con estilos `ds-module-card` y stories en Storybook. |
+| 0.1.0 | Refinamiento visual PDF (MÓDULOS): padding superior 50px, título 24px Regular, métricas Montserrat 16px Light/Bold, icono 180×180, divisor 0.75px, hover/focus sin teal, Storybook en fondo oscuro. |

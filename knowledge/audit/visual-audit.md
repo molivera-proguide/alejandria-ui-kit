@@ -35,7 +35,7 @@ These affect all Storybook stories and are verifiable from `preview.css` and sto
 
 | Storybook entry | PDF section | Visual Fidelity |
 |-----------------|-------------|:---------------:|
-| `Alejandria/ModuleCard` | MÓDULOS (p. 4) | **Medium** |
+| `Alejandria/ModuleCard` | MÓDULOS (p. 4) | **High** |
 | `Alejandria/ChartCard` | GRÁFICOS container (p. 7–8) | **Medium** |
 | `Alejandria/ChartCard` → DonutChart | GRÁFICOS torta (p. 7–8) | **Medium** |
 | `Alejandria/SelectField` | Filtros / Login inputs (p. 3, 5) | **Low** |
@@ -62,7 +62,8 @@ These affect all Storybook stories and are verifiable from `preview.css` and sto
 ### ModuleCard — `Alejandria/ModuleCard`
 
 **PDF reference:** MÓDULOS (p. 4)  
-**Visual Fidelity: Medium**
+**Visual Fidelity: High**  
+**Last refined:** 2026-07-03
 
 | Dimension | PDF spec | Implementation (`styles.css` + stories) | Match |
 |-----------|----------|-------------------------------------------|:-----:|
@@ -71,26 +72,25 @@ These affect all Storybook stories and are verifiable from `preview.css` and sto
 | **Colors — title** | `#c1c1c1` | `#c1c1c1` on `.ds-module-card__title` | Yes |
 | **Colors — metric label** | `#8a8b87` | `#8a8b87` on `.ds-module-card__metric-label` | Yes |
 | **Colors — metric value** | `#FFFFFF` | `#ffffff` on `.ds-module-card__metric-value` | Yes |
-| **Colors — separator** | `0,75pt` `#8a8b87` | `1px solid #8a8b87` on `.ds-module-card__divider` | ~Yes |
-| **Spacing — padding** | `50px 20px 25px 20px` | `10px 20px 25px 20px` | **No** |
-| **Typography — title** | Source Code Regular 24pt, uppercase | Source Code Pro (`--ds-font-mono`) `1.05rem` (~16.8px), weight 700 | **No** |
-| **Typography — metrics** | Montserrat Light/Bold 16pt | Label `0.8rem` mono 700; value `1.4rem` display 700 | **No** |
+| **Colors — separator** | `0,75pt` `#8a8b87` | `0.75px solid #8a8b87` on `.ds-module-card__divider` | Yes |
+| **Spacing — padding** | `50px 20px 25px 20px` | `50px 20px 25px 20px` | Yes |
+| **Typography — title** | Source Code Regular 24pt, uppercase | Source Code Pro (`--ds-font-mono`) `24px`, weight 400, uppercase | Yes |
+| **Typography — metrics** | Montserrat Light/Bold 16pt | Label Montserrat 300 `16px`; value Montserrat 700 `16px` | Yes |
 | **Borders — radius** | Not specified | `var(--ds-radius-xs)` = `2px` | Unknown |
 | **Shadows** | Not specified | Hover: `0 16px 42px rgb(0 0 0 / 0.22)` | Extra |
-| **States — hover** | Not specified | Border → `--ds-color-teal`, `translateY(-2px)` | Extra |
-| **States — focus** | Not specified | Teal focus ring `rgb(108 224 199 / 0.24)` | Extra |
-| **Icons — size** | 180×180, color `#c1c1c1` | Story renders `<img>` at `110×110px` (`styles.css` L517–520) | **No** |
+| **States — hover** | Not specified | Border → `#ffffff`, `translateY(-2px)` (PDF palette, no teal) | Extra |
+| **States — focus** | Not specified | Focus ring `rgb(193 193 193 / 0.35)` (PDF `#c1c1c1`) | Extra |
+| **Icons — size** | 180×180, color `#c1c1c1` | `180×180px`; SVG assets use `#c1c1c1` fill | Yes |
 | **Sizing — min dimensions** | Not specified | `min-height: 260px`, `min-width: 260px` | N/A |
 | **Hierarchy** | Icon → title → separator → metrics | Same DOM order | Yes |
+| **Storybook canvas** | Dark UI | Background `#060606` | Yes |
 
-**Discrepancies**
+**Remaining differences**
 
-1. Top padding `10px` vs PDF `50px` — 40px less space above icon block.
-2. Title ~16.8px bold mono vs PDF 24pt Regular Source Code.
-3. Metric typography uses mono/display at ~12.8px / 22.4px vs PDF Montserrat 16pt.
-4. Module icons rendered at 110×110px, not PDF 180×180px.
-5. Hover/focus states use teal accent (`#6ce0c7`) not present in PDF module spec.
-6. Storybook canvas is light (`--ds-color-paper`); PDF modules sit on dark UI.
+1. Hover lift/shadow and focus ring are interaction affordances not drawn in the PDF (palette-aligned, no teal).
+2. `border-radius: 2px` and internal `gap: 20px` are unspecified in the PDF and preserved.
+3. Title `letter-spacing: 0.1em` is preserved; PDF does not state inter-letter spacing for module titles.
+4. `min-width` / `min-height: 260px` are implementation constraints, not PDF specs.
 
 ---
 
@@ -509,7 +509,7 @@ Shares `.ds-field` styles with TextField. PDF filtros spec: border `0,75pt #e6e6
 1. Catalog normalizes all icons to 40×40px preview (`Icons.stories.tsx` `iconImgStyles`), losing PDF size tiers (180/50/20).
 2. Card icons (20×20) displayed larger than PDF spec.
 3. `Notificaciones-50x50.svg` exists on disk but is not exported in `Icons/index.ts` or shown in catalog.
-4. ModuleCard stories render icons at 110×110, not 180×180.
+4. ModuleCard renders module icons at 180×180 (aligned with PDF); icon catalog still previews at 40×40.
 
 ---
 
@@ -562,8 +562,8 @@ Verified systematic differences between PDF and implementation:
 
 | Visual Fidelity | Storybook components |
 |:-------------:|:--------------------|
-| **High** | 0 |
-| **Medium** | 4 (ModuleCard, ChartCard shell, DonutChart when PDF colors used, Icons assets) |
+| **High** | 1 (ModuleCard) |
+| **Medium** | 3 (ChartCard shell, DonutChart when PDF colors used, Icons assets) |
 | **Low** | 15 |
 
 ---
@@ -574,9 +574,9 @@ Verified systematic differences between PDF and implementation:
 |-------|-------|
 | PDF pages used | 1–9, 12 (component specs); 6 (icons) |
 | Storybook titles audited | 17 |
-| Code modified | No |
+| Code modified | Yes (ModuleCard visual refinement 2026-07-03) |
 | Comparison basis | CSS values, TSX constants, story args/decorators only |
 
 ---
 
-*End of visual audit. Descriptive only — no code changes or recommendations.*
+*Visual audit. ModuleCard section updated after PDF fidelity pass (2026-07-03).*

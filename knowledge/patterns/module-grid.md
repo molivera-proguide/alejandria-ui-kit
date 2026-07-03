@@ -27,7 +27,7 @@ Full-width CSS grid:
 ```
 display: grid
 gap: 20
-grid-template-columns: repeat(auto-fit, minmax(240px, 1fr))
+grid-template-columns: repeat(auto-fit, minmax(260px, 1fr))
 width: 100%
 ```
 
@@ -45,7 +45,7 @@ Icons: Alejandria SVG assets via `<img src={Icons.*} />` from `packages/ui/src/I
 
 ## Composition rules
 
-- Use `auto-fit` + `minmax(240px, 1fr)` for responsive wrapping.
+- Use `auto-fit` + `minmax(260px, 1fr)` for responsive wrapping.
 - Keep cards uniform; do not group or feature a single module.
 - Supply module icons from the Alejandria icon set, not lucide-react.
 - Individual module stories (`Investigaciones`, `Ciberseguridad`, etc.) are single-card demos, not this pattern.

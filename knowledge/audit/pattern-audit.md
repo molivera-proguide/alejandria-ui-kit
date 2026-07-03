@@ -237,7 +237,7 @@ Module launcher hub: browse platform modules with icon, title, and key metrics p
 `ModuleCard` (×7), Alejandria module SVG icons via `<img src={Icons.*} />`
 
 **Layout**  
-`display: grid`, `gap: 20`, `grid-template-columns: repeat(auto-fit, minmax(240px, 1fr))`, full width.
+`display: grid`, `gap: 20`, `grid-template-columns: repeat(auto-fit, minmax(260px, 1fr))`, full width.
 
 **Visual hierarchy**  
 Uniform cards in responsive auto-fit grid; no featured module or grouping. Each card: icon (top) → title → divider → metric pairs.
