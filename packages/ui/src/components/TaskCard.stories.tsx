@@ -1,33 +1,46 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { TaskCard } from "./TaskCard";
 
+const canonicalTask = {
+  code: "#1232142342 - 3408473",
+  status: "En espera",
+  title: "Tareas investigativas",
+  description: "Resumen minimo e indispensable de la tarea a realizar.",
+  meta: [
+    "Subactividad",
+    "Causa Corion",
+    "Dependencia",
+    "Inicio 21/04/2022",
+    "Vencimiento 23/07/2022"
+  ]
+};
+
 const meta = {
   title: "Alejandria/TaskCard",
   component: TaskCard,
   parameters: {
-    layout: "centered"
+    layout: "centered",
+    backgrounds: {
+      default: "alejandria-dark",
+      values: [
+        { name: "alejandria-dark", value: "#060606" },
+        { name: "alejandria-paper", value: "#eef4f3" }
+      ]
+    }
   },
   argTypes: {
+    variant: {
+      control: "select",
+      options: ["default", "kanban"]
+    },
     tone: {
       control: "select",
       options: ["neutral", "success", "warning", "danger"]
-    },
-    progress: {
-      control: { type: "range", min: 0, max: 100, step: 1 }
     }
-  },
-  args: {
-    code: "#1232142342 - 3408473",
-    status: "En espera",
-    title: "Verificar zona costera",
-    description: "Cruce de datos satelitales y dependencia policial.",
-    meta: ["D+02", "Prioridad alta", "Sur"],
-    progress: 36,
-    tone: "danger"
   },
   decorators: [
     (Story) => (
-      <div style={{ minWidth: 360, padding: 32 }}>
+      <div style={{ padding: 32, width: "fit-content" }}>
         <Story />
       </div>
     )
@@ -37,46 +50,51 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Playground: Story = {};
-
-export const Tones: Story = {
+export const Default: Story = {
   render: () => (
-    <div style={{ display: "grid", gap: 14, gridTemplateColumns: "repeat(2, minmax(260px, 1fr))" }}>
-      <TaskCard
-        code="#1232142342 - 3408473"
-        status="En espera"
-        title="Verificar zona costera"
-        description="Cruce de datos satelitales y dependencia policial."
-        meta={["D+02", "Prioridad alta", "Sur"]}
-        progress={36}
-        tone="danger"
-      />
-      <TaskCard
-        code="#1232142342 - 3408474"
-        status="Asignada"
-        title="Evacuacion barrio sur"
-        description="Despacho de recursos con seguimiento visual en mapa."
-        meta={["Lote 1", "2 horas", "5 unidades"]}
-        progress={72}
-        tone="success"
-      />
-      <TaskCard
-        code="#1232142342 - 3408475"
-        status="Pendiente"
-        title="Analisis de evidencia"
-        description="Validacion de imagenes entrantes y reportes asociados."
-        meta={["IA", "Fotos", "Operador 08"]}
-        progress={44}
-        tone="warning"
-      />
-      <TaskCard
-        code="#1232142342 - 3408476"
-        status="Monitoreo"
-        title="Ciberseguridad"
-        description="Revision de sesiones y bloqueos sobre el perimetro."
-        meta={["Nodo 4", "Red interna", "Bajo"]}
-        progress={18}
-      />
+    <div
+      style={{
+        display: "grid",
+        gap: 14,
+        gridTemplateColumns: "repeat(2, minmax(0, 1fr))"
+      }}
+    >
+      <TaskCard {...canonicalTask} tone="danger" />
+      <TaskCard {...canonicalTask} tone="success" />
+      <TaskCard {...canonicalTask} tone="warning" />
+      <TaskCard {...canonicalTask} tone="neutral" />
+    </div>
+  )
+};
+
+export const Single: Story = {
+  args: {
+    ...canonicalTask,
+    tone: "danger"
+  }
+};
+
+export const Kanban: Story = {
+  args: {
+    variant: "kanban",
+    code: "#1232142342 - 3408473",
+    status: "En espera",
+    title: "Tareas investigativas",
+    meta: ["Subactividad", "Causa Corion"],
+    tone: "danger"
+  },
+  render: (args) => (
+    <div
+      style={{
+        display: "grid",
+        gap: 10,
+        gridTemplateColumns: "repeat(2, minmax(0, 1fr))"
+      }}
+    >
+      <TaskCard {...args} />
+      <TaskCard {...args} tone="success" status="Asignada" />
+      <TaskCard {...args} tone="warning" status="Pendiente" />
+      <TaskCard {...args} tone="neutral" status="Monitoreo" />
     </div>
   )
 };

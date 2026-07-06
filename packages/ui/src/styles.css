@@ -583,19 +583,15 @@
   }
 
   .ds-task {
-    background:
-      linear-gradient(145deg, rgb(255 255 255 / 0.04), transparent 42%),
-      var(--ds-color-surface);
-    border: 1px solid var(--ds-color-line);
+    background: #2a2927;
+    border: 0.75px solid #c1c1c1;
     border-radius: var(--ds-radius-xs);
-    box-shadow: var(--ds-shadow-sm);
-    color: var(--ds-color-ink);
+    box-sizing: border-box;
+    color: #ffffff;
     display: grid;
-    gap: 14px;
-    min-height: 170px;
     overflow: hidden;
-    padding: 16px;
     position: relative;
+    width: fit-content;
   }
 
   .ds-task::before {
@@ -607,6 +603,27 @@
     top: -18px;
     transform: rotate(45deg);
     width: 38px;
+  }
+
+  .ds-task--default {
+    gap: 16px;
+    max-width: 240px;
+    padding: 15px 10px;
+  }
+
+  .ds-task--kanban {
+    gap: 5px;
+    max-width: 280px;
+    padding: 10px;
+  }
+
+  .ds-task--kanban::before {
+    content: none;
+    display: none;
+  }
+
+  .ds-task--neutral {
+    --task-accent: #c1c1c1;
   }
 
   .ds-task--success {
@@ -622,78 +639,86 @@
   }
 
   .ds-task__header {
-    align-items: flex-start;
-    display: flex;
-    gap: 12px;
-    justify-content: space-between;
-  }
-
-  .ds-task__code,
-  .ds-task__meta,
-  .ds-task__progress-label {
-    font-family: var(--ds-font-mono);
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0;
-    text-transform: uppercase;
+    display: block;
   }
 
   .ds-task__code {
-    color: var(--ds-color-ink);
+    color: #ffffff;
+    display: block;
+    font-family: var(--ds-font-mono);
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 0.2;
+    text-transform: uppercase;
   }
 
   .ds-task__status {
-    color: var(--task-accent);
+    color: #ffffff;
+    display: block;
+    font-family: var(--ds-font-mono);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 0.2;
+    text-transform: uppercase;
   }
 
   .ds-task__title {
-    font-family: var(--ds-font-display);
-    font-size: 1.12rem;
-    font-weight: 700;
+    color: #8a8b87;
+    font-family: var(--ds-font-body);
+    font-size: 16px;
+    font-weight: 300;
     letter-spacing: 0;
-    line-height: 1.05;
-    margin: 0;
+    line-height: 1.2;
+    margin: 20px 0 0 0;
     text-transform: uppercase;
   }
 
   .ds-task__description {
-    color: var(--ds-color-ink-soft);
+    color: #8a8b87;
     font-family: var(--ds-font-body);
-    font-size: 0.9rem;
-    line-height: 1.35;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.45;
     margin: 0;
   }
 
   .ds-task__meta {
-    color: var(--ds-color-ink-muted);
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px 12px;
-  }
-
-  .ds-task__footer {
-    align-items: center;
+    color: #8a8b87;
     display: grid;
-    gap: 8px;
-    margin-top: auto;
+    font-family: var(--ds-font-mono);
+    font-size: 14px;
+    font-weight: 400;
+    gap: 4px;
+    letter-spacing: 0;
+    line-height: 1.35;
+    text-transform: uppercase;
   }
 
-  .ds-task__progress-track {
-    background: rgb(255 255 255 / 0.08);
-    height: 4px;
-    overflow: hidden;
+  .ds-task--default .ds-task__meta {
+    gap: 5px;
   }
 
-  .ds-task__progress-fill {
-    background: var(--task-accent);
-    box-shadow: 0 0 12px var(--task-accent);
-    display: block;
-    height: 100%;
-    width: var(--task-progress, 0%);
+  .ds-task--kanban .ds-task__title {
+    font-size: 18px;
+    line-height: 1.15;
   }
 
-  .ds-task__progress-label {
-    color: var(--ds-color-ink-soft);
+  .ds-task--kanban .ds-task__code {
+    font-size: 13px;
+    line-height: 1.25;
+  }
+
+  .ds-task--kanban .ds-task__status {
+    font-size: 16px;
+    line-height: 1.15;
+  }
+
+  .ds-task--kanban .ds-task__meta {
+    font-size: 13px;
+    gap: 2px;
+    line-height: 1.25;
   }
 
   .ds-progress {

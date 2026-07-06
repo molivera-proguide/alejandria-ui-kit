@@ -1,8 +1,19 @@
-import type { CSSProperties, HTMLAttributes } from "react";
+import type { HTMLAttributes } from "react";
 import { cn } from "../utils/cn";
 
+/**
+ * @description Unión de tonos semánticos disponibles para la prop `tone` de `TaskCard`
+ */
 export type TaskTone = "neutral" | "success" | "warning" | "danger";
 
+/**
+ * @description Variantes visuales de `TaskCard` definidas en PDF TARJETAS (p. 1)
+ */
+export type TaskVariant = "default" | "kanban";
+
+/**
+ * @description Props públicas del componente `TaskCard`
+ */
 export interface TaskCardProps extends HTMLAttributes<HTMLElement> {
   code: string;
   title: string;
@@ -11,47 +22,68 @@ export interface TaskCardProps extends HTMLAttributes<HTMLElement> {
   meta?: string[];
   progress?: number;
   tone?: TaskTone;
+  variant?: TaskVariant;
 }
 
+/**
+ * @description Presenta una tarea operativa según PDF TARJETAS (`default` completa o `kanban` compacta)
+ * @param {TaskCardProps} props - Propiedades de la tarjeta de tarea
+ * @returns {JSX.Element} Artículo semántico con la estructura fija de la tarjeta
+ */
 export function TaskCard({
   code,
   title,
   status = "En espera",
   description,
   meta = [],
-  progress = 0,
+  progress: _progress = 0,
   tone = "neutral",
+  variant = "default",
   className,
   style,
   ...props
 }: TaskCardProps) {
-  const clampedProgress = Math.max(0, Math.min(100, progress));
-  const progressStyle = {
-    ...style,
-    "--task-progress": `${clampedProgress}%`
-  } as CSSProperties;
+  const isKanban = variant === "kanban";
+  const kanbanMeta = meta.slice(0, 2);
 
   return (
-    <article className={cn("ds-task", `ds-task--${tone}`, className)} style={progressStyle} {...props}>
-      <header className="ds-task__header">
-        <span className="ds-task__code">{code}</span>
-        <span className="ds-task__status">{status}</span>
-      </header>
-      <h3 className="ds-task__title">{title}</h3>
-      {description ? <p className="ds-task__description">{description}</p> : null}
-      {meta.length ? (
-        <div className="ds-task__meta">
-          {meta.map((item) => (
-            <span key={item}>{item}</span>
-          ))}
-        </div>
-      ) : null}
-      <footer className="ds-task__footer">
-        <span className="ds-task__progress-track" aria-hidden="true">
-          <span className="ds-task__progress-fill" />
-        </span>
-        <span className="ds-task__progress-label">{clampedProgress}% avance</span>
-      </footer>
+    <article
+      className={cn("ds-task", `ds-task--${tone}`, `ds-task--${variant}`, className)}
+      style={style}
+      {...props}
+    >
+      {isKanban ? (
+        <>
+          <header className="ds-task__header">
+            <span className="ds-task__code">{code}</span>
+          </header>
+          <span className="ds-task__status">{status}</span>
+          <h3 className="ds-task__title">{title}</h3>
+          {kanbanMeta.length ? (
+            <div className="ds-task__meta">
+              {kanbanMeta.map((item) => (
+                <span key={item}>{item}</span>
+              ))}
+            </div>
+          ) : null}
+        </>
+      ) : (
+        <>
+          <header className="ds-task__header">
+            <span className="ds-task__code">{code}</span>
+          </header>
+          <span className="ds-task__status">{status}</span>
+          <h3 className="ds-task__title">{title}</h3>
+          {description ? <p className="ds-task__description">{description}</p> : null}
+          {meta.length ? (
+            <div className="ds-task__meta">
+              {meta.map((item) => (
+                <span key={item}>{item}</span>
+              ))}
+            </div>
+          ) : null}
+        </>
+      )}
     </article>
   );
 }
