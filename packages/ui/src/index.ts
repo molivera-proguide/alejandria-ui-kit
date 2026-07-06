@@ -16,4 +16,5 @@ export * from "./components/SelectField";
 export * from "./components/Switch";
 export * from "./components/TaskCard";
 export * from "./components/ModuleCard";
+export * from "./components/InvestigationCard";
 export * from "./components/TextField";

@@ -1,0 +1,31 @@
+---
+alwaysApply: true
+---
+
+When working on the Alejandria Design System, always begin by reading the project knowledge documents.
+
+Read these files before making any implementation decisions:
+
+- knowledge/agent-playbook.md
+- knowledge/design-principles.md
+- knowledge/design-system-rules.md
+- knowledge/anti-patterns.md
+
+These documents define:
+
+- workflow
+- design decision making
+- design system implementation rules
+- known implementation mistakes
+
+Follow them throughout the entire task.
+
+When implementing or refining a component:
+
+1. Read the component documentation.
+2. Read the canonical design reference.
+3. Apply the Design Principles.
+4. Apply the Design System Rules.
+5. Avoid the documented Anti-Patterns.
+
+These documents take precedence over implementation convenience.
