@@ -1,0 +1,134 @@
+.login-screen {
+  box-sizing: border-box;
+  min-height: 100vh;
+  padding: 64px 48px;
+  width: 100%;
+}
+
+.login-screen__variants {
+  align-items: start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 56px;
+}
+
+.login-card {
+  background: var(--ds-color-pdf-surface);
+  border: var(--ds-border-width-hair) solid var(--ds-color-pdf-line);
+  box-sizing: border-box;
+  color: var(--ds-color-white);
+  display: flex;
+  flex-direction: column;
+  height: 413px;
+  padding: var(--ds-space-5);
+  width: 413px;
+}
+
+.login-card__body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
+.login-card__body--pattern {
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card__body--credentials {
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-top: 25px;
+}
+
+.login-card__pattern {
+  display: grid;
+  gap: 40px;
+  grid-template-columns: repeat(3, 45px);
+  grid-template-rows: repeat(3, 45px);
+  justify-content: center;
+}
+
+.login-card__pattern-dot {
+  background: var(--ds-color-pdf-surface-warm);
+  border-radius: 50%;
+  display: block;
+  height: 45px;
+  width: 45px;
+}
+
+.login-card__fields {
+  display: grid;
+  gap: 35px;
+  width: 100%;
+}
+
+.login-card__field.ds-field {
+  gap: 0;
+}
+
+.login-card__field .ds-field__label-row {
+  display: none;
+}
+
+.login-card__field .ds-field__control {
+  background: var(--ds-color-pdf-surface-warm);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  min-height: 0;
+}
+
+.login-card__field .ds-field__control:focus-within {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.login-card__field .ds-field__input {
+  color: var(--ds-color-white);
+  font-family: var(--ds-font-mono);
+  font-size: 20px;
+  font-weight: var(--ds-font-weight-light);
+  line-height: 1.2;
+  min-height: 0;
+  padding: 10px;
+  text-transform: uppercase;
+}
+
+.login-card__field .ds-field__input::placeholder {
+  color: var(--ds-color-white);
+  opacity: 1;
+}
+
+.login-card__field .ds-field__input:focus-visible {
+  box-shadow: none;
+}
+
+.login-card__submit.ds-button {
+  align-self: center;
+  background: var(--ds-color-pdf-action);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  color: var(--ds-color-white);
+  flex-shrink: 0;
+  font-family: var(--ds-font-body);
+  font-size: 18px;
+  font-weight: var(--ds-font-weight-bold);
+  letter-spacing: var(--ds-tracking-none);
+  min-height: auto;
+  padding: 10px 120px;
+  text-transform: uppercase;
+  transform: none;
+}
+
+.login-card__submit.ds-button:hover:not(:disabled) {
+  background: var(--ds-color-pdf-action-hover);
+  box-shadow: none;
+  transform: none;
+}
+
+.login-card__submit.ds-button:focus-visible {
+  box-shadow: none;
+}
