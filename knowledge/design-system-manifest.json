@@ -212,8 +212,30 @@
       "source": "packages/ui/src/components/Components.stories.tsx"
     }
   ],
-  "tokens": [],
-  "guidelines": [],
+  "tokens": [
+    {
+      "id": "tokens-readme",
+      "name": "Token Layer Overview",
+      "path": "knowledge/tokens/README.md"
+    },
+    {
+      "id": "token-plan",
+      "name": "Token Plan",
+      "path": "knowledge/tokens/token-plan.md"
+    },
+    {
+      "id": "migration-map",
+      "name": "Migration Map",
+      "path": "knowledge/tokens/migration-map.md"
+    }
+  ],
+  "guidelines": [
+    {
+      "id": "design-language",
+      "name": "Design Language",
+      "path": "knowledge/guidelines/design-language.md"
+    }
+  ],
   "specs": [
     {
       "id": "spec-readme",
