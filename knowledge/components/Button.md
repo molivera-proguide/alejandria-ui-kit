@@ -23,6 +23,7 @@ keywords:
   - secondary
   - ghost
   - danger
+  - pdf
   - loading
   - iconLeft
   - iconRight
@@ -156,7 +157,7 @@ Tipos exportados:
 | Prop | Type | Default | Required | Description |
 |------|------|----------|----------|-------------|
 | `children` | `ReactNode` | — | no | Texto del botón. Renderizado en `<span class="ds-button__label">`. Mayúsculas vía CSS (`text-transform: uppercase`). |
-| `variant` | `ButtonVariant` | `"primary"` | no | Variante visual. Aplica clase `ds-button--{variant}`. Valores: `"primary"`, `"secondary"`, `"ghost"`, `"danger"`. |
+| `variant` | `ButtonVariant` | `"primary"` | no | Variante visual. Aplica clase `ds-button--{variant}`. Valores: `"primary"`, `"secondary"`, `"ghost"`, `"danger"`, `"pdf"`. |
 | `size` | `ButtonSize` | `"md"` | no | Tamaño del botón. Aplica clase `ds-button--{size}`. Valores: `"sm"`, `"md"`, `"lg"`. |
 | `fullWidth` | `boolean` | `false` | no | Cuando es `true`, aplica clase `ds-button--full` (`width: 100%`). |
 | `loading` | `boolean` | `false` | no | Estado de carga. Deshabilita el botón, muestra spinner y oculta iconos. Atributo `data-loading="true"`. |
@@ -176,6 +177,7 @@ Tipos exportados:
 | `"secondary"` | Acción secundaria. Fondo semitransparente, borde de línea fuerte. Clase `ds-button--secondary`. |
 | `"ghost"` | Acción terciaria. Fondo transparente, texto suave. Clase `ds-button--ghost`. |
 | `"danger"` | Acción destructiva. Gradiente rojo, texto blanco. Clase `ds-button--danger`. |
+| `"pdf"` | Acción de contexto PDF/reporting. Relleno gris `#494949`, texto blanco. Clase `ds-button--pdf`. |
 
 ### ButtonSize
 
@@ -201,6 +203,7 @@ Cuatro variantes públicas implementadas en CSS mediante modificadores BEM. Toda
 | `secondary` | Fondo `rgb(255 255 255 / 0.05)`, borde `var(--ds-color-line-strong)`, texto `var(--ds-color-ink)`. Hover: fondo más claro, borde `var(--ds-color-teal)`. |
 | `ghost` | Fondo transparente, texto `var(--ds-color-ink-soft)`. Hover: fondo `rgb(255 255 255 / 0.06)`, texto `var(--ds-color-ink)`. |
 | `danger` | Gradiente `linear-gradient(180deg, #ff696f, #bd1f2a)`, borde rojo semitransparente, texto `#ffffff`. Hover: gradiente más claro y sombra roja. |
+| `pdf` | Relleno gris plano `var(--ds-color-pdf-action)` (`#494949`), texto `var(--ds-color-white)`. Hover: `var(--ds-color-pdf-action-hover)` (`#5a5a5a`). Acción principal en pantallas de **contexto PDF/reporting** (login, fichas, modales), no en chrome de consola teal. Promovida desde overrides repetidos en los patrones Login y DetailSheet (Rule 03). |
 
 Tres tamaños (`sm`, `md`, `lg`) y el modificador `fullWidth` (`ds-button--full`) alteran dimensiones sin cambiar la paleta de la variante.
 
@@ -356,7 +359,10 @@ import { Button } from "@alejandria/ui-kit";
 </Button>
 <Button variant="ghost">Ver log</Button>
 <Button variant="danger">Cancelar</Button>
+<Button variant="pdf">Ingresar</Button>
 ```
+
+En pantallas de contexto PDF (login, fichas, modales), usar `variant="pdf"` en lugar de sobrescribir el estilo del botón con CSS local del patrón.
 
 ## Composition
 
@@ -452,6 +458,9 @@ Only include tokens directly consumed by the component.
 | `--ds-color-ink` | color | `color` de `.ds-button--secondary`; `color` en hover de `.ds-button--ghost` |
 | `--ds-color-teal` | color | `border-color` en hover de `.ds-button--secondary` |
 | `--ds-color-ink-soft` | color | `color` de `.ds-button--ghost` |
+| `--ds-color-pdf-action` | color | `background` de `.ds-button--pdf` (`#494949`) |
+| `--ds-color-pdf-action-hover` | color | `background` en hover de `.ds-button--pdf` (`#5a5a5a`) |
+| `--ds-color-white` | color | `color` (texto) de `.ds-button--pdf` |
 
 Nota: `.ds-button--primary` y `.ds-button--danger` usan gradientes y colores hardcodeados (`#82f3d8`, `#04110f`, `#ff696f`, `#bd1f2a`, etc.) además de tokens. El atributo `data-loading` no tiene reglas CSS asociadas; el estado de carga se refleja solo vía `disabled` y el spinner.
 

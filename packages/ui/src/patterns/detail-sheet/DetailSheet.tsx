@@ -132,7 +132,12 @@ export function DetailSheet({ content }: DetailSheetProps) {
             <h2 className="detail-sheet__media-title">{content.mediaTitle}</h2>
             <div className="detail-sheet__media-metrics">
               {content.mediaMetrics.map((metric) => (
-                <MetricCard key={metric.label} label={metric.label} value={metric.value} />
+                <MetricCard
+                  key={metric.label}
+                  label={metric.label}
+                  value={metric.value}
+                  appearance="ficha"
+                />
               ))}
             </div>
             <div className="detail-sheet__media-preview" aria-label="Vista previa multimedia">
@@ -158,6 +163,7 @@ export function DetailSheet({ content }: DetailSheetProps) {
                 label={metric.label}
                 value={metric.value}
                 change={metric.change}
+                appearance="ficha"
               />
             ))}
           </section>
@@ -180,6 +186,7 @@ export function DetailSheet({ content }: DetailSheetProps) {
             <Button
               key={action.label}
               type="button"
+              variant="pdf"
               className={`detail-sheet__action-button detail-sheet__action-button--${action.variant}`}
             >
               {action.label}

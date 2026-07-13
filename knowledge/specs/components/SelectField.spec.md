@@ -38,8 +38,10 @@
 |-------|--------|--------|-------------------------|
 | .ds-field__control--select | grid columns for chevron | styles.css:955 | yes |
 | .ds-field--invalid | danger border | styles.css:441 | yes |
+| .ds-field--pdf | PDF-context skin (`appearance="pdf"`), shared with TextField: control bg `--ds-color-pdf-surface-warm` (#2a2927), border `--ds-color-pdf-line` (#c1c1c1); select `--ds-font-mono` + `--ds-font-weight-light` | styles.css:582; select styles.css:587–588 | yes |
 | :disabled on select | disabled appearance | knowledge/components/SelectField.md | no |
 
 ## Deltas & open questions (facts only — DO NOT resolve)
 - PDF page not cited.
 - No CSS for `.ds-field__select:disabled` / control disabled (knowledge/components/SelectField.md).
+- `appearance="pdf"` (`.ds-field--pdf`) added by the PDF-variant promotion (Rule 03); the modifier is shared with TextField via `.ds-field`.

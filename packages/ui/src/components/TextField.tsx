@@ -2,14 +2,28 @@ import { forwardRef, useId } from "react";
 import type { InputHTMLAttributes, ReactNode } from "react";
 import { cn } from "../utils/cn";
 
+/**
+ * @description Apariencia visual contextual del campo de texto
+ */
+export type TextFieldAppearance = "default" | "pdf";
+
+/**
+ * @description Propiedades del componente TextField
+ */
 export interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   hint?: string;
   error?: string;
   iconLeft?: ReactNode;
   action?: ReactNode;
+  appearance?: TextFieldAppearance;
 }
 
+/**
+ * @description Campo de texto con etiqueta, pista y estado de error
+ * @param {TextFieldProps} props - Propiedades del campo
+ * @returns {JSX.Element} Campo de texto del Design System
+ */
 export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
   (
     {
@@ -19,6 +33,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
       error,
       iconLeft,
       action,
+      appearance = "default",
       className,
       "aria-describedby": ariaDescribedBy,
       ...props
@@ -32,7 +47,14 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
     const describedBy = [ariaDescribedBy, hintId, errorId].filter(Boolean).join(" ") || undefined;
 
     return (
-      <div className={cn("ds-field", error && "ds-field--invalid", className)}>
+      <div
+        className={cn(
+          "ds-field",
+          appearance === "pdf" && "ds-field--pdf",
+          error && "ds-field--invalid",
+          className
+        )}
+      >
         <div className="ds-field__label-row">
           <label className="ds-field__label" htmlFor={fieldId}>
             {label}

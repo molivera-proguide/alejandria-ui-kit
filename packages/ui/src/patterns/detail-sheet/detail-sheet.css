@@ -237,39 +237,6 @@
   display: grid;
 }
 
-.detail-sheet .ds-metric {
-  background: rgb(6 6 6 / 0.2);
-  border: 0.75px solid #e6e6e6;
-  gap: 8px;
-  min-height: 120px;
-  padding: 10px;
-}
-
-.detail-sheet .ds-metric__label {
-  color: #8a8b87;
-  font-family: var(--ds-font-body);
-  font-size: 16px;
-  font-weight: 200;
-  letter-spacing: 0.18em;
-  line-height: 1.2;
-}
-
-.detail-sheet .ds-metric__value {
-  color: #ffffff;
-  font-family: var(--ds-font-body);
-  font-size: 50px;
-  font-weight: 700;
-  line-height: 0.95;
-}
-
-.detail-sheet .ds-metric__change {
-  color: #ffffff;
-  font-family: var(--ds-font-body);
-  font-size: 16px;
-  font-weight: 200;
-  line-height: 1.2;
-}
-
 .detail-sheet .ds-chart-card {
   background: rgb(6 6 6 / 0.2);
   border: 0.75px solid #e6e6e6;
@@ -326,7 +293,6 @@
 }
 
 .detail-sheet__action-button.ds-button {
-  background: #494949;
   border: 0;
   border-radius: 0;
   box-shadow: none;
@@ -343,17 +309,14 @@
   transform: none;
 }
 
-.detail-sheet__action-button--a.ds-button {
+.detail-sheet__action-button--a.ds-button,
+.detail-sheet__action-button--a.ds-button:hover:not(:disabled) {
   background: #c1c1c1;
   color: #ffffff;
 }
 
-.detail-sheet__action-button--b.ds-button {
+.detail-sheet__action-button--b.ds-button,
+.detail-sheet__action-button--b.ds-button:hover:not(:disabled) {
   background: #8a8b87;
-  color: #ffffff;
-}
-
-.detail-sheet__action-button--c.ds-button {
-  background: #494949;
   color: #ffffff;
 }

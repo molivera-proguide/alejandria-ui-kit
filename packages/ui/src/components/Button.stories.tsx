@@ -11,7 +11,7 @@ const meta = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["primary", "secondary", "ghost", "danger"]
+      options: ["primary", "secondary", "ghost", "danger", "pdf"]
     },
     size: {
       control: "select",
@@ -51,8 +51,23 @@ export const Variants: Story = {
       </Button>
       <Button variant="ghost">Ver log</Button>
       <Button variant="danger">Cancelar</Button>
+      <Button variant="pdf">Ingresar</Button>
     </div>
   )
+};
+
+export const Pdf: Story = {
+  args: {
+    children: "Ingresar",
+    variant: "pdf"
+  },
+  decorators: [
+    (Story) => (
+      <div style={{ background: "#060606", minWidth: 360, padding: 32 }}>
+        <Story />
+      </div>
+    )
+  ]
 };
 
 export const Sizes: Story = {

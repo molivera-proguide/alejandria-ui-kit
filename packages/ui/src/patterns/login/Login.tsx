@@ -68,12 +68,14 @@ function LoginCredentialsCard() {
       <div className="login-card__body login-card__body--credentials">
         <div className="login-card__fields">
           <TextField
+            appearance="pdf"
             className="login-card__field"
             label="USUARIO"
             placeholder="USUARIO"
             autoComplete="username"
           />
           <TextField
+            appearance="pdf"
             className="login-card__field"
             label="CONTRASEÑA"
             placeholder="CONTRASEÑA"
@@ -88,12 +90,12 @@ function LoginCredentialsCard() {
 }
 
 /**
- * @description Botón de envío del login con estilo contextual PDF
- * @returns {JSX.Element} Control Button del Design System con overrides de patrón
+ * @description Botón de envío del login con variante PDF del Design System
+ * @returns {JSX.Element} Control Button del Design System
  */
 function LoginSubmitButton() {
   return (
-    <Button type="button" className="login-card__submit">
+    <Button type="button" variant="pdf" className="login-card__submit">
       INGRESAR
     </Button>
   );

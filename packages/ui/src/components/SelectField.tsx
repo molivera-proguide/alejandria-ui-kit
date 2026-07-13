@@ -2,21 +2,52 @@ import { forwardRef, useId } from "react";
 import type { SelectHTMLAttributes } from "react";
 import { cn } from "../utils/cn";
 
+/**
+ * @description Opción seleccionable de un SelectField
+ */
 export interface SelectOption {
   label: string;
   value: string;
   disabled?: boolean;
 }
 
+/**
+ * @description Apariencia visual contextual del campo de selección
+ */
+export type SelectFieldAppearance = "default" | "pdf";
+
+/**
+ * @description Propiedades del componente SelectField
+ */
 export interface SelectFieldProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label: string;
   hint?: string;
   error?: string;
   options?: SelectOption[];
+  appearance?: SelectFieldAppearance;
 }
 
+/**
+ * @description Campo de selección con etiqueta, pista y estado de error
+ * @param {SelectFieldProps} props - Propiedades del campo
+ * @returns {JSX.Element} Campo de selección del Design System
+ */
 export const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
-  ({ id, label, hint, error, options, children, className, "aria-describedby": ariaDescribedBy, ...props }, ref) => {
+  (
+    {
+      id,
+      label,
+      hint,
+      error,
+      options,
+      appearance = "default",
+      children,
+      className,
+      "aria-describedby": ariaDescribedBy,
+      ...props
+    },
+    ref
+  ) => {
     const generatedId = useId();
     const fieldId = id ?? generatedId;
     const hintId = hint ? `${fieldId}-hint` : undefined;
@@ -24,7 +55,14 @@ export const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
     const describedBy = [ariaDescribedBy, hintId, errorId].filter(Boolean).join(" ") || undefined;
 
     return (
-      <div className={cn("ds-field", error && "ds-field--invalid", className)}>
+      <div
+        className={cn(
+          "ds-field",
+          appearance === "pdf" && "ds-field--pdf",
+          error && "ds-field--invalid",
+          className
+        )}
+      >
         <div className="ds-field__label-row">
           <label className="ds-field__label" htmlFor={fieldId}>
             {label}

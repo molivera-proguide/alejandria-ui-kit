@@ -2,9 +2,19 @@ import { forwardRef } from "react";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "../utils/cn";
 
-export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
+/**
+ * @description Variante visual del botón del Design System
+ */
+export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger" | "pdf";
+
+/**
+ * @description Tamaño del botón
+ */
 export type ButtonSize = "sm" | "md" | "lg";
 
+/**
+ * @description Propiedades del componente Button
+ */
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
@@ -14,6 +24,11 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   iconRight?: ReactNode;
 }
 
+/**
+ * @description Botón de acción del Design System con variantes semánticas y contextuales
+ * @param {ButtonProps} props - Propiedades del botón
+ * @returns {JSX.Element} Elemento button con clases ds-button
+ */
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {

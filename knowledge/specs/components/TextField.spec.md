@@ -48,8 +48,11 @@
 | Class | Effect | Source | Backed by CSS? (yes/no) |
 |-------|--------|--------|-------------------------|
 | .ds-field--invalid | danger border on control | styles.css:441 | yes |
+| .ds-field--pdf | PDF-context skin (`appearance="pdf"`): control bg `--ds-color-pdf-surface-warm` (#2a2927), border `--ds-color-pdf-line` (#c1c1c1); input `--ds-font-mono` + `--ds-font-weight-light`, `font-size: 20px` | styles.css:582; input styles.css:587–588 | yes |
 | :disabled (field) | disabled appearance | knowledge/components/TextField.md | no |
 
 ## Deltas & open questions (facts only — DO NOT resolve)
 - PDF page not cited.
 - Disabled state has no dedicated CSS (knowledge/components/TextField.md).
+- `appearance="pdf"` (`.ds-field--pdf`) added by the PDF-variant promotion (Rule 03); shared with SelectField. Its `font-size: 20px` is a flagged literal — no type-scale token exists yet (design-reference p.6: "Input Source Code Light 20pt").
+- Pre-existing line citations predate the M2b token migration; the `.ds-field--pdf` citations (582/587–588) are current.

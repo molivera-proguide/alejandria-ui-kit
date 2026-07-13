@@ -73,7 +73,6 @@
 }
 
 .login-card__field .ds-field__control {
-  background: var(--ds-color-pdf-surface-warm);
   border: 0;
   border-radius: 0;
   box-shadow: none;
@@ -86,19 +85,9 @@
 }
 
 .login-card__field .ds-field__input {
-  color: var(--ds-color-white);
-  font-family: var(--ds-font-mono);
-  font-size: 20px;
-  font-weight: var(--ds-font-weight-light);
   line-height: 1.2;
   min-height: 0;
-  padding: 10px;
   text-transform: uppercase;
-}
-
-.login-card__field .ds-field__input::placeholder {
-  color: var(--ds-color-white);
-  opacity: 1;
 }
 
 .login-card__field .ds-field__input:focus-visible {
@@ -107,11 +96,9 @@
 
 .login-card__submit.ds-button {
   align-self: center;
-  background: var(--ds-color-pdf-action);
   border: 0;
   border-radius: 0;
   box-shadow: none;
-  color: var(--ds-color-white);
   flex-shrink: 0;
   font-family: var(--ds-font-body);
   font-size: 18px;
@@ -124,7 +111,6 @@
 }
 
 .login-card__submit.ds-button:hover:not(:disabled) {
-  background: var(--ds-color-pdf-action-hover);
   box-shadow: none;
   transform: none;
 }

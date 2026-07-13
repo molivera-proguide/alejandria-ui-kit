@@ -18,13 +18,18 @@ const meta = {
     tone: {
       control: "select",
       options: ["neutral", "good", "watch", "critical"]
+    },
+    appearance: {
+      control: "select",
+      options: ["reporting", "ficha"]
     }
   },
   args: {
     label: "Riesgo operativo",
     value: "87%",
     change: "critico",
-    tone: "critical"
+    tone: "critical",
+    appearance: "reporting"
   },
   decorators: [
     (Story) => (
@@ -54,6 +59,59 @@ export const Tones: Story = {
       <MetricCard label="Unidades activas" value="50" change="en campo" tone="good" />
       <MetricCard label="Alertas abiertas" value="23" change="7 sin leer" tone="watch" />
       <MetricCard label="Nodos enlazados" value="15" change="red viva" tone="neutral" />
+    </div>
+  )
+};
+
+export const Scales: Story = {
+  name: "Reporting vs Ficha",
+  render: () => (
+    <div
+      style={{
+        display: "grid",
+        gap: 24,
+        gridTemplateColumns: "repeat(2, minmax(220px, 1fr))",
+        width: "100%"
+      }}
+    >
+      <div style={{ display: "grid", gap: 8 }}>
+        <span
+          style={{
+            color: "#8a8b87",
+            fontFamily: "var(--ds-font-mono)",
+            fontSize: 12,
+            letterSpacing: "0.2em",
+            textTransform: "uppercase"
+          }}
+        >
+          Reporting
+        </span>
+        <MetricCard
+          label="Hectopascales"
+          value="1013"
+          change="PRECIPITACIONES"
+          appearance="reporting"
+        />
+      </div>
+      <div style={{ display: "grid", gap: 8 }}>
+        <span
+          style={{
+            color: "#8a8b87",
+            fontFamily: "var(--ds-font-mono)",
+            fontSize: 12,
+            letterSpacing: "0.2em",
+            textTransform: "uppercase"
+          }}
+        >
+          En ficha
+        </span>
+        <MetricCard
+          label="Hectopascales"
+          value="1013"
+          change="PRECIPITACIONES"
+          appearance="ficha"
+        />
+      </div>
     </div>
   )
 };

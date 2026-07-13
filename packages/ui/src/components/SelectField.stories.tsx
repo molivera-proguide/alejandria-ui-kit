@@ -18,7 +18,14 @@ const meta = {
     label: "Region",
     options: countryOptions,
     defaultValue: "country",
-    hint: "Filtro de alcance operativo."
+    hint: "Filtro de alcance operativo.",
+    appearance: "default"
+  },
+  argTypes: {
+    appearance: {
+      control: "select",
+      options: ["default", "pdf"]
+    }
   },
   decorators: [
     (Story) => (
@@ -62,4 +69,19 @@ export const CompactFilters: Story = {
       />
     </div>
   )
+};
+
+export const PdfAppearance: Story = {
+  args: {
+    appearance: "pdf",
+    label: "Region",
+    hint: undefined
+  },
+  decorators: [
+    (Story) => (
+      <div style={{ background: "#060606", minWidth: 420, padding: 32 }}>
+        <Story />
+      </div>
+    )
+  ]
 };

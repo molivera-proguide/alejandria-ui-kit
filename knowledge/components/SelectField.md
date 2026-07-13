@@ -24,6 +24,8 @@ keywords:
   - hint
   - error
   - options
+  - appearance
+  - pdf
   - SelectOption
   - SelectFieldProps
 tags:
@@ -166,6 +168,7 @@ Tipos exportados:
 | `id` | `string` | generado con `useId()` | no | Identificador del `<select>`. Si se omite, el componente genera uno estable. También base para ids de hint y error. |
 | `className` | `string` | — | no | Clases adicionales fusionadas en el contenedor raíz `div.ds-field`, no en el `<select>`. |
 | `aria-describedby` | `string` | — | no | Id(s) adicionales referenciados por el select. Fusionados con ids de `hint` y `error` en `aria-describedby`. |
+| `appearance` | `"default" \| "pdf"` | `"default"` | no | Skin de apariencia. `"pdf"` aplica `ds-field--pdf` (contexto PDF/reporting: fondo `#2a2927`, borde `#c1c1c1`, Source Code Light). `"default"` conserva la apariencia de consola. |
 | `disabled` | `boolean` | — | no | Atributo nativo `disabled` del `<select>`. Demostrado en story `Disabled`. Sin estilos dedicados en `.ds-field`. |
 | `value` | `string \| number \| readonly string[]` | — | no | Valor controlado del select (atributo nativo). |
 | `defaultValue` | `string \| number \| readonly string[]` | — | no | Valor inicial no controlado del select (atributo nativo). Demos: `"country"`, `"south"`, `"all"`. |
@@ -202,6 +205,10 @@ Describe every public visual variant.
 | Invalid | Clase modificadora `ds-field--invalid` cuando `error` es truthy; borde del control en `--ds-color-danger`. |
 
 Modificadores opcionales vía props (no variantes nombradas): presencia de `hint`, `error` y estado `disabled` nativo.
+
+## Appearance PDF
+
+La prop `appearance="pdf"` aplica la clase modificadora `ds-field--pdf` para el **contexto PDF/reporting**: fondo `var(--ds-color-pdf-surface-warm)` (`#2a2927`), borde `var(--ds-color-pdf-line)` (`#c1c1c1`) y tipografía Source Code Light (`var(--ds-font-mono)` + `var(--ds-font-weight-light)`). El valor por defecto `"default"` conserva la apariencia de consola sin cambios. Compartida con `TextField` vía la clase `ds-field--pdf`; en pantallas de contexto PDF usar `appearance="pdf"` en lugar de sobrescribir el campo con CSS local del patrón (Rule 03).
 
 ---
 
@@ -362,7 +369,7 @@ import { SelectField } from "@alejandria/ui-kit";
 
 ## Variant
 
-`SelectField` no expone prop `variant`. El estado inválido se controla con `error`:
+`SelectField` no expone prop `variant`, pero sí `appearance` (`"default" | "pdf"`, skin de contexto PDF compartido con `TextField`). El estado inválido se controla con `error`:
 
 ```tsx
 import { SelectField } from "@alejandria/ui-kit";
@@ -484,6 +491,9 @@ Only include tokens directly consumed by the component.
 | `--ds-font-mono` | typography | `font-family` de label, select, hint y error |
 | `--ds-radius-sm` | radius | `border-radius` de `.ds-field__control` |
 | `--ds-focus-ring` | shadow | `box-shadow` en `.ds-field__control:focus-within` |
+| `--ds-color-pdf-surface-warm` | color | `background` de `.ds-field--pdf .ds-field__control` (solo `appearance="pdf"`) |
+| `--ds-color-pdf-line` | color | `border-color` de `.ds-field--pdf .ds-field__control` (solo `appearance="pdf"`) |
+| `--ds-font-weight-light` | typography | `font-weight` del select en `.ds-field--pdf` (solo `appearance="pdf"`) |
 
 Nota: el fondo de `.ds-field__control` (`rgb(0 0 0 / 0.34)`) está hardcodeado; no usa token con nombre. Las clases compartidas `.ds-field`, `.ds-field__label`, `.ds-field__hint` y `.ds-field__error` también las consume `TextField`.
 

@@ -27,13 +27,17 @@ keywords:
   - resumen
   - tone
   - MetricTone
+  - appearance
+  - MetricAppearance
+  - reporting
+  - ficha
 tags:
   - data-display
   - cards
   - presentational
   - molecule
 
-last_reviewed: 2026-07-03
+last_reviewed: 2026-07-13
 ---
 
 # MetricCard
@@ -46,7 +50,7 @@ Describe:
 
 - **Responsabilidad principal:** mostrar un KPI puntual (p. ej. riesgo operativo, unidades activas, alertas abiertas) en una tarjeta compacta con jerarquía visual fija.
 - **Problema que resuelve:** unificar la presentación de métricas de resumen en filas de dashboard sin acoplar formato numérico, cálculo de tendencias ni navegación.
-- **Alcance:** componente presentacional basado en `<div>`; el consumidor provee strings preformateados para `label`, `value` y `change`, y opcionalmente un `tone` semántico.
+- **Alcance:** componente presentacional basado en `<div>`; el consumidor provee strings preformateados para `label`, `value` y `change`, y opcionalmente un `tone` semántico y una `appearance` de escala (reporting vs ficha).
 
 Exclude:
 
@@ -67,7 +71,8 @@ Documenta los comportamientos públicos en los que el consumidor puede confiar.
 - `label` y `value` obligatorios en la firma de props; renderizados siempre en el DOM.
 - `change` renderizado en `<span class="ds-metric__change">` solo cuando su valor es truthy.
 - `tone` por defecto `"neutral"`; la clase modificadora `ds-metric--{tone}` se aplica en la raíz.
-- Fusión de `className` externa con `ds-metric` y el modificador de tono mediante `cn()`.
+- `appearance` por defecto `"reporting"`; cuando es `"ficha"`, aplica además `ds-metric--ficha` en la raíz (composable con `tone`).
+- Fusión de `className` externa con `ds-metric`, el modificador de tono y el de apariencia mediante `cn()`.
 - Repaso de atributos nativos de `HTMLAttributes<HTMLDivElement>` al `<div>` raíz vía `...props` (`id`, `style`, `data-*`, `aria-*`, etc.).
 
 ## This component never
@@ -79,6 +84,7 @@ Documenta los comportamientos públicos en los que el consumidor puede confiar.
 - Aplica estilos responsivos propios (sin media queries en `.ds-metric`).
 - Define roles ARIA, etiquetas accesibles ni manejo de teclado propios.
 - Diferencia visualmente los tonos `good` ni `watch` (sin color PDF definido). `critical` colorea el valor en `#ff0404`; `neutral` usa valor `#ffffff`.
+- Inventa tokens tipográficos nuevos para la escala ficha; el valor `52px` queda como literal marcado (`/* TODO token */`).
 
 ---
 
@@ -102,6 +108,7 @@ siempre seguir estas reglas.
 - Asumir que `tone="good"` o `tone="watch"` alteran el color del valor (solo `critical` aplica `#ff0404` al valor).
 - Anidar otro `MetricCard` como hijo (no hay slot `children`).
 - Confiar en formato automático de números, fechas ni tendencias.
+- En pantallas densas / ficha, sobrescribir el tamaño de la métrica con CSS local del patrón en lugar de usar `appearance="ficha"`.
 
 ## Recommendations
 
@@ -109,6 +116,7 @@ siempre seguir estas reglas.
 - Usar `key={metric.label}` al mapear listas, como en `apps/web/src/App.tsx`.
 - Envolver la fila de métricas en `<section aria-label="...">` cuando el grupo requiera región semántica; `MetricCard` no la provee.
 - Reservar `change` para contexto breve del valor (p. ej. `"critico"`, `"en campo"`, `"7 sin leer"`).
+- Usar `appearance="reporting"` (o omitir la prop) en filas de dashboard / reporting; usar `appearance="ficha"` dentro de layouts densos tipo DetailSheet / Fichas.
 
 ---
 
@@ -131,7 +139,8 @@ Solo documenta la API pública.
 import {
   MetricCard,
   type MetricCardProps,
-  type MetricTone
+  type MetricTone,
+  type MetricAppearance
 } from "@alejandria/ui-kit";
 ```
 
@@ -140,6 +149,7 @@ Tipos exportados:
 - `MetricCard` — componente funcional.
 - `MetricCardProps` — props del componente.
 - `MetricTone` — unión de tonos semánticos para la prop `tone`.
+- `MetricAppearance` — unión de escalas visuales para la prop `appearance`.
 
 ---
 
@@ -150,8 +160,9 @@ Tipos exportados:
 | `label` | `string` | — | sí | Etiqueta de la métrica. Renderizada en `<span class="ds-metric__label">` dentro de `.ds-metric__topline`. Mayúsculas vía CSS (`text-transform: uppercase`). |
 | `value` | `string` | — | sí | Valor principal de la métrica. Renderizado en `<strong class="ds-metric__value">`. |
 | `change` | `string` | — | no | Texto de referencia/contexto. Renderizado en `<span class="ds-metric__change">` solo si es truthy. Estilo Montserrat Extralight 16px `#ffffff` (sin `text-transform`). |
-| `tone` | `MetricTone` | `"neutral"` | no | Tono semántico. Aplica clase `ds-metric--{tone}` en la raíz. Solo `critical` cambia el color del valor a `#ff0404`. |
-| `className` | `string` | — | no | Clases adicionales fusionadas con `ds-metric` y el modificador de tono en el `<div>` raíz. |
+| `tone` | `MetricTone` | `"neutral"` | no | Tono semántico. Aplica clase `ds-metric--{tone}` en la raíz. Solo `critical` cambia el color del valor a `#ff0404`. Composable con `appearance`. |
+| `appearance` | `MetricAppearance` | `"reporting"` | no | Escala visual. `"reporting"` conserva la métrica grande de dashboard. `"ficha"` aplica `ds-metric--ficha` (escala compacta PDF MÉTRICAS «En ficha»). |
+| `className` | `string` | — | no | Clases adicionales fusionadas con `ds-metric` y los modificadores de tono/apariencia en el `<div>` raíz. |
 | `...props` | `HTMLAttributes<HTMLDivElement>` | — | no | Atributos nativos del `<div>` raíz (`id`, `style`, `data-*`, `aria-*`, etc.). |
 
 ### MetricTone
@@ -162,6 +173,13 @@ Tipos exportados:
 | `"good"` | Clase `ds-metric--good`. Sin acento de color en PDF; valor permanece `#ffffff`. |
 | `"watch"` | Clase `ds-metric--watch`. Sin acento de color en PDF; valor permanece `#ffffff`. |
 | `"critical"` | Clase `ds-metric--critical`. Valor en `#ff0404` (PDF MÉTRICAS). |
+
+### MetricAppearance
+
+| Value | Description |
+|-------|-------------|
+| `"reporting"` | Escala por defecto (dashboard / reporting). Valor 84px, título Source Code Bold, fondo `#060606` 20%. Sin clase modificadora adicional. |
+| `"ficha"` | Escala compacta para layouts densos / DetailSheet. Clase `ds-metric--ficha`. Valor 52px, título Montserrat Extra Light, fondo transparente. |
 
 ---
 
@@ -174,6 +192,17 @@ Describe every public visual variant.
 Apariencia de reporting PDF (MÉTRICAS): fondo `rgb(6 6 6 / 0.2)`, borde `0.75px solid #e6e6e6`, padding `10px`, `min-height: 132px`, layout en grid con `gap: 11px`. Etiqueta Source Code Pro Bold 16px `#8a8b87` uppercase con `letter-spacing: 0.41em`. Valor Montserrat Bold 84px `#ffffff`. Referencia (`change`) Montserrat Extralight (200) 16px `#ffffff`.
 
 `tone="critical"` aplica `.ds-metric--critical` y colorea `.ds-metric__value` en `#ff0404`. Los tonos `good` y `watch` no tienen acento de color en el PDF y comparten el valor blanco de `neutral`.
+
+## Appearance
+
+La prop `appearance` selecciona la escala tipográfica del PDF MÉTRICAS (página 10). Composable con `tone`.
+
+| Appearance | Valor | Título / label | Fondo | Uso |
+|------------|-------|----------------|-------|-----|
+| `"reporting"` (default) | Montserrat Bold **84px** | Source Code Bold, `#8a8b87`, uppercase | `#060606` 20% (`--ds-color-pdf-surface-a20`) | Filas de KPI en reporting / dashboards |
+| `"ficha"` | Montserrat Bold **52px** (`/* TODO token */`) | Montserrat Extra Light (`--ds-font-body` + weight 200), `#8a8b87`, uppercase | transparente (hereda la superficie de la ficha) | Layouts densos tipo Fichas / DetailSheet |
+
+Borde `#e6e6e6` y padding `10px` son compartidos. En pantallas de ficha o detalle denso, usar `appearance="ficha"` en lugar de sobrescribir el tamaño con CSS local del patrón.
 
 ---
 
@@ -318,6 +347,18 @@ La prop `tone` selecciona la clase modificadora. Solo `critical` cambia el color
 <MetricCard label="Nodos enlazados" value="15" change="red viva" tone="neutral" />
 ```
 
+`MetricCard` también expone `appearance` (`"reporting" | "ficha"`). En fichas / detalle denso:
+
+```tsx
+// Escala compacta PDF MÉTRICAS «En ficha» (DetailSheet, modales densos)
+<MetricCard
+  label="TAREAS"
+  value="13"
+  change="Allanamientos"
+  appearance="ficha"
+/>
+```
+
 ## Composition
 
 ```tsx
@@ -385,6 +426,20 @@ Colorear la métrica crítica en rojo según el tono.
 
 ## User Request
 
+Mostrar métricas dentro de una ficha de detalle densa sin que el valor 84pt desborde el layout.
+
+### Recommended Components
+
+- `MetricCard` con `appearance="ficha"`
+
+### Why
+
+PDF MÉTRICAS define la escala «En ficha» (valor 52pt, título Extra Light, fondo transparente). Usar `appearance="ficha"` en lugar de sobrescribir tamaño con CSS del patrón.
+
+---
+
+## User Request
+
 Mostrar un icono de alerta junto al valor de riesgo.
 
 ### Recommended Components
@@ -431,12 +486,12 @@ packages/ui/src/components/MetricCard.tsx
 ## Dependencies
 
 - `cn()` from `packages/ui/src/utils/cn.ts`
-- `styles.css` (clases `ds-metric`, `ds-metric--{tone}`, `ds-metric__topline`, `ds-metric__label`, `ds-metric__value`, `ds-metric__change`)
+- `styles.css` (clases `ds-metric`, `ds-metric--{tone}`, `ds-metric--ficha`, `ds-metric__topline`, `ds-metric__label`, `ds-metric__value`, `ds-metric__change`)
 
 ## DOM Structure
 
 ```text
-div.ds-metric.ds-metric--{tone}
+div.ds-metric.ds-metric--{tone}[.ds-metric--ficha]
 ├── div.ds-metric__topline
 │   └── span.ds-metric__label
 ├── strong.ds-metric__value
@@ -448,7 +503,7 @@ div.ds-metric.ds-metric--{tone}
 # Known Limitations
 
 - Solo `tone="critical"` tiene acento de color PDF (`#ff0404` en el valor). `good` y `watch` no tienen color definido en el PDF.
-- No implementa la variante ficha del PDF (label Extralight 16pt / value Bold 52pt); la API actual es la variante reporting.
+- El `font-size: 52px` de `.ds-metric--ficha .ds-metric__value` es un literal marcado (`/* TODO token */`); no hay token de type-scale para esa medida.
 - No expone prop `icon`, `children`, slots de acciones ni pie de tarjeta.
 - No formatea ni localiza valores numéricos.
 - `.ds-metric__topline` no tiene reglas CSS propias; actúa solo como contenedor estructural.
@@ -462,9 +517,9 @@ div.ds-metric.ds-metric--{tone}
 # Future Improvements
 
 - [ ] Acentos PDF para `good` / `watch` si el diseño los define
-- [ ] Variante ficha (52pt value) si se añade a la API sin romper reporting
+- [x] Variante ficha (52pt value) vía `appearance="ficha"`
 - [ ] Migrar colores hardcodeados a tokens del design system
-- [ ] Documentación JSDoc en `MetricCard.tsx` según convenciones del repositorio
+- [ ] Tokenizar `52px` de la escala ficha cuando exista type-scale correspondiente
 
 ---
 
@@ -474,3 +529,4 @@ div.ds-metric.ds-metric--{tone}
 |----------|--------|
 | 0.1.0 | Implementación inicial de `MetricCard`, `MetricCardProps` y `MetricTone` con estilos `ds-metric` y stories en Storybook (`Playground`, `Tones`). Uso en `Components.stories.tsx` → `OperationsConsole` y `apps/web/src/App.tsx`. |
 | 0.1.0 | Refinamiento visual PDF (MÉTRICAS reporting): borde `#e6e6e6` 0.75px, label 16px Bold interlettering 410, value 84px Montserrat Bold, reference Extralight 16px, `critical` → `#ff0404`, sin sombra, Storybook fondo oscuro. |
+| 0.1.0 | Escala ficha aditiva: prop `appearance` (`"reporting" \| "ficha"`), modificador `.ds-metric--ficha` (valor 52px, título Extra Light, fondo transparente), consumo en DetailSheet, story `Reporting vs Ficha`. |

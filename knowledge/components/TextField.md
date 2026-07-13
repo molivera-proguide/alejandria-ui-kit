@@ -25,6 +25,8 @@ keywords:
   - error
   - iconLeft
   - action
+  - appearance
+  - pdf
   - TextFieldProps
 tags:
   - input
@@ -159,6 +161,7 @@ Tipos exportados:
 | `error` | `string` | — | no | Mensaje de error bajo el control. Activa clase `ds-field--invalid`, `aria-invalid="true"` e `<p class="ds-field__error">` con `id="{fieldId}-error"`. Incluido en `aria-describedby`. |
 | `iconLeft` | `ReactNode` | — | no | Contenido a la izquierda del input dentro de `.ds-field__control`. Renderizado en `<span class="ds-field__icon">` si es truthy. |
 | `action` | `ReactNode` | — | no | Contenido alineado a la derecha de la fila de etiqueta. Renderizado en `<div class="ds-field__action">` si es truthy. |
+| `appearance` | `"default" \| "pdf"` | `"default"` | no | Skin de apariencia. `"pdf"` aplica `ds-field--pdf` (contexto PDF/reporting: fondo `#2a2927`, borde `#c1c1c1`, Source Code Light). `"default"` conserva la apariencia de consola. |
 | `id` | `string` | generado con `useId()` | no | Identificador del `<input>`. Si se omite, el componente genera uno estable. También base para ids de hint y error. |
 | `className` | `string` | — | no | Clases adicionales fusionadas en el contenedor raíz `div.ds-field`, no en el `<input>`. |
 | `aria-describedby` | `string` | — | no | Id(s) adicionales referenciados por el input. Fusionados con ids de `hint` y `error` en `aria-describedby`. |
@@ -192,6 +195,10 @@ Describe every public visual variant.
 | Invalid | Clase modificadora `ds-field--invalid` cuando `error` es truthy; borde del control en `--ds-color-danger`. |
 
 Modificadores opcionales vía props (no variantes nombradas): presencia de `iconLeft`, `action`, `hint` y `error`.
+
+## Appearance PDF
+
+La prop `appearance="pdf"` aplica la clase modificadora `ds-field--pdf` para el **contexto PDF/reporting**: fondo `var(--ds-color-pdf-surface-warm)` (`#2a2927`), borde `var(--ds-color-pdf-line)` (`#c1c1c1`) y tipografía Source Code Light (`var(--ds-font-mono)` + `var(--ds-font-weight-light)`). El valor por defecto `"default"` conserva la apariencia de consola sin cambios. Promovida desde overrides repetidos en los patrones Login y DetailSheet (Rule 03); en pantallas de contexto PDF usar `appearance="pdf"` en lugar de sobrescribir el campo con CSS local del patrón.
 
 ---
 
@@ -348,7 +355,13 @@ import { TextField } from "@alejandria/ui-kit";
 
 ## Variant
 
-`TextField` no expone prop `variant`. El estado inválido se controla con `error`:
+`TextField` no expone prop `variant`, pero sí `appearance` (`"default" | "pdf"`). El estado inválido se controla con `error`:
+
+```tsx
+// Campo en contexto PDF (login, fichas, modales)
+<TextField label="Usuario" placeholder="USUARIO" appearance="pdf" />
+```
+
 
 ```tsx
 import { Search } from "lucide-react";
@@ -470,6 +483,9 @@ Only include tokens directly consumed by the component.
 | `--ds-font-mono` | typography | `font-family` de label, input, hint y error |
 | `--ds-radius-sm` | radius | `border-radius` de `.ds-field__control` |
 | `--ds-focus-ring` | shadow | `box-shadow` en `.ds-field__control:focus-within` y `.ds-field__input:focus-visible` |
+| `--ds-color-pdf-surface-warm` | color | `background` de `.ds-field--pdf .ds-field__control` (solo `appearance="pdf"`) |
+| `--ds-color-pdf-line` | color | `border-color` de `.ds-field--pdf .ds-field__control` (solo `appearance="pdf"`) |
+| `--ds-font-weight-light` | typography | `font-weight` del input en `.ds-field--pdf` (solo `appearance="pdf"`) |
 
 Nota: el fondo de `.ds-field__control` (`rgb(0 0 0 / 0.34)`) y el color de placeholder (`rgb(169 179 176 / 0.5)`) están hardcodeados; no usan tokens con nombre.
 

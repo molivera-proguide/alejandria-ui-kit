@@ -60,8 +60,18 @@
 | .ds-button--secondary | secondary palette | styles.css:125 | yes |
 | .ds-button--ghost | ghost palette | styles.css:136 | yes |
 | .ds-button--danger | danger palette | styles.css:146 | yes |
+| .ds-button--pdf | PDF-context action: grey fill `#494949` via `--ds-color-pdf-action`, white text; hover `#5a5a5a` | styles.css:285; hover styles.css:290 | yes |
 | data-loading (attr) | loading state in TSX | knowledge/components/Button.md | no |
+
+## Color
+| Role | Value | Matching --ds-* token? | Source | Delta |
+|------|-------|------------------------|--------|-------|
+| pdf fill | var(--ds-color-pdf-action) → #494949 | --ds-color-pdf-action | styles.css:286 | — |
+| pdf text | var(--ds-color-white) → #ffffff | --ds-color-white | styles.css:287 | — |
+| pdf hover | var(--ds-color-pdf-action-hover) → #5a5a5a | --ds-color-pdf-action-hover | styles.css:291 | — |
 
 ## Deltas & open questions (facts only — DO NOT resolve)
 - `data-loading` applied in component API but has no CSS rules (knowledge/components/Button.md; styles.css has no `[data-loading]` selector).
 - PDF page not cited in component doc — PDF cross-check marked unavailable (`none cited`).
+- `variant="pdf"` (`.ds-button--pdf`) added by the PDF-variant promotion (Rule 03); consumed by the Login and DetailSheet patterns. `#494949` is the PDF action fill (design-reference p.6 login / p.4 fichas).
+- Pre-existing line citations above predate the M2b token migration and may be off by the inserted token lines; the `.ds-button--pdf` citations (285/290/291) are current.

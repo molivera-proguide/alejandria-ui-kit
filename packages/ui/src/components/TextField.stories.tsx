@@ -11,12 +11,17 @@ const meta = {
   },
   argTypes: {
     iconLeft: { control: false },
-    action: { control: false }
+    action: { control: false },
+    appearance: {
+      control: "select",
+      options: ["default", "pdf"]
+    }
   },
   args: {
     label: "Busqueda",
     placeholder: "ID, zona o dependencia",
-    hint: "Acepta IDs de tarea, nombres de zona o dependencia."
+    hint: "Acepta IDs de tarea, nombres de zona o dependencia.",
+    appearance: "default"
   },
   decorators: [
     (Story) => (
@@ -54,4 +59,20 @@ export const Invalid: Story = {
     iconLeft: <Search />,
     error: "No se encontro una tarea con ese identificador."
   }
+};
+
+export const PdfAppearance: Story = {
+  args: {
+    appearance: "pdf",
+    label: "Usuario",
+    placeholder: "USUARIO",
+    hint: undefined
+  },
+  decorators: [
+    (Story) => (
+      <div style={{ background: "#060606", minWidth: 420, padding: 32 }}>
+        <Story />
+      </div>
+    )
+  ]
 };

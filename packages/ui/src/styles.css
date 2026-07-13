@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;700&family=Source+Code+Pro:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;700&family=Source+Code+Pro:wght@300;400;600;700&display=swap');
 
 @layer ds.tokens, ds.components;
 
@@ -280,6 +280,15 @@
   .ds-button--danger:hover:not(:disabled) {
     background: linear-gradient(180deg, #ff8084, #d92733);
     box-shadow: 0 0 24px var(--ds-color-danger-a22);
+  }
+
+  .ds-button--pdf {
+    background: var(--ds-color-pdf-action);
+    color: var(--ds-color-white);
+  }
+
+  .ds-button--pdf:hover:not(:disabled) {
+    background: var(--ds-color-pdf-action-hover);
   }
 
   .ds-button__icon {
@@ -570,6 +579,25 @@
     border-color: var(--ds-color-danger);
   }
 
+  .ds-field--pdf .ds-field__control {
+    background: var(--ds-color-pdf-surface-warm);
+    border-color: var(--ds-color-pdf-line);
+  }
+
+  .ds-field--pdf .ds-field__input,
+  .ds-field--pdf .ds-field__select {
+    color: var(--ds-color-white);
+    font-family: var(--ds-font-mono);
+    font-size: 20px; /* TODO token */
+    font-weight: var(--ds-font-weight-light);
+    padding: 10px;
+  }
+
+  .ds-field--pdf .ds-field__input::placeholder {
+    color: var(--ds-color-white);
+    opacity: 1;
+  }
+
   .ds-metric {
     background: var(--ds-color-pdf-surface-a20);
     border: var(--ds-border-width-hair) solid var(--ds-color-pdf-line-light);
@@ -611,6 +639,19 @@
     font-size: 16px;
     font-weight: var(--ds-font-weight-extralight);
     line-height: var(--ds-leading-normal);
+  }
+
+  .ds-metric--ficha {
+    background: transparent;
+  }
+
+  .ds-metric--ficha .ds-metric__label {
+    font-family: var(--ds-font-body);
+    font-weight: var(--ds-font-weight-extralight);
+  }
+
+  .ds-metric--ficha .ds-metric__value {
+    font-size: 52px; /* TODO token */
   }
 
   .ds-module-card {
