@@ -61,6 +61,13 @@
       "storybook": "Alejandria/ChartCard"
     },
     {
+      "id": "investigation-card",
+      "name": "InvestigationCard",
+      "path": "knowledge/components/InvestigationCard.md",
+      "export": "packages/ui/src/components/InvestigationCard.tsx",
+      "storybook": "Alejandria/InvestigationCard"
+    },
+    {
       "id": "line-chart-card",
       "name": "LineChartCard",
       "path": "knowledge/components/LineChartCard.md",
@@ -362,6 +369,58 @@
       "name": "TextField",
       "path": "knowledge/specs/components/TextField.spec.md",
       "source": "packages/ui/src/styles.css (.ds-field / .ds-field__input)"
+    }
+  ],
+  "governance": [
+    {
+      "id": "roadmap",
+      "name": "Knowledge Architecture Roadmap",
+      "path": "knowledge/roadmap.md"
+    },
+    {
+      "id": "agent-playbook",
+      "name": "Agent Playbook",
+      "path": "knowledge/agent-playbook.md"
+    },
+    {
+      "id": "design-principles",
+      "name": "Design Principles",
+      "path": "knowledge/design-principles.md"
+    },
+    {
+      "id": "design-system-rules",
+      "name": "Design System Rules",
+      "path": "knowledge/design-system-rules.md"
+    },
+    {
+      "id": "anti-patterns",
+      "name": "Anti-Patterns",
+      "path": "knowledge/anti-patterns.md"
+    },
+    {
+      "id": "visual-analysis-protocol",
+      "name": "Visual Analysis Protocol",
+      "path": "knowledge/visual-analysis-protocol.md"
+    },
+    {
+      "id": "reasoning-readme",
+      "name": "Reasoning Layer Overview",
+      "path": "knowledge/reasoning/README.md"
+    },
+    {
+      "id": "decision-order",
+      "name": "Decision Order",
+      "path": "knowledge/reasoning/decision-order.md"
+    },
+    {
+      "id": "component-selection",
+      "name": "Component Selection Taxonomy",
+      "path": "knowledge/reasoning/component-selection.md"
+    },
+    {
+      "id": "reuse-rubric",
+      "name": "Reuse vs Variant vs New Rubric",
+      "path": "knowledge/reasoning/reuse-rubric.md"
     }
   ]
 }

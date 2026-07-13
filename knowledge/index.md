@@ -2,11 +2,13 @@
 
 **Version:** 0.1.0  
 **Package:** `@alejandria/ui-kit`  
-**Last stabilized:** 2026-07-03
+**Last stabilized:** 2026-07-13
 
 This is the main entry point for the Alejandria UI Kit knowledge base. It is written for AI agents and humans who need an accurate map of what exists in the repository today — not a roadmap of future work.
 
 **Rule:** Only artifacts that exist in the repository are listed here. Empty folders and audit-only concepts are called out explicitly.
+
+**Decisions:** Follow [`reasoning/decision-order.md`](./reasoning/decision-order.md) — the single authoritative Decision Order (keyed by task type). Active plan: [`roadmap.md`](./roadmap.md).
 
 ---
 
@@ -32,22 +34,27 @@ The design system targets operational consoles: KPIs, tasks, alerts, modules, an
 knowledge/
 ├── index.md                      ← you are here
 ├── design-system-manifest.json   ← machine-readable registry
+├── roadmap.md                    ← active knowledge-architecture plan
 ├── components/                   ← one doc per exported component
 ├── patterns/                     ← Storybook composed UI patterns
 ├── screens/                      ← Storybook fullscreen screens
-├── tokens/                       ← (empty — no token docs yet)
-├── guidelines/                   ← (empty — no guideline docs yet)
+├── specs/                        ← M1 numeric specs + token inventory
+├── tokens/                       ← M2 token plan, migration map, overview
+├── guidelines/                   ← M2 design language
+├── reasoning/                    ← M3 decision order, selection, reuse rubric
 ├── templates/                    ← doc templates (authoring aid)
 └── audit/                        ← inventory, coverage, visual, pattern, roadmap audits
 ```
 
 | Folder | Status | Contents |
 |--------|:------:|----------|
-| `components/` | Documented | 17 component markdown files |
-| `patterns/` | Documented | 11 patterns from Storybook composed stories |
+| `components/` | Documented | Component markdown files (see table below; includes InvestigationCard) |
+| `patterns/` | Documented | Patterns from Storybook composed stories |
 | `screens/` | Documented | 1 screen (`OperationsConsole`) |
-| `tokens/` | Empty | `.gitkeep` only — tokens live in `packages/ui/src/styles.css` |
-| `guidelines/` | Empty | `.gitkeep` only |
+| `specs/` | Documented | Schema, tokens inventory, per-component `*.spec.md` (M1) |
+| `tokens/` | Documented | `README.md`, `token-plan.md`, `migration-map.md` (M2) |
+| `guidelines/` | Documented | `design-language.md` (M2) |
+| `reasoning/` | Documented | Decision order, component selection, reuse rubric (M3) |
 | `templates/` | Authoring | `component.md` template |
 | `audit/` | Reference | Read-only audits; not product API docs |
 
@@ -55,7 +62,7 @@ knowledge/
 
 ## Components
 
-All 17 public exports from `packages/ui/src/index.ts` have dedicated docs.
+Public exports from `packages/ui/src/index.ts` have dedicated docs under `knowledge/components/` (18 exports). InvestigationCard is documented and exported; it may still be pending a `components[]` manifest entry (see [`roadmap.md`](./roadmap.md) parallel track).
 
 | Component | Doc | Storybook |
 |-----------|-----|-----------|
@@ -67,6 +74,7 @@ All 17 public exports from `packages/ui/src/index.ts` have dedicated docs.
 | ChartCard | [ChartCard.md](./components/ChartCard.md) | `Alejandria/ChartCard` |
 | DataTable | [DataTable.md](./components/DataTable.md) | `Alejandria/DataTable` |
 | DonutChartCard | [DonutChartCard.md](./components/DonutChartCard.md) | `Alejandria/ChartCard` (nested) |
+| InvestigationCard | [InvestigationCard.md](./components/InvestigationCard.md) | `Alejandria/InvestigationCard` |
 | LineChartCard | [LineChartCard.md](./components/LineChartCard.md) | `Alejandria/ChartCard` (nested) |
 | MetricCard | [MetricCard.md](./components/MetricCard.md) | `Alejandria/MetricCard` |
 | ModuleCard | [ModuleCard.md](./components/ModuleCard.md) | `Alejandria/ModuleCard` |
@@ -77,7 +85,7 @@ All 17 public exports from `packages/ui/src/index.ts` have dedicated docs.
 | TaskCard | [TaskCard.md](./components/TaskCard.md) | `Alejandria/TaskCard` |
 | TextField | [TextField.md](./components/TextField.md) | `Alejandria/TextField` |
 
-Component docs follow the structure in [`templates/component.md`](./templates/component.md).
+Component docs follow the structure in [`templates/component.md`](./templates/component.md). For which component to pick, see [`reasoning/component-selection.md`](./reasoning/component-selection.md).
 
 ---
 
@@ -126,21 +134,62 @@ Each screen doc includes: Purpose, User goals, Main regions, Patterns used, Comp
 
 ---
 
+## Specs (numeric foundation)
+
+Measured, citable values from CSS and component docs live under [`knowledge/specs/`](./specs/README.md):
+
+| Doc | Path |
+|-----|------|
+| Layer overview | [specs/README.md](./specs/README.md) |
+| Schema | [specs/SCHEMA.md](./specs/SCHEMA.md) |
+| Token inventory | [specs/tokens-inventory.md](./specs/tokens-inventory.md) |
+| Per-component specs | [specs/components/](./specs/components/) |
+
+Specs record facts and deltas; they do not redesign or tokenize. Registered in the manifest `specs[]`.
+
+---
+
 ## Tokens
 
-`knowledge/tokens/` is empty. Design tokens exist only as CSS custom properties in:
+Design tokens are CSS custom properties (`--ds-*`) in `packages/ui/src/styles.css`, documented and planned under [`knowledge/tokens/`](./tokens/README.md):
 
-- `packages/ui/src/styles.css` (`--ds-*` variables)
+| Doc | Path |
+|-----|------|
+| Token layer overview | [tokens/README.md](./tokens/README.md) |
+| Token plan | [tokens/token-plan.md](./tokens/token-plan.md) |
+| Migration map | [tokens/migration-map.md](./tokens/migration-map.md) |
+| Intent taxonomy (roles) | [guidelines/design-language.md](./guidelines/design-language.md) |
 
-No token markdown artifacts are registered in the manifest.
+M2b applied **mechanical** literal→`var()` swaps (byte-identical). Visual-gated rows remain for the Fidelity milestone — see the migration map and [`roadmap.md`](./roadmap.md).
 
 ---
 
 ## Guidelines
 
-`knowledge/guidelines/` is empty. No usage guideline documents exist yet.
+| Doc | Path |
+|-----|------|
+| Design language | [guidelines/design-language.md](./guidelines/design-language.md) |
 
-For historical analysis and prioritization, see `knowledge/audit/` (inventory, coverage, visual audit, pattern audit, roadmap). Audits are reference material, not guidelines.
+For historical analysis and prioritization, see `knowledge/audit/` (inventory, coverage, visual audit, pattern audit, roadmap). Audits are reference material, not guidelines. The **active** plan is [`roadmap.md`](./roadmap.md) (not `audit/design-system-roadmap.md`).
+
+---
+
+## Governance & reasoning
+
+Process and decision docs (registered in the manifest `governance[]`):
+
+| Doc | Path |
+|-----|------|
+| Knowledge architecture roadmap | [roadmap.md](./roadmap.md) |
+| Agent playbook (workflow) | [agent-playbook.md](./agent-playbook.md) |
+| Design principles | [design-principles.md](./design-principles.md) |
+| Design system rules | [design-system-rules.md](./design-system-rules.md) |
+| Anti-patterns | [anti-patterns.md](./anti-patterns.md) |
+| Visual analysis protocol | [visual-analysis-protocol.md](./visual-analysis-protocol.md) |
+| Reasoning layer overview | [reasoning/README.md](./reasoning/README.md) |
+| **Decision Order (authoritative)** | [reasoning/decision-order.md](./reasoning/decision-order.md) |
+| Component selection taxonomy | [reasoning/component-selection.md](./reasoning/component-selection.md) |
+| Reuse vs variant vs new | [reasoning/reuse-rubric.md](./reuse-rubric.md) |
 
 ---
 
@@ -148,13 +197,15 @@ For historical analysis and prioritization, see `knowledge/audit/` (inventory, c
 
 For AI agents:
 
-1. knowledge/index.md
-2. design-system-manifest.json
-3. Screen documentation
-4. Pattern documentation
-5. Component documentation
-6. Source code
-7. Storybook examples
+1. `knowledge/index.md` (this file)
+2. `knowledge/reasoning/decision-order.md` (how to decide)
+3. `design-system-manifest.json`
+4. `knowledge/specs/` (numeric truth) and/or `knowledge/tokens/` + `guidelines/design-language.md` (vocabulary) as the task requires
+5. Screen documentation
+6. Pattern documentation
+7. Component documentation (+ selection taxonomy when choosing an export)
+8. Source code
+9. Storybook examples
 
 ---
 
@@ -222,31 +273,35 @@ Mission Panel
 ### How to find the right doc
 
 1. **Start here** (`knowledge/index.md`) or load [`design-system-manifest.json`](./design-system-manifest.json).
-2. **Component API / behavior** → `knowledge/components/<Name>.md`, then source in `packages/ui/src/components/`.
-3. **How pieces are arranged** → `knowledge/patterns/`.
-4. **Full-page composition** → `knowledge/screens/`.
-5. **Visual tokens** → read `packages/ui/src/styles.css` (no knowledge docs yet).
-6. **What is missing or partial** → `knowledge/audit/` (do not treat audits as implemented features).
+2. **How to decide** → [`reasoning/decision-order.md`](./reasoning/decision-order.md); selection → [`reasoning/component-selection.md`](./reasoning/component-selection.md); reuse → [`reasoning/reuse-rubric.md`](./reasoning/reuse-rubric.md).
+3. **Component API / behavior** → `knowledge/components/<Name>.md`, then source in `packages/ui/src/components/`.
+4. **Measured values / deltas** → `knowledge/specs/`.
+5. **How pieces are arranged** → `knowledge/patterns/`.
+6. **Full-page composition** → `knowledge/screens/`.
+7. **Visual tokens / vocabulary** → `knowledge/tokens/` and `guidelines/design-language.md`; implemented values in `packages/ui/src/styles.css`.
+8. **Plan / milestone scope** → [`roadmap.md`](./roadmap.md).
+9. **What is missing or partial** → `knowledge/audit/` (do not treat audits as implemented features).
 
 ### Ground rules
 
-- **Do not invent** components, patterns, screens, tokens, or guidelines that are not in the manifest.
+- **Do not invent** components, patterns, screens, tokens, or guidelines that are not in the manifest (or otherwise registered as package exports with docs).
 - **Prefer Storybook + package source** as implementation truth; knowledge docs describe what exists.
 - **Patterns are not package exports.** Compose from components; copy layout recipes from pattern docs.
 - **Screens ≠ demo app.** Only Storybook fullscreen compositions are screens in this knowledge base.
-- **Empty folders mean no docs**, not “use defaults.” If `tokens/` or `guidelines/` is empty, say so.
+- **Empty folders mean no docs**, not “use defaults.” Folders that are still empty should be called out as empty; `tokens/`, `guidelines/`, `specs/`, and `reasoning/` are documented — do not treat them as empty.
 - **Avoid duplicating** component API details inside pattern/screen docs; link to component docs instead.
 - **Spanish component docs** may use Spanish prose; pattern/screen/index docs use English section contracts for agent stability.
 
 ### Suggested resolution order for a UI task
 
 ```
-manifest / index
-    → screen (if full page)
-        → patterns (regions)
-            → components (API)
-                → styles.css (tokens)
-                    → Storybook story (live example)
+index / manifest
+    → reasoning/decision-order.md (task type)
+        → screen (if full page)
+            → patterns (regions)
+                → components (API) + specs (numbers)
+                    → tokens / design-language / styles.css
+                        → Storybook story (live example)
 ```
 
 ### Related audit documents
@@ -257,7 +312,6 @@ manifest / index
 | Coverage | [audit/design-system-coverage.md](./audit/design-system-coverage.md) |
 | Visual | [audit/visual-audit.md](./audit/visual-audit.md) |
 | Patterns | [audit/pattern-audit.md](./audit/pattern-audit.md) |
-| Roadmap | [audit/design-system-roadmap.md](./audit/design-system-roadmap.md) |
+| Roadmap (historical snapshot) | [audit/design-system-roadmap.md](./audit/design-system-roadmap.md) |
 
-Audits may mention future or PDF-only concepts. Those concepts are **not** part of the stabilized knowledge base until they have a file under `components/`, `patterns/`, `screens/`, `tokens/`, or `guidelines/` and an entry in the manifest.
----
+Audits may mention future or PDF-only concepts. Those concepts are **not** part of the stabilized knowledge base until they have a file under `components/`, `patterns/`, `screens/`, `tokens/`, `guidelines/`, `specs/`, or `reasoning/` and an entry in the manifest. Prefer [`roadmap.md`](./roadmap.md) over the audit roadmap for the current plan.

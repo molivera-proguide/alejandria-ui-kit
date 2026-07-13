@@ -188,6 +188,8 @@ not redefine how they behave.
 
 # Decision Order
 
+> Superseded by `knowledge/reasoning/decision-order.md`.
+
 When introducing a visual value:
 
 1. Reuse an existing Design Token.

@@ -2,30 +2,30 @@
 alwaysApply: true
 ---
 
-When working on the Alejandria Design System, always begin by reading the project knowledge documents.
+When working on the Alejandria Design System, always begin at the knowledge entry point.
 
-Read these files before making any implementation decisions:
+**Start here (required):** `knowledge/index.md`
 
-- knowledge/agent-playbook.md
-- knowledge/design-principles.md
-- knowledge/design-system-rules.md
-- knowledge/anti-patterns.md
+Then follow the authoritative Decision Order:
 
-These documents define:
+- `knowledge/reasoning/decision-order.md`
 
-- workflow
-- design decision making
-- design system implementation rules
-- known implementation mistakes
+Before making implementation decisions, also read the process docs linked from the index (governance section), especially:
 
-Follow them throughout the entire task.
+- `knowledge/agent-playbook.md` (workflow)
+- `knowledge/design-principles.md`
+- `knowledge/design-system-rules.md` (token/consumption rules; Decision Order section redirects)
+- `knowledge/anti-patterns.md`
+
+These documents define workflow, design decision making, implementation rules, and known mistakes. Follow them throughout the entire task.
 
 When implementing or refining a component:
 
-1. Read the component documentation.
-2. Read the canonical design reference.
-3. Apply the Design Principles.
-4. Apply the Design System Rules.
+1. Read `knowledge/index.md` and classify the task via `knowledge/reasoning/decision-order.md`.
+2. Read the component documentation and numeric spec (`knowledge/specs/`) when relevant.
+3. Read the canonical design reference.
+4. Apply the Design Principles and Design System Rules.
 5. Avoid the documented Anti-Patterns.
+6. For selection / reuse questions, use `knowledge/reasoning/component-selection.md` and `knowledge/reasoning/reuse-rubric.md`.
 
-These documents take precedence over implementation convenience.
+`knowledge/reasoning/decision-order.md` takes precedence over any older “Decision Order” text elsewhere. These documents take precedence over implementation convenience.

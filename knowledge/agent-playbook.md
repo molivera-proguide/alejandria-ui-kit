@@ -133,6 +133,8 @@ Verify:
 
 # Decision Order
 
+> Superseded by `knowledge/reasoning/decision-order.md`.
+
 Whenever multiple sources disagree, follow this priority.
 
 1. Canonical Design Reference
