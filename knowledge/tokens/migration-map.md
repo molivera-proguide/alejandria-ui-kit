@@ -45,6 +45,8 @@ Mechanical work-order for applying [token-plan.md](./token-plan.md) to `packages
 
 Default M2b path: mechanical aliases + PDF color primitives with **current** byte values; leave V1–V5, S1–S6, T1–T3 unmerged/unnormalized. Do **not** mint drift tokens.
 
+**M2b execution status:** `mechanical` rows **applied** to `packages/ui/src/styles.css` (token defs + literal→`var()` swaps). `visual-gated` (V1–V5, S1–S6, T1–T3) and `keep-as-is` (incl. T4) left untouched — dispositions and values unchanged.
+
 ---
 
 ## Color
