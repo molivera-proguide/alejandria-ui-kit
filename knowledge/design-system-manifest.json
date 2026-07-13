@@ -213,5 +213,133 @@
     }
   ],
   "tokens": [],
-  "guidelines": []
+  "guidelines": [],
+  "specs": [
+    {
+      "id": "spec-readme",
+      "name": "Numeric Specification Layer README",
+      "path": "knowledge/specs/README.md",
+      "source": "packages/ui/src/styles.css"
+    },
+    {
+      "id": "spec-schema",
+      "name": "Numeric Specification Schema",
+      "path": "knowledge/specs/SCHEMA.md",
+      "source": "packages/ui/src/styles.css"
+    },
+    {
+      "id": "tokens-inventory",
+      "name": "Token Candidate Inventory",
+      "path": "knowledge/specs/tokens-inventory.md",
+      "source": "packages/ui/src/styles.css"
+    },
+    {
+      "id": "alert-banner-spec",
+      "name": "AlertBanner",
+      "path": "knowledge/specs/components/AlertBanner.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-alert)"
+    },
+    {
+      "id": "badge-spec",
+      "name": "Badge",
+      "path": "knowledge/specs/components/Badge.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-badge)"
+    },
+    {
+      "id": "bar-chart-card-spec",
+      "name": "BarChartCard",
+      "path": "knowledge/specs/components/BarChartCard.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-bar-chart)"
+    },
+    {
+      "id": "button-spec",
+      "name": "Button",
+      "path": "knowledge/specs/components/Button.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-button)"
+    },
+    {
+      "id": "card-spec",
+      "name": "Card",
+      "path": "knowledge/specs/components/Card.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-card)"
+    },
+    {
+      "id": "chart-card-spec",
+      "name": "ChartCard",
+      "path": "knowledge/specs/components/ChartCard.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-chart-card)"
+    },
+    {
+      "id": "data-table-spec",
+      "name": "DataTable",
+      "path": "knowledge/specs/components/DataTable.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-table-wrap / .ds-table)"
+    },
+    {
+      "id": "donut-chart-card-spec",
+      "name": "DonutChartCard",
+      "path": "knowledge/specs/components/DonutChartCard.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-donut-chart)"
+    },
+    {
+      "id": "investigation-card-spec",
+      "name": "InvestigationCard",
+      "path": "knowledge/specs/components/InvestigationCard.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-investigation-card)"
+    },
+    {
+      "id": "line-chart-card-spec",
+      "name": "LineChartCard",
+      "path": "knowledge/specs/components/LineChartCard.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-line-chart)"
+    },
+    {
+      "id": "metric-card-spec",
+      "name": "MetricCard",
+      "path": "knowledge/specs/components/MetricCard.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-metric)"
+    },
+    {
+      "id": "module-card-spec",
+      "name": "ModuleCard",
+      "path": "knowledge/specs/components/ModuleCard.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-module-card)"
+    },
+    {
+      "id": "progress-ring-spec",
+      "name": "ProgressRing",
+      "path": "knowledge/specs/components/ProgressRing.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-progress)"
+    },
+    {
+      "id": "segmented-control-spec",
+      "name": "SegmentedControl",
+      "path": "knowledge/specs/components/SegmentedControl.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-segmented)"
+    },
+    {
+      "id": "select-field-spec",
+      "name": "SelectField",
+      "path": "knowledge/specs/components/SelectField.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-field / .ds-field__select)"
+    },
+    {
+      "id": "switch-spec",
+      "name": "Switch",
+      "path": "knowledge/specs/components/Switch.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-switch)"
+    },
+    {
+      "id": "task-card-spec",
+      "name": "TaskCard",
+      "path": "knowledge/specs/components/TaskCard.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-task)"
+    },
+    {
+      "id": "text-field-spec",
+      "name": "TextField",
+      "path": "knowledge/specs/components/TextField.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-field / .ds-field__input)"
+    }
+  ]
 }
