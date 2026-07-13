@@ -14,6 +14,18 @@ Later milestones (token system, anatomy contracts, visual grammar, validation) c
 
 When sources disagree, both values are recorded as a **delta**. This layer does not pick a winner.
 
+## Scale calibration
+
+The design-reference PDF is a **@2× artboard** (page size 1920×1080 = 2×960×540). Absolute annotations in the PDF (`padding 40px`, value `84pt`/`52pt`, icons `180px`, login input `20pt`, etc.) are @2× coordinates.
+
+**Rule:** `display px = PDF annotation ÷ 2`.
+
+PDF-context component and pattern CSS values in this layer are recorded at **display scale** (after calibration). Shared token *definitions* (`--ds-space-*`, `--ds-radius-*`, `:root`) are unchanged; where a PDF-context selector previously referenced a shared spacing/size token, the selector uses a halved literal (`/* calibrated ÷2 */`) so console/teal components keep the original token values.
+
+Teal/console components (`.ds-button`, `.ds-badge`, `.ds-card`, `.ds-alert`, `.ds-switch`, `.ds-segmented`, `.ds-table`, `.ds-progress`, base `.ds-field`) remain at display scale via `rem` and are out of scope for this rule.
+
+Out of scope for ÷2: `border-width` / hairlines (`0.75px` / `1px`), `border-radius`, `letter-spacing` (`em`), `line-height` (unitless), and any `rem` value.
+
 ## Contents
 
 | Path | Role |
@@ -21,6 +33,7 @@ When sources disagree, both values are recorded as a **delta**. This layer does 
 | [SCHEMA.md](./SCHEMA.md) | Canonical schema for every `*.spec.md` |
 | [tokens-inventory.md](./tokens-inventory.md) | Every literal value in `styles.css`, grouped and counted |
 | [components/](./components/) | One numeric spec per `packages/ui/src/index.ts` export |
+| [scale-calibration-changelog.md](./scale-calibration-changelog.md) | Before→after table for the @2× → display ÷2 pass |
 
 ## Exports covered
 

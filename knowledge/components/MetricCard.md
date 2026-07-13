@@ -84,7 +84,7 @@ Documenta los comportamientos públicos en los que el consumidor puede confiar.
 - Aplica estilos responsivos propios (sin media queries en `.ds-metric`).
 - Define roles ARIA, etiquetas accesibles ni manejo de teclado propios.
 - Diferencia visualmente los tonos `good` ni `watch` (sin color PDF definido). `critical` colorea el valor en `#ff0404`; `neutral` usa valor `#ffffff`.
-- Inventa tokens tipográficos nuevos para la escala ficha; el valor `52px` queda como literal marcado (`/* TODO token */`).
+- Inventa tokens tipográficos nuevos para la escala ficha; el valor `26px` (display; PDF 52pt @2× ÷2) queda como literal marcado (`/* TODO token */`).
 
 ---
 
@@ -159,7 +159,7 @@ Tipos exportados:
 |------|------|----------|----------|-------------|
 | `label` | `string` | — | sí | Etiqueta de la métrica. Renderizada en `<span class="ds-metric__label">` dentro de `.ds-metric__topline`. Mayúsculas vía CSS (`text-transform: uppercase`). |
 | `value` | `string` | — | sí | Valor principal de la métrica. Renderizado en `<strong class="ds-metric__value">`. |
-| `change` | `string` | — | no | Texto de referencia/contexto. Renderizado en `<span class="ds-metric__change">` solo si es truthy. Estilo Montserrat Extralight 16px `#ffffff` (sin `text-transform`). |
+| `change` | `string` | — | no | Texto de referencia/contexto. Renderizado en `<span class="ds-metric__change">` solo si es truthy. Estilo Montserrat Extralight 8px (display; 16÷2) `#ffffff` (sin `text-transform`). |
 | `tone` | `MetricTone` | `"neutral"` | no | Tono semántico. Aplica clase `ds-metric--{tone}` en la raíz. Solo `critical` cambia el color del valor a `#ff0404`. Composable con `appearance`. |
 | `appearance` | `MetricAppearance` | `"reporting"` | no | Escala visual. `"reporting"` conserva la métrica grande de dashboard. `"ficha"` aplica `ds-metric--ficha` (escala compacta PDF MÉTRICAS «En ficha»). |
 | `className` | `string` | — | no | Clases adicionales fusionadas con `ds-metric` y los modificadores de tono/apariencia en el `<div>` raíz. |
@@ -178,8 +178,8 @@ Tipos exportados:
 
 | Value | Description |
 |-------|-------------|
-| `"reporting"` | Escala por defecto (dashboard / reporting). Valor 84px, título Source Code Bold, fondo `#060606` 20%. Sin clase modificadora adicional. |
-| `"ficha"` | Escala compacta para layouts densos / DetailSheet. Clase `ds-metric--ficha`. Valor 52px, título Montserrat Extra Light, fondo transparente. |
+| `"reporting"` | Escala por defecto (dashboard / reporting). Valor 42px (display; PDF 84pt @2× ÷2), título Source Code Bold, fondo `#060606` 20%. Sin clase modificadora adicional. |
+| `"ficha"` | Escala compacta para layouts densos / DetailSheet. Clase `ds-metric--ficha`. Valor 26px (display; PDF 52pt @2× ÷2), título Montserrat Extra Light, fondo transparente. |
 
 ---
 
@@ -189,7 +189,7 @@ Describe every public visual variant.
 
 ## Default
 
-Apariencia de reporting PDF (MÉTRICAS): fondo `rgb(6 6 6 / 0.2)`, borde `0.75px solid #e6e6e6`, padding `10px`, `min-height: 132px`, layout en grid con `gap: 11px`. Etiqueta Source Code Pro Bold 16px `#8a8b87` uppercase con `letter-spacing: 0.41em`. Valor Montserrat Bold 84px `#ffffff`. Referencia (`change`) Montserrat Extralight (200) 16px `#ffffff`.
+Apariencia de reporting PDF (MÉTRICAS): fondo `rgb(6 6 6 / 0.2)`, borde `0.75px solid #e6e6e6`, padding `5px`, `min-height: 66px`, layout en grid con `gap: 5.5px` (display scale). Etiqueta Source Code Pro Bold 6px display `#8a8b87` uppercase con `letter-spacing: 0.41em`. Valor Montserrat Bold 42px `#ffffff`. Referencia (`change`) Montserrat Extralight (200) 8px `#ffffff`.
 
 `tone="critical"` aplica `.ds-metric--critical` y colorea `.ds-metric__value` en `#ff0404`. Los tonos `good` y `watch` no tienen acento de color en el PDF y comparten el valor blanco de `neutral`.
 
@@ -199,10 +199,10 @@ La prop `appearance` selecciona la escala tipográfica del PDF MÉTRICAS (págin
 
 | Appearance | Valor | Título / label | Fondo | Uso |
 |------------|-------|----------------|-------|-----|
-| `"reporting"` (default) | Montserrat Bold **84px** | Source Code Bold, `#8a8b87`, uppercase | `#060606` 20% (`--ds-color-pdf-surface-a20`) | Filas de KPI en reporting / dashboards |
-| `"ficha"` | Montserrat Bold **52px** (`/* TODO token */`) | Montserrat Extra Light (`--ds-font-body` + weight 200), `#8a8b87`, uppercase | transparente (hereda la superficie de la ficha) | Layouts densos tipo Fichas / DetailSheet |
+| `"reporting"` (default) | Montserrat Bold **42px** (display = 84÷2) | Source Code Bold, `#8a8b87`, uppercase | `#060606` 20% (`--ds-color-pdf-surface-a20`) | Filas de KPI en reporting / dashboards |
+| `"ficha"` | Montserrat Bold **26px** (display = 52÷2) (`/* TODO token */`) | Montserrat Extra Light (`--ds-font-body` + weight 200), `#8a8b87`, uppercase | transparente (hereda la superficie de la ficha) | Layouts densos tipo Fichas / DetailSheet |
 
-Borde `#e6e6e6` y padding `10px` son compartidos. En pantallas de ficha o detalle denso, usar `appearance="ficha"` en lugar de sobrescribir el tamaño con CSS local del patrón.
+Borde `#e6e6e6` y padding `5px` (display) son compartidos. En pantallas de ficha o detalle denso, usar `appearance="ficha"` en lugar de sobrescribir el tamaño con CSS local del patrón.
 
 ---
 
@@ -245,7 +245,7 @@ Describe only accessibility behavior implemented by the component.
 
 Document only responsive behavior implemented by the component itself.
 
-`MetricCard` no define media queries. Impone `min-height: 132px` en `.ds-metric`; el ancho lo define el contenedor padre.
+`MetricCard` no define media queries. Impone `min-height: 66px` (display) en `.ds-metric`; el ancho lo define el contenedor padre.
 
 | Contexto | Behavior |
 |----------|----------|
@@ -426,7 +426,7 @@ Colorear la métrica crítica en rojo según el tono.
 
 ## User Request
 
-Mostrar métricas dentro de una ficha de detalle densa sin que el valor 84pt desborde el layout.
+Mostrar métricas dentro de una ficha de detalle densa sin que el valor (display 42px / PDF 84pt @2×) desborde el layout.
 
 ### Recommended Components
 
@@ -434,7 +434,7 @@ Mostrar métricas dentro de una ficha de detalle densa sin que el valor 84pt des
 
 ### Why
 
-PDF MÉTRICAS define la escala «En ficha» (valor 52pt, título Extra Light, fondo transparente). Usar `appearance="ficha"` en lugar de sobrescribir tamaño con CSS del patrón.
+PDF MÉTRICAS define la escala «En ficha» (valor display 26px (PDF 52pt @2×), título Extra Light, fondo transparente). Usar `appearance="ficha"` en lugar de sobrescribir tamaño con CSS del patrón.
 
 ---
 
@@ -503,7 +503,7 @@ div.ds-metric.ds-metric--{tone}[.ds-metric--ficha]
 # Known Limitations
 
 - Solo `tone="critical"` tiene acento de color PDF (`#ff0404` en el valor). `good` y `watch` no tienen color definido en el PDF.
-- El `font-size: 52px` de `.ds-metric--ficha .ds-metric__value` es un literal marcado (`/* TODO token */`); no hay token de type-scale para esa medida.
+- El `font-size: 26px` (display) de `.ds-metric--ficha .ds-metric__value` es un literal marcado (`/* TODO token */`); no hay token de type-scale para esa medida.
 - No expone prop `icon`, `children`, slots de acciones ni pie de tarjeta.
 - No formatea ni localiza valores numéricos.
 - `.ds-metric__topline` no tiene reglas CSS propias; actúa solo como contenedor estructural.
@@ -517,9 +517,9 @@ div.ds-metric.ds-metric--{tone}[.ds-metric--ficha]
 # Future Improvements
 
 - [ ] Acentos PDF para `good` / `watch` si el diseño los define
-- [x] Variante ficha (52pt value) vía `appearance="ficha"`
+- [x] Variante ficha (26px display / 52pt @2×) vía `appearance="ficha"`
 - [ ] Migrar colores hardcodeados a tokens del design system
-- [ ] Tokenizar `52px` de la escala ficha cuando exista type-scale correspondiente
+- [ ] Tokenizar `26px` de la escala ficha cuando exista type-scale correspondiente
 
 ---
 
@@ -528,5 +528,5 @@ div.ds-metric.ds-metric--{tone}[.ds-metric--ficha]
 | Version | Change |
 |----------|--------|
 | 0.1.0 | Implementación inicial de `MetricCard`, `MetricCardProps` y `MetricTone` con estilos `ds-metric` y stories en Storybook (`Playground`, `Tones`). Uso en `Components.stories.tsx` → `OperationsConsole` y `apps/web/src/App.tsx`. |
-| 0.1.0 | Refinamiento visual PDF (MÉTRICAS reporting): borde `#e6e6e6` 0.75px, label 16px Bold interlettering 410, value 84px Montserrat Bold, reference Extralight 16px, `critical` → `#ff0404`, sin sombra, Storybook fondo oscuro. |
-| 0.1.0 | Escala ficha aditiva: prop `appearance` (`"reporting" \| "ficha"`), modificador `.ds-metric--ficha` (valor 52px, título Extra Light, fondo transparente), consumo en DetailSheet, story `Reporting vs Ficha`. |
+| 0.1.0 | Refinamiento visual PDF (MÉTRICAS reporting): borde `#e6e6e6` 0.75px, label 16px Bold interlettering 410, value 42px display Montserrat Bold, reference Extralight 8px, `critical` → `#ff0404`, sin sombra, Storybook fondo oscuro. |
+| 0.1.0 | Escala ficha aditiva: prop `appearance` (`"reporting" \| "ficha"`), modificador `.ds-metric--ficha` (valor 26px display, título Extra Light, fondo transparente), consumo en DetailSheet, story `Reporting vs Ficha`. |

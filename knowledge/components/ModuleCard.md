@@ -100,9 +100,9 @@ siempre seguir estas reglas.
 ## Recommendations
 
 - Proporcionar `onClick` cuando la tarjeta deba navegar o ejecutar una acción.
-- Agrupar instancias en un contenedor con grid CSS, como en la story `GridExample` (`repeat(auto-fit, minmax(260px, 1fr))`).
+- Agrupar instancias en un contenedor con grid CSS, como en la story `GridExample` (`repeat(auto-fit, minmax(130px, 1fr))`).
 - Pasar `aria-label` explícito si el título visible no describe suficientemente la acción del botón.
-- Usar iconos de módulo de `packages/ui/src/Icons` (SVG 180×180) como en las stories de Storybook; el CSS los renderiza a 180×180 px.
+- Usar iconos de módulo de `packages/ui/src/Icons` (SVG 180×180 artboard) como en las stories de Storybook; el CSS los renderiza a 90×90 px (display).
 
 ---
 
@@ -164,7 +164,7 @@ No existen variantes públicas. El componente aplica una única apariencia media
 
 ## Default
 
-Única variante visual implementada. Fondo oscuro (`#060606`), borde `#c1c1c1` a `0.75px`, icono centrado 180×180, título Source Code Pro Regular 24px en mayúsculas, divisor `#8a8b87` a `0.75px`, y filas de métricas Montserrat (label Light / value Bold) a 16px.
+Única variante visual implementada. Fondo oscuro (`#060606`), borde `#c1c1c1` a `0.75px`, icono centrado 90×90 (display), título Source Code Pro Regular 12px en mayúsculas, divisor `#8a8b87` a `0.75px`, y filas de métricas Montserrat (label Light / value Bold) a 8px (display).
 
 ---
 
@@ -172,7 +172,7 @@ No existen variantes públicas. El componente aplica una única apariencia media
 
 | State | Description |
 |--------|-------------|
-| Default | Apariencia base de `.ds-module-card`. `min-width: 260px`, `min-height: 260px`, padding `50px 20px 25px 20px`, borde `0.75px solid #c1c1c1`. |
+| Default | Apariencia base de `.ds-module-card`. `min-width: 130px`, `min-height: 130px`, padding `25px 10px 12.5px 10px` (display), borde `0.75px solid #c1c1c1`. |
 | Hover | Borde `#ffffff`, sombra `0 16px 42px rgb(0 0 0 / 0.22)`, `transform: translateY(-2px)`. |
 | Focus-visible | `outline: none`, anillo de enfoque `box-shadow: 0 0 0 3px rgb(193 193 193 / 0.35)`. |
 | Disabled | Atributo `disabled` nativo del `<button>` vía `...props`. Sin reglas CSS específicas en `.ds-module-card:disabled`. |
@@ -211,13 +211,13 @@ Describe solo el comportamiento accesible implementado por el componente.
 
 Documenta solo el comportamiento responsivo implementado por el componente mismo.
 
-`ModuleCard` no define media queries. Impone `min-width: 260px` y `min-height: 260px` en `.ds-module-card`.
+`ModuleCard` no define media queries. Impone `min-width: 130px` y `min-height: 130px` (display) en `.ds-module-card`.
 
 | Contexto | Behavior |
 |----------|----------|
 | Componente | Sin breakpoints. Tamaño mínimo fijo; el ancho efectivo lo define el contenedor padre. |
-| Storybook `GridExample` | Contenedor padre con `gridTemplateColumns: repeat(auto-fit, minmax(260px, 1fr))` y `gap: 20`; el colapso responsivo depende del grid del padre, no del componente. |
-| Icono `<img>` / `svg` | `.ds-module-card__icon img` y `svg` fijan `height` y `width` a 180px con `object-fit: contain`. |
+| Storybook `GridExample` | Contenedor padre con `gridTemplateColumns: repeat(auto-fit, minmax(130px, 1fr))` y `gap: 20`; el colapso responsivo depende del grid del padre, no del componente. |
+| Icono `<img>` / `svg` | `.ds-module-card__icon img` y `svg` fijan `height` y `width` a 90px (display) con `object-fit: contain`. |
 
 ---
 
@@ -279,7 +279,7 @@ Documenta solo el comportamiento responsivo implementado por el componente mismo
 
 ## Icons
 
-- Demos de Storybook usan `<img src={Icons.*Icon} alt="" />` importados desde `../Icons` (SVG de módulo 180×180). El CSS renderiza el icono a 180×180 px. Stories usan fondo oscuro `#060606` para alinear el contraste con el PDF.
+- Demos de Storybook usan `<img src={Icons.*Icon} alt="" />` importados desde `../Icons` (SVG de módulo 180×180 artboard). El CSS renderiza el icono a 90×90 px (display). Stories usan fondo oscuro `#060606` para alinear el contraste con el PDF.
 - Cualquier `ReactNode` es válido en `icon`; el contenedor reserva `min-height: 140px` centrado.
 
 ## Localization
@@ -328,7 +328,7 @@ No existen variantes públicas. Todas las instancias usan la apariencia por defe
   style={{
     display: "grid",
     gap: 20,
-    gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))",
     width: "100%"
   }}
 >
@@ -492,4 +492,4 @@ button.ds-module-card
 | Version | Change |
 |----------|--------|
 | 0.1.0 | Implementación inicial de `ModuleCard`, `ModuleCardProps` y `ModuleMetric` con estilos `ds-module-card` y stories en Storybook. |
-| 0.1.0 | Refinamiento visual PDF (MÓDULOS): padding superior 50px, título 24px Regular, métricas Montserrat 16px Light/Bold, icono 180×180, divisor 0.75px, hover/focus sin teal, Storybook en fondo oscuro. |
+| 0.1.0 | Refinamiento visual PDF (MÓDULOS): padding superior 25px display, título 12px Regular, métricas Montserrat 8px Light/Bold, icono 90×90 display, divisor 0.75px, hover/focus sin teal, Storybook en fondo oscuro. |

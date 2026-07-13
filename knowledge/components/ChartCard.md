@@ -153,7 +153,7 @@ Describe every public visual variant.
 
 ## Default
 
-Única apariencia visual implementada en CSS mediante `.ds-chart-card` y sus elementos internos. Fondo semitransparente, borde gris, radio extra pequeño, layout en grid con `gap: 10px`, `min-width: 220px` y cuerpo con `min-height: 120px` centrado en flex.
+Única apariencia visual implementada en CSS mediante `.ds-chart-card` y sus elementos internos. Fondo semitransparente, borde gris, radio extra pequeño, layout en grid con `gap: 5px`, `min-width: 110px` y cuerpo con `min-height: 60px` (display scale) centrado en flex.
 
 No existen props de variante visual; `title`, `footer` y el contenido de `children` determinan el aspecto funcional, no variantes de estilo.
 
@@ -165,7 +165,7 @@ No existen props de variante visual; `title`, `footer` y el contenido de `childr
 |--------|-------------|
 | Default | Apariencia base de `.ds-chart-card`. Sin estados `:hover`, `:focus`, `:active` ni `:disabled` definidos en CSS. |
 | With children | El cuerpo centra su contenido con `display: flex`, `justify-content: center` y `align-items: center`. |
-| Empty body | Si `children` es `null` o vacío, el cuerpo conserva `min-height: 120px` sin contenido visible. |
+| Empty body | Si `children` es `null` o vacío, el cuerpo conserva `min-height: 60px` display sin contenido visible. |
 
 ---
 
@@ -199,7 +199,7 @@ Describe only accessibility behavior implemented by the component.
 
 Document only responsive behavior implemented by the component itself.
 
-`ChartCard` no define media queries. Impone `min-width: 220px` en `.ds-chart-card` y `min-height: 120px` en `.ds-chart-card__body`; el ancho efectivo lo define el contenedor padre.
+`ChartCard` no define media queries. Impone `min-width: 110px` en `.ds-chart-card` y `min-height: 60px` en `.ds-chart-card__body`; el ancho efectivo lo define el contenedor padre.
 
 | Contexto | Behavior |
 |----------|----------|

@@ -177,7 +177,7 @@ Describe every public visual variant.
 
 ## Default
 
-Única apariencia visual implementada. Línea con trazo de 2px, área con opacidad 0.18, rejilla horizontal sutil (`stroke: rgb(255 255 255 / 0.08)`), puntos circulares de radio 3, etiquetas en mayúsculas vía CSS (`.ds-line-chart__label`), color teal por defecto.
+Única apariencia visual implementada. Línea con trazo de 1px display (era 2), área con opacidad 0.18, rejilla horizontal sutil (`stroke: rgb(255 255 255 / 0.08)`), puntos circulares de radio 3, etiquetas en mayúsculas vía CSS (`.ds-line-chart__label`), color teal por defecto.
 
 La prop `color` permite cambiar el acento de área, línea y puntos sin variante de componente adicional.
 

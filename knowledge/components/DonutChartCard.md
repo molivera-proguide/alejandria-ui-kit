@@ -186,7 +186,7 @@ Describe every public visual variant.
 
 ## Default
 
-Única apariencia visual implementada. Anillo con `STROKE = 14`, segmentos con `strokeLinecap="butt"`, track semitransparente, layout relativo con SVG desplazado (`left: 90px`, `width: 120px`) y stats en posición absoluta (primaria centrada verticalmente a la derecha; secundaria abajo a la izquierda).
+Única apariencia visual implementada. Anillo con `STROKE = 14`, segmentos con `strokeLinecap="butt"`, track semitransparente, layout relativo con SVG desplazado (`left: 45px`, `width: 60px` display) y stats en posición absoluta (primaria centrada verticalmente a la derecha; secundaria abajo a la izquierda).
 
 La personalización por segmento (`DonutChartDatum.color`) y la presencia opcional de `primaryStat` / `secondaryStat` no constituyen variantes de componente; son configuración de datos y contenido.
 
@@ -237,7 +237,7 @@ Describe only accessibility behavior implemented by the component.
 
 Document only responsive behavior implemented by the component itself.
 
-`DonutChartCard` no define media queries. El layout usa posicionamiento absoluto fijo para stats (`.ds-donut-chart__stat--primary`, `--secondary`) y SVG con ancho fijo de `120px` desplazado con `left: 90px`. El contenedor `.ds-donut-chart__layout` tiene `min-height: 132px` y `width: 100%`.
+`DonutChartCard` no define media queries. El layout usa posicionamiento absoluto fijo para stats (`.ds-donut-chart__stat--primary`, `--secondary`) y SVG con ancho fijo de `60px` display desplazado con `left: 45px`. El contenedor `.ds-donut-chart__layout` tiene `min-height: 66px (display)` y `width: 100%`.
 
 | Contexto | Behavior |
 |----------|----------|
@@ -450,7 +450,7 @@ Only include tokens directly consumed by the component.
 | `--ds-color-coral` | color | Color por defecto de segmento (índice 4) |
 | `--ds-font-body` | typography | `font-family` de `.ds-donut-chart__stat strong` y `span` |
 
-Nota: el track usa `stroke: #8a8b87` hardcodeado. Los colores de stats (`#fff`, `#8a8b87`) están hardcodeados. Posiciones del SVG (`left: 90px`) y stats son fijas en CSS. `ChartCard` aporta tokens adicionales en el contenedor.
+Nota: el track usa `stroke: #8a8b87` hardcodeado. Los colores de stats (`#fff`, `#8a8b87`) están hardcodeados. Posiciones del SVG (`left: 45px` display) y stats son fijas en CSS. `ChartCard` aporta tokens adicionales en el contenedor.
 
 ---
 

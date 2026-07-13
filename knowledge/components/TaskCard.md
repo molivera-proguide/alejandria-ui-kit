@@ -75,8 +75,8 @@ Documenta los comportamientos públicos en los que el consumidor puede confiar.
 - Acento de esquina superior derecha obligatorio en `variant="default"` vía `.ds-task::before`, coloreado por `--task-accent` según `tone`. **No se renderiza en `variant="kanban"`.**
 - `code` y `title` obligatorios en la firma de props; siempre renderizados en el DOM.
 - `status` por defecto `"En espera"`; `meta` por defecto `[]`; `progress` por defecto `0`; `tone` por defecto `"neutral"`; `variant` por defecto `"default"`.
-- **Variante `default` (canónica):** jerarquía identificador → estado → título → descripción → metadatos; `max-width: 240px`; `padding: 15px 10px`; `gap: 12px`.
-- **Variante `kanban`:** layout compacto con proporciones apaisadas; solo muestra título, hasta dos entradas de `meta`, identificador y estado; no renderiza `description`; `max-width: 300px`; `padding: 10px`; `gap: 6px`.
+- **Variante `default` (canónica):** jerarquía identificador → estado → título → descripción → metadatos; `max-width: 120px`; `padding: 7.5px 5px`; `gap: 8px` (display scale).
+- **Variante `kanban`:** layout compacto con proporciones apaisadas; solo muestra título, hasta dos entradas de `meta`, identificador y estado; no renderiza `description`; `max-width: 140px`; `padding: 5px`; `gap: 2.5px` (display; CSS prior 280/10/5 @2×).
 - **Sin visualización de progreso:** no se renderiza barra, porcentaje ni espacio reservado para avance.
 - Fusión de `className` externa y `style` externo en el `<article>` raíz.
 - Repaso de atributos nativos de `HTMLAttributes<HTMLElement>` al `<article>` vía `...props` (`id`, `data-*`, `aria-*`, etc.).
@@ -165,7 +165,7 @@ Tipos exportados:
 |------|------|----------|----------|-------------|
 | `code` | `string` | — | sí | Identificador de la tarea. Renderizado en `<span class="ds-task__code">` dentro del encabezado (primer nivel de jerarquía). |
 | `title` | `string` | — | sí | Título principal de la tarea. Renderizado en `<h3 class="ds-task__title">`. Mayúsculas vía CSS (`text-transform: uppercase`). |
-| `status` | `string` | `"En espera"` | no | Estado operativo. Renderizado en `<span class="ds-task__status">` como bloque independiente bajo el encabezado. Source Code Bold 20px `#ffffff`, mayúsculas vía CSS. |
+| `status` | `string` | `"En espera"` | no | Estado operativo. Renderizado en `<span class="ds-task__status">` como bloque independiente bajo el encabezado. Source Code Bold 9px display (CSS status was 18px @2× → 9px) `#ffffff`, mayúsculas vía CSS. |
 | `description` | `string` | — | no | Información secundaria. Renderizada en `<p class="ds-task__description">` solo si es truthy. |
 | `meta` | `string[]` | `[]` | no | Metadatos adicionales. Cada elemento renderizado como `<span>` en `.ds-task__meta` si el arreglo no está vacío. |
 | `progress` | `number` | `0` | no | **Legacy — sin salida visual.** Conservada por compatibilidad de API; el componente no renderiza indicadores de avance. |
@@ -197,8 +197,8 @@ Implementación de referencia. Corresponde a la sección superior del PDF.
 | Aspecto | Especificación |
 |---------|----------------|
 | Jerarquía | Identificador → estado → título → descripción → metadatos |
-| Proporciones | `max-width: 240px`, `width: fit-content`, espaciado vertical generoso (`gap: 12px`) |
-| Padding | `15px 10px` (PDF) |
+| Proporciones | `max-width: 120px`, `width: fit-content`, gap display `8px` |
+| Padding | `7.5px 5px` display (PDF 15/10 @2×) |
 | Contenido | Renderiza `description` y todas las entradas de `meta` cuando están presentes |
 | Acento | `.ds-task::before` obligatorio en `default`, color según `tone` |
 
@@ -209,8 +209,8 @@ Presentación alternativa compacta. Corresponde a la sección inferior del PDF (
 | Aspecto | Especificación |
 |---------|----------------|
 | Jerarquía | Título → metadatos (máx. 2) → identificador → estado |
-| Proporciones | `max-width: 300px`, densidad reducida (`gap: 6px`), layout apaisado |
-| Padding | `10px` |
+| Proporciones | `max-width: 140px` display, densidad reducida (`gap: 2.5px`), layout apaisado |
+| Padding | `5px` display |
 | Contenido | Solo título, primeras dos entradas de `meta`, `code` y `status`; **no** renderiza `description` |
 | Acento | Sin acento de esquina (PDF Kanban) |
 
@@ -218,7 +218,7 @@ Presentación alternativa compacta. Corresponde a la sección inferior del PDF (
 
 Cuatro tonos públicos mediante modificadores BEM y variable CSS local `--task-accent`.
 
-**Acento de esquina obligatorio:** `.ds-task::before` renderiza un triángulo recortado en la esquina superior derecha (`38×38px`, rotado 45°). Es un elemento de identidad visual del PDF y no debe eliminarse.
+**Acento de esquina obligatorio:** `.ds-task::before` renderiza un triángulo recortado en la esquina superior derecha (`19×19px` display, rotado 45°). Es un elemento de identidad visual del PDF y no debe eliminarse.
 
 | Tone | Acento (`--task-accent`) | Regla CSS |
 |------|--------------------------|-----------|
@@ -534,7 +534,7 @@ Only include tokens directly consumed by the component.
 | `--ds-color-amber` | color | `--task-accent` en `.ds-task--warning` |
 | `--ds-color-danger` | color | `--task-accent` en `.ds-task--danger` |
 
-Nota: `--task-accent` alimenta `.ds-task::before` solo en `variant="default"`. Tipografía refinada: identificador 14px/400 `#8a8b87`; estado 18px/700; título 20px/700; descripción 16px/300; meta 14px/400. `gap: 16px` en default.
+Nota: `--task-accent` alimenta `.ds-task::before` solo en `variant="default"`. Tipografía refinada: identificador 7px/400; estado 9px/700; título 8px/300; descripción 8px/300; meta 7px/400 (display). `gap: 8px` en default.
 
 ---
 

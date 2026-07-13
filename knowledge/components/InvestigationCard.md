@@ -71,7 +71,7 @@ Documenta los comportamientos públicos en los que el consumidor puede confiar.
 - Renderizado como `<article>` con clase `ds-investigation-card` y modificador `ds-investigation-card--with-utilities` cuando `utilities` contiene al menos una entrada.
 - `title`, `icon` y `metrics` obligatorios en la firma de props; `actions` por defecto `[]`.
 - Cada entrada de `metrics` renderizada como celda con valor (`.ds-investigation-card__metric-value`) sobre etiqueta (`.ds-investigation-card__metric-label`) en cuadrícula 2 columnas.
-- Utilidades renderizadas desde `utilities` en orden canónico (`edit`, `delete`, `close`); iconos SVG 20×20 del set Cards (Editar, Eliminar, Cerrar).
+- Utilidades renderizadas desde `utilities` en orden canónico (`edit`, `delete`, `close`); iconos SVG 10×10 display (PDF 20×20 @2×) del set Cards (Editar, Eliminar, Cerrar).
 - Acciones inferiores renderizadas desde `actions`; cada una como `<button>` con clases `ds-investigation-card__action` y `ds-investigation-card__action--{variant}`.
 - Contenedor del icono principal con `aria-hidden="true"`.
 - Fusión de `className` externa y `style` externo en el `<article>` raíz.
@@ -100,7 +100,7 @@ siempre seguir estas reglas.
 - Importar desde `@alejandria/ui-kit` y cargar `styles.css` del paquete (`@alejandria/ui-kit/style.css`).
 - Proporcionar `title` como `string`, `icon` como `ReactNode` y `metrics` como arreglo de `{ label: string; value: string | number }`.
 - Consultar `knowledge/references/design-reference.pdf` (TARJETAS p. 2) antes de modificar estilos o jerarquía.
-- Usar iconos del set Investigations (50×50) para el icono principal, como en las stories.
+- Usar iconos del set Investigations (25×25 display; artboard 50×50) para el icono principal, como en las stories.
 
 ## Forbidden
 
@@ -168,7 +168,7 @@ Tipos exportados:
 | `icon` | `ReactNode` | — | sí | Icono identificador de la investigación. Renderizado en `.ds-investigation-card__icon` con `aria-hidden="true"`. |
 | `metrics` | `InvestigationMetric[]` | — | sí | Métricas resumidas en cuadrícula 2×2. Cada celda muestra valor sobre etiqueta. |
 | `actions` | `InvestigationAction[]` | `[]` | no | Acciones inferiores. Cada entrada renderiza un botón con estilos PDF locales. |
-| `utilities` | `InvestigationUtility[]` | — | no | Utilidades de esquina superior derecha. Cada entrada renderiza un botón con icono SVG 20×20 según `type`. |
+| `utilities` | `InvestigationUtility[]` | — | no | Utilidades de esquina superior derecha. Cada entrada renderiza un botón con icono SVG 10×10 display según `type`. |
 | `onEdit` | `MouseEventHandler<HTMLButtonElement>` | — | no | **Deprecado.** Usar `utilities={[{ type: "edit", onClick }]}`. |
 | `onDelete` | `MouseEventHandler<HTMLButtonElement>` | — | no | **Deprecado.** Usar `utilities={[{ type: "delete", onClick }]}`. |
 | `onClose` | `MouseEventHandler<HTMLButtonElement>` | — | no | **Deprecado.** Usar `utilities={[{ type: "close", onClick }]}`. |
@@ -213,7 +213,7 @@ No existen variantes de layout públicas. El componente aplica una única aparie
 
 | Variant | Apariencia | Clase CSS |
 |---------|------------|-----------|
-| `primary` | Fondo `#494949`, texto `#ffffff`, padding `5px 20px` | `.ds-investigation-card__action--primary` |
+| `primary` | Fondo `#494949`, texto `#ffffff`, padding `2.5px 10px` (display) | `.ds-investigation-card__action--primary` |
 | `ghost` | Fondo transparente, texto `#ffffff` | `.ds-investigation-card__action--ghost` |
 
 ---
@@ -222,8 +222,8 @@ No existen variantes de layout públicas. El componente aplica una única aparie
 
 | State | Description |
 |--------|-------------|
-| Default | Apariencia base de `.ds-investigation-card`. Fondo `rgb(0 0 0 / 0.7)`, borde `0.75px solid #606060`, padding `15px 10px`. |
-| With utilities | Cuando `utilities.length > 0`. Aplica `ds-investigation-card--with-utilities` y reserva espacio superior derecho para iconos 20×20. |
+| Default | Apariencia base de `.ds-investigation-card`. Fondo `rgb(0 0 0 / 0.7)`, borde `0.75px solid #606060`, padding `7.5px 5px` (display). |
+| With utilities | Cuando `utilities.length > 0`. Aplica `ds-investigation-card--with-utilities` y reserva espacio superior derecho para iconos 10×10 display. |
 | With metrics | Cuando `metrics.length > 0`, renderiza cuadrícula 2 columnas. |
 | Without metrics | Cuando `metrics` está vacío, no renderiza bloque de métricas. |
 | With actions | Cuando `actions.length > 0`, renderiza fila de botones inferiores. |
@@ -294,10 +294,10 @@ Document only responsive behavior implemented by the component itself.
 
 | Contexto | Behavior |
 |----------|----------|
-| Componente | Sin breakpoints. `max-width: 280px`, `width: fit-content`. |
+| Componente | Sin breakpoints. `max-width: 140px (display)`, `width: fit-content`. |
 | Métricas | Cuadrícula `repeat(2, minmax(0, 1fr))`; dos columnas fijas. |
 | Acciones | `flex-wrap: wrap` permite que botones pasen a varias líneas si el ancho es insuficiente. |
-| Storybook `GridExample` | Contenedor padre con `gridTemplateColumns: repeat(auto-fit, minmax(260px, 1fr))`. |
+| Storybook `GridExample` | Contenedor padre con `gridTemplateColumns: repeat(auto-fit, minmax(130px, 1fr))`. |
 
 ---
 
@@ -359,8 +359,8 @@ Document only responsive behavior implemented by the component itself.
 
 ## Icons
 
-- Icono principal: set Investigations 50×50 (`AvionIcon`, `AutoIcon`, `PersonaIcon`, etc.) desde `packages/ui/src/Icons`.
-- Utilidades: iconos Cards 20×20 embebidos por el componente (Editar, Eliminar, Cerrar).
+- Icono principal: set Investigations 25×25 display (artboard 50×50) (`AvionIcon`, `AutoIcon`, `PersonaIcon`, etc.) desde `packages/ui/src/Icons`.
+- Utilidades: iconos Cards 10×10 display embebidos por el componente (Editar, Eliminar, Cerrar).
 
 ## Localization
 
@@ -417,7 +417,7 @@ import { AvionIcon } from "../Icons"; // o ruta al asset en la app consumidora
   style={{
     display: "grid",
     gap: 16,
-    gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))"
+    gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))"
   }}
 >
   {investigations.map((item) => (
@@ -470,7 +470,7 @@ Only include tokens directly consumed by the component.
 | `#c1c1c1` | color | Etiquetas de métrica (`.ds-investigation-card__metric-label`) |
 | `#494949` | color | Fondo de acción primaria |
 | `--ds-radius-xs` | radius | `border-radius` de `.ds-investigation-card` |
-| `--ds-font-mono` | typography | `.ds-investigation-card__title` (Source Code Pro Light 13pt) |
+| `--ds-font-mono` | typography | `.ds-investigation-card__title` (Source Code Pro Light 6.5pt display (13pt @2× ÷2)) |
 | `--ds-font-body` | typography | Valores, etiquetas y acciones (Montserrat Bold/Extralight) |
 
 ---
