@@ -117,6 +117,75 @@ Consistency is more important than personal preference.
 
 ---
 
+---
+
+# Rule 08
+
+## Contextual Styling
+
+A component may have different visual appearances across contexts.
+
+Contextual styling is preferred when:
+
+- semantic meaning is identical
+- structure is identical
+- interaction is identical
+
+Do NOT create a new component solely because:
+
+- colors change
+- spacing changes
+- typography scale changes
+- borders change
+
+Prefer contextual CSS or documented variants over component duplication.
+
+---
+
+---
+
+# Rule 09
+
+## Preserve Component Identity
+
+A component should be reused only when its semantic role remains the same.
+
+Visual adaptations are acceptable.
+
+Semantic changes are not.
+
+Ask:
+
+- Does it communicate the same information?
+- Does it serve the same purpose?
+- Does it expose the same interaction?
+
+If the answer is YES:
+
+Reuse the component.
+
+If the answer is NO:
+
+Create a different component instead of forcing reuse.
+
+---
+
+---
+
+# Rule 10
+
+## Composition Before Specialization
+
+When implementing a Pattern:
+
+Prefer composing existing Design System components.
+
+Do not specialize a component until composition has proven insufficient.
+
+A Pattern should describe how components work together,
+not redefine how they behave.
+
+
 # Decision Order
 
 When introducing a visual value:
