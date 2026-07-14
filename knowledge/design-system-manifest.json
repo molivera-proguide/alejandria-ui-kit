@@ -398,6 +398,11 @@
       "path": "knowledge/roadmap.md"
     },
     {
+      "id": "distribution-readiness",
+      "name": "Distribution & Portability Readiness Assessment",
+      "path": "knowledge/distribution-readiness.md"
+    },
+    {
       "id": "agent-playbook",
       "name": "Agent Playbook",
       "path": "knowledge/agent-playbook.md"
