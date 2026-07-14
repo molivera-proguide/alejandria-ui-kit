@@ -79,6 +79,7 @@ Stories use fixed decorator widths (`minWidth: 420` for Card stories; panel sits
 
 ## Related patterns
 
+- [Mission](./mission.md) (live evacuation overlay)
 - [Operations Console](./operations-console.md)
 - [Command Header](./command-header.md)
 - [Task Board](./task-board.md)
@@ -87,7 +88,7 @@ Stories use fixed decorator widths (`minWidth: 420` for Card stories; panel sits
 ## Known limitations
 
 - Three body layouts exist across Storybook and demo app without a shared `MissionPanel` component.
-- Map-overlay variant (`ops-map__panel`) lives only in `apps/web`, not Storybook.
+- Compact map-overlay variant (`ops-map__panel`) lives in `apps/web`; the expanded live evacuation overlay is the [Mission](./mission.md) Storybook pattern.
 - Inline typography for stats does not use `MetricCard`.
 - Not a full Ficha (detail sheet) screen.
 ---

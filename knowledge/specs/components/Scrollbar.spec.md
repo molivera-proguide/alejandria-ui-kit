@@ -42,6 +42,10 @@
 | .ds-scrollbar__thumb | thumb chrome + position calc | styles.css:1557 | yes |
 | (no BEM modifiers) | — | knowledge/components/Scrollbar.md | n/a |
 
+## Related: `.ds-scroll-area` utility (not this component)
+
+`Scrollbar` is a **visual indicator** (props drive thumb position). For a region that actually scrolls, apply `.ds-scroll-area` (optional `.ds-scroll-area--x` / `--y`) in `styles.css` — native overflow styled with `--ds-color-pdf-action` thumb, transparent track, WebKit thickness **7.5px** (same as `.ds-scrollbar` track width). Documented in [Scrollbar.md](../../components/Scrollbar.md). Firefox: thin + color only (no pill radius).
+
 ## Deltas & open questions (facts only — DO NOT resolve)
 - PDF track height 242.76 and thumb height 42.16 are demo pose sizes; CSS track uses `height: 100%`, thumb height via `--ds-scrollbar-thumb-size` default 17.4% (styles.css:1547).
 - PDF left/right thumb insets differ slightly (2.889 vs 3.216 artboard px); CSS uses symmetric 1.5 display px.

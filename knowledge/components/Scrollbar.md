@@ -45,6 +45,7 @@ Describe:
 - **Responsabilidad principal:** mostrar el chrome de desplazamiento vertical fiel a la referencia (track + thumb).
 - **Problema que resuelve:** unificar la apariencia PDF del scrollbar sin reinventar geometría ni colores por pantalla.
 - **Alcance:** componente presentacional controlado por props (`value`, `thumbSize`); no envuelve contenido scrollable ni gestiona overflow.
+- **`Scrollbar` is a visual indicator.** For a real scroll region that scrolls with native overflow, use the `.ds-scroll-area` utility in `packages/ui/src/styles.css` (WebKit pill thumb + Firefox `scrollbar-color`; see Known Limitations for the Firefox constraint).
 
 Exclude:
 
@@ -224,7 +225,8 @@ Tipos exportados:
 
 ## Alternatives
 
-- Scroll nativo del navegador — no reproduce el chrome MISCELÁNEAS.
+- **`.ds-scroll-area`** — utilidad CSS sobre overflow nativo (scroll real; thumb estilizado). Usar cuando la región debe desplazarse con rueda/touch/teclado.
+- Scroll nativo sin clase — no reproduce el chrome Alejandría.
 - `Switch` — toggle booleano; no es scrollbar.
 
 ---
@@ -233,6 +235,7 @@ Tipos exportados:
 
 | Component | Relationship |
 |-----------|--------------|
+| `.ds-scroll-area` (utility) | Scroll funcional nativo con look kit; no sustituye este indicador decorativo ni al revés. |
 | `Switch` | También usa track/thumb en BEM, pero rol booleano distinto; no reutilizar identidad. |
 | `ProgressRing` | Indicador presentacional con `value` 0–100; dominio distinto (progreso, no scroll). |
 | `AlertBanner` | Aparece en la misma página PDF MISCELÁNEAS; no hay composición interna. |
@@ -282,8 +285,9 @@ No hay variantes visuales públicas; variar solo `value` y `thumbSize`.
 ## Composition
 
 ```tsx
+{/* Overflow real: .ds-scroll-area. Indicador decorativo opcional: <Scrollbar /> */}
 <div style={{ display: "flex", gap: 8, height: 240 }}>
-  <div id="panel" style={{ flex: 1, overflow: "auto" }}>
+  <div id="panel" className="ds-scroll-area ds-scroll-area--y" style={{ flex: 1 }}>
     {/* contenido */}
   </div>
   <Scrollbar
@@ -360,8 +364,9 @@ Scale: display px = PDF vector ÷ 2 (`knowledge/specs/README.md`).
 
 - Solo orientación vertical (única en la referencia).
 - Sin interacción de arrastre/teclado integrada.
-- No estiliza `::-webkit-scrollbar` de un overflow padre; es chrome independiente.
+- No estiliza `::-webkit-scrollbar` de un overflow padre; es chrome independiente. Para overflow real, usar `.ds-scroll-area`.
 - `thumbSize` mínimo de clamp en TS es 8; la referencia PDF usa ≈17.4.
+- **`.ds-scroll-area` / Firefox:** solo `scrollbar-width: thin` + `scrollbar-color` (sin `border-radius` pill). WebKit obtiene el thumb cápsula a 7.5px (mismo espesor que `.ds-scrollbar`).
 
 ---
 
@@ -377,3 +382,4 @@ Scale: display px = PDF vector ÷ 2 (`knowledge/specs/README.md`).
 | Version | Change |
 |----------|--------|
 | 0.1.0 | Alta inicial desde PDF MISCELÁNEAS p.13. |
+| 0.1.0 | Doc: distingue indicador vs utilidad `.ds-scroll-area` (sin cambio de comportamiento). |

@@ -1567,6 +1567,44 @@
     pointer-events: none;
   }
 
+  /**
+   * Functional scroll chrome: styles native overflow to match Alejandría scrollbar look.
+   * Pair with `.ds-scrollbar` (decorative indicator only). Firefox: thin + color only (no pill).
+   */
+  .ds-scroll-area {
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--ds-color-pdf-action) transparent;
+  }
+
+  .ds-scroll-area::-webkit-scrollbar {
+    width: 7.5px; /* match .ds-scrollbar track thickness */
+    height: 7.5px;
+  }
+
+  .ds-scroll-area::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .ds-scroll-area::-webkit-scrollbar-thumb {
+    background: var(--ds-color-pdf-action);
+    border-radius: var(--ds-radius-pill);
+  }
+
+  .ds-scroll-area::-webkit-scrollbar-thumb:hover {
+    background: var(--ds-color-pdf-action-hover);
+  }
+
+  .ds-scroll-area--x {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .ds-scroll-area--y {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
   @keyframes ds-spin {
     to {
       transform: rotate(360deg);

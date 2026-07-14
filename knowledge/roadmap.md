@@ -35,7 +35,7 @@ inputs and (b) one deterministic way to decide.
 | M3 | Reasoning Spine | Unified entry point; one decision order; selection + reuse | ✅ Done |
 | M4 | Contracts & Archetype | The structural skeleton every component takes | ✅ Done (validated by the scrollbar eval) |
 | M5 | Fidelity | Raise components to PDF display scale | 🔄 Substantially done (eval-driven, out of order) |
-| M6 | Grammar, Contrast & Validation | Generalize the "why"; teach right-vs-wrong; validate | ✅ Done (built; eval-validation pending) |
+| M6 | Grammar, Contrast & Validation | Generalize the "why"; teach right-vs-wrong; validate | ✅ Done (eval-validated — eval 5) |
 
 ---
 
@@ -100,6 +100,7 @@ failures reprioritize the roadmap.
 | 2 | Build Modal (PDF p11) | **Reused** `variant="pdf"`/`appearance="pdf"` unprompted (via reasoning taxonomy + code + precedent) → recurrence closed |
 | 3 | Build Fichas (PDF p4, clean-room) | Discovered `appearance="ficha"` from docs, **but still "too big"** → surfaced the @2× foundation flaw |
 | 4 | Build a **new** component (Scrollbar, PDF p13) | Followed the archetype unprompted → kit-consistent component (BEM, `cn()`/`...props`/exported types, no `forwardRef`, ARIA, token reuse, ProgressRing-style runtime vars) **with the full knowledge loop** (doc+spec+manifest) → **validates M4** |
+| 5 | Generate a **no-reference** screen (Mission/Evacuación, capstone) | Produced a faithful Alejandría screen it never saw + reused 6 components + reported gaps + **ran the fidelity self-check unprompted** → **validates M6 extrapolation**. Findings: context mis-classification (console vs PDF); the p13 `Scrollbar` is decorative-only → shipped the functional `.ds-scroll-area` utility; the panel scroll needed a `flex:1; min-height:0` chain the grammar/archetype don't yet cover |
 
 Loop shape that works: **observe → promote → document → regenerate**. Static checks
 (byte-identity, resolved-CSS) cannot catch scale/semantic errors; only rendering a dense screen did.
@@ -136,6 +137,11 @@ Loop shape that works: **observe → promote → document → regenerate**. Stat
 - **Per-element scale drift** — ÷2 fixed the systemic 2×; individual elements (annotation vs drawn)
   may want ±small tuning.
 - **Donut label placement** polish.
+- **From eval 5 (M6 capstone):** (a) the `Scrollbar` (p13) is decorative-only — the functional
+  `.ds-scroll-area` utility now covers real scroll regions (a functional `ScrollArea` wrapper could
+  follow if reused); (b) grammar could give a sharper **console-vs-PDF context** rule (the agent
+  mis-classified Mission); (c) candidate archetype/grammar note: scroll regions need a
+  `flex:1; min-height:0` chain (the layout bug the agent didn't foresee). Mission pattern kept.
 - **Specs `partial → measured`** — most specs still lack PDF page citations (pdf-text-extract now
   makes this cheap/exact).
 
@@ -173,7 +179,8 @@ Loop shape that works: **observe → promote → document → regenerate**. Stat
 - `e921371` — roadmap refresh (post-2026-07-13 session)
 - `c3005bd` — M4 component archetype + anatomy-contract audit
 - `e280317` — Scrollbar component (M4 eval keeper) + roadmap tick
-- *(next)* — M6 grammar / anti-examples / fidelity-validation + this roadmap tick
+- `2d0679f` — M6 grammar / anti-examples / fidelity-validation + roadmap tick
+- *(this commit)* — Mission pattern (M6 capstone keeper) + `.ds-scroll-area` functional scroll utility + eval-5 tick
 
 ---
 
