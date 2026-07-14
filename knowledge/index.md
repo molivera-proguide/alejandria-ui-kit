@@ -41,7 +41,7 @@ knowledge/
 ├── specs/                        ← M1 numeric specs + token inventory
 ├── tokens/                       ← M2 token plan, migration map, overview
 ├── guidelines/                   ← M2 design language
-├── reasoning/                    ← M3 decision order, selection, reuse rubric
+├── reasoning/                    ← M3 decision order, selection, reuse; M4 archetype
 ├── templates/                    ← doc templates (authoring aid)
 └── audit/                        ← inventory, coverage, visual, pattern, roadmap audits
 ```
@@ -54,7 +54,7 @@ knowledge/
 | `specs/` | Documented | Schema, tokens inventory, per-component `*.spec.md` (M1) |
 | `tokens/` | Documented | `README.md`, `token-plan.md`, `migration-map.md` (M2) |
 | `guidelines/` | Documented | `design-language.md` (M2) |
-| `reasoning/` | Documented | Decision order, component selection, reuse rubric (M3) |
+| `reasoning/` | Documented | Decision order, selection, reuse rubric (M3); component archetype (M4) |
 | `templates/` | Authoring | `component.md` template |
 | `audit/` | Reference | Read-only audits; not product API docs |
 
@@ -190,6 +190,7 @@ Process and decision docs (registered in the manifest `governance[]`):
 | **Decision Order (authoritative)** | [reasoning/decision-order.md](./reasoning/decision-order.md) |
 | Component selection taxonomy | [reasoning/component-selection.md](./reasoning/component-selection.md) |
 | Reuse vs variant vs new | [reasoning/reuse-rubric.md](./reuse-rubric.md) |
+| Component archetype (construction shape) | [reasoning/component-archetype.md](./reasoning/component-archetype.md) |
 
 ---
 
@@ -273,7 +274,7 @@ Mission Panel
 ### How to find the right doc
 
 1. **Start here** (`knowledge/index.md`) or load [`design-system-manifest.json`](./design-system-manifest.json).
-2. **How to decide** → [`reasoning/decision-order.md`](./reasoning/decision-order.md); selection → [`reasoning/component-selection.md`](./reasoning/component-selection.md); reuse → [`reasoning/reuse-rubric.md`](./reasoning/reuse-rubric.md).
+2. **How to decide** → [`reasoning/decision-order.md`](./reasoning/decision-order.md); selection → [`reasoning/component-selection.md`](./reasoning/component-selection.md); reuse → [`reasoning/reuse-rubric.md`](./reasoning/reuse-rubric.md); **building/extending** → [`reasoning/component-archetype.md`](./reasoning/component-archetype.md).
 3. **Component API / behavior** → `knowledge/components/<Name>.md`, then source in `packages/ui/src/components/`.
 4. **Measured values / deltas** → `knowledge/specs/`.
 5. **How pieces are arranged** → `knowledge/patterns/`.
@@ -300,6 +301,7 @@ index / manifest
         → screen (if full page)
             → patterns (regions)
                 → components (API) + specs (numbers)
+                    → if building/extending: reasoning/component-archetype.md
                     → tokens / design-language / styles.css
                         → Storybook story (live example)
 ```

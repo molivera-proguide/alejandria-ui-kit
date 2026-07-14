@@ -21,7 +21,7 @@ Those two sections answered different questions and conflicted when read as a si
 | Component selection | Choose which existing export to use | §3 |
 | Reuse vs variant vs new | Decide whether to extend or invent a component | §4 |
 
-Related: [`component-selection.md`](./component-selection.md), [`reuse-rubric.md`](./reuse-rubric.md).
+Related: [`component-selection.md`](./component-selection.md), [`reuse-rubric.md`](./reuse-rubric.md). After §4 says **new** or **extend**, follow [`component-archetype.md`](./component-archetype.md) for the construction shape.
 
 ---
 
@@ -94,6 +94,7 @@ Goal: grow the system without duplicate identities.
 2. Prefer **reuse** → **add a variant** → **new component** (in that order).
 3. A new component requires a distinct semantic role, not only a layout tweak (Principle 05 — component identity).
 4. Register new artifacts in the manifest before treating them as part of the knowledge base ([index.md](../index.md) ground rules).
+5. **Building / extending:** once reuse vs new is decided, follow [`component-archetype.md`](./component-archetype.md) for DOM/BEM, prop axes, API shape, interaction model, slots, tokens/scale, and a11y.
 
 ---
 

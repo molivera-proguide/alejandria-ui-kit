@@ -20,6 +20,8 @@ last_reviewed: YYYY-MM-DD
 
 # Component Name
 
+Component structure follows `knowledge/reasoning/component-archetype.md`.
+
 ## Purpose
 
 Goal

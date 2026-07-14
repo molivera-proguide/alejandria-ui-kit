@@ -421,6 +421,11 @@
       "id": "reuse-rubric",
       "name": "Reuse vs Variant vs New Rubric",
       "path": "knowledge/reasoning/reuse-rubric.md"
+    },
+    {
+      "id": "component-archetype",
+      "name": "Component Archetype",
+      "path": "knowledge/reasoning/component-archetype.md"
     }
   ]
 }
