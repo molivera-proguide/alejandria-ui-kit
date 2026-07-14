@@ -266,6 +266,10 @@ Stop.
 
 Return to analysis.
 
+**Before declaring implementation done**, run the checkable numeric gate: [`reasoning/fidelity-validation.md`](./reasoning/fidelity-validation.md) (spec comparison, @2× display-scale check, token/reuse check). That document operationalizes this pass; it does not replace Passes 0–9.
+
+Contrastive failure modes: [`guidelines/anti-examples.md`](./guidelines/anti-examples.md).
+
 ---
 
 # Missing Information

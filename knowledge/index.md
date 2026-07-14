@@ -40,8 +40,8 @@ knowledge/
 ├── screens/                      ← Storybook fullscreen screens
 ├── specs/                        ← M1 numeric specs + token inventory
 ├── tokens/                       ← M2 token plan, migration map, overview
-├── guidelines/                   ← M2 design language
-├── reasoning/                    ← M3 decision order, selection, reuse; M4 archetype
+├── guidelines/                   ← M2 design language; M6 visual grammar + anti-examples
+├── reasoning/                    ← M3 decision order, selection, reuse; M4 archetype; M6 fidelity validation
 ├── templates/                    ← doc templates (authoring aid)
 └── audit/                        ← inventory, coverage, visual, pattern, roadmap audits
 ```
@@ -53,8 +53,8 @@ knowledge/
 | `screens/` | Documented | 1 screen (`OperationsConsole`) |
 | `specs/` | Documented | Schema, tokens inventory, per-component `*.spec.md` (M1) |
 | `tokens/` | Documented | `README.md`, `token-plan.md`, `migration-map.md` (M2) |
-| `guidelines/` | Documented | `design-language.md` (M2) |
-| `reasoning/` | Documented | Decision order, selection, reuse rubric (M3); component archetype (M4) |
+| `guidelines/` | Documented | `design-language.md` (M2); visual grammar + anti-examples (M6) |
+| `reasoning/` | Documented | Decision order, selection, reuse rubric (M3); component archetype (M4); fidelity validation (M6) |
 | `templates/` | Authoring | `component.md` template |
 | `audit/` | Reference | Read-only audits; not product API docs |
 
@@ -169,7 +169,9 @@ M2b applied **mechanical** literal→`var()` swaps (byte-identical). Visual-gate
 
 | Doc | Path |
 |-----|------|
-| Design language | [guidelines/design-language.md](./guidelines/design-language.md) |
+| Design language (descriptive) | [guidelines/design-language.md](./guidelines/design-language.md) |
+| Visual grammar (generative) | [guidelines/visual-grammar.md](./guidelines/visual-grammar.md) |
+| Contrastive anti-examples | [guidelines/anti-examples.md](./guidelines/anti-examples.md) |
 
 For historical analysis and prioritization, see `knowledge/audit/` (inventory, coverage, visual audit, pattern audit, roadmap). Audits are reference material, not guidelines. The **active** plan is [`roadmap.md`](./roadmap.md) (not `audit/design-system-roadmap.md`).
 
@@ -186,12 +188,15 @@ Process and decision docs (registered in the manifest `governance[]`):
 | Design principles | [design-principles.md](./design-principles.md) |
 | Design system rules | [design-system-rules.md](./design-system-rules.md) |
 | Anti-patterns | [anti-patterns.md](./anti-patterns.md) |
+| Contrastive anti-examples | [guidelines/anti-examples.md](./guidelines/anti-examples.md) |
 | Visual analysis protocol | [visual-analysis-protocol.md](./visual-analysis-protocol.md) |
+| Visual grammar (generative) | [guidelines/visual-grammar.md](./guidelines/visual-grammar.md) |
 | Reasoning layer overview | [reasoning/README.md](./reasoning/README.md) |
 | **Decision Order (authoritative)** | [reasoning/decision-order.md](./reasoning/decision-order.md) |
 | Component selection taxonomy | [reasoning/component-selection.md](./reasoning/component-selection.md) |
 | Reuse vs variant vs new | [reasoning/reuse-rubric.md](./reuse-rubric.md) |
 | Component archetype (construction shape) | [reasoning/component-archetype.md](./reasoning/component-archetype.md) |
+| Numeric fidelity validation | [reasoning/fidelity-validation.md](./reasoning/fidelity-validation.md) |
 
 ---
 
@@ -275,14 +280,15 @@ Mission Panel
 ### How to find the right doc
 
 1. **Start here** (`knowledge/index.md`) or load [`design-system-manifest.json`](./design-system-manifest.json).
-2. **How to decide** → [`reasoning/decision-order.md`](./reasoning/decision-order.md); selection → [`reasoning/component-selection.md`](./reasoning/component-selection.md); reuse → [`reasoning/reuse-rubric.md`](./reasoning/reuse-rubric.md); **building/extending** → [`reasoning/component-archetype.md`](./reasoning/component-archetype.md).
+2. **How to decide** → [`reasoning/decision-order.md`](./reasoning/decision-order.md); selection → [`reasoning/component-selection.md`](./reasoning/component-selection.md); reuse → [`reasoning/reuse-rubric.md`](./reasoning/reuse-rubric.md); **building/extending** → [`reasoning/component-archetype.md`](./reasoning/component-archetype.md); **generative look** → [`guidelines/visual-grammar.md`](./guidelines/visual-grammar.md); **verify before done** → [`reasoning/fidelity-validation.md`](./reasoning/fidelity-validation.md).
 3. **Component API / behavior** → `knowledge/components/<Name>.md`, then source in `packages/ui/src/components/`.
 4. **Measured values / deltas** → `knowledge/specs/`.
 5. **How pieces are arranged** → `knowledge/patterns/`.
 6. **Full-page composition** → `knowledge/screens/`.
-7. **Visual tokens / vocabulary** → `knowledge/tokens/` and `guidelines/design-language.md`; implemented values in `packages/ui/src/styles.css`.
+7. **Visual tokens / vocabulary** → `knowledge/tokens/` and `guidelines/design-language.md`; generative composition → `guidelines/visual-grammar.md`; implemented values in `packages/ui/src/styles.css`.
 8. **Plan / milestone scope** → [`roadmap.md`](./roadmap.md).
 9. **What is missing or partial** → `knowledge/audit/` (do not treat audits as implemented features).
+10. **Right vs wrong (contrast)** → [`guidelines/anti-examples.md`](./guidelines/anti-examples.md) after [`anti-patterns.md`](./anti-patterns.md).
 
 ### Ground rules
 
@@ -303,8 +309,10 @@ index / manifest
             → patterns (regions)
                 → components (API) + specs (numbers)
                     → if building/extending: reasoning/component-archetype.md
+                    → if producing unseen UI: guidelines/visual-grammar.md
                     → tokens / design-language / styles.css
                         → Storybook story (live example)
+                            → before done: reasoning/fidelity-validation.md
 ```
 
 ### Related audit documents

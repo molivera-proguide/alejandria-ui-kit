@@ -20,8 +20,9 @@ Those two sections answered different questions and conflicted when read as a si
 | New-value introduction | Add or choose a color, space, type, radius, motion value | §2 |
 | Component selection | Choose which existing export to use | §3 |
 | Reuse vs variant vs new | Decide whether to extend or invent a component | §4 |
+| Build / verify a component or screen | Produce faithful UI (incl. unseen) and self-check before “done” | §5 |
 
-Related: [`component-selection.md`](./component-selection.md), [`reuse-rubric.md`](./reuse-rubric.md). After §4 says **new** or **extend**, follow [`component-archetype.md`](./component-archetype.md) for the construction shape.
+Related: [`component-selection.md`](./component-selection.md), [`reuse-rubric.md`](./reuse-rubric.md). After §4 says **new** or **extend**, follow [`component-archetype.md`](./component-archetype.md) for the construction shape. For look without a 1:1 reference layout, apply [`visual-grammar.md`](../guidelines/visual-grammar.md); before done, run [`fidelity-validation.md`](./fidelity-validation.md).
 
 ---
 
@@ -95,6 +96,24 @@ Goal: grow the system without duplicate identities.
 3. A new component requires a distinct semantic role, not only a layout tweak (Principle 05 — component identity).
 4. Register new artifacts in the manifest before treating them as part of the knowledge base ([index.md](../index.md) ground rules).
 5. **Building / extending:** once reuse vs new is decided, follow [`component-archetype.md`](./component-archetype.md) for DOM/BEM, prop axes, API shape, interaction model, slots, tokens/scale, and a11y.
+
+---
+
+## §5 — Build / verify a component or screen
+
+Goal: produce kit-faithful UI (including layouts the PDF never drew) and **prove** numeric fidelity before declaring done. Complements §1 (when matching a reference) and §4 (when shaping a new export).
+
+**Build priority:**
+
+1. **Context** — console/teal vs PDF/reporting ([visual-grammar.md](../guidelines/visual-grammar.md) §1; [design-language.md](../guidelines/design-language.md) §1).
+2. **Generative grammar** — color / type / space / elevation / composition rules in [`visual-grammar.md`](../guidelines/visual-grammar.md).
+3. **Archetype** — [`component-archetype.md`](./component-archetype.md) once selection/reuse is decided (§3–§4).
+4. **Tokens + display scale** — §2 here; PDF absolutes at annotation ÷ 2 ([specs/README.md](../specs/README.md#scale-calibration)).
+5. **Contrast check** — scan [`anti-examples.md`](../guidelines/anti-examples.md) for the failure modes that already bit us (scale, override, invent, modernize, wrong context, over-correct).
+
+**Verify (never skip):**
+
+6. **Fidelity validation** — [`fidelity-validation.md`](./fidelity-validation.md) (spec deltas, scale ÷2, token/reuse). This is Pass 10 of [`visual-analysis-protocol.md`](../visual-analysis-protocol.md) made checkable.
 
 ---
 

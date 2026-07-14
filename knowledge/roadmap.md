@@ -35,7 +35,7 @@ inputs and (b) one deterministic way to decide.
 | M3 | Reasoning Spine | Unified entry point; one decision order; selection + reuse | ✅ Done |
 | M4 | Contracts & Archetype | The structural skeleton every component takes | ✅ Done (validated by the scrollbar eval) |
 | M5 | Fidelity | Raise components to PDF display scale | 🔄 Substantially done (eval-driven, out of order) |
-| M6 | Grammar, Contrast & Validation | Generalize the "why"; teach right-vs-wrong; validate | ◻ Not started (last remaining knowledge milestone) |
+| M6 | Grammar, Contrast & Validation | Generalize the "why"; teach right-vs-wrong; validate | ✅ Done (built; eval-validation pending) |
 
 ---
 
@@ -78,6 +78,13 @@ extraction of all 13 PDF pages — the exact annotated values, cited by page).
 - **DonutChart** layout converted absolute→relative flex (scale-robust).
 - **Still deferred (see Open items):** OperationsConsole scale decouple; the M2b V/S/T palette/
   spacing normalizations; per-element annotation-vs-drawn drift; donut label placement.
+
+### M6 — Grammar, Contrast & Validation ✅ (built; eval-validation pending)
+- `knowledge/guidelines/visual-grammar.md` (generative grammar — build faithful UI with no reference),
+  `knowledge/guidelines/anti-examples.md` (contrastive right/wrong pairs sourced from real eval failures),
+  `knowledge/reasoning/fidelity-validation.md` (self-check vs specs incl. the ÷2 scale check; operationalizes Pass 10).
+- Wired into `governance[]`, index, decision-order, reasoning README, anti-patterns, visual-analysis-protocol.
+- **Completes the knowledge stack:** M1 inputs → M2 vocabulary → M3 decide → M4 build → M6 generate + verify.
 
 ---
 
@@ -152,9 +159,9 @@ Loop shape that works: **observe → promote → document → regenerate**. Stat
 | — | Fidelity (variants, ficha scale, @2× calibration) | M5 | 🔄 mostly |
 | 7 | Canonical Component Archetype | M4 | ✅ |
 | 5 | Component Anatomy Contracts | M4 | ✅ (audit) |
-| 4 | Visual Grammar — *generative* layer | M6 | ◻ |
-| 8 | Contrastive Anti-Examples | M6 | ◻ |
-| 10 | Numeric Fidelity Validation | M6 | ◻ |
+| 4 | Visual Grammar — *generative* layer | M6 | ✅ |
+| 8 | Contrastive Anti-Examples | M6 | ✅ |
+| 10 | Numeric Fidelity Validation | M6 | ✅ |
 
 ---
 
@@ -165,14 +172,17 @@ Loop shape that works: **observe → promote → document → regenerate**. Stat
 - `16a297c` — @2× scale calibration (÷2) + relative donut layout
 - `e921371` — roadmap refresh (post-2026-07-13 session)
 - `c3005bd` — M4 component archetype + anatomy-contract audit
-- *(next)* — Scrollbar component (M4 eval keeper) + this roadmap tick
+- `e280317` — Scrollbar component (M4 eval keeper) + roadmap tick
+- *(next)* — M6 grammar / anti-examples / fidelity-validation + this roadmap tick
 
 ---
 
 ## Recommended next
 
-1. **M6 — Grammar, Contrast & Validation** — the last remaining knowledge milestone (generative
-   grammar + contrastive anti-examples + numeric fidelity validation). Run an eval after to confirm.
+1. **Run the M6 eval** — the ambitious one: give a fresh agent a task requiring UI generated with
+   *no direct reference* (a novel Alejandría screen/entity) and check that (a) it comes out faithful
+   via the generative grammar and (b) it runs the fidelity self-check before declaring done. This
+   validates the extrapolation lever. **The knowledge stack (M1–M6) is now built; this closes it.**
 2. **Decide the OperationsConsole decouple** — run the drafted prompt or leave the demo as-is.
 3. **Distribution & portability track** (raised 2026-07-14, deferred): the knowledge/generation
    layer is maturing, but external consumption is not ready — publish the package, export icons,

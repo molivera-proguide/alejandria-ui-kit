@@ -439,6 +439,21 @@
       "id": "component-archetype",
       "name": "Component Archetype",
       "path": "knowledge/reasoning/component-archetype.md"
+    },
+    {
+      "id": "visual-grammar",
+      "name": "Visual Grammar (Generative)",
+      "path": "knowledge/guidelines/visual-grammar.md"
+    },
+    {
+      "id": "anti-examples",
+      "name": "Contrastive Anti-Examples",
+      "path": "knowledge/guidelines/anti-examples.md"
+    },
+    {
+      "id": "fidelity-validation",
+      "name": "Numeric Fidelity Validation",
+      "path": "knowledge/reasoning/fidelity-validation.md"
     }
   ]
 }

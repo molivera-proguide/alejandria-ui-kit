@@ -4,6 +4,8 @@ This document describes common implementation mistakes observed while building t
 
 Avoid these patterns unless explicitly requested.
 
+For **contrastive right-vs-wrong pairs** drawn from the eval loop and scale calibration (not just prohibitions), see [`guidelines/anti-examples.md`](./guidelines/anti-examples.md).
+
 ---
 
 # Anti-Pattern 01
