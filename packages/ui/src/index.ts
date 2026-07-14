@@ -13,6 +13,7 @@ export * from "./components/MetricCard";
 export * from "./components/ProgressRing";
 export * from "./components/SegmentedControl";
 export * from "./components/SelectField";
+export * from "./components/Scrollbar";
 export * from "./components/Switch";
 export * from "./components/TaskCard";
 export * from "./components/ModuleCard";

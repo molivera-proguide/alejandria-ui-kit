@@ -60,6 +60,14 @@ Spanish Purpose prose in component docs is authoritative for nuance; this file i
 
 ---
 
+## Chrome & navigation affordances
+
+| Component | Role | Nearest neighbors / boundary |
+|-----------|------|------------------------------|
+| **Scrollbar** | Presentational **vertical scroll chrome** (track + thumb capsules); PDF MISCELÁNEAS p.13. | Not **Switch** (boolean track/thumb). Not a scroll-container wrapper and not native `::-webkit-scrollbar` styling of arbitrary overflow. Consumer owns position (`value`) and region sync. |
+
+---
+
 ## Data density
 
 | Component | Role | Nearest neighbors / boundary |

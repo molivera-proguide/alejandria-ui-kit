@@ -96,6 +96,13 @@
       "storybook": "Alejandria/ProgressRing"
     },
     {
+      "id": "scrollbar",
+      "name": "Scrollbar",
+      "path": "knowledge/components/Scrollbar.md",
+      "export": "packages/ui/src/components/Scrollbar.tsx",
+      "storybook": "Alejandria/Scrollbar"
+    },
+    {
       "id": "segmented-control",
       "name": "SegmentedControl",
       "path": "knowledge/components/SegmentedControl.md",
@@ -339,6 +346,12 @@
       "name": "ProgressRing",
       "path": "knowledge/specs/components/ProgressRing.spec.md",
       "source": "packages/ui/src/styles.css (.ds-progress)"
+    },
+    {
+      "id": "scrollbar-spec",
+      "name": "Scrollbar",
+      "path": "knowledge/specs/components/Scrollbar.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-scrollbar)"
     },
     {
       "id": "segmented-control-spec",

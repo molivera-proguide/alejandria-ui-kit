@@ -37,7 +37,7 @@ Out of scope for ÷2: `border-width` / hairlines (`0.75px` / `1px`), `border-rad
 
 ## Exports covered
 
-`packages/ui/src/index.ts` exports **18** components. Each has a spec:
+`packages/ui/src/index.ts` exports **19** components. Each has a spec:
 
 - [AlertBanner.spec.md](./components/AlertBanner.spec.md)
 - [Badge.spec.md](./components/Badge.spec.md)
@@ -52,6 +52,7 @@ Out of scope for ÷2: `border-width` / hairlines (`0.75px` / `1px`), `border-rad
 - [MetricCard.spec.md](./components/MetricCard.spec.md)
 - [ModuleCard.spec.md](./components/ModuleCard.spec.md)
 - [ProgressRing.spec.md](./components/ProgressRing.spec.md)
+- [Scrollbar.spec.md](./components/Scrollbar.spec.md)
 - [SegmentedControl.spec.md](./components/SegmentedControl.spec.md)
 - [SelectField.spec.md](./components/SelectField.spec.md)
 - [Switch.spec.md](./components/Switch.spec.md)

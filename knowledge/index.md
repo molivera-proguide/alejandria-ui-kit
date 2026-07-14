@@ -62,7 +62,7 @@ knowledge/
 
 ## Components
 
-Public exports from `packages/ui/src/index.ts` have dedicated docs under `knowledge/components/` (18 exports). InvestigationCard is documented and exported; it may still be pending a `components[]` manifest entry (see [`roadmap.md`](./roadmap.md) parallel track).
+Public exports from `packages/ui/src/index.ts` have dedicated docs under `knowledge/components/` (19 exports).
 
 | Component | Doc | Storybook |
 |-----------|-----|-----------|
@@ -79,6 +79,7 @@ Public exports from `packages/ui/src/index.ts` have dedicated docs under `knowle
 | MetricCard | [MetricCard.md](./components/MetricCard.md) | `Alejandria/MetricCard` |
 | ModuleCard | [ModuleCard.md](./components/ModuleCard.md) | `Alejandria/ModuleCard` |
 | ProgressRing | [ProgressRing.md](./components/ProgressRing.md) | `Alejandria/ProgressRing` |
+| Scrollbar | [Scrollbar.md](./components/Scrollbar.md) | `Alejandria/Scrollbar` |
 | SegmentedControl | [SegmentedControl.md](./components/SegmentedControl.md) | `Alejandria/SegmentedControl` |
 | SelectField | [SelectField.md](./components/SelectField.md) | `Alejandria/SelectField` |
 | Switch | [Switch.md](./components/Switch.md) | `Alejandria/Switch` |

@@ -33,9 +33,9 @@ inputs and (b) one deterministic way to decide.
 | M1 | Numeric Foundation | Measured, cited source-of-truth | ✅ Done |
 | M2 | Semantic Foundation | Design language + token vocabulary; mechanical migration | ✅ Done (byte-identity proven) |
 | M3 | Reasoning Spine | Unified entry point; one decision order; selection + reuse | ✅ Done |
+| M4 | Contracts & Archetype | The structural skeleton every component takes | ✅ Done (validated by the scrollbar eval) |
 | M5 | Fidelity | Raise components to PDF display scale | 🔄 Substantially done (eval-driven, out of order) |
-| M4 | Contracts & Archetype | The structural skeleton every component takes | ◻ Not started |
-| M6 | Grammar, Contrast & Validation | Generalize the "why"; teach right-vs-wrong; validate | ◻ Not started |
+| M6 | Grammar, Contrast & Validation | Generalize the "why"; teach right-vs-wrong; validate | ◻ Not started (last remaining knowledge milestone) |
 
 ---
 
@@ -57,6 +57,16 @@ extraction of all 13 PDF pages — the exact annotated values, cited by page).
   Decision Order; the two old conflicting orders redirect to it.
 - Reconciled `index.md` (no more false "empty" claims; specs/tokens/reasoning all discoverable) and
   the `.cursor` rule; added manifest `governance[]`. InvestigationCard registered in `components[]`.
+
+### M4 — Contracts & Archetype ✅
+- `knowledge/reasoning/component-archetype.md` — the evidence-grounded construction standard
+  (DOM/BEM, prop axes, API conventions, AP13 interaction law, slots, token/@2× consumption, a11y,
+  primitive↔component pairing, conformance checklist), with real divergences flagged. Wired into
+  the manifest `governance[]`, index, decision-order, reasoning README, and the component template.
+- Anatomy-contract audit of the 18 component docs (report-only; all four contract sections present).
+- **Validated by eval 4:** a fresh agent built a new `Scrollbar` component (PDF p13) that came out
+  kit-consistent and closed the full knowledge loop — proving the archetype drives architectural
+  consistency for un-templated components. Scrollbar kept (component count now 19).
 
 ### M5 — Fidelity 🔄 (eval-driven; most done, some deferred)
 - **PDF-context variants promoted** (Rule 03, from repeated Login/DetailSheet overrides):
@@ -82,6 +92,7 @@ failures reprioritize the roadmap.
 | 1 | Build Login (PDF p6) | Faithful; report-don't-invent held; **but overrode** Button/fields in local CSS → drove the variant promotion |
 | 2 | Build Modal (PDF p11) | **Reused** `variant="pdf"`/`appearance="pdf"` unprompted (via reasoning taxonomy + code + precedent) → recurrence closed |
 | 3 | Build Fichas (PDF p4, clean-room) | Discovered `appearance="ficha"` from docs, **but still "too big"** → surfaced the @2× foundation flaw |
+| 4 | Build a **new** component (Scrollbar, PDF p13) | Followed the archetype unprompted → kit-consistent component (BEM, `cn()`/`...props`/exported types, no `forwardRef`, ARIA, token reuse, ProgressRing-style runtime vars) **with the full knowledge loop** (doc+spec+manifest) → **validates M4** |
 
 Loop shape that works: **observe → promote → document → regenerate**. Static checks
 (byte-identity, resolved-CSS) cannot catch scale/semantic errors; only rendering a dense screen did.
@@ -139,8 +150,8 @@ Loop shape that works: **observe → promote → document → regenerate**. Stat
 | 9 | Semantic Component Selection taxonomy | M3 | ✅ |
 | 6 | Reuse vs Variant vs New rubric | M3 | ✅ |
 | — | Fidelity (variants, ficha scale, @2× calibration) | M5 | 🔄 mostly |
-| 7 | Canonical Component Archetype | M4 | ◻ |
-| 5 | Component Anatomy Contracts | M4 | ◻ |
+| 7 | Canonical Component Archetype | M4 | ✅ |
+| 5 | Component Anatomy Contracts | M4 | ✅ (audit) |
 | 4 | Visual Grammar — *generative* layer | M6 | ◻ |
 | 8 | Contrastive Anti-Examples | M6 | ◻ |
 | 10 | Numeric Fidelity Validation | M6 | ◻ |
@@ -152,14 +163,18 @@ Loop shape that works: **observe → promote → document → regenerate**. Stat
 - `b007ea0` — Login pattern composition (PDF p6) + PDF text-extract reference
 - `71fd47e` — PDF-context variants, MetricCard ficha scale, doc-sync
 - `16a297c` — @2× scale calibration (÷2) + relative donut layout
+- `e921371` — roadmap refresh (post-2026-07-13 session)
+- `c3005bd` — M4 component archetype + anatomy-contract audit
+- *(next)* — Scrollbar component (M4 eval keeper) + this roadmap tick
 
 ---
 
 ## Recommended next
 
-1. **Decide the OperationsConsole decouple** — run the drafted prompt or leave the demo as-is.
-2. **Return to the north star.** The eval loop proved the knowledge→generation link *works*; the
-   highest-value direction is now the remaining knowledge/reasoning layer — **M4 (Contracts &
-   Archetype)** and **M6 (generative grammar + contrastive examples + numeric validation)** — rather
-   than further per-pixel CSS tuning. Run an eval after each to confirm it moved the needle.
-3. **Batch the maintenance** (manifest generator) when convenient — it keeps biting mid-milestone.
+1. **M6 — Grammar, Contrast & Validation** — the last remaining knowledge milestone (generative
+   grammar + contrastive anti-examples + numeric fidelity validation). Run an eval after to confirm.
+2. **Decide the OperationsConsole decouple** — run the drafted prompt or leave the demo as-is.
+3. **Distribution & portability track** (raised 2026-07-14, deferred): the knowledge/generation
+   layer is maturing, but external consumption is not ready — publish the package, export icons,
+   stabilize the API, make the knowledge portable, design the agent consumption model. Separate track.
+4. **Batch the maintenance** (manifest generator) when convenient — it keeps biting mid-milestone.

@@ -1541,7 +1541,31 @@
     stroke-width: 1;
   }
 
-  
+  /* Scrollbar — PDF MISCELÁNEAS p.13 (display = annotation ÷ 2) */
+  .ds-scrollbar {
+    --ds-scrollbar-value: 0;
+    --ds-scrollbar-thumb-size: 17.4%;
+    position: relative;
+    box-sizing: border-box;
+    width: 7.5px; /* PDF 15.09 → ÷2 */
+    height: 100%;
+    flex-shrink: 0;
+    border-radius: 999px;
+    background: var(--ds-color-pdf-action);
+  }
+
+  .ds-scrollbar__thumb {
+    position: absolute;
+    top: calc(
+      4.5px + (100% - var(--ds-scrollbar-thumb-size) - 9px) * (var(--ds-scrollbar-value) / 100)
+    ); /* end inset 4.5px PDF 9.12 → ÷2; travel excludes both insets */
+    left: 1.5px; /* PDF lateral inset ≈ 2.89–3.22 → ÷2 */
+    width: 4.5px; /* PDF 8.98 → ÷2 */
+    height: var(--ds-scrollbar-thumb-size);
+    border-radius: 999px;
+    background: var(--ds-color-pdf-surface-warm);
+    pointer-events: none;
+  }
 
   @keyframes ds-spin {
     to {
