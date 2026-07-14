@@ -2,148 +2,164 @@
 id: knowledge-architecture-roadmap
 name: Knowledge Architecture Roadmap
 status: active
-last_reviewed: 2026-07-13
+last_reviewed: 2026-07-14
 supersedes_note: >
   This is the ACTIVE knowledge-architecture roadmap. It is distinct from
   knowledge/audit/design-system-roadmap.md, which is a historical 2026-07-03
-  audit snapshot and is now partially stale (it lists pattern docs and
-  InvestigationCard as unbuilt; both exist). Treat the audit roadmap as
-  reference, not as the current plan.
+  audit snapshot and is now stale. Treat the audit roadmap as reference, not plan.
 ---
 
 # Alejandría — Knowledge Architecture Roadmap
 
 Living plan for raising AI-generated component quality along two axes:
-**visual fidelity** and **architectural-decision consistency**. Sequenced so that
-each milestone consumes settled outputs of the previous one, reversible knowledge
-work precedes irreversible code work, and generalizations come after the facts
-they generalize.
+**visual fidelity** and **architectural-decision consistency**.
 
 North star: an AI agent should generate components with high visual fidelity and
 consistent architectural decisions because the knowledge base gives it (a) precise
 inputs and (b) one deterministic way to decide.
 
+> **How the path actually went (2026-07-13):** after M3, we did *not* proceed linearly.
+> Real generation tasks (Login, then the Fichas screen) surfaced fidelity gaps, so the
+> **eval loop drove the work** — pulling M5 (Fidelity) forward ahead of M4/M6. This was
+> the right move: it validated the knowledge→generation loop and exposed a foundational
+> scale flaw that no static check would have caught. M4 and M6 remain unstarted.
+
 ---
 
 ## Milestone spine
 
-| # | Milestone | Governing idea | Type | Status |
-|---|-----------|----------------|------|--------|
-| M1 | Numeric Foundation | Measured, cited source-of-truth | Knowledge | ✅ Done (verified) |
-| M2 | Semantic Foundation | Design language + token vocabulary; mechanical migration | Knowledge → Code | ✅ Done — pending visual-regression merge gate |
-| M3 | Reasoning Spine | Reconcile the entry point; one deterministic decision path; selection; reuse | Governance + Reasoning | ◻ Next |
-| M4 | Contracts & Archetype | The structural skeleton every component takes | Knowledge | ◻ |
-| M5 | Fidelity | Apply the deferred visual work; raise components to PDF spec | Code (gated) | ◻ |
-| M6 | Grammar, Contrast & Validation | Generalize the "why"; teach right-vs-wrong; validate against spec | Knowledge + Reasoning | ◻ |
+| # | Milestone | Governing idea | Status |
+|---|-----------|----------------|--------|
+| M1 | Numeric Foundation | Measured, cited source-of-truth | ✅ Done |
+| M2 | Semantic Foundation | Design language + token vocabulary; mechanical migration | ✅ Done (byte-identity proven) |
+| M3 | Reasoning Spine | Unified entry point; one decision order; selection + reuse | ✅ Done |
+| M5 | Fidelity | Raise components to PDF display scale | 🔄 Substantially done (eval-driven, out of order) |
+| M4 | Contracts & Archetype | The structural skeleton every component takes | ◻ Not started |
+| M6 | Grammar, Contrast & Validation | Generalize the "why"; teach right-vs-wrong; validate | ◻ Not started |
+
+---
+
+## Completed work
+
+### M1 — Numeric Foundation ✅
+`knowledge/specs/` — SCHEMA, `tokens-inventory.md`, 18 per-component `*.spec.md`, cited and
+manifest-registered. Later augmented with `references/pdf-text-extract.md` (lossless text-layer
+extraction of all 13 PDF pages — the exact annotated values, cited by page).
+
+### M2 — Semantic Foundation ✅
+- `design-language.md` (color roles, 4px rhythm, type roles); `knowledge/tokens/` (token-plan,
+  migration-map). Drift never tokenized (gated proposals / justified literals only).
+- **M2b** mechanical migration: 105 tokens, 314 literal→`var()` swaps, **byte-identical**
+  (proven by resolved-CSS diff: 750 declarations, 0 differences) + human visual pass. Merge gate cleared.
+
+### M3 — Reasoning Spine ✅
+- `knowledge/reasoning/` (decision-order, component-selection, reuse-rubric). One authoritative
+  Decision Order; the two old conflicting orders redirect to it.
+- Reconciled `index.md` (no more false "empty" claims; specs/tokens/reasoning all discoverable) and
+  the `.cursor` rule; added manifest `governance[]`. InvestigationCard registered in `components[]`.
+
+### M5 — Fidelity 🔄 (eval-driven; most done, some deferred)
+- **PDF-context variants promoted** (Rule 03, from repeated Login/DetailSheet overrides):
+  `Button variant="pdf"` + `TextField/SelectField appearance="pdf"` — **documented in the same
+  milestone** (docs + specs), so agents discover them. Source Code Light (300) loaded.
+- **MetricCard `appearance="reporting" | "ficha"`** — the two scales page 10 specs.
+- **@2× scale calibration** *(the session's key finding — see below)*: PDF-context absolute px
+  halved (display = annotation ÷ 2). Fixed the "Fichas too big" problem.
+- **DonutChart** layout converted absolute→relative flex (scale-robust).
+- **Still deferred (see Open items):** OperationsConsole scale decouple; the M2b V/S/T palette/
+  spacing normalizations; per-element annotation-vs-drawn drift; donut label placement.
+
+---
+
+## The eval loop (validated practice)
+
+Not a milestone — a working method that proved itself. Give a *fresh* Cursor agent (no session
+memory) a generation task + the knowledge base; score the output against a hidden rubric; let
+failures reprioritize the roadmap.
+
+| Eval | Task | Result |
+|------|------|--------|
+| 1 | Build Login (PDF p6) | Faithful; report-don't-invent held; **but overrode** Button/fields in local CSS → drove the variant promotion |
+| 2 | Build Modal (PDF p11) | **Reused** `variant="pdf"`/`appearance="pdf"` unprompted (via reasoning taxonomy + code + precedent) → recurrence closed |
+| 3 | Build Fichas (PDF p4, clean-room) | Discovered `appearance="ficha"` from docs, **but still "too big"** → surfaced the @2× foundation flaw |
+
+Loop shape that works: **observe → promote → document → regenerate**. Static checks
+(byte-identity, resolved-CSS) cannot catch scale/semantic errors; only rendering a dense screen did.
+
+---
+
+## Key decisions & findings
+
+- **The @2× artboard finding (major).** The reference PDF is a `1920×1080` = @2× artboard of a
+  `960×540` logical design. Its absolute `px`/`pt` annotations were implemented as literal @1×
+  CSS pixels, so PDF-context components rendered ~2× oversized (invisible on small cards, obvious
+  on dense screens). Rule: **display px = annotation ÷ 2.** Documented in `specs/README.md`; full
+  before→after in `specs/scale-calibration-changelog.md`.
+- **PDF-context vs console are separate scale contexts.** The OperationsConsole is a *synthetic
+  demo*, not a PDF-faithful screen; it owns its own (larger) scale and should not inherit the ÷2.
+- **API without docs is invisible to agents.** A shipped variant that isn't in the component doc
+  won't be discovered (Principle 08) → document variants in the *same* milestone that ships them.
+- **The PDF is imperfect ground truth.** Annotations are internally inconsistent (p10 ficha `52pt`
+  vs p4 drawn `~38pt`) and uncalibrated in absolute scale → per-surface visual validation is
+  required; there is no single global factor for everything.
+- **Sequencing principle** (still holds): reversible knowledge before irreversible code; facts
+  before generalizations. But **empirical eval signal outranks the pre-planned order.**
+- **M6 rename:** "Grammar, ~~Discrimination~~ **Contrast** & Validation."
+
+---
+
+## Open / deferred items
+
+**Fidelity (M5 tail):**
+- **OperationsConsole scale decouple** — decouple prompt is drafted (make `.ds-metric--ficha` a
+  full small-scale override; revert base MetricCard/TaskCard to console scale). Demo-only cosmetic.
+- **M2b V/S/T normalizations** — the gated palette merges (V1–V5) + spacing normalizations (S1–S6)
+  + type mappings (T1–T4) were never applied; still awaiting a design decision.
+- **Per-element scale drift** — ÷2 fixed the systemic 2×; individual elements (annotation vs drawn)
+  may want ±small tuning.
+- **Donut label placement** polish.
+- **Specs `partial → measured`** — most specs still lack PDF page citations (pdf-text-extract now
+  makes this cheap/exact).
+
+**Maintenance (parallel, low-leverage):**
+- ✅ InvestigationCard registered in manifest `components[]`.
+- ◻ Manifest hand-maintenance drift — a generator / CI drift-check would stop recurring
+  registry inconsistencies.
 
 ---
 
 ## Improvement → milestone mapping
 
-The ten high-impact improvements from the audit, mapped to milestones:
-
-| # | Improvement | Milestone |
-|---|-------------|-----------|
-| 1 | Structured Numeric Specifications | M1 |
-| 2 | Semantic Design Token scales | M2 |
-| 4 | Visual Grammar — *semantic core* | M2 (design-language.md) |
-| 3 | Single deterministic Decision Order | M3 |
-| 9 | Semantic Component Selection taxonomy | M3 |
-| 6 | Reuse vs Variant vs New rubric | M3 |
-| 7 | Canonical Component Archetype | M4 |
-| 5 | Component Anatomy Contracts | M4 |
-| — | Fidelity (enabler for #10; from M2b deferral) | M5 |
-| 4 | Visual Grammar — *generative* layer | M6 |
-| 8 | Contrastive Anti-Examples | M6 |
-| 10 | Numeric Fidelity Validation | M6 |
-
-Note: improvement #4 (Visual Grammar) is deliberately split — its *semantic* core
-moved forward into M2 (it supplies the criteria for tokenization); its *generative*
-layer stays in M6 (it must cite a settled vocabulary and faithful components).
+| # | Improvement | Milestone | Status |
+|---|-------------|-----------|--------|
+| 1 | Structured Numeric Specifications | M1 | ✅ |
+| 2 | Semantic Design Token scales | M2 | ✅ |
+| 4 | Visual Grammar — *semantic core* | M2 | ✅ |
+| 3 | Single deterministic Decision Order | M3 | ✅ |
+| 9 | Semantic Component Selection taxonomy | M3 | ✅ |
+| 6 | Reuse vs Variant vs New rubric | M3 | ✅ |
+| — | Fidelity (variants, ficha scale, @2× calibration) | M5 | 🔄 mostly |
+| 7 | Canonical Component Archetype | M4 | ◻ |
+| 5 | Component Anatomy Contracts | M4 | ◻ |
+| 4 | Visual Grammar — *generative* layer | M6 | ◻ |
+| 8 | Contrastive Anti-Examples | M6 | ◻ |
+| 10 | Numeric Fidelity Validation | M6 | ◻ |
 
 ---
 
-## Completed milestones
+## Commit log (branch `ui-components`)
 
-### M1 — Numeric Foundation ✅
-- Created `knowledge/specs/` — `SCHEMA.md`, `tokens-inventory.md`, and 18 per-component
-  `*.spec.md` (one per `index.ts` export), all values cited to `styles.css` / component
-  docs / PDF. Registered in manifest `specs[]`.
-- Outcome: the visual reference is now a measured, machine-usable record with
-  implemented-vs-intended deltas recorded (not resolved).
-- Known signal: 17/18 specs are `status: partial` because component docs lack PDF
-  page citations — this is a prerequisite for M5. Inventory occurrence counts are
-  approximate (M2b found `999px` listed as 10, actual 5).
-
-### M2 — Semantic Foundation ✅ (pending visual-regression merge gate)
-- **M2a:** `knowledge/guidelines/design-language.md` (intent taxonomy: color roles,
-  4px spacing rhythm, type roles) + `knowledge/tokens/` (`token-plan.md`,
-  `migration-map.md`, `README.md`). Registered in manifest `tokens[]` / `guidelines[]`.
-- **M2a-revision:** de-fossilized drift — off-grid spacing and PDF pt sizes became
-  gated normalization proposals (not permanent tokens); spacing vocabulary is the
-  clean `--ds-space-1..6` lattice; naming collision (`space-Npx`) removed.
-- **M2b:** mechanical-only migration of `styles.css` — 105 new tokens defined at exact
-  current values, 314 literal→`var()` swaps, **byte-identical rendering**, Storybook
-  build passed. All `visual-gated` rows (V1–V5, S1–S6, T1–T4) left untouched.
-- Merge gate: run a Storybook visual-regression diff (HEAD vs migrated) before merge —
-  static checks indicate zero change; this is the definitive confirmation.
+- `b007ea0` — Login pattern composition (PDF p6) + PDF text-extract reference
+- `71fd47e` — PDF-context variants, MetricCard ficha scale, doc-sync
+- `16a297c` — @2× scale calibration (÷2) + relative donut layout
 
 ---
 
-## Key decisions on record
+## Recommended next
 
-- **Sequencing principle:** reversible knowledge before irreversible code; facts before
-  generalizations of those facts.
-- **M2 reframe:** the token milestone is led by design-language *semantics* (the criteria
-  for tokenization), not by the code migration. Tokenization decisions ARE design-language
-  decisions.
-- **Drift is never a token.** Off-grid values are either gated normalization proposals or
-  justified component-local literals — never minted as scale tokens.
-- **Tokenization is decoupled from normalization.** M2b shipped the vocabulary with zero
-  visual change; the look-changing decisions (V/S/T) are deferred to M5 under PDF/designer
-  review.
-- **Naming rename:** M6 was renamed from "Grammar, Discrimination & Validation" →
-  "Grammar, Contrast & Validation" (the loaded term replaced).
-
----
-
-## Deferred visual worklist (input to M5 — Fidelity)
-
-The `visual-gated` resolutions M2b did not apply, enumerated and ready:
-
-- **Color merges (V1–V5):** `#ff0404`→danger · `#8a8b87`→ink-soft · `#c1c1c1`→line ·
-  `#060606`/`#2a2927`→surface · `#82f3d8`→teal. *(Default = keep both palettes named
-  unless the team elects to consolidate contexts.)*
-- **Spacing normalizations (S1–S6):** 5→4 · 7→8 · 10→12|8 (tie) · 11→12 · 14→16|12 (tie) · 15→16.
-- **Type mappings (T1–T4):** 13/14/16px → role rem tokens; 18px keep-as-is.
-- **Spec deltas (from M1):** e.g. MetricCard label `12px` vs PDF `16px`.
-
-M5 also includes acquiring the PDF reference (page citations → upgrade specs
-`partial → measured`) and re-verifying inventory counts.
-
----
-
-## Dependencies
-
-```
-M1 ──▶ M2 ──▶ M3
-        │       │
-        └──▶ M5 ◀┘   (M5 also needs M1 deltas + M2 vocabulary)
-M3 ──▶ M4 ──▶ M5 ──▶ M6
-```
-
-- M5 (Fidelity) precedes M6: the generative grammar (#4) and contrastive examples (#8)
-  should generalize from faithful components, and numeric validation (#10) is meaningless
-  until components are at spec.
-- M3 and M4 are independent of the deferred visual work and can proceed now.
-
----
-
-## Parallel maintenance track (not a quality milestone)
-
-Runs alongside, lower leverage, batchable:
-- Register `InvestigationCard` in manifest `components[]` (it is spec-registered but not
-  component-registered).
-- Reduce manifest hand-maintenance drift (generator / drift-check).
-
-These do not gate any quality milestone.
+1. **Decide the OperationsConsole decouple** — run the drafted prompt or leave the demo as-is.
+2. **Return to the north star.** The eval loop proved the knowledge→generation link *works*; the
+   highest-value direction is now the remaining knowledge/reasoning layer — **M4 (Contracts &
+   Archetype)** and **M6 (generative grammar + contrastive examples + numeric validation)** — rather
+   than further per-pixel CSS tuning. Run an eval after each to confirm it moved the needle.
+3. **Batch the maintenance** (manifest generator) when convenient — it keeps biting mid-milestone.
