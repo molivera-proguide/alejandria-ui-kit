@@ -79,3 +79,58 @@ We invested heavily in generation *quality* (M1–M6) and almost nothing in *dis
 — they are different tracks, and this second one is barely begun. The good news: the hard part
 (a validated generation brain) is done; what remains is packaging and a consumption model, which are
 well-understood engineering, not open research.
+
+---
+
+## MVP — "coworker-AI" (D1 + D3-min + D4 + acceptance eval)
+
+**Goal:** a coworker, in their OWN repo, `npm install`s the package AND their AI (Cursor/Claude)
+follows the Alejandría knowledge to generate faithful components/screens — end-to-end, outside this
+monorepo. This is the thinnest slice that delivers that loop. **D1 alone does NOT** — it ships the
+runnable components; the "AI follows the instructions" part needs portable knowledge (D3) + a
+consumption model (D4).
+
+**Out of MVP (deferred):** full MCP server, bundled self-hosted fonts, `draft → stable` promotion,
+and the D5 coverage build.
+
+### Work items
+
+**MVP-1 — Publishable package** (D1 core)
+- Add `LICENSE`, `publishConfig` (private registry / GitHub Packages), a real version.
+- **Export the icon set** (`index.ts` or an `/icons` subpath) — ModuleCard/InvestigationCard/screens need it.
+- **Fonts:** document the Google-Fonts network requirement (full self-host deferred).
+- Publish (or a git/tarball install path); verify by installing in a throwaway consumer app and rendering a component + `style.css`.
+
+**MVP-2 — Portable knowledge** (D3 minimal)
+- Ship the knowledge with the package: `files` += `knowledge` (lands at `node_modules/@alejandria/ui-kit/knowledge/`), excluding the 35 MB PDF (consumers use `pdf-text-extract.md`).
+- Make the AGENT-FACING docs package-relative, not monorepo-relative: `index.md`, `visual-grammar`,
+  `component-archetype`, `decision-order`, `reuse-rubric`, `component-selection`, `anti-examples`,
+  `fidelity-validation`, and the component docs — reference the **published API**
+  (`import { X } from "@alejandria/ui-kit"`, component + prop) instead of `packages/ui/src` paths.
+  (Numeric specs stay internal-fidelity; mark them so.)
+
+**MVP-3 — Agent consumption model** (D4 minimal) ← the decisive piece
+- Ship a **rules-file entrypoint** (`.cursor/rules` / `AGENTS.md` template) telling the consumer's AI:
+  "You build UI with `@alejandria/ui-kit`. Before generating, read the DS knowledge at `<path>` and
+  follow its resolution order (grammar → archetype → decision-order → specs); reuse components;
+  report-don't-invent."
+- A short **setup guide**: install the package, add the rules file (or copy `knowledge/` into the repo),
+  point your AI at it. (An `npx @alejandria/ui-kit init` copier is post-MVP.)
+
+**MVP-4 — Consumer-repo acceptance eval** (the proof)
+- In a FRESH scratch consumer repo (npm-installed package + shipped knowledge + rules file, NO
+  monorepo), have a fresh agent generate a component/screen. Faithful output (reuses components,
+  applies the grammar, reports gaps) = the coworker scenario works end-to-end.
+
+### Sequencing
+```
+MVP-1 (package) ────────────┐
+                            ├─▶ MVP-3 (consumption model) ─▶ MVP-4 (acceptance eval)
+MVP-2 (portable knowledge) ─┘
+```
+MVP-1 and MVP-2 run in parallel; both feed MVP-3; MVP-4 validates the whole loop from a consumer repo.
+
+### Definition of done
+A coworker can, from their own repo, install `@alejandria/ui-kit`, point their AI at the shipped
+knowledge via the rules file, and have it generate faithful Alejandría components/screens — proven
+by the MVP-4 consumer-repo eval.
