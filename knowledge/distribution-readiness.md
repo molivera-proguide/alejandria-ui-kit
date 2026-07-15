@@ -108,13 +108,21 @@ and the D5 coverage build.
 - **Gotcha:** pnpm runs `postpack` **before** the tarball is fully written, so a `postpack` cleanup deletes the copy mid-pack (ENOENT, no tarball). Cleanup must be chained after pack (`pack:ui = pnpm … pack && node scripts/copy-knowledge.mjs --clean`), not a lifecycle hook.
 - Verified: `pnpm pack:ui` → `alejandria-ui-kit-0.1.0.tgz` (~293 KB, 144 entries: 88 `knowledge/` + 55 `dist/`), `design-reference.pdf` absent, `pdf-text-extract.md` present, no leftover copy, clean `git status`.
 
-**MVP-3 — Agent consumption model** (D4 minimal) ← the decisive piece
-- Ship a **rules-file entrypoint** (`.cursor/rules` / `AGENTS.md` template) telling the consumer's AI:
-  "You build UI with `@alejandria/ui-kit`. Before generating, read the DS knowledge at `<path>` and
-  follow its resolution order (grammar → archetype → decision-order → specs); reuse components;
-  report-don't-invent."
-- A short **setup guide**: install the package, add the rules file (or copy `knowledge/` into the repo),
-  point your AI at it. (An `npx @alejandria/ui-kit init` copier is post-MVP.)
+**MVP-3 — Agent consumption model** (D4 minimal) — ✅ **done** (2026-07-15)
+- Shipped a tool-agnostic **entrypoint template** `knowledge/consumer/AGENTS.template.md`: consumer
+  frame ("you consume the package, don't modify the DS; make it look Alejandría"), the non-negotiable
+  invariants (import from `@alejandria/ui-kit` + `style.css`; reuse; report-don't-invent; `--ds-*`
+  tokens; icons as `<img>`), the installed knowledge path (`node_modules/@alejandria/ui-kit/knowledge/`
+  + vendored fallback), and which docs to skip as internal (agent-playbook, PDF, `packages/ui/src`).
+- **Pointer, not copy:** the template does NOT duplicate knowledge content — it routes the agent to
+  `knowledge/index.md` and its resolution order (chose the "pure pointer" variant to avoid drift).
+- **Setup guide** `knowledge/consumer/SETUP.md`: install → import `style.css` → copy the template to
+  the repo root as `AGENTS.md` (+ optional Cursor `.cursor/rules` / Claude `CLAUDE.md` wiring) → vendor
+  the knowledge for offline → ask for UI. README + `index.md` point to `knowledge/consumer/`.
+- Both files live under `knowledge/consumer/`, so MVP-2b's prepack copy ships them automatically.
+- Verified: `pnpm pack:ui` → tarball contains `knowledge/consumer/AGENTS.template.md` + `SETUP.md`.
+- Format/path decisions: `AGENTS.md` canonical (Cursor/Claude wiring documented); node_modules path
+  default with copy-to-repo fallback. (An `npx @alejandria/ui-kit init` copier is post-MVP.)
 
 **MVP-4 — Consumer-repo acceptance eval** (the proof)
 - In a FRESH scratch consumer repo (npm-installed package + shipped knowledge + rules file, NO

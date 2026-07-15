@@ -52,6 +52,17 @@ Icons ship in the package as URL strings (`data:` URLs or asset URLs). Use them 
 
 Importing `@alejandria/ui-kit/style.css` loads **Montserrat** and **Source Code Pro** from Google Fonts over the network. Offline or CSP-restricted consumers must self-host those fonts (deferred; not covered in this MVP).
 
+## Consuming with an AI agent
+
+Want your AI (Cursor, Claude Code, …) to generate UI that looks Alejandría? After installing the
+package, copy the shipped entrypoint to your repo root and let your agent read the bundled knowledge:
+
+```bash
+cp node_modules/@alejandria/ui-kit/knowledge/consumer/AGENTS.template.md ./AGENTS.md
+```
+
+Full steps: `node_modules/@alejandria/ui-kit/knowledge/consumer/SETUP.md`.
+
 ## Scripts
 
 - `pnpm install`

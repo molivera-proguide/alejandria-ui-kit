@@ -20,6 +20,9 @@ Externally, the design system ships as the **`@alejandria/ui-kit`** npm package 
 `apps/web` are **internal** and not available to an external consumer — treat any such reference
 below as internal provenance, not as a path to open.
 
+For an AI consumer, start from the shipped entrypoint and setup guide in `knowledge/consumer/`
+(`AGENTS.template.md` → copy to your repo root as `AGENTS.md`; `SETUP.md` for the steps).
+
 ---
 
 ## Project overview
