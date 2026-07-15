@@ -11,7 +11,7 @@
     "build:ui": "pnpm --filter @alejandria/ui-kit build",
     "build:web": "pnpm --filter @alejandria/web build",
     "build-storybook": "pnpm --filter @alejandria/ui-kit build-storybook",
-    "pack:ui": "pnpm --filter @alejandria/ui-kit pack"
+    "pack:ui": "pnpm --filter @alejandria/ui-kit pack && node scripts/copy-knowledge.mjs --clean"
   },
   "devDependencies": {
     "@types/node": "^25.9.3",

@@ -102,13 +102,11 @@ and the D5 coverage build.
 - Verified: `npm pack` → tarball (56 files, dist only, no `knowledge/`) → scratch Vite app renders a component + `style.css` + an icon.
 - **Caveat:** the **tarball** path is verified; **git-install** (`npm i git+url`) needs `dist` committed or a `prepare: vite build` hook (deferred — tarball suffices for MVP).
 
-**MVP-2 — Portable knowledge** (D3 minimal)
-- Ship the knowledge with the package: `files` += `knowledge` (lands at `node_modules/@alejandria/ui-kit/knowledge/`), excluding the 35 MB PDF (consumers use `pdf-text-extract.md`).
-- Make the AGENT-FACING docs package-relative, not monorepo-relative: `index.md`, `visual-grammar`,
-  `component-archetype`, `decision-order`, `reuse-rubric`, `component-selection`, `anti-examples`,
-  `fidelity-validation`, and the component docs — reference the **published API**
-  (`import { X } from "@alejandria/ui-kit"`, component + prop) instead of `packages/ui/src` paths.
-  (Numeric specs stay internal-fidelity; mark them so.)
+**MVP-2 — Portable knowledge** (D3 minimal) — ✅ **done** (2026-07-15)
+- **2a (portable citations):** agent-facing docs cite the **published API** (`import { X } from "@alejandria/ui-kit"`) instead of `packages/ui/src` paths — 19 component docs (Category `Export`→`Import` row), `index.md` (new "Consuming outside the monorepo" section), `visual-grammar`, `component-archetype` (+maintainers banner), `component-selection`, `decision-order`. Internal-fidelity marked, not rewritten: component-doc Implementation Notes, the `specs/**` numeric layer, and the `export:` frontmatter (mirrors the manifest — left as internal metadata).
+- **2b (ship in tarball):** `knowledge/` lives at the repo root (outside `packages/ui/`), so npm `files` can't reference it directly. A `prepack` hook (`scripts/copy-knowledge.mjs`) copies it into `packages/ui/knowledge/` (excluding the 35 MB `design-reference.pdf`; `pdf-text-extract.md` ships), `files: ["dist","knowledge"]`, and the root `pack:ui` script cleans the transient copy after pack. `packages/ui/knowledge/` is gitignored.
+- **Gotcha:** pnpm runs `postpack` **before** the tarball is fully written, so a `postpack` cleanup deletes the copy mid-pack (ENOENT, no tarball). Cleanup must be chained after pack (`pack:ui = pnpm … pack && node scripts/copy-knowledge.mjs --clean`), not a lifecycle hook.
+- Verified: `pnpm pack:ui` → `alejandria-ui-kit-0.1.0.tgz` (~293 KB, 144 entries: 88 `knowledge/` + 55 `dist/`), `design-reference.pdf` absent, `pdf-text-extract.md` present, no leftover copy, clean `git status`.
 
 **MVP-3 — Agent consumption model** (D4 minimal) ← the decisive piece
 - Ship a **rules-file entrypoint** (`.cursor/rules` / `AGENTS.md` template) telling the consumer's AI:

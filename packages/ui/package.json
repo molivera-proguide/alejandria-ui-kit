@@ -8,7 +8,8 @@
     "**/*.css"
   ],
   "files": [
-    "dist"
+    "dist",
+    "knowledge"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -24,7 +25,8 @@
     "dev": "storybook dev -p 6006",
     "storybook": "storybook dev -p 6006",
     "build": "vite build",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "prepack": "node ../../scripts/copy-knowledge.mjs"
   },
   "peerDependencies": {
     "react": ">=18.2.0",
