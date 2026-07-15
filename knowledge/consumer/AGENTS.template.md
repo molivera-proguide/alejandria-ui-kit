@@ -20,7 +20,24 @@ hierarchy, spacing, and tokens — achieved by reusing the kit's components and 
    don't fabricate a fake `@alejandria/ui-kit` component or hand-clone its styling. Use local markup
    only where a documented pattern already does.
 4. Any custom value uses design tokens (`var(--ds-*)`), never hardcoded colors/spacing.
-5. Icons are URL strings — render as `<img src={XIcon} alt="" width={..} height={..} />`.
+5. Icons are URL strings — render as `<img src={XIcon} alt="" width={..} height={..} />`. The kit
+   ships a **domain-specific** set (investigation / modules / menu / cards); generic UI glyphs (arrow,
+   plus, etc.) may be absent — that's an expected gap: omit the icon or report it, don't hand-draw a
+   lookalike SVG. Pattern docs cite `lucide-react` icons as an **external/optional** dependency (used
+   by the Storybook demos); install it only if you want that parity.
+
+## App shell (make it look Alejandría)
+`@alejandria/ui-kit/style.css` sets the design tokens and fonts but does **not** paint a page
+background — components carry their own dark surfaces, so on a default page you'd get dark cards on
+white. Give your app root the console backdrop using tokens:
+```tsx
+// your root layout / body wrapper
+<div style={{ minHeight: "100vh", background: "var(--ds-color-surface)", color: "var(--ds-color-ink)" }}>
+  {/* screens go here */}
+</div>
+```
+Use `var(--ds-*)` tokens for shell spacing too (`--ds-space-1..6`); don't hardcode hex or px for
+design values.
 
 ## Read the design-system knowledge first
 The knowledge ships inside the installed package at:
@@ -39,6 +56,8 @@ Note: `knowledge/agent-playbook.md`, the design-reference PDF, and any `packages
 **internal/maintainer** references for building the design system — not available or needed here.
 
 ## Before done
+- The app shell sits on `var(--ds-color-surface)` with `var(--ds-color-ink)` text (style.css ships
+  tokens + fonts, not a page background).
 - Every generated screen imports `@alejandria/ui-kit/style.css`.
 - Components come from `@alejandria/ui-kit`; no reinvented primitives; gaps reported.
 - Layout follows a documented pattern or the visual grammar; custom values use `--ds-*` tokens.
