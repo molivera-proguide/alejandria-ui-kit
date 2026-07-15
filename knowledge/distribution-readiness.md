@@ -95,11 +95,12 @@ and the D5 coverage build.
 
 ### Work items
 
-**MVP-1 — Publishable package** (D1 core)
-- Add `LICENSE`, `publishConfig` (private registry / GitHub Packages), a real version.
-- **Export the icon set** (`index.ts` or an `/icons` subpath) — ModuleCard/InvestigationCard/screens need it.
-- **Fonts:** document the Google-Fonts network requirement (full self-host deferred).
-- Publish (or a git/tarball install path); verify by installing in a throwaway consumer app and rendering a component + `style.css`.
+**MVP-1 — Publishable package** (D1 core) — ✅ **done** (2026-07-15)
+- `license: UNLICENSED`; no `publishConfig`; `files: ["dist"]`; exports `.` + `./style.css`.
+- Icons exported (`export * from "./Icons"`, 34 URL consts, inlined as data-URIs in the bundle).
+- Google-Fonts network requirement documented in README; `dist/src/index.d.ts` types-resolution bug fixed.
+- Verified: `npm pack` → tarball (56 files, dist only, no `knowledge/`) → scratch Vite app renders a component + `style.css` + an icon.
+- **Caveat:** the **tarball** path is verified; **git-install** (`npm i git+url`) needs `dist` committed or a `prepare: vite build` hook (deferred — tarball suffices for MVP).
 
 **MVP-2 — Portable knowledge** (D3 minimal)
 - Ship the knowledge with the package: `files` += `knowledge` (lands at `node_modules/@alejandria/ui-kit/knowledge/`), excluding the 35 MB PDF (consumers use `pdf-text-extract.md`).

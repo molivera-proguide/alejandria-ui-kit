@@ -19,3 +19,4 @@ export * from "./components/TaskCard";
 export * from "./components/ModuleCard";
 export * from "./components/InvestigationCard";
 export * from "./components/TextField";
+export * from "./Icons";
