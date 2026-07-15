@@ -133,7 +133,7 @@ siempre seguir estas reglas.
 | Type | molecule |
 | Group | Cards |
 | Package | @alejandria/ui-kit |
-| Export | packages/ui/src/components/TaskCard.tsx |
+| Import | `import { TaskCard } from "@alejandria/ui-kit"` |
 
 ---
 
@@ -541,6 +541,10 @@ Nota: `--task-accent` alimenta `.ds-task::before` solo en `variant="default"`. T
 # Implementation Notes
 
 This section is intended for maintainers extending the component.
+
+> **Interno (mantenedores).** Las rutas de esta sección (Source File, Dependencies, DOM Structure)
+> son fuente del monorepo (`packages/ui/**`); no forman parte de la API publicada de
+> `@alejandria/ui-kit`. Un consumidor externo usa el import de arriba y `@alejandria/ui-kit/style.css`.
 
 Read after:
 

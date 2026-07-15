@@ -45,7 +45,7 @@ Describe:
 - **Responsabilidad principal:** mostrar el chrome de desplazamiento vertical fiel a la referencia (track + thumb).
 - **Problema que resuelve:** unificar la apariencia PDF del scrollbar sin reinventar geometría ni colores por pantalla.
 - **Alcance:** componente presentacional controlado por props (`value`, `thumbSize`); no envuelve contenido scrollable ni gestiona overflow.
-- **`Scrollbar` is a visual indicator.** For a real scroll region that scrolls with native overflow, use the `.ds-scroll-area` utility in `packages/ui/src/styles.css` (WebKit pill thumb + Firefox `scrollbar-color`; see Known Limitations for the Firefox constraint).
+- **`Scrollbar` is a visual indicator.** For a real scroll region that scrolls with native overflow, use the `.ds-scroll-area` utility in the package stylesheet (`@alejandria/ui-kit/style.css`) (WebKit pill thumb + Firefox `scrollbar-color`; see Known Limitations for the Firefox constraint).
 
 Exclude:
 
@@ -115,7 +115,7 @@ siempre seguir estas reglas.
 | Type | atom |
 | Group | Chrome |
 | Package | @alejandria/ui-kit |
-| Export | packages/ui/src/components/Scrollbar.tsx |
+| Import | `import { Scrollbar } from "@alejandria/ui-kit"` |
 
 ---
 
@@ -329,6 +329,10 @@ Geometría (ancho, insets) es literal calibrada ÷2 en CSS; no hay tokens de tam
 ---
 
 # Implementation Notes
+
+> **Interno (mantenedores).** Las rutas de esta sección (Source File, Dependencies, DOM Structure)
+> son fuente del monorepo (`packages/ui/**`); no forman parte de la API publicada de
+> `@alejandria/ui-kit`. Un consumidor externo usa el import de arriba y `@alejandria/ui-kit/style.css`.
 
 Read after:
 

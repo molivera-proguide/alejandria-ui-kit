@@ -4,6 +4,11 @@
 **Milestone:** M4 — Contracts & Archetype  
 **Language:** English (governance)
 
+> **Audience: DS maintainers (internal).** This describes how Alejandría components are *built*
+> inside the monorepo. External consumers reuse the published API
+> (`import { … } from "@alejandria/ui-kit"`); the `packages/ui/**` source links below are internal
+> provenance, not paths available outside the monorepo.
+
 Read this **before building or extending** a component in `packages/ui`. It states the *shape* every DS component takes once selection/reuse is decided ([decision-order.md](./decision-order.md) §3–§4, [reuse-rubric.md](./reuse-rubric.md)). It does **not** choose which component to use ([component-selection.md](./component-selection.md)) or invent new visual values ([design-system-rules.md](../design-system-rules.md) Tokens-First).
 
 **Method:** extracted from existing components and CSS. Rules cite exemplars. Where sources disagree, the dominant pattern is canonical and outliers are flagged.
@@ -93,7 +98,7 @@ Observed standard (form controls + Button are the reference for refs; presentati
 | **Field wrappers:** ref attaches to `<input>`/`<select>`, BEM root is outer `div.ds-field` | Canonical for labeled fields |
 | **InvestigationCard** still accepts deprecated `onEdit` / `onDelete` / `onClose` | Prefer `utilities: InvestigationUtility[]`; see §4 |
 
-**Package surface:** re-export from [`packages/ui/src/index.ts`](../../packages/ui/src/index.ts) (`export * from "./components/…"`).
+**Package surface:** exported from `@alejandria/ui-kit` (internally re-exported in `packages/ui/src/index.ts`).
 
 ---
 
@@ -182,7 +187,7 @@ A component **conforms** when:
 - [ ] **Slots** are named props; `children` only for containers / label text hosts
 - [ ] **Tokens / scale:** `--ds-*` preferred; PDF absolutes at display ÷2 when in PDF context
 - [ ] **a11y:** native semantics + passthrough; decorative nodes `aria-hidden`
-- [ ] **Export** added in `packages/ui/src/index.ts` when public
+- [ ] **Export** added to `@alejandria/ui-kit` (internally: `packages/ui/src/index.ts`) when public
 - [ ] **Knowledge:** component doc + numeric spec follow the template; anatomy contract filled (Behavioral / Constraints / DOM / Composition)
 
 ---

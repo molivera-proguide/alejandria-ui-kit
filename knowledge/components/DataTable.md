@@ -125,7 +125,7 @@ siempre seguir estas reglas.
 | Type | molecule |
 | Group | Tables |
 | Package | @alejandria/ui-kit |
-| Export | packages/ui/src/components/DataTable.tsx |
+| Import | `import { DataTable } from "@alejandria/ui-kit"` |
 
 ---
 
@@ -462,6 +462,10 @@ Nota: el fondo de encabezados `.ds-table th` está hardcodeado (`rgb(0 0 0 / 0.2
 # Implementation Notes
 
 This section is intended for maintainers extending the component.
+
+> **Interno (mantenedores).** Las rutas de esta sección (Source File, Dependencies, DOM Structure)
+> son fuente del monorepo (`packages/ui/**`); no forman parte de la API publicada de
+> `@alejandria/ui-kit`. Un consumidor externo usa el import de arriba y `@alejandria/ui-kit/style.css`.
 
 Read after:
 

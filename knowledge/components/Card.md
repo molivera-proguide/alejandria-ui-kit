@@ -125,7 +125,7 @@ siempre seguir estas reglas.
 | Type | molecule |
 | Group | Cards |
 | Package | @alejandria/ui-kit |
-| Export | packages/ui/src/components/Card.tsx |
+| Import | `import { Card } from "@alejandria/ui-kit"` |
 
 ---
 
@@ -465,6 +465,10 @@ Nota: `.ds-card::before` usa `rgb(108 224 199 / 0.75)` (teal hardcodeado). `.ds-
 # Implementation Notes
 
 Esta sección está dirigida a quienes extienden el componente.
+
+> **Interno (mantenedores).** Las rutas de esta sección (Source File, Dependencies, DOM Structure)
+> son fuente del monorepo (`packages/ui/**`); no forman parte de la API publicada de
+> `@alejandria/ui-kit`. Un consumidor externo usa el import de arriba y `@alejandria/ui-kit/style.css`.
 
 Leer después de:
 

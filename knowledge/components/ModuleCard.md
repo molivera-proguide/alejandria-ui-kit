@@ -102,7 +102,7 @@ siempre seguir estas reglas.
 - Proporcionar `onClick` cuando la tarjeta deba navegar o ejecutar una acción.
 - Agrupar instancias en un contenedor con grid CSS, como en la story `GridExample` (`repeat(auto-fit, minmax(130px, 1fr))`).
 - Pasar `aria-label` explícito si el título visible no describe suficientemente la acción del botón.
-- Usar iconos de módulo de `packages/ui/src/Icons` (SVG 180×180 artboard) como en las stories de Storybook; el CSS los renderiza a 90×90 px (display).
+- Usar iconos de módulo de `@alejandria/ui-kit` (SVG 180×180 artboard) como en las stories de Storybook; el CSS los renderiza a 90×90 px (display).
 
 ---
 
@@ -113,7 +113,7 @@ siempre seguir estas reglas.
 | Type | molecule |
 | Group | Cards |
 | Package | @alejandria/ui-kit |
-| Export | packages/ui/src/components/ModuleCard.tsx |
+| Import | `import { ModuleCard } from "@alejandria/ui-kit"` |
 
 ---
 
@@ -428,6 +428,10 @@ Nota: la mayoría de colores del componente están hardcodeados (`#060606`, `#c1
 # Implementation Notes
 
 Esta sección está dirigida a quienes extienden el componente.
+
+> **Interno (mantenedores).** Las rutas de esta sección (Source File, Dependencies, DOM Structure)
+> son fuente del monorepo (`packages/ui/**`); no forman parte de la API publicada de
+> `@alejandria/ui-kit`. Un consumidor externo usa el import de arriba y `@alejandria/ui-kit/style.css`.
 
 Leer después de:
 

@@ -1,6 +1,6 @@
 # Component selection taxonomy
 
-Semantic roles for every export in `packages/ui/src/index.ts`. Use this after classifying a **component-selection** task ([decision-order.md](./decision-order.md) §3).
+Semantic roles for every export of `@alejandria/ui-kit`. Use this after classifying a **component-selection** task ([decision-order.md](./decision-order.md) §3).
 
 Spanish Purpose prose in component docs is authoritative for nuance; this file is the English selection map.
 

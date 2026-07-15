@@ -119,7 +119,7 @@ siempre seguir estas reglas.
 | Type | atom |
 | Group | Labels |
 | Package | @alejandria/ui-kit |
-| Export | packages/ui/src/components/Badge.tsx |
+| Import | `import { Badge } from "@alejandria/ui-kit"` |
 
 ---
 
@@ -437,6 +437,10 @@ Nota: el fondo de `.ds-badge--neutral` usa `rgb(255 255 255 / 0.05)` hardcodeado
 # Implementation Notes
 
 This section is intended for maintainers extending the component.
+
+> **Interno (mantenedores).** Las rutas de esta sección (Source File, Dependencies, DOM Structure)
+> son fuente del monorepo (`packages/ui/**`); no forman parte de la API publicada de
+> `@alejandria/ui-kit`. Un consumidor externo usa el import de arriba y `@alejandria/ui-kit/style.css`.
 
 Read after:
 

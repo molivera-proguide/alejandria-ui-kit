@@ -128,7 +128,7 @@ siempre seguir estas reglas.
 | Type | molecule |
 | Group | Cards |
 | Package | @alejandria/ui-kit |
-| Export | packages/ui/src/components/InvestigationCard.tsx |
+| Import | `import { InvestigationCard } from "@alejandria/ui-kit"` |
 
 ---
 
@@ -359,7 +359,7 @@ Document only responsive behavior implemented by the component itself.
 
 ## Icons
 
-- Icono principal: set Investigations 25×25 display (artboard 50×50) (`AvionIcon`, `AutoIcon`, `PersonaIcon`, etc.) desde `packages/ui/src/Icons`.
+- Icono principal: set Investigations 25×25 display (artboard 50×50) (`AvionIcon`, `AutoIcon`, `PersonaIcon`, etc.) desde `@alejandria/ui-kit`.
 - Utilidades: iconos Cards 10×10 display embebidos por el componente (Editar, Eliminar, Cerrar).
 
 ## Localization
@@ -478,6 +478,10 @@ Only include tokens directly consumed by the component.
 # Implementation Notes
 
 This section is intended for maintainers extending the component.
+
+> **Interno (mantenedores).** Las rutas de esta sección (Source File, Dependencies, DOM Structure)
+> son fuente del monorepo (`packages/ui/**`); no forman parte de la API publicada de
+> `@alejandria/ui-kit`. Un consumidor externo usa el import de arriba y `@alejandria/ui-kit/style.css`.
 
 Read after:
 

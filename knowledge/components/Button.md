@@ -126,7 +126,7 @@ siempre seguir estas reglas.
 | Type | atom |
 | Group | Actions |
 | Package | @alejandria/ui-kit |
-| Export | packages/ui/src/components/Button.tsx |
+| Import | `import { Button } from "@alejandria/ui-kit"` |
 
 ---
 
@@ -469,6 +469,10 @@ Nota: `.ds-button--primary` y `.ds-button--danger` usan gradientes y colores har
 # Implementation Notes
 
 This section is intended for maintainers extending the component.
+
+> **Interno (mantenedores).** Las rutas de esta sección (Source File, Dependencies, DOM Structure)
+> son fuente del monorepo (`packages/ui/**`); no forman parte de la API publicada de
+> `@alejandria/ui-kit`. Un consumidor externo usa el import de arriba y `@alejandria/ui-kit/style.css`.
 
 Read after:
 

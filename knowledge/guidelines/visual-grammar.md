@@ -112,7 +112,7 @@ Relationships, not token laundry lists. Families: Source Code Pro (`--ds-font-mo
 |-------|-----------------|------|
 | **Regions** | Segment the screen first (regions dominate → secondary). Do not invent regions the reference lacks | [visual-analysis-protocol.md](../visual-analysis-protocol.md) Pass 1–3 |
 | **Stack** | Card anatomy is vertical: identity → primary metric/body → secondary meta/actions. Exemplars: Metric (label → value → change); Module (icon → title → divider → metrics); Investigation (icon/title → metrics → actions) | Component specs + archetype slots |
-| **Patterns** | Prefer documented pattern recipes ([operations-console](../patterns/operations-console.md), [metrics-row](../patterns/metrics-row.md), [module-grid](../patterns/module-grid.md), login/detail-sheet/modal under `packages/ui` patterns) over inventing new layout shells | index patterns table |
+| **Patterns** | Prefer documented pattern recipes ([operations-console](../patterns/operations-console.md), [metrics-row](../patterns/metrics-row.md), [module-grid](../patterns/module-grid.md), login/detail-sheet/modal pattern recipes under `knowledge/patterns/`) over inventing new layout shells | index patterns table |
 | **Controls inside PDF screens** | Compose `Button variant="pdf"` + field `appearance="pdf"` rather than overriding global Button CSS | roadmap eval 1–2; Button.spec `.ds-button--pdf` |
 | **Missing kit piece** | Report the gap (e.g. PatternLock not exported) — compose with local markup only when the pattern already does; do not mint a fake package component | roadmap eval 1 “report-don't-invent”; coverage audit PatternLock |
 

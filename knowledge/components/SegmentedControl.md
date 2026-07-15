@@ -123,7 +123,7 @@ siempre seguir estas reglas.
 | Type | molecule |
 | Group | Forms |
 | Package | @alejandria/ui-kit |
-| Export | packages/ui/src/components/SegmentedControl.tsx |
+| Import | `import { SegmentedControl } from "@alejandria/ui-kit"` |
 
 ---
 
@@ -448,6 +448,10 @@ Nota: el fondo de `.ds-segmented` está hardcodeado (`rgb(0 0 0 / 0.24)`). No ha
 # Implementation Notes
 
 This section is intended for maintainers extending the component.
+
+> **Interno (mantenedores).** Las rutas de esta sección (Source File, Dependencies, DOM Structure)
+> son fuente del monorepo (`packages/ui/**`); no forman parte de la API publicada de
+> `@alejandria/ui-kit`. Un consumidor externo usa el import de arriba y `@alejandria/ui-kit/style.css`.
 
 Read after:
 

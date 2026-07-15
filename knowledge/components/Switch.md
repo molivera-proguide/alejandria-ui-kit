@@ -122,7 +122,7 @@ siempre seguir estas reglas.
 | Type | molecule |
 | Group | Forms |
 | Package | @alejandria/ui-kit |
-| Export | packages/ui/src/components/Switch.tsx |
+| Import | `import { Switch } from "@alejandria/ui-kit"` |
 
 ---
 
@@ -443,6 +443,10 @@ Nota: fondo del track en reposo (`rgb(255 255 255 / 0.08)`), sombra del thumb (`
 # Implementation Notes
 
 This section is intended for maintainers extending the component.
+
+> **Interno (mantenedores).** Las rutas de esta sección (Source File, Dependencies, DOM Structure)
+> son fuente del monorepo (`packages/ui/**`); no forman parte de la API publicada de
+> `@alejandria/ui-kit`. Un consumidor externo usa el import de arriba y `@alejandria/ui-kit/style.css`.
 
 Read after:
 

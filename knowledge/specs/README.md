@@ -2,6 +2,11 @@
 
 ## Purpose
 
+> **Internal-fidelity layer (not portable).** These specs cite implemented CSS by source line
+> (`styles.css:NN`) and monorepo source paths. They are the internal source of truth for exact
+> values; they are **not** part of the consumable `@alejandria/ui-kit` API surface and are not
+> meant to be resolved by an external consumer.
+
 This folder is the **numeric specification layer** for Alejandría. It records measured, citable values from implemented CSS and cross-references component docs / PDF pages. It does **not** redesign, tokenize, or resolve discrepancies.
 
 Later milestones (token system, anatomy contracts, visual grammar, validation) consume these facts without re-deriving them.

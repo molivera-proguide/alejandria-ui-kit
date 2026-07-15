@@ -12,6 +12,16 @@ This is the main entry point for the Alejandria UI Kit knowledge base. It is wri
 
 ---
 
+## Consuming outside the monorepo
+
+Externally, the design system ships as the **`@alejandria/ui-kit`** npm package plus this
+`knowledge/` tree. The consumable surface is `import { … } from "@alejandria/ui-kit"` and
+`@alejandria/ui-kit/style.css`. Monorepo source paths (`packages/ui/src/**`), Storybook, and
+`apps/web` are **internal** and not available to an external consumer — treat any such reference
+below as internal provenance, not as a path to open.
+
+---
+
 ## Project overview
 
 Alejandria UI Kit is a monorepo with:
@@ -62,7 +72,7 @@ knowledge/
 
 ## Components
 
-Public exports from `packages/ui/src/index.ts` have dedicated docs under `knowledge/components/` (19 exports).
+The public exports of `@alejandria/ui-kit` have dedicated docs under `knowledge/components/` (19 exports).
 
 | Component | Doc | Storybook |
 |-----------|-----|-----------|
@@ -153,7 +163,7 @@ Specs record facts and deltas; they do not redesign or tokenize. Registered in t
 
 ## Tokens
 
-Design tokens are CSS custom properties (`--ds-*`) in `packages/ui/src/styles.css`, documented and planned under [`knowledge/tokens/`](./tokens/README.md):
+Design tokens are CSS custom properties (`--ds-*`), shipped in the package stylesheet (`@alejandria/ui-kit/style.css`), documented and planned under [`knowledge/tokens/`](./tokens/README.md):
 
 | Doc | Path |
 |-----|------|
@@ -290,11 +300,11 @@ Mission
 
 1. **Start here** (`knowledge/index.md`) or load [`design-system-manifest.json`](./design-system-manifest.json).
 2. **How to decide** → [`reasoning/decision-order.md`](./reasoning/decision-order.md); selection → [`reasoning/component-selection.md`](./reasoning/component-selection.md); reuse → [`reasoning/reuse-rubric.md`](./reasoning/reuse-rubric.md); **building/extending** → [`reasoning/component-archetype.md`](./reasoning/component-archetype.md); **generative look** → [`guidelines/visual-grammar.md`](./guidelines/visual-grammar.md); **verify before done** → [`reasoning/fidelity-validation.md`](./reasoning/fidelity-validation.md).
-3. **Component API / behavior** → `knowledge/components/<Name>.md`, then source in `packages/ui/src/components/`.
+3. **Component API / behavior** → `knowledge/components/<Name>.md`, then the published API of `@alejandria/ui-kit`.
 4. **Measured values / deltas** → `knowledge/specs/`.
 5. **How pieces are arranged** → `knowledge/patterns/`.
 6. **Full-page composition** → `knowledge/screens/`.
-7. **Visual tokens / vocabulary** → `knowledge/tokens/` and `guidelines/design-language.md`; generative composition → `guidelines/visual-grammar.md`; implemented values in `packages/ui/src/styles.css`.
+7. **Visual tokens / vocabulary** → `knowledge/tokens/` and `guidelines/design-language.md`; generative composition → `guidelines/visual-grammar.md`; implemented values in the package stylesheet (`@alejandria/ui-kit/style.css`).
 8. **Plan / milestone scope** → [`roadmap.md`](./roadmap.md).
 9. **What is missing or partial** → `knowledge/audit/` (do not treat audits as implemented features).
 10. **Right vs wrong (contrast)** → [`guidelines/anti-examples.md`](./guidelines/anti-examples.md) after [`anti-patterns.md`](./anti-patterns.md).

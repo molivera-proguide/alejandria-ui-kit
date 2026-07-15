@@ -124,7 +124,7 @@ siempre seguir estas reglas.
 | Type | molecule |
 | Group | Charts |
 | Package | @alejandria/ui-kit |
-| Export | packages/ui/src/components/DonutChartCard.tsx |
+| Import | `import { DonutChartCard } from "@alejandria/ui-kit"` |
 
 ---
 
@@ -457,6 +457,10 @@ Nota: el track usa `stroke: #8a8b87` hardcodeado. Los colores de stats (`#fff`, 
 # Implementation Notes
 
 This section is intended for maintainers extending the component.
+
+> **Interno (mantenedores).** Las rutas de esta sección (Source File, Dependencies, DOM Structure)
+> son fuente del monorepo (`packages/ui/**`); no forman parte de la API publicada de
+> `@alejandria/ui-kit`. Un consumidor externo usa el import de arriba y `@alejandria/ui-kit/style.css`.
 
 Read after:
 

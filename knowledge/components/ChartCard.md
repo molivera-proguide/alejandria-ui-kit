@@ -113,7 +113,7 @@ siempre seguir estas reglas.
 | Type | molecule |
 | Group | Charts |
 | Package | @alejandria/ui-kit |
-| Export | packages/ui/src/components/ChartCard.tsx |
+| Import | `import { ChartCard } from "@alejandria/ui-kit"` |
 
 ---
 
@@ -390,6 +390,10 @@ Nota: el fondo (`rgb(6 6 6 / 0.2)`), el borde (`rgb(193 193 193 / 0.6)`), el col
 # Implementation Notes
 
 This section is intended for maintainers extending the component.
+
+> **Interno (mantenedores).** Las rutas de esta sección (Source File, Dependencies, DOM Structure)
+> son fuente del monorepo (`packages/ui/**`); no forman parte de la API publicada de
+> `@alejandria/ui-kit`. Un consumidor externo usa el import de arriba y `@alejandria/ui-kit/style.css`.
 
 Read after:
 

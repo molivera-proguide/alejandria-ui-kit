@@ -123,7 +123,7 @@ siempre seguir estas reglas.
 | Type | atom |
 | Group | Indicators |
 | Package | @alejandria/ui-kit |
-| Export | packages/ui/src/components/ProgressRing.tsx |
+| Import | `import { ProgressRing } from "@alejandria/ui-kit"` |
 
 ---
 
@@ -470,6 +470,10 @@ Nota: tramo restante del `conic-gradient` (`rgb(255 255 255 / 0.09)`), borde int
 # Implementation Notes
 
 This section is intended for maintainers extending the component.
+
+> **Interno (mantenedores).** Las rutas de esta sección (Source File, Dependencies, DOM Structure)
+> son fuente del monorepo (`packages/ui/**`); no forman parte de la API publicada de
+> `@alejandria/ui-kit`. Un consumidor externo usa el import de arriba y `@alejandria/ui-kit/style.css`.
 
 Read after:
 

@@ -46,7 +46,7 @@ Goal: the UI matches the approved visual source. Prefer omission over invention 
 3. **Component documentation** — [`knowledge/components/<Name>.md`](../components/).
 4. **Design principles** — [`design-principles.md`](../design-principles.md).
 5. **Design system rules + anti-patterns** — [`design-system-rules.md`](../design-system-rules.md), [`anti-patterns.md`](../anti-patterns.md).
-6. **Existing implementation** — `packages/ui` source + Storybook (consistency check, not a license to redesign).
+6. **Existing implementation** — the published `@alejandria/ui-kit` API (internally: `packages/ui` source + Storybook) (consistency check, not a license to redesign).
 7. **Personal interpretation** — last; prefer asking over inventing.
 
 **Concrete inputs:** specs, component docs, `styles.css` / tokens for *what is implemented*; PDF for *what is intended*. Do not silently “normalize” spacing or palette during fidelity work unless the task is explicitly an M5 gated resolution.
@@ -59,7 +59,7 @@ Goal: every new visual value enters through the token vocabulary when appropriat
 
 **Priority (never invert):**
 
-1. **Reuse an existing Design Token** — `--ds-*` in `packages/ui/src/styles.css` / [token-plan.md](../tokens/token-plan.md).
+1. **Reuse an existing Design Token** — `--ds-*` in the package stylesheet (`@alejandria/ui-kit/style.css`) / [token-plan.md](../tokens/token-plan.md).
 2. **Reuse an existing scale step** — e.g. `--ds-space-1..6`, shared `--ds-text-*`, weight/leading/tracking scales ([design-language.md](../guidelines/design-language.md)).
 3. **Consult inventory + migration disposition** — [tokens-inventory.md](../specs/tokens-inventory.md), [migration-map.md](../tokens/migration-map.md). If the value is `visual-gated`, do **not** apply a look-changing merge/normalize without sign-off (Fidelity / M5).
 4. **Create a new token** only if the value is reusable or encodes a named role (Rule 06) — extend `--ds-<category>-<role>` (Rule 07); register in plan/map/manifest when documenting.
@@ -78,7 +78,7 @@ Goal: pick the exported component whose **semantic role** matches the need.
 
 1. Read [`component-selection.md`](./component-selection.md) — role + nearest-neighbor boundaries.
 2. Confirm against [`knowledge/components/<Name>.md`](../components/) Purpose / When not to use.
-3. Confirm the export exists in `packages/ui/src/index.ts` and (when documented) the [manifest](../design-system-manifest.json).
+3. Confirm the export exists in `@alejandria/ui-kit` and (when documented) the [manifest](../design-system-manifest.json).
 4. Prefer composition of existing exports over a new primitive (see §4).
 
 Do not pick by visual similarity alone (Anti-Pattern 03 — borrowing from other components).

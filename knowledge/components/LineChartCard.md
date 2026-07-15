@@ -124,7 +124,7 @@ siempre seguir estas reglas.
 | Type | molecule |
 | Group | Charts |
 | Package | @alejandria/ui-kit |
-| Export | packages/ui/src/components/LineChartCard.tsx |
+| Import | `import { LineChartCard } from "@alejandria/ui-kit"` |
 
 ---
 
@@ -437,6 +437,10 @@ Nota: la rejilla usa `stroke: rgb(255 255 255 / 0.08)` hardcodeado. Las etiqueta
 # Implementation Notes
 
 This section is intended for maintainers extending the component.
+
+> **Interno (mantenedores).** Las rutas de esta sección (Source File, Dependencies, DOM Structure)
+> son fuente del monorepo (`packages/ui/**`); no forman parte de la API publicada de
+> `@alejandria/ui-kit`. Un consumidor externo usa el import de arriba y `@alejandria/ui-kit/style.css`.
 
 Read after:
 

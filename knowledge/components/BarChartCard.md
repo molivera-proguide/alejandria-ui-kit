@@ -116,7 +116,7 @@ siempre seguir estas reglas.
 | Type | molecule |
 | Group | Charts |
 | Package | @alejandria/ui-kit |
-| Export | packages/ui/src/components/BarChartCard.tsx |
+| Import | `import { BarChartCard } from "@alejandria/ui-kit"` |
 
 ---
 
@@ -427,6 +427,10 @@ Nota: el color de etiquetas (`fill: #8a8b87`) está hardcodeado. La clase `.ds-b
 # Implementation Notes
 
 This section is intended for maintainers extending the component.
+
+> **Interno (mantenedores).** Las rutas de esta sección (Source File, Dependencies, DOM Structure)
+> son fuente del monorepo (`packages/ui/**`); no forman parte de la API publicada de
+> `@alejandria/ui-kit`. Un consumidor externo usa el import de arriba y `@alejandria/ui-kit/style.css`.
 
 Read after:
 

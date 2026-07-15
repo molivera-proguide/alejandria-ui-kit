@@ -120,7 +120,7 @@ siempre seguir estas reglas.
 | Type | molecule |
 | Group | Feedback |
 | Package | @alejandria/ui-kit |
-| Export | packages/ui/src/components/AlertBanner.tsx |
+| Import | `import { AlertBanner } from "@alejandria/ui-kit"` |
 
 ---
 
@@ -436,6 +436,10 @@ Nota: `--alert-accent` es una variable CSS local definida en `.ds-alert` y sobre
 # Implementation Notes
 
 This section is intended for maintainers extending the component.
+
+> **Interno (mantenedores).** Las rutas de esta sección (Source File, Dependencies, DOM Structure)
+> son fuente del monorepo (`packages/ui/**`); no forman parte de la API publicada de
+> `@alejandria/ui-kit`. Un consumidor externo usa el import de arriba y `@alejandria/ui-kit/style.css`.
 
 Read after:
 
