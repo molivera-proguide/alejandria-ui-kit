@@ -10,17 +10,26 @@ Proprietary / internal use only (`UNLICENSED`). Not an open-source license; do n
 
 `@alejandria/ui-kit` is meant to be installed from a local tarball or a git ref. There is no npm registry publish for this MVP.
 
-### From a tarball
+### From a tarball (recommended)
+
+From the repo root, build then pack. `pnpm pack:ui` copies the knowledge into the package, writes
+the tarball to the repo root, and cleans up the transient copy:
 
 ```bash
-pnpm --filter @alejandria/ui-kit build
-# from packages/ui (or use root `pnpm pack:ui`):
-npm pack
-# → alejandria-ui-kit-0.1.0.tgz
+pnpm build:ui      # build packages/ui/dist
+pnpm pack:ui       # → ./alejandria-ui-kit-0.1.0.tgz (dist + knowledge + AI entrypoint)
 
-# in the consumer app:
-npm install ./path/to/alejandria-ui-kit-0.1.0.tgz
+# in the consumer app (use an absolute path to the .tgz, or copy it in first):
+npm install /path/to/alejandria-ui-kit-0.1.0.tgz
 ```
+
+The tarball ships the runnable package (`dist/`, `style.css`, types), the `knowledge/` tree (minus
+the 35 MB design-reference PDF), and the AI entrypoint at
+`knowledge/consumer/AGENTS.template.md` — see "Consuming with an AI agent" below.
+
+> Running `npm pack` directly inside `packages/ui` also works (the `prepack` hook copies the
+> knowledge), but it leaves a transient `packages/ui/knowledge/` copy behind and writes the tarball
+> into `packages/ui/`. Prefer `pnpm pack:ui`.
 
 ### From git
 
@@ -28,7 +37,10 @@ npm install ./path/to/alejandria-ui-kit-0.1.0.tgz
 npm install git+https://<host>/<org>/alejandria-ui-kit.git#<ref>
 ```
 
-Ensure the git ref includes a built `packages/ui/dist` (or run the package `build` script as part of your install/prepare flow). Peer dependencies: `react` and `react-dom` `>=18.2.0`.
+Caveat: git-install runs `prepare`, not the `prepack` / `pnpm pack:ui` flow, and the package has no
+`prepare` hook — so a git ref ships **neither** a built `packages/ui/dist` **nor** the copied
+`knowledge/` unless they are committed to the ref. For the AI-consumer workflow (which needs the
+shipped `knowledge/`), prefer the tarball. Peer dependencies: `react` and `react-dom` `>=18.2.0`.
 
 ## Usage
 
