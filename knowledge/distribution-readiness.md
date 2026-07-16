@@ -124,10 +124,32 @@ and the D5 coverage build.
 - Format/path decisions: `AGENTS.md` canonical (Cursor/Claude wiring documented); node_modules path
   default with copy-to-repo fallback. (An `npx @alejandria/ui-kit init` copier is post-MVP.)
 
-**MVP-4 — Consumer-repo acceptance eval** (the proof)
-- In a FRESH scratch consumer repo (npm-installed package + shipped knowledge + rules file, NO
-  monorepo), have a fresh agent generate a component/screen. Faithful output (reuses components,
-  applies the grammar, reports gaps) = the coworker scenario works end-to-end.
+**MVP-4 — Consumer-repo acceptance eval** (the proof) — ✅ **done** (2026-07-16)
+- **Pass A (smoke):** fresh Vite+React18+TS scratch repo, npm-installed tarball, copied `AGENTS.md`;
+  a fresh agent read only the shipped knowledge and generated an Operations Console screen that
+  type-checks + `vite build`s against the real package.
+- **Pass B (real):** a coworker ran a **fresh Claude Code (Sonnet) session in their own Next.js +
+  Tailwind v4 + shadcn app (SIGCAT)**, told nothing about the entrypoint. The agent **discovered and
+  followed `AGENTS.md` on its own**, adopted the kit (login → `Card`/`TextField`/`Button variant="pdf"`;
+  status chips → `Badge`; deleted a hand-rolled ProgressRing clone + duplicated `--ds-*` tokens),
+  **reused** components, held **report-don't-invent** (didn't force `AlertBanner` onto rich panels;
+  reported the coverage gaps), and left the build green. The coworker loop works end-to-end.
+- **Bugs/gaps the real-repo eval surfaced (not caught by the plain-Vite Pass A):**
+  1. **`TextField` (any `.ds-field`) without `iconLeft` splits** — `.ds-field__control`'s
+     `grid-template-columns: auto 1fr` leaves the input in the icon column; kit bug, reproduced in a
+     no-Tailwind app. Fixed with `:has(.ds-field__icon)` (verified in a real browser). ← kit fix pending commit.
+  2. **Kit CSS is import-order-sensitive under Tailwind/Next:** `@layer ds.components` must be
+     imported **after** the framework's preflight (`globals.css`), or cascade-layer order lets
+     Tailwind's `*`/`button` resets strip the kit's borders/padding/backgrounds. Fix = document it
+     in `SETUP.md` + a note in `AGENTS.template.md`. ← docs pending commit.
+  - (Gaps #1 app-shell + #2 icons already patched in `5777a81`.)
+- **Verification method note:** headless Edge screenshots did **not** reveal the icon-less split
+  (they filled the grid where real browsers split) — real-browser confirmation was required.
+- **D5 coverage backlog from real use (SIGCAT):** Modal/overlay + situation-report **stepper** shell
+  (the app's core interaction); `DataTable` **row-click/selection**; **nav rail / sidebar**; compact
+  **HUD strip** (`MetricCard` reporting scale doesn't fit); timeline/scrubber. Glass/animated tactical
+  HUD is a **different visual language** than Alejandría's flat-reporting — out of scope unless the DS
+  chooses to define a tactical language (design decision, not coverage).
 
 ### Sequencing
 ```
