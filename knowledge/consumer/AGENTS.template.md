@@ -38,6 +38,8 @@ white. Give your app root the console backdrop using tokens:
 ```
 Use `var(--ds-*)` tokens for shell spacing too (`--ds-space-1..6`); don't hardcode hex or px for
 design values.
+> **Import order matters:** load `@alejandria/ui-kit/style.css` *after* any Tailwind/`globals.css`
+> base CSS, or the framework's reset will strip the kit's component styles (see SETUP.md).
 
 ## Read the design-system knowledge first
 The knowledge ships inside the installed package at:
