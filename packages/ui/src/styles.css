@@ -516,12 +516,16 @@
     border: var(--ds-border-width-1) solid var(--ds-color-line);
     border-radius: var(--ds-radius-sm);
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: 1fr;
     min-height: var(--ds-size-control-md);
     overflow: hidden;
     transition:
       border-color var(--ds-duration-fast) ease,
       box-shadow var(--ds-duration-fast) ease;
+  }
+
+  .ds-field__control:has(.ds-field__icon) {
+    grid-template-columns: auto 1fr;
   }
 
   .ds-field__control:focus-within {
