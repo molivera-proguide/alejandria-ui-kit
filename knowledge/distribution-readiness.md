@@ -147,9 +147,21 @@ and the D5 coverage build.
   (they filled the grid where real browsers split) — real-browser confirmation was required.
 - **D5 coverage backlog from real use (SIGCAT):** Modal/overlay + situation-report **stepper** shell
   (the app's core interaction); `DataTable` **row-click/selection**; **nav rail / sidebar**; compact
-  **HUD strip** (`MetricCard` reporting scale doesn't fit); timeline/scrubber. Glass/animated tactical
-  HUD is a **different visual language** than Alejandría's flat-reporting — out of scope unless the DS
-  chooses to define a tactical language (design decision, not coverage).
+  **HUD strip** (`MetricCard` reporting scale doesn't fit); timeline/scrubber. These are flat-reporting
+  primitives the kit could add the normal way.
+- **Tactical / glass HUD language — candidate direction, NOT on the D5 coverage path.** SIGCAT's
+  animated/glass tactical HUD is a **different visual language** than Alejandría's flat-reporting. The
+  blocker to defining it is **not** method (the M1–M6 process + the `appearance` context axis already
+  support adding a context) — it is the **absence of an intentional, approved visual reference** (the
+  equivalent of the reporting `design-reference.pdf`). A DS codifies deliberate design intent, not
+  implementation. **Do not mine SIGCAT for this:** SIGCAT is a mock-data demo (ad-hoc CSS, `!important`,
+  accumulated animations) — legitimate as a demo, but demo-grade implementation, not a reference.
+  Treat SIGCAT only as a *signal of demand* + rough inspiration. **Precondition to pursue:** if the
+  tactical HUD becomes strategic (2+ products ask for it), first commission an intentional tactical/glass
+  design reference; *then* apply the kit's method (analysis → tokens `--ds-glass-*`/`--ds-motion-*` →
+  archetype → grammar), resolving the hard parts glass systems fail on (legibility over map tiles,
+  `prefers-reduced-motion` + motion budget, `backdrop-filter` perf, and console/pdf/hud coexistence
+  rules). Until then: out of scope; SIGCAT keeps its glass CSS local.
 
 ### Sequencing
 ```
