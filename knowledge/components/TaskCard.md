@@ -48,9 +48,9 @@ Describe:
 
 - **Responsabilidad principal:** mostrar el resumen de una tarea (identificador, estado, título, contexto) con codificación visual por tono mediante el acento de esquina superior derecha.
 - **Problema que resuelve:** unificar la estructura de tarjetas de tarea en grids de consola sin acoplar lógica de negocio, navegación ni acciones embebidas.
-- **Alcance:** componente presentacional basado en `<article>` con dos variantes visuales (`default`, `kanban`) definidas en PDF TARJETAS p. 1. **No incluye visualización de progreso.**
+- **Alcance:** componente presentacional basado en `<article>` con dos variantes visuales (`default`, `kanban`) definidas en PDF TARJETAS p. 3. **No incluye visualización de progreso.**
 
-**Referencia visual canónica:** `knowledge/references/design-reference.pdf` — sección TARJETAS (p. 1). El PDF es la única fuente de verdad para layout, proporciones y jerarquía visual.
+**Referencia visual canónica:** `knowledge/references/design-reference.pdf` — sección TARJETAS (p. 3). El PDF es la única fuente de verdad para layout, proporciones y jerarquía visual.
 
 - La variante **Full TaskCard** (`variant="default"`) es la implementación canónica (sección superior del PDF).
 - La variante **Kanban TaskCard** (`variant="kanban"`) es una presentación compacta alternativa del mismo componente (sección inferior del PDF).

@@ -4,7 +4,7 @@
 - Source-of-truth order: PDF (page N) > component doc > implemented CSS
 - CSS block: `.ds-module-card` (styles.css — PDF-context block)
 - Export: packages/ui/src/components/ModuleCard.tsx
-- PDF reference: MÓDULOS (page not numbered in ModuleCard.md; InvestigationCard.md cites ModuleCard as PDF p. 4)
+- PDF reference: MÓDULOS (page not numbered in ModuleCard.md; InvestigationCard.md cites ModuleCard as PDF p. 6)
 - Scale: display values = PDF annotation ÷ 2 (see [specs/README.md — Scale calibration](../README.md#scale-calibration))
 
 ## Dimensions
@@ -56,5 +56,5 @@
 | :disabled | disabled appearance | knowledge/components/ModuleCard.md | no |
 
 ## Deltas & open questions (facts only — DO NOT resolve)
-- ModuleCard.md does not number the PDF page; InvestigationCard.md refers to ModuleCard as «PDF p. 4» — page attribution partial.
+- ModuleCard.md does not number the PDF page; InvestigationCard.md refers to ModuleCard as «PDF p. 6» — page attribution partial.
 - Disabled modifier lacks CSS (knowledge/components/ModuleCard.md).

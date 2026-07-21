@@ -1,10 +1,10 @@
 # Scrollbar — Numeric Specification
 
 - Status: measured
-- Source-of-truth order: PDF (page 13) > component doc > implemented CSS
+- Source-of-truth order: PDF (page 18, formerly page 13) > component doc > implemented CSS
 - CSS block: `.ds-scrollbar` (styles.css:1545–1569)
 - Export: packages/ui/src/components/Scrollbar.tsx
-- PDF reference: p.13 MISCELÁNEAS (knowledge/components/Scrollbar.md); vectors via PDF drawings
+- PDF reference: p.18 ALERT, formerly p.13 MISCELÁNEAS (knowledge/components/Scrollbar.md); vectors via PDF drawings
 
 ## Dimensions
 | Property | Value | Unit | Source | Delta vs PDF/doc |
@@ -50,5 +50,5 @@
 - PDF track height 242.76 and thumb height 42.16 are demo pose sizes; CSS track uses `height: 100%`, thumb height via `--ds-scrollbar-thumb-size` default 17.4% (styles.css:1547).
 - PDF left/right thumb insets differ slightly (2.889 vs 3.216 artboard px); CSS uses symmetric 1.5 display px.
 - Track/thumb width rounded to 0.5px steps (7.5 / 4.5) from ÷2 of PDF floats.
-- No hover, focus-visible, disabled, or horizontal geometry in PDF p.13 or CSS block.
-- `aria-orientation="vertical"` only; no horizontal drawing on p.13.
+- No hover, focus-visible, disabled, or horizontal geometry in PDF p.18 or CSS block.
+- `aria-orientation="vertical"` only; no horizontal drawing on p.18.

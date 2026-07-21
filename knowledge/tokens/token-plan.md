@@ -74,8 +74,8 @@ Named separately from console colors so dual-palette evidence is preserved ([des
 | `--ds-color-pdf-surface-warm` | `#2a2927` | TaskCard surface | 1 | Role: PDF TARJETAS surface (TaskCard.spec.md) |
 | `--ds-color-pdf-ink-muted` | `#8a8b87` | PDF muted ink / divider / chart label | **10** | High reuse; distinct from ink-soft |
 | `--ds-color-pdf-line` | `#c1c1c1` | PDF line / title / accent neutral | **5** | High reuse; overloaded roles share one primitive |
-| `--ds-color-pdf-line-light` | `#e6e6e6` | MetricCard border | 1 | Role: PDF MÉTRICAS border |
-| `--ds-color-pdf-border` | `#606060` | Investigation border | 1 | Role: PDF TARJETAS p.2 border |
+| `--ds-color-pdf-line-light` | `#e6e6e6` | MetricCard border | 1 | Role: PDF METRIC CARD (p.11) border |
+| `--ds-color-pdf-border` | `#606060` | Investigation border | 1 | Role: PDF INVESTIGATION CARD p.4 border |
 | `--ds-color-pdf-action` | `#494949` | Investigation primary action | 1 | Role: local PDF action (not global Button) |
 | `--ds-color-pdf-action-hover` | `#5a5a5a` | Investigation action hover | 1 | Paired role with pdf-action |
 | `--ds-color-pdf-critical` | `#ff0404` | Metric critical value | 1 | Role distinct until visual gate vs danger |

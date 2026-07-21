@@ -43,7 +43,7 @@ last_reviewed: 2026-07-06
 
 ## Purpose
 
-Presenta el resumen mínimo e indispensable de una investigación con icono identificador, título, cuadrícula de métricas y acciones en consolas del Alejandria UI Kit, alineada con la sección **TARJETAS** del PDF de referencia (p. 2).
+Presenta el resumen mínimo e indispensable de una investigación con icono identificador, título, cuadrícula de métricas y acciones en consolas del Alejandria UI Kit, alineada con la sección **INVESTIGATION CARD** del PDF de referencia (p. 4).
 
 Describe:
 
@@ -51,7 +51,7 @@ Describe:
 - **Problema que resuelve:** unificar la estructura de tarjetas de investigación en grids de consola sin acoplar lógica de negocio ni navegación.
 - **Alcance:** componente presentacional basado en `<article>` con icono, título, hasta cuatro métricas en cuadrícula 2×2, utilidades opcionales (editar, eliminar, cerrar) y acciones inferiores con estilos PDF propios (no compone `Button` del kit).
 
-**Referencia visual canónica:** `knowledge/references/design-reference.pdf` — sección TARJETAS (p. 2, tarjeta estilo vuelo VUELO XR2180). El PDF es la única fuente de verdad para layout, proporciones y jerarquía visual.
+**Referencia visual canónica:** `knowledge/references/design-reference.pdf` — sección INVESTIGATION CARD (p. 4, tarjeta estilo vuelo VUELO XR2180). El PDF es la única fuente de verdad para layout, proporciones y jerarquía visual.
 
 Exclude:
 
@@ -99,7 +99,7 @@ siempre seguir estas reglas.
 
 - Importar desde `@alejandria/ui-kit` y cargar `styles.css` del paquete (`@alejandria/ui-kit/style.css`).
 - Proporcionar `title` como `string`, `icon` como `ReactNode` y `metrics` como arreglo de `{ label: string; value: string | number }`.
-- Consultar `knowledge/references/design-reference.pdf` (TARJETAS p. 2) antes de modificar estilos o jerarquía.
+- Consultar `knowledge/references/design-reference.pdf` (INVESTIGATION CARD p. 4) antes de modificar estilos o jerarquía.
 - Usar iconos del set Investigations (25×25 display; artboard 50×50) para el icono principal, como en las stories.
 
 ## Forbidden
@@ -207,7 +207,7 @@ Tipos exportados:
 
 # Variants
 
-No existen variantes de layout públicas. El componente aplica una única apariencia canónica (PDF TARJETAS p. 2).
+No existen variantes de layout públicas. El componente aplica una única apariencia canónica (PDF INVESTIGATION CARD p. 4).
 
 ## Acciones inferiores (`InvestigationActionVariant`)
 
@@ -232,7 +232,7 @@ No existen variantes de layout públicas. El componente aplica una única aparie
 
 ---
 
-# Layout (PDF TARJETAS p. 2)
+# Layout (PDF INVESTIGATION CARD p. 4)
 
 Jerarquía canónica, de arriba a abajo:
 
@@ -337,8 +337,8 @@ Document only responsive behavior implemented by the component itself.
 
 | Component | Relationship |
 |-----------|--------------|
-| `TaskCard` | Tarjeta de tarea del mismo PDF (p. 1); identidad visual distinta, sin métricas ni utilidades. |
-| `ModuleCard` | Tarjeta de módulo navegable (PDF p. 4); métricas horizontales, sin acciones inferiores PDF. |
+| `TaskCard` | Tarjeta de tarea del mismo PDF (p. 3); identidad visual distinta, sin métricas ni utilidades. |
+| `ModuleCard` | Tarjeta de módulo navegable (PDF p. 6); métricas horizontales, sin acciones inferiores PDF. |
 | `Button` | Botón global del kit; no usar dentro de `InvestigationCard` (acciones usan estilos locales PDF). |
 | `Card` | Contenedor compuesto con slots libres. |
 | `MetricCard` | KPI independiente; complemento en filas de resumen. |
@@ -440,7 +440,7 @@ Mostrar un vuelo con fecha, aeropuerto, horario y acompañantes en una tarjeta c
 
 ### Why
 
-Patrón canónico PDF TARJETAS p. 2 (`InvestigationCard.stories.tsx` → `Flight`).
+Patrón canónico PDF INVESTIGATION CARD p. 4 (`InvestigationCard.stories.tsx` → `Flight`).
 
 ---
 
@@ -454,7 +454,7 @@ Listar tareas operativas con código y estado en un grid.
 
 ### Why
 
-`InvestigationCard` es para entidades investigativas con métricas 2×2; `TaskCard` cubre tareas operativas (PDF p. 1).
+`InvestigationCard` es para entidades investigativas con métricas 2×2; `TaskCard` cubre tareas operativas (PDF p. 3).
 
 ---
 

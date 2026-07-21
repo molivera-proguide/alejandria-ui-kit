@@ -4,7 +4,7 @@
 - Source-of-truth order: PDF (page N) > component doc > implemented CSS
 - CSS block: `.ds-task` (styles.css — PDF-context block)
 - Export: packages/ui/src/components/TaskCard.tsx
-- PDF reference: p. 1 (per knowledge/components/TaskCard.md — TARJETAS)
+- PDF reference: p. 3 (per knowledge/components/TaskCard.md — TARJETAS)
 - Scale: display values = PDF annotation ÷ 2 (see [specs/README.md — Scale calibration](../README.md#scale-calibration))
 
 ## Dimensions

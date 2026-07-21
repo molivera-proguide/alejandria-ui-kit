@@ -39,7 +39,7 @@ Decision tree for growing the component inventory without duplicate identities. 
 
 ### Example 1 — InvestigationCard API history (correct: new component)
 
-**Situation:** PDF TARJETAS p.2 shows a flight/investigation tile with icon, title, 2×2 metrics, utilities, and PDF-styled actions — not a TaskCard and not a ModuleCard.
+**Situation:** PDF INVESTIGATION CARD p.4 (formerly TARJETAS p.2) shows a flight/investigation tile with icon, title, 2×2 metrics, utilities, and PDF-styled actions — not a TaskCard and not a ModuleCard.
 
 **Wrong branch:** Extend **TaskCard** with optional `metricsGrid`, `utilities`, and `actions`, or stretch **ModuleCard** into a non-navigable summary. That merges identities (task vs investigation vs module entry) and violates Principle 05 / Anti-Pattern 02.
 
@@ -71,7 +71,7 @@ Decision tree for growing the component inventory without duplicate identities. 
 
 ### Example 3 — TaskCard kanban (correct: add a variant)
 
-**Situation:** PDF TARJETAS p.1 shows a compact task tile for boards alongside the full task card.
+**Situation:** PDF TARJETAS p.3 shows a compact task tile for boards alongside the full task card.
 
 **Wrong branch:** Ship `KanbanTaskCard` as a separate export that duplicates title/status/meta props and diverges over time.
 

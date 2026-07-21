@@ -44,7 +44,9 @@ inputs and (b) one deterministic way to decide.
 ### M1 — Numeric Foundation ✅
 `knowledge/specs/` — SCHEMA, `tokens-inventory.md`, 18 per-component `*.spec.md`, cited and
 manifest-registered. Later augmented with `references/pdf-text-extract.md` (lossless text-layer
-extraction of all 13 PDF pages — the exact annotated values, cited by page).
+extraction of all 13 PDF pages — the exact annotated values, cited by page). PDF replaced with a
+v2 (18 pages, adds a component timeline + Skeleton/Calendar card/Empty/Form) on 2026-07-17;
+extract regenerated, citations updated — see `knowledge/component-roadmap.md`.
 
 ### M2 — Semantic Foundation ✅
 - `design-language.md` (color roles, 4px rhythm, type roles); `knowledge/tokens/` (token-plan,
@@ -72,7 +74,7 @@ extraction of all 13 PDF pages — the exact annotated values, cited by page).
 - **PDF-context variants promoted** (Rule 03, from repeated Login/DetailSheet overrides):
   `Button variant="pdf"` + `TextField/SelectField appearance="pdf"` — **documented in the same
   milestone** (docs + specs), so agents discover them. Source Code Light (300) loaded.
-- **MetricCard `appearance="reporting" | "ficha"`** — the two scales page 10 specs.
+- **MetricCard `appearance="reporting" | "ficha"`** — the two scales page 11 (formerly page 10) specs.
 - **@2× scale calibration** *(the session's key finding — see below)*: PDF-context absolute px
   halved (display = annotation ÷ 2). Fixed the "Fichas too big" problem.
 - **DonutChart** layout converted absolute→relative flex (scale-robust).

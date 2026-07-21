@@ -195,7 +195,7 @@ Apariencia de reporting PDF (MÉTRICAS): fondo `rgb(6 6 6 / 0.2)`, borde `0.75px
 
 ## Appearance
 
-La prop `appearance` selecciona la escala tipográfica del PDF MÉTRICAS (página 10). Composable con `tone`.
+La prop `appearance` selecciona la escala tipográfica del PDF METRIC CARD, antes MÉTRICAS (página 11). Composable con `tone`.
 
 | Appearance | Valor | Título / label | Fondo | Uso |
 |------------|-------|----------------|-------|-----|

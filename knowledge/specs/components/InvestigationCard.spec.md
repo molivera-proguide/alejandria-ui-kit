@@ -4,7 +4,7 @@
 - Source-of-truth order: PDF (page N) > component doc > implemented CSS
 - CSS block: `.ds-investigation-card` (styles.css — PDF-context block)
 - Export: packages/ui/src/components/InvestigationCard.tsx
-- PDF reference: p. 2 (per knowledge/components/InvestigationCard.md — TARJETAS)
+- PDF reference: p. 4 (per knowledge/components/InvestigationCard.md — INVESTIGATION CARD, formerly TARJETAS p.2 in PDF v1)
 - Scale: display values = PDF annotation ÷ 2 (see [specs/README.md — Scale calibration](../README.md#scale-calibration))
 
 ## Dimensions

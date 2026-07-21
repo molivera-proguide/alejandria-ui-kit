@@ -48,6 +48,7 @@ knowledge/
 ├── index.md                      ← you are here
 ├── design-system-manifest.json   ← machine-readable registry
 ├── roadmap.md                    ← active knowledge-architecture plan
+├── component-roadmap.md          ← which PDF-defined components still need to be built
 ├── components/                   ← one doc per exported component
 ├── patterns/                     ← Storybook composed UI patterns
 ├── screens/                      ← Storybook fullscreen screens
@@ -198,6 +199,7 @@ Process and decision docs (registered in the manifest `governance[]`):
 | Doc | Path |
 |-----|------|
 | Knowledge architecture roadmap | [roadmap.md](./roadmap.md) |
+| Component build roadmap (what to build next) | [component-roadmap.md](./component-roadmap.md) |
 | Agent playbook (workflow) | [agent-playbook.md](./agent-playbook.md) |
 | Design principles | [design-principles.md](./design-principles.md) |
 | Design system rules | [design-system-rules.md](./design-system-rules.md) |

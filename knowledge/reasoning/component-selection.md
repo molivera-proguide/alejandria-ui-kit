@@ -20,10 +20,10 @@ Spanish Purpose prose in component docs is authoritative for nuance; this file i
 | Component | Role | Nearest neighbors / boundary |
 |-----------|------|------------------------------|
 | **Card** | Composable console **panel**: optional header / body / footer / actions for arbitrary operational content. | Not a KPI tile (**MetricCard**), not a PDF reporting entity card (**TaskCard** / **InvestigationCard** / **ModuleCard**), not a chart shell (**ChartCard**). Use when you need a generic container, not a fixed reporting anatomy. |
-| **MetricCard** | Single **KPI** tile: label + large value + optional change; PDF MÉTRICAS language. | Not a multi-metric entity (**InvestigationCard**), not a module hub (**ModuleCard**), not a task summary (**TaskCard**), not a generic panel (**Card**). One metric per card. |
+| **MetricCard** | Single **KPI** tile: label + large value + optional change; PDF METRIC CARD (p.11, formerly MÉTRICAS) language. | Not a multi-metric entity (**InvestigationCard**), not a module hub (**ModuleCard**), not a task summary (**TaskCard**), not a generic panel (**Card**). One metric per card. |
 | **ModuleCard** | **Navigable module entry**: large icon, title, embedded metric rows; interactive `<button>`. | Not a static KPI (**MetricCard**), not an investigation summary with actions (**InvestigationCard**), not a task (**TaskCard**). Prefer when the primary job is “enter this module.” |
-| **TaskCard** | **Task** summary: code, status, title, description, meta; PDF TARJETAS p.1; variants `default` / `kanban`. | Not an investigation entity (**InvestigationCard**), not a module entry (**ModuleCard**), not a KPI (**MetricCard**). No progress visualization by design. |
-| **InvestigationCard** | **Investigation / flight-style entity** card: icon, title, 2×2 metrics grid, PDF-local actions/utilities (TARJETAS p.2). | Not a task (**TaskCard**), not a module launcher (**ModuleCard**), not a single KPI (**MetricCard**), not generic **Card**. Own action styles — does not compose kit **Button**. |
+| **TaskCard** | **Task** summary: code, status, title, description, meta; PDF TARJETAS p.3; variants `default` / `kanban`. | Not an investigation entity (**InvestigationCard**), not a module entry (**ModuleCard**), not a KPI (**MetricCard**). No progress visualization by design. |
+| **InvestigationCard** | **Investigation / flight-style entity** card: icon, title, 2×2 metrics grid, PDF-local actions/utilities (INVESTIGATION CARD p.4, formerly TARJETAS p.2). | Not a task (**TaskCard**), not a module launcher (**ModuleCard**), not a single KPI (**MetricCard**), not generic **Card**. Own action styles — does not compose kit **Button**. |
 
 ---
 
@@ -64,7 +64,7 @@ Spanish Purpose prose in component docs is authoritative for nuance; this file i
 
 | Component | Role | Nearest neighbors / boundary |
 |-----------|------|------------------------------|
-| **Scrollbar** | Presentational **vertical scroll chrome** (track + thumb capsules); PDF MISCELÁNEAS p.13. | Not **Switch** (boolean track/thumb). Not a scroll-container wrapper and not native `::-webkit-scrollbar` styling of arbitrary overflow. Consumer owns position (`value`) and region sync. |
+| **Scrollbar** | Presentational **vertical scroll chrome** (track + thumb capsules); PDF ALERT p.18 (formerly MISCELÁNEAS p.13). | Not **Switch** (boolean track/thumb). Not a scroll-container wrapper and not native `::-webkit-scrollbar` styling of arbitrary overflow. Consumer owns position (`value`) and region sync. |
 
 ---
 

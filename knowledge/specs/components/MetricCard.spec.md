@@ -1,10 +1,10 @@
 # MetricCard — Numeric Specification
 
 - Status: partial
-- Source-of-truth order: PDF (page 10 MÉTRICAS) > component doc > implemented CSS
+- Source-of-truth order: PDF (page 11 METRIC CARD, formerly page 10 MÉTRICAS) > component doc > implemented CSS
 - CSS block: `.ds-metric` (styles.css — PDF-context block)
 - Export: packages/ui/src/components/MetricCard.tsx
-- PDF reference: MÉTRICAS (page 10 — Reporting vs En ficha)
+- PDF reference: METRIC CARD (page 11 — Reporting vs En ficha; formerly MÉTRICAS p.10)
 - Scale: display values = PDF annotation ÷ 2 (see [specs/README.md — Scale calibration](../README.md#scale-calibration))
 
 ## Dimensions
@@ -20,7 +20,7 @@
 | Role | Value | Matching --ds-* token? | Source | Delta |
 |------|-------|------------------------|--------|-------|
 | background (reporting) | rgb(6 6 6 / 0.2) via --ds-color-pdf-surface-a20 | --ds-color-pdf-surface-a20 | styles.css | doc matches |
-| background (ficha) | transparent | — | styles.css | PDF p.10 «Cuando está en ficha: sin fondo» |
+| background (ficha) | transparent | — | styles.css | PDF p.11 «Cuando está en ficha: sin fondo» |
 | border | #e6e6e6 via --ds-color-pdf-line-light | --ds-color-pdf-line-light | styles.css | doc matches |
 | label | #8a8b87 via --ds-color-pdf-ink-muted | --ds-color-pdf-ink-muted | styles.css | doc matches |
 | value (neutral) | #ffffff via --ds-color-white | --ds-color-white | styles.css | doc matches |
@@ -52,8 +52,8 @@
 | .ds-metric__topline | structural wrapper | knowledge/components/MetricCard.md | no |
 
 ## Deltas & open questions (facts only — DO NOT resolve)
-- Label size implemented display `6px` (from prior 12px ÷2) vs doc PDF MÉTRICAS «Source Code Pro Bold 16px» @2× → intended display 8px — residual delta.
+- Label size implemented display `6px` (from prior 12px ÷2) vs doc PDF METRIC CARD (formerly MÉTRICAS) «Source Code Pro Bold 16px» @2× → intended display 8px — residual delta.
 - Doc cites interlettering PDF 410 → CSS `letter-spacing: 0.41em` via `--ds-tracking-metric` — recorded as matching intent; unit conversion not independently PDF-verified here.
-- Ficha value `font-size: 26px` is an untokenized literal (`/* TODO token */`) — design-reference p.10 «En ficha: Número Montserrat Bold 52pt» @2× → display 26px.
-- Ficha label keeps inherited size from base; PDF p.10 cites «Montserrat Extra Light - 16pt» for En-ficha title — size delta unresolved.
+- Ficha value `font-size: 26px` is an untokenized literal (`/* TODO token */`) — design-reference p.11 «En ficha: Número Montserrat Bold 52pt» @2× → display 26px.
+- Ficha label keeps inherited size from base; PDF p.11 cites «Montserrat Extra Light - 16pt» for En-ficha title — size delta unresolved.
 - `#ff0404` via `--ds-color-pdf-critical` vs semantic `--ds-color-danger: #ff3d48` — duplication candidate, unresolved.

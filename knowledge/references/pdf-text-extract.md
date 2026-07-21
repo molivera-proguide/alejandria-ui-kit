@@ -3,11 +3,15 @@ id: pdf-text-extract
 name: Design Reference — Verbatim Text Layer
 status: reference
 source: knowledge/references/design-reference.pdf
-last_reviewed: 2026-07-13
+last_reviewed: 2026-07-17
 note: >
   Lossless extraction of the PDF embedded text layer (PyMuPDF get_text).
   These are the canonical NUMERIC values for each section — cite by page.
   Typos (e.g. 'loguin', 'paading') are present in the source PDF and preserved.
+  v2 of the source PDF (2026-07-17) inserted a new p2 (LÍNEA DE TIEMPO) and 4 new
+  trailing pages (SKELETON, CALENDAR CARD, EMPTY, FORM), shifting every page after
+  the old p1 by +1, and everything after the old SIDE BAR page by +5. See
+  knowledge/component-roadmap.md for what the timeline page means for component work.
 ---
 
 # Design Reference — Verbatim Text Layer
@@ -15,18 +19,23 @@ note: >
 Page → section map:
 
 - **p1** — Cover
-- **p2** — TARJETAS — task/status cards
-- **p3** — TARJETAS — Investigation card
-- **p4** — FICHAS — detail sheet
-- **p5** — MÓDULOS — module card
-- **p6** — MÓDULOS — Login
-- **p7** — ICONOS
-- **p8** — GRÁFICOS
+- **p2** — LÍNEA DE TIEMPO — component roadmap (Diseño / Desarrollo status per component)
+- **p3** — TARJETAS — task/status cards
+- **p4** — INVESTIGATION CARD — flight-style investigation card (formerly untitled, under TARJETAS)
+- **p5** — FICHAS — detail sheet
+- **p6** — MÓDULOS — module card
+- **p7** — MÓDULOS — Login
+- **p8** — ICONOS
 - **p9** — GRÁFICOS
-- **p10** — MÉTRICAS
-- **p11** — MODALES
-- **p12** — MENÚES
-- **p13** — MISCELÁNEAS
+- **p10** — GRÁFICOS
+- **p11** — METRIC CARD — (formerly titled MÉTRICAS)
+- **p12** — ASISTENTE — (formerly titled MODALES)
+- **p13** — SIDE BAR — (formerly titled MENÚES; page was blank/placeholder in v1, now fully specified)
+- **p14** — SKELETON — new in v2, no v1 equivalent
+- **p15** — CALENDAR CARD — new in v2, no v1 equivalent
+- **p16** — EMPTY — new in v2, no v1 equivalent
+- **p17** — FORM — new in v2, no v1 equivalent; spec text duplicates p16 EMPTY almost verbatim — treat as an unfinished placeholder, not a finished spec
+- **p18** — ALERT — (formerly titled MISCELÁNEAS)
 
 
 ## Page 1 — Cover
@@ -38,7 +47,55 @@ UI
 TOOLKIT
 ```
 
-## Page 2 — TARJETAS — task/status cards
+## Page 2 — LÍNEA DE TIEMPO — component roadmap
+
+```text
+L Í N E A D E T I E M P O
+Trabajamos en sincro para ir avanzando 
+con los componentes necesarios para los 
+proyectos actuales y futuros.
+D I S E Ñ O
+D E S A R R O L L O
+Investigation
+card
+Ficha
+Módulos
+Gráficos
+Metric
+card
+Asistente
+Side bar
+Investigation
+card
+Ficha
+Módulos
+Gráficos
+Metric
+card
+Asistente
+Side bar
+Skeleton
+Skeleton
+Calendar
+card
+Tarjetas
+Tarjetas
+Empty
+Calendar
+card
+Empty
+```
+
+Read visually (text layer loses position): two horizontal tracks, **Diseño** and
+**Desarrollo**, each with a row of dots per component. In **Diseño** all 11 items
+(Tarjetas, Investigation card, Ficha, Módulos, Gráficos, Metric card, Asistente,
+Side bar, Skeleton, Calendar card, Empty) are marked done (filled dot). In
+**Desarrollo**, only Tarjetas, Investigation card, Ficha, Módulos, Gráficos and
+Metric card are marked done; **Asistente, Side bar, Skeleton, Calendar card and
+Empty are marked pending** (hollow dot) — i.e. designed but not yet built. This
+matches the code inventory 1:1 as of 2026-07-17. See `knowledge/component-roadmap.md`.
+
+## Page 3 — TARJETAS — task/status cards
 
 ```text
 Tareas investigativas
@@ -103,9 +160,13 @@ Estado: Source Code Bold - 20pt - #FFFFFF - Uppercase
 Párrafo: Montserrat Light - 18pt - #8a8b87
 Botón: Montserrat Bold - 13pt - #494949 - #FFFFFF - 
 paading top y bottom 5px - padding left y right 25px
+Tareas investigativas
+#1232142342 - 3408473
+EN ESPERA
+Visualización Resumen
 ```
 
-## Page 3 — TARJETAS — Investigation card
+## Page 4 — INVESTIGATION CARD
 
 ```text
 V U E L O X R 2 1 0 0
@@ -121,7 +182,7 @@ ACCIÓN A
 ACCIÓN A
 ACC I ÓN B
 ACC I ÓN B
-T A R J E T A S
+I N V E S T I G A T I O N C A R D
 Resumen mínimo e indispensable 
 de la tarea a realizar. 
 ¿Qué es necesario que esté acá?
@@ -143,7 +204,7 @@ Botón
 Icono
 ```
 
-## Page 4 — FICHAS — detail sheet
+## Page 5 — FICHAS — detail sheet
 
 ```text
 E N E S P E R A
@@ -251,7 +312,7 @@ bottom 5px - padding left y right 25px - fondos #c1c1c1
 #8a8b87 #494949
 ```
 
-## Page 5 — MÓDULOS — module card
+## Page 6 — MÓDULOS — module card
 
 ```text
 M Ó D U L O S
@@ -279,7 +340,7 @@ que sea de valor para ese
 módulo.
 ```
 
-## Page 6 — MÓDULOS — Login
+## Page 7 — MÓDULOS — Login
 
 ```text
 I NG RE SA R
@@ -300,7 +361,7 @@ Botón: Montserrat Bold - 18pt - #FFFFFF - paading top y
 bottom 10px - padding left y right 120px - fondo #494949
 ```
 
-## Page 7 — ICONOS
+## Page 8 — ICONOS
 
 ```text
 I C O N O S
@@ -315,9 +376,15 @@ Iconos menú: #8a8b87
 Iconos menúes 50x50
 Iconos investigaciones 50x50
 Iconos tarjetas 20x20
+Iconos módulos 180x180
+?
+2
+Iconos menúes 50x50
+Iconos investigaciones 50x50
+Iconos tarjetas 20x20
 ```
 
-## Page 8 — GRÁFICOS
+## Page 9 — GRÁFICOS
 
 ```text
 G R A F I C O S
@@ -416,9 +483,79 @@ Barras lineal horizontal
 Barras lineal vertical
 Torta
 Título
+PRECIPITACIONES ESTACIONALES
+60mm
+55mm
+54mm
+45mm
+42mm
+NOV
+60mm
+60mm
+55mm
+54mm
+45mm
+42mm
+DIC
+55mm
+54mm
+45mm
+42mm 42mm
+ENE
+FEB
+42mm
+MAR
+HISTÓRICO INCENDIOS
+NOVIEMBRE - FEBRERO
+Córdoba
+30%
+Neuquén
+28%
+Santa Cruz
+25%
+Chaco
+20%
+Chaco
+20%
+Chaco
+20%
+Chaco
+20%
+Chaco
+20%
+Chaco
+20%
+Córdoba
+30%
+Neuquén
+28%
+Santa Cruz
+25%
+Chaco
+20%
+Chaco
+20%
+Chaco
+20%
+Chaco
+20%
+74
+Evacuados
+75%
+Título
+Referencia
+Número
+Referencia
+Número chico
+Título
+Referencia
+Barras lineal horizontal
+Barras lineal vertical
+Torta
+Título
 ```
 
-## Page 9 — GRÁFICOS
+## Page 10 — GRÁFICOS
 
 ```text
 A U S E N C I A S
@@ -485,13 +622,45 @@ Referencia
 Número grande
 Referencia
 Referencia
+A U S E N C I A S
+T A R E A S
+30%
+H I S T Ó R I C O T A R E A S
+NOV
+DIC
+ENE
+70
+50
+32
+43
+58
+63
+45%
+En fecha
+Atrasadas
+M J
+V
+S D
+L M M J
+V
+J
+V
+S D
+L M M J
+V
+Barras
+Torta
+Líneas
+Título
+Referencia
+Número grande
+Referencia
+Referencia
 ```
 
-## Page 10 — MÉTRICAS
+## Page 11 — METRIC CARD
 
 ```text
-M E T R I C A S
-Info minimizada y facil de leer.
 Hectopascales
 87%
 HUMEDAD
@@ -537,15 +706,46 @@ Título
 Referencia
 Reporting
 En ficha
+M E T R I C C A R D
+Info minimizada y facil de leer.
+Hectopascales
+87%
+HUMEDAD
+Kilómetros
+37
+VISIBILIDAD
+Milímetros
+0
+PRECIPITACIONES
+Número grande
+Título
+P O L I C I A S
+Tenientes
+R E C U R S O S
+Moviles50
+87%
+P O L I C I A S
+Tenientes
+R E C U R S O S
+Moviles en arreglo
+15
+23
+Referencia
+Número grande
+Título
+Referencia
+Reporting
+En ficha
 ```
 
-## Page 11 — MODALES
+## Page 12 — ASISTENTE
 
 ```text
-M O D A L E S
-Info maximizada, métricas, media 
-y principalmente acciones que se 
-pueden realizar
+A S I S T E N T E
+Chat tipo asistente IA que nos 
+sugiera acciones más comunes y 
+luego acciones basadas en 
+nuestro historial 
 ¿Qué querés hacer hoy?
 EJECUTA R
 EJECUTA R
@@ -555,21 +755,175 @@ Ayudame a escribir
 Saber más
 Resumir sumario
 Generar investigación
+¿Qué querés hacer hoy?
+EJECUTA R
+EJECUTA R
+Adjuntar archivos 
+HOLA SEBASTIÁN,
+Ayudame a escribir
+Saber más
+Resumir sumario
+Generar investigación
+Saludo
+Fondo: #060606
+Borde: 0,75pt - #c1c1c1
+Padding: 20px 30px
+Saludo: Source Code Regular - 24pt - #c1c1c1 - Uppercase
+Tarea: Montserrat Light - 18pt - #8a8b87 - cuando se 
+escribe pasa a #FFFFFF
+Adjuntar: Montserrat Light - 14pt - #8a8b87
+Tareas rápidas: Source Code Regular - 14pt - #8a8b87
+Las tareas rápidas van a ser dinámicas, según el perfil o 
+el patrón de uso del usuario.
+Tarea
+Adjuntar
+Tareas
+rápidas
 ```
 
-## Page 12 — MENÚES
+## Page 13 — SIDE BAR
 
 ```text
-M E N U E S
-Info maximizada, métricas, media 
-y principalmente acciones que se 
-pueden realizar
+S I D E B A R
+Menú central de la plataforma, 
+desde donde se podrán navegar 
+todos los módulos que tenga el 
+usuario y configurar opciones.
+?
+2
+Menú
+Mis tareas
+Historial
+Reportes
+Notificaciones
+Mi cuenta
+Configuración
+Ayuda
+Cerrar sesión
+Catástrofes
+?
+2
+Aparecerá completa en la pantalla del asistente, después 
+se colapsará y se podrá abrir desde el ícono superior 
+derecho. Sumarle una pequeña animación a esta acción.
+Se usarán los iconos compartidos.
+Fondo: #282828
+Padding: 20px
+Sombra derecha
+Navegación secundaria: fondo #2a2927
+Iconos: #8a8b87
+Icono seleccionado: #FFFFFF
+Icono seleccionado línea: 2pt - #FFFFFF
+Flechas navegación: #8a8b87
+Bajada: Source Code Regular - 14pt - #8a8b87
+Notificación: Montserrat Bold - 17pt - #FFFFFF - fondo 
+#e30000
+Estado: Montserrat Medium - 10pt - Uppercase - #c1c1c1 - 
+fondo #282828
+Desplegada
+Colapsada
+Items
+con bajada
+Logo
+Items
+solos
+25 px
+Notificacion
+Navegación
+secundaria
+Iconos centrados
+en altura
+EN VIVO
+Reducida
+Estado
+Flechas
+de navegación
 ```
 
-## Page 13 — MISCELÁNEAS
+## Page 14 — SKELETON
 
 ```text
-M I S C E L Á N E A S
+S K E L E T O N
+Objeto animado que está en lugar 
+de los objetos reales, mientras 
+se realiza la carga.
+Fondo: #2a2927 - 70% de opacidad
+Recuadros: #2a2927
+Sumarle animación de degradé o transparencia lineal
+```
+
+## Page 15 — CALENDAR CARD
+
+```text
+13
+AGO
+Reunión con el 
+teniente por el 
+proyecto
+C A L E N D A R C A R D
+Widget de fechas y calendario.
+Descripción
+Fecha
+Fondo: #2a2927
+Borde: 0,75pt - #c1c1c1
+Padding: 15px 10px
+Fecha: Montserrat Bold - 30pt - #ffffff - Uppercase
+Descripción: Montserrat Light - 12pt - #8a8b87
+```
+
+## Page 16 — EMPTY
+
+```text
+E M P T Y
+Componente cuando aún no hay 
+elementos subidos.
+Fondo: sin fondo
+Centrado en la pantalla
+Ícono: #8a8b87 - 40x40px - fondo #494949
+Título: Montserrat Bold - 16pt - #e6e6e6
+Texto: Montserrat Light - 14pt - #e6e6e6
+Botón: Montserrat Bold - 16pt - #FFFFFF - paading top y 
+bottom 10px - padding left y right 30px - fondo #494949
+No hay tareas pendientes
+Empezá creando una tarjeta para tu tarea.
+CREÁ UNA TARE A
+CREÁ UNA TARE A
+No hay investigaciones
+Empezá sumando una entidad a
+tu investigación.
+N UEVA ENTI DAD
+N UEVA ENTI DAD
+Ícono
+Título
+Botón
+Texto
+```
+
+## Page 17 — FORM
+
+```text
+F O R M
+Formulario para carga de 
+información, generación de 
+usuarios, etc.
+Fondo: sin fondo
+Centrado en la pantalla
+Ícono: #8a8b87 - 40x40px - fondo #494949
+Título: Montserrat Bold - 16pt - #e6e6e6
+Texto: Montserrat Light - 14pt - #e6e6e6
+Botón: Montserrat Bold - 16pt - #FFFFFF - paading top y 
+bottom 10px - padding left y right 30px - fondo #494949
+```
+
+Note: this page's spec block is nearly word-for-word identical to p16 EMPTY
+(same icon/title/text/button spec). No form-specific layout, field list, or
+validation state is described. Treat as an unfinished placeholder — confirm the
+real spec with design before building a `Form` component off this page.
+
+## Page 18 — ALERT
+
+```text
+A L E R T
 Info maximizada, métricas, media 
 y principalmente acciones que se 
 pueden realizar

@@ -73,5 +73,5 @@
 ## Deltas & open questions (facts only — DO NOT resolve)
 - `data-loading` applied in component API but has no CSS rules (knowledge/components/Button.md; styles.css has no `[data-loading]` selector).
 - PDF page not cited in component doc — PDF cross-check marked unavailable (`none cited`).
-- `variant="pdf"` (`.ds-button--pdf`) added by the PDF-variant promotion (Rule 03); consumed by the Login and DetailSheet patterns. `#494949` is the PDF action fill (design-reference p.6 login / p.4 fichas).
+- `variant="pdf"` (`.ds-button--pdf`) added by the PDF-variant promotion (Rule 03); consumed by the Login and DetailSheet patterns. `#494949` is the PDF action fill (design-reference p.7 login / p.5 fichas).
 - Pre-existing line citations above predate the M2b token migration and may be off by the inserted token lines; the `.ds-button--pdf` citations (285/290/291) are current.

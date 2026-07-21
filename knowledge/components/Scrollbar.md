@@ -22,6 +22,7 @@ keywords:
   - thumb
   - vertical
   - MISCELÁNEAS
+  - ALERT
   - ScrollbarProps
 tags:
   - navigation
@@ -38,7 +39,7 @@ Component structure follows `knowledge/reasoning/component-archetype.md`.
 
 ## Purpose
 
-Presenta el scrollbar vertical de la lámina MISCELÁNEAS (PDF p.13): track cápsula y thumb cápsula más oscuro, sin flechas.
+Presenta el scrollbar vertical de la lámina ALERT, antes MISCELÁNEAS (PDF p.18): track cápsula y thumb cápsula más oscuro, sin flechas.
 
 Describe:
 
@@ -96,7 +97,7 @@ siempre seguir estas reglas.
 
 ## Forbidden
 
-- Inventar flechas, grip marks, glow o variantes no presentes en PDF p.13.
+- Inventar flechas, grip marks, glow o variantes no presentes en PDF p.18.
 - Usar como sustituto de `Switch` (track/thumb de toggle booleano).
 - Asumir scroll nativo sincronizado sin que el consumidor actualice `value`.
 
@@ -152,7 +153,7 @@ Tipos exportados:
 
 ## Default
 
-Única apariencia pública: cápsula vertical MISCELÁNEAS. Sin modificadores BEM de variante.
+Única apariencia pública: cápsula vertical de la lámina ALERT (antes MISCELÁNEAS). Sin modificadores BEM de variante.
 
 | Elemento | Apariencia |
 |----------|------------|
@@ -238,7 +239,7 @@ Tipos exportados:
 | `.ds-scroll-area` (utility) | Scroll funcional nativo con look kit; no sustituye este indicador decorativo ni al revés. |
 | `Switch` | También usa track/thumb en BEM, pero rol booleano distinto; no reutilizar identidad. |
 | `ProgressRing` | Indicador presentacional con `value` 0–100; dominio distinto (progreso, no scroll). |
-| `AlertBanner` | Aparece en la misma página PDF MISCELÁNEAS; no hay composición interna. |
+| `AlertBanner` | Aparece en la misma página PDF ALERT (antes MISCELÁNEAS); no hay composición interna. |
 
 ---
 
@@ -313,7 +314,7 @@ Barra de scroll vertical como en Misceláneas del PDF.
 
 ### Why
 
-Identidad distinta (chrome de desplazamiento). No es `Switch` ni estilo nativo genérico. Referencia: PDF p.13.
+Identidad distinta (chrome de desplazamiento). No es `Switch` ni estilo nativo genérico. Referencia: PDF p.18.
 
 ---
 
@@ -358,7 +359,7 @@ div.ds-scrollbar[role=scrollbar]
   └── div.ds-scrollbar__thumb[aria-hidden]
 ```
 
-Canonical reference: `knowledge/references/design-reference.pdf` page 13 (MISCELÁNEAS), left vertical scrollbar.
+Canonical reference: `knowledge/references/design-reference.pdf` page 18 (ALERT, formerly MISCELÁNEAS), left vertical scrollbar.
 
 Scale: display px = PDF vector ÷ 2 (`knowledge/specs/README.md`).
 
@@ -385,5 +386,5 @@ Scale: display px = PDF vector ÷ 2 (`knowledge/specs/README.md`).
 
 | Version | Change |
 |----------|--------|
-| 0.1.0 | Alta inicial desde PDF MISCELÁNEAS p.13. |
+| 0.1.0 | Alta inicial desde PDF MISCELÁNEAS p.13 (v1 del PDF; ahora ALERT p.18 en v2). |
 | 0.1.0 | Doc: distingue indicador vs utilidad `.ds-scroll-area` (sin cambio de comportamiento). |

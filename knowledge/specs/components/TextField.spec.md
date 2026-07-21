@@ -54,5 +54,5 @@
 ## Deltas & open questions (facts only — DO NOT resolve)
 - PDF page not cited.
 - Disabled state has no dedicated CSS (knowledge/components/TextField.md).
-- `appearance="pdf"` (`.ds-field--pdf`) added by the PDF-variant promotion (Rule 03); shared with SelectField. Its `font-size: 20px` is a flagged literal — no type-scale token exists yet (design-reference p.6: "Input Source Code Light 20pt").
+- `appearance="pdf"` (`.ds-field--pdf`) added by the PDF-variant promotion (Rule 03); shared with SelectField. Its `font-size: 20px` is a flagged literal — no type-scale token exists yet (design-reference p.7: "Input Source Code Light 20pt").
 - Pre-existing line citations predate the M2b token migration; the `.ds-field--pdf` citations (582/587–588) are current.
