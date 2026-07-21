@@ -76,7 +76,7 @@ knowledge/
 
 ## Components
 
-The public exports of `@alejandria/ui-kit` have dedicated docs under `knowledge/components/` (20 exports).
+The public exports of `@alejandria/ui-kit` have dedicated docs under `knowledge/components/` (21 exports).
 
 | Component | Doc | Storybook |
 |-----------|-----|-----------|
@@ -97,6 +97,7 @@ The public exports of `@alejandria/ui-kit` have dedicated docs under `knowledge/
 | Scrollbar | [Scrollbar.md](./components/Scrollbar.md) | `Alejandria/Scrollbar` |
 | SegmentedControl | [SegmentedControl.md](./components/SegmentedControl.md) | `Alejandria/SegmentedControl` |
 | SelectField | [SelectField.md](./components/SelectField.md) | `Alejandria/SelectField` |
+| Skeleton | [Skeleton.md](./components/Skeleton.md) | `Alejandria/Skeleton` |
 | Switch | [Switch.md](./components/Switch.md) | `Alejandria/Switch` |
 | TaskCard | [TaskCard.md](./components/TaskCard.md) | `Alejandria/TaskCard` |
 | TextField | [TextField.md](./components/TextField.md) | `Alejandria/TextField` |

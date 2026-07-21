@@ -64,6 +64,7 @@
     --ds-color-black-a34: rgb(0 0 0 / 0.34);
     --ds-color-black-a70: rgb(0 0 0 / 0.7);
     --ds-color-pdf-surface-a20: rgb(6 6 6 / 0.2);
+    --ds-color-pdf-surface-warm-a70: rgb(42 41 39 / 0.7);
     --ds-color-ink-soft-a50: rgb(169 179 176 / 0.5);
     --ds-color-teal-a12: rgb(108 224 199 / 0.12);
     --ds-color-teal-a22: rgb(108 224 199 / 0.22);
@@ -163,6 +164,7 @@
     --ds-duration-fast: 160ms;
     --ds-duration-md: 180ms;
     --ds-duration-spin: 800ms;
+    --ds-duration-shimmer: 1600ms;
     --ds-ease-standard: ease;
     --ds-ease-linear: linear;
 
@@ -1272,6 +1274,17 @@
     display: inline-flex;
   }
 
+  .ds-skeleton {
+    animation: ds-skeleton-shimmer var(--ds-duration-shimmer) var(--ds-ease-standard) infinite;
+    background: var(--ds-color-pdf-surface-warm);
+    border-radius: var(--ds-radius-sm);
+    display: block;
+  }
+
+  .ds-skeleton--circle {
+    border-radius: var(--ds-radius-pill);
+  }
+
   .ds-switch {
     align-items: center;
     color: var(--ds-color-ink);
@@ -1659,6 +1672,17 @@
   @keyframes ds-spin {
     to {
       transform: rotate(360deg);
+    }
+  }
+
+  @keyframes ds-skeleton-shimmer {
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0.55;
     }
   }
 }

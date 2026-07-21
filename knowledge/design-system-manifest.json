@@ -124,6 +124,13 @@
       "storybook": "Alejandria/SelectField"
     },
     {
+      "id": "skeleton",
+      "name": "Skeleton",
+      "path": "knowledge/components/Skeleton.md",
+      "export": "packages/ui/src/components/Skeleton.tsx",
+      "storybook": "Alejandria/Skeleton"
+    },
+    {
       "id": "switch",
       "name": "Switch",
       "path": "knowledge/components/Switch.md",
@@ -384,6 +391,12 @@
       "name": "SelectField",
       "path": "knowledge/specs/components/SelectField.spec.md",
       "source": "packages/ui/src/styles.css (.ds-field / .ds-field__select)"
+    },
+    {
+      "id": "skeleton-spec",
+      "name": "Skeleton",
+      "path": "knowledge/specs/components/Skeleton.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-skeleton)"
     },
     {
       "id": "switch-spec",
