@@ -18,16 +18,16 @@ supersedes_note: >
 The design-reference PDF was updated to v2 on 2026-07-17. Its new p.2 (LÍNEA DE
 TIEMPO) is the design team's own tracker: two rows, **Diseño** and **Desarrollo**,
 each with a dot per component — filled if done, hollow if pending. All 11
-components are marked done in Diseño; **Asistente, Side bar, Skeleton, Calendar
-card and Empty are marked pending in Desarrollo.**
+components are marked done in Diseño; **Asistente, Side bar, Skeleton, and Calendar
+card are marked pending in Desarrollo.** Empty is now implemented in code (see gap
+table).
 
 Cross-checked against the actual code (`packages/ui/src/components/*`,
-`packages/ui/src/patterns/*`) on 2026-07-17: the 5 pending items are exactly the 5
-components that don't exist in code. The 6 items marked done in both rows
+`packages/ui/src/patterns/*`) on 2026-07-21: **4** pending timeline items remain
+without a code export. Empty (`Empty.tsx`) ships. The 6 items marked done in both rows
 (Tarjetas → `Card`/`TaskCard`, Investigation card → `InvestigationCard`, Ficha →
 `DetailSheet`, Módulos → `ModuleCard`, Gráficos → `ChartCard` family, Metric card
-→ `MetricCard`) all have a working implementation already. The design timeline is
-an accurate proxy for build status — no separate audit was needed to confirm gaps.
+→ `MetricCard`) all have a working implementation already.
 
 ## Gap table
 
@@ -43,7 +43,7 @@ an accurate proxy for build status — no separate audit was needed to confirm g
 | **Side bar** | p.13 | ✅ | ⬜ | not found — no Sidebar/nav-rail component (blank page in PDF v1; fully specified in v2) |
 | **Skeleton** | p.14 | ✅ | ⬜ | not found — no loading-skeleton component |
 | **Calendar card** | p.15 | ✅ | ⬜ | not found — no calendar/date-widget component |
-| **Empty** | p.16 | ✅ | ⬜ | not found — no empty-state component |
+| **Empty** | p.16 | ✅ | ✅ | `Empty.tsx` — built 2026-07-21 |
 | Form | p.17 | not on timeline | not on timeline | no dedicated `Form`; scattered field primitives exist (`TextField`, `SelectField`, `SegmentedControl`, `Switch`, `DataTable`) |
 | Alert | p.18 | not on timeline | not on timeline | `AlertBanner.tsx` — already built, naming differs from PDF ("Alert") |
 
@@ -55,25 +55,40 @@ list, no layout, no validation states) — it reads as an unfinished placeholder
 page, not a real spec. **Recommendation: confirm the actual Form spec with design
 before scoping a build.**
 
-## Build order (5 confirmed gaps)
+## Build order (4 remaining gaps)
 
 Ordered by size/reuse first, structural complexity last — each one after the
 first two makes the later ones easier or is needed before them:
 
-1. **Empty** — smallest, no dependencies. Immediately reusable inside `DataTable`
-   (empty rows), list-style patterns, and any future Side bar/Módulos-adjacent
-   screen with no data yet.
-2. **Skeleton** — smallest, no dependencies. Pairs with existing cards
+1. **Skeleton** — smallest, no dependencies. Pairs with existing cards
    (`MetricCard`, `ChartCard` family, `InvestigationCard`, `TaskCard`) as their
    loading state; no reason to gate it behind anything else.
-3. **Calendar card** — self-contained widget, no dependency on the other 4.
-4. **Side bar** — structural/app-shell component. Overlaps with the "nav rail"
+2. **Calendar card** — self-contained widget, no dependency on the other gaps.
+3. **Side bar** — structural/app-shell component. Overlaps with the "nav rail"
    gap already flagged as backlog from the MVP-4 consumer eval (D5 backlog: see
    the `distribution-mvp-track` memory) — worth building once, covering both asks.
-5. **Asistente** — highest complexity (chat UI, dynamic per-user suggestions,
-   attach-file affordance). Do this last; it has no dependents among the other 4
+4. **Asistente** — highest complexity (chat UI, dynamic per-user suggestions,
+   attach-file affordance). Do this last; it has no dependents among the other gaps
    and benefits most from the design/behavior questions (what drives "tareas
    rápidas"?) being answered separately from implementation.
+
+**Shipped from former gap list:** `Empty` (p.16) — reusable inside `DataTable`
+(empty rows), list-style patterns, and Side bar/Módulos-adjacent screens with no
+data yet.
+
+## Lesson from Empty (apply to the remaining builds)
+
+`Empty` shipped with title/description text unreadable in Storybook (light-on-light):
+its PDF spec is "sin fondo" (no self-drawn background), assuming a dark parent, and its
+story's `parameters.backgrounds` had no effect because the `backgrounds` addon isn't
+registered in `packages/ui/.storybook/main.ts` (`addons: []`). Fixed by giving the
+story's own decorator an explicit `background: var(--ds-color-pdf-surface)` instead of
+relying on the (currently inert) backgrounds parameter. Every PDF-context component with
+an opaque background of its own (`ModuleCard`, `MetricCard`, etc.) was masking this same
+gap. **Side bar** (`#282828`) and **Calendar card** (`#2a2927`) draw their own opaque
+background so this shouldn't recur, but **Skeleton** (`#2a2927` at 70% opacity — not
+fully opaque) and **Asistente** should get an explicit dark decorator background in
+their stories from the start rather than depending on `parameters.backgrounds`.
 
 ## Quick win (not a new build)
 

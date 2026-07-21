@@ -1225,6 +1225,53 @@
     display: inline-flex;
   }
 
+  .ds-empty {
+    align-items: center;
+    background: transparent;
+    color: var(--ds-color-pdf-line-light);
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* PDF p.16 does not annotate inter-element gap — provisional; see Empty.spec.md */
+    text-align: center;
+  }
+
+  .ds-empty__icon {
+    align-items: center;
+    background: var(--ds-color-pdf-action);
+    color: var(--ds-color-pdf-ink-muted);
+    display: inline-flex;
+    height: var(--ds-size-icon-xl); /* calibrated ÷2 — PDF 40×40 */
+    justify-content: center;
+    width: var(--ds-size-icon-xl); /* calibrated ÷2 — PDF 40×40 */
+  }
+
+  .ds-empty__icon svg {
+    display: block;
+    height: 100%;
+    width: 100%;
+  }
+
+  .ds-empty__title {
+    color: var(--ds-color-pdf-line-light);
+    font-family: var(--ds-font-body);
+    font-size: 8pt; /* calibrated ÷2 — PDF 16pt */
+    font-weight: var(--ds-font-weight-bold);
+    line-height: var(--ds-leading-normal);
+  }
+
+  .ds-empty__description {
+    color: var(--ds-color-pdf-line-light);
+    font-family: var(--ds-font-body);
+    font-size: 7pt; /* calibrated ÷2 — PDF 14pt */
+    font-weight: var(--ds-font-weight-light);
+    line-height: var(--ds-leading-body);
+    margin: 0;
+  }
+
+  .ds-empty__action {
+    display: inline-flex;
+  }
+
   .ds-switch {
     align-items: center;
     color: var(--ds-color-ink);

@@ -76,7 +76,7 @@ knowledge/
 
 ## Components
 
-The public exports of `@alejandria/ui-kit` have dedicated docs under `knowledge/components/` (19 exports).
+The public exports of `@alejandria/ui-kit` have dedicated docs under `knowledge/components/` (20 exports).
 
 | Component | Doc | Storybook |
 |-----------|-----|-----------|
@@ -88,6 +88,7 @@ The public exports of `@alejandria/ui-kit` have dedicated docs under `knowledge/
 | ChartCard | [ChartCard.md](./components/ChartCard.md) | `Alejandria/ChartCard` |
 | DataTable | [DataTable.md](./components/DataTable.md) | `Alejandria/DataTable` |
 | DonutChartCard | [DonutChartCard.md](./components/DonutChartCard.md) | `Alejandria/ChartCard` (nested) |
+| Empty | [Empty.md](./components/Empty.md) | `Alejandria/Empty` |
 | InvestigationCard | [InvestigationCard.md](./components/InvestigationCard.md) | `Alejandria/InvestigationCard` |
 | LineChartCard | [LineChartCard.md](./components/LineChartCard.md) | `Alejandria/ChartCard` (nested) |
 | MetricCard | [MetricCard.md](./components/MetricCard.md) | `Alejandria/MetricCard` |

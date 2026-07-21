@@ -61,6 +61,13 @@
       "storybook": "Alejandria/ChartCard"
     },
     {
+      "id": "empty",
+      "name": "Empty",
+      "path": "knowledge/components/Empty.md",
+      "export": "packages/ui/src/components/Empty.tsx",
+      "storybook": "Alejandria/Empty"
+    },
+    {
       "id": "investigation-card",
       "name": "InvestigationCard",
       "path": "knowledge/components/InvestigationCard.md",
@@ -323,6 +330,12 @@
       "name": "DonutChartCard",
       "path": "knowledge/specs/components/DonutChartCard.spec.md",
       "source": "packages/ui/src/styles.css (.ds-donut-chart)"
+    },
+    {
+      "id": "empty-spec",
+      "name": "Empty",
+      "path": "knowledge/specs/components/Empty.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-empty)"
     },
     {
       "id": "investigation-card-spec",
