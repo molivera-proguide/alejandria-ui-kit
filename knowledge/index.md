@@ -76,7 +76,7 @@ knowledge/
 
 ## Components
 
-The public exports of `@alejandria/ui-kit` have dedicated docs under `knowledge/components/` (21 exports).
+The public exports of `@alejandria/ui-kit` have dedicated docs under `knowledge/components/` (22 exports).
 
 | Component | Doc | Storybook |
 |-----------|-----|-----------|
@@ -84,6 +84,7 @@ The public exports of `@alejandria/ui-kit` have dedicated docs under `knowledge/
 | Badge | [Badge.md](./components/Badge.md) | `Alejandria/Badge Chip` |
 | BarChartCard | [BarChartCard.md](./components/BarChartCard.md) | `Alejandria/ChartCard` (nested) |
 | Button | [Button.md](./components/Button.md) | `Alejandria/Button` |
+| CalendarCard | [CalendarCard.md](./components/CalendarCard.md) | `Alejandria/CalendarCard` |
 | Card | [Card.md](./components/Card.md) | `Alejandria/Card` |
 | ChartCard | [ChartCard.md](./components/ChartCard.md) | `Alejandria/ChartCard` |
 | DataTable | [DataTable.md](./components/DataTable.md) | `Alejandria/DataTable` |

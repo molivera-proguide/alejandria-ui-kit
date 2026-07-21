@@ -33,6 +33,13 @@
       "storybook": "Alejandria/Button"
     },
     {
+      "id": "calendar-card",
+      "name": "CalendarCard",
+      "path": "knowledge/components/CalendarCard.md",
+      "export": "packages/ui/src/components/CalendarCard.tsx",
+      "storybook": "Alejandria/CalendarCard"
+    },
+    {
       "id": "card",
       "name": "Card",
       "path": "knowledge/components/Card.md",
@@ -313,6 +320,12 @@
       "name": "Button",
       "path": "knowledge/specs/components/Button.spec.md",
       "source": "packages/ui/src/styles.css (.ds-button)"
+    },
+    {
+      "id": "calendar-card-spec",
+      "name": "CalendarCard",
+      "path": "knowledge/specs/components/CalendarCard.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-calendar-card)"
     },
     {
       "id": "card-spec",

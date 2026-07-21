@@ -392,6 +392,40 @@
     background: currentColor;
   }
 
+  .ds-calendar-card {
+    background: var(--ds-color-pdf-surface-warm);
+    border: var(--ds-border-width-hair) solid var(--ds-color-pdf-line);
+    border-radius: var(--ds-radius-xs);
+    box-sizing: border-box;
+    display: grid;
+    gap: var(--ds-space-2); /* PDF p.15 does not annotate root gap — provisional; see CalendarCard.spec.md */
+    max-width: 140px /* calibrated ÷2 — no PDF measurement, reused from .ds-task--kanban precedent */;
+    padding: 7.5px 5px; /* same literal as .ds-task--default — PDF 15/10 @2× */
+  }
+
+  .ds-calendar-card__date {
+    display: grid;
+  }
+
+  .ds-calendar-card__day,
+  .ds-calendar-card__month {
+    color: var(--ds-color-white);
+    font-family: var(--ds-font-body);
+    font-size: 15pt; /* calibrated ÷2 — PDF 30pt */
+    font-weight: var(--ds-font-weight-bold);
+    line-height: var(--ds-leading-tight);
+    text-transform: uppercase;
+  }
+
+  .ds-calendar-card__description {
+    color: var(--ds-color-pdf-ink-muted);
+    font-family: var(--ds-font-body);
+    font-size: 6pt; /* calibrated ÷2 — PDF 12pt */
+    font-weight: var(--ds-font-weight-light);
+    line-height: var(--ds-leading-body);
+    margin: 0;
+  }
+
   .ds-card {
     background:
       linear-gradient(180deg, rgb(255 255 255 / 0.035), transparent 42%),

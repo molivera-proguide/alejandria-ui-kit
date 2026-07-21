@@ -3,6 +3,7 @@ import "./styles.css";
 export * from "./components/Badge";
 export * from "./components/AlertBanner";
 export * from "./components/Button";
+export * from "./components/CalendarCard";
 export * from "./components/Card";
 export * from "./components/ChartCard";
 export * from "./components/BarChartCard";

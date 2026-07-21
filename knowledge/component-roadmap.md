@@ -2,7 +2,7 @@
 id: component-roadmap
 name: Component Build Roadmap (from design timeline v2)
 status: active
-last_reviewed: 2026-07-17
+last_reviewed: 2026-07-21
 source: knowledge/references/design-reference.pdf (v2, p.2 LÍNEA DE TIEMPO)
 supersedes_note: >
   This tracks WHICH PDF-defined components still need to be built in code. It is
@@ -18,17 +18,17 @@ supersedes_note: >
 The design-reference PDF was updated to v2 on 2026-07-17. Its new p.2 (LÍNEA DE
 TIEMPO) is the design team's own tracker: two rows, **Diseño** and **Desarrollo**,
 each with a dot per component — filled if done, hollow if pending. All 11
-components are marked done in Diseño; **Asistente, Side bar, and Calendar
-card are marked pending in Desarrollo.** Empty and Skeleton are now implemented
-in code (see gap table).
+components are marked done in Diseño; **Asistente and Side bar are marked pending
+in Desarrollo.** Empty, Skeleton, and Calendar card are now implemented in code
+(see gap table).
 
 Cross-checked against the actual code (`packages/ui/src/components/*`,
-`packages/ui/src/patterns/*`) on 2026-07-21: **3** pending timeline items remain
-without a code export. Empty (`Empty.tsx`) and Skeleton (`Skeleton.tsx`) ship. The 6
-items marked done in both rows (Tarjetas → `Card`/`TaskCard`, Investigation card →
-`InvestigationCard`, Ficha → `DetailSheet`, Módulos → `ModuleCard`, Gráficos →
-`ChartCard` family, Metric card → `MetricCard`) all have a working implementation
-already.
+`packages/ui/src/patterns/*`) on 2026-07-21: **2** pending timeline items remain
+without a code export. Empty (`Empty.tsx`), Skeleton (`Skeleton.tsx`), and
+CalendarCard (`CalendarCard.tsx`) ship. The 6 items marked done in both rows
+(Tarjetas → `Card`/`TaskCard`, Investigation card → `InvestigationCard`, Ficha →
+`DetailSheet`, Módulos → `ModuleCard`, Gráficos → `ChartCard` family, Metric card →
+`MetricCard`) all have a working implementation already.
 
 ## Gap table
 
@@ -43,7 +43,7 @@ already.
 | **Asistente** | p.12 | ✅ | ⬜ | not found — no chat/assistant component anywhere in `src/` |
 | **Side bar** | p.13 | ✅ | ⬜ | not found — no Sidebar/nav-rail component (blank page in PDF v1; fully specified in v2) |
 | **Skeleton** | p.14 | ✅ | ✅ | `Skeleton.tsx` — built 2026-07-21 |
-| **Calendar card** | p.15 | ✅ | ⬜ | not found — no calendar/date-widget component |
+| **Calendar card** | p.15 | ✅ | ✅ | `CalendarCard.tsx` — built 2026-07-21 |
 | **Empty** | p.16 | ✅ | ✅ | `Empty.tsx` — built 2026-07-21 |
 | Form | p.17 | not on timeline | not on timeline | no dedicated `Form`; scattered field primitives exist (`TextField`, `SelectField`, `SegmentedControl`, `Switch`, `DataTable`) |
 | Alert | p.18 | not on timeline | not on timeline | `AlertBanner.tsx` — already built, naming differs from PDF ("Alert") |
@@ -56,22 +56,21 @@ list, no layout, no validation states) — it reads as an unfinished placeholder
 page, not a real spec. **Recommendation: confirm the actual Form spec with design
 before scoping a build.**
 
-## Build order (3 remaining gaps)
+## Build order (2 remaining gaps)
 
 Ordered by size/reuse first, structural complexity last — each one after the
 first makes the later ones easier or is needed before them:
 
-1. **Calendar card** — self-contained widget, no dependency on the other gaps.
-2. **Side bar** — structural/app-shell component. Overlaps with the "nav rail"
+1. **Side bar** — structural/app-shell component. Overlaps with the "nav rail"
    gap already flagged as backlog from the MVP-4 consumer eval (D5 backlog: see
    the `distribution-mvp-track` memory) — worth building once, covering both asks.
-3. **Asistente** — highest complexity (chat UI, dynamic per-user suggestions,
+2. **Asistente** — highest complexity (chat UI, dynamic per-user suggestions,
    attach-file affordance). Do this last; it has no dependents among the other gaps
    and benefits most from the design/behavior questions (what drives "tareas
    rápidas"?) being answered separately from implementation.
 
-**Shipped from former gap list:** `Empty` (p.16); `Skeleton` (p.14) — standalone
-loading placeholder; card `loading` integration deferred.
+**Shipped from former gap list:** `Empty` (p.16); `Skeleton` (p.14); `CalendarCard`
+(p.15) — static event tile (not a date-picker).
 
 ## Lesson from Empty (apply to the remaining builds)
 
@@ -81,13 +80,15 @@ story's `parameters.backgrounds` had no effect because the `backgrounds` addon i
 registered in `packages/ui/.storybook/main.ts` (`addons: []`). Fixed by giving the
 story's own decorator an explicit `background: var(--ds-color-pdf-surface)` instead of
 relying on the (currently inert) backgrounds parameter. Every PDF-context component with
-an opaque background of its own (`ModuleCard`, `MetricCard`, etc.) was masking this same
-gap. **Side bar** (`#282828`) and **Calendar card** (`#2a2927`) draw their own opaque
-background so this shouldn't recur, but **Skeleton** (`#2a2927` at 70% opacity — not
-fully opaque) and **Asistente** should get an explicit dark decorator background in
-their stories from the start rather than depending on `parameters.backgrounds`.
+an opaque background of its own (`ModuleCard`, `MetricCard`, `CalendarCard`, etc.) was
+masking this same gap. **Side bar** (`#282828`) draws its own opaque background so this
+shouldn't recur, but **Skeleton** (`#2a2927` at 70% opacity — not fully opaque) and
+**Asistente** should get an explicit dark decorator background in their stories from the
+start rather than depending on `parameters.backgrounds`.
 **Skeleton** shipped with an opaque outer decorator (`var(--ds-color-pdf-surface)`)
 plus a `ComposedOnFondo` story that demos `--ds-color-pdf-surface-warm-a70` inside it.
+**CalendarCard** ships opaque `#2a2927` and mirrors `TaskCard.stories.tsx` (harmless
+`parameters.backgrounds` + `padding: 32` decorator; no canvas override needed).
 
 ## Quick win (not a new build)
 
