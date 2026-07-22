@@ -57,7 +57,8 @@ knowledge/
 ├── guidelines/                   ← M2 design language; M6 visual grammar + anti-examples
 ├── reasoning/                    ← M3 decision order, selection, reuse; M4 archetype; M6 fidelity validation
 ├── templates/                    ← doc templates (authoring aid)
-└── audit/                        ← inventory, coverage, visual, pattern, roadmap audits
+├── audit/                        ← inventory, coverage, visual, pattern, roadmap audits
+└── eval/                         ← generation eval loop: golden set, rubric, results (maintainer)
 ```
 
 | Folder | Status | Contents |
@@ -71,6 +72,7 @@ knowledge/
 | `reasoning/` | Documented | Decision order, selection, reuse rubric (M3); component archetype (M4); fidelity validation (M6) |
 | `templates/` | Authoring | `component.md` template |
 | `audit/` | Reference | Read-only audits; not product API docs |
+| `eval/` | Maintainer | Generation eval loop: golden set, scoring rubric, run results |
 
 ---
 
