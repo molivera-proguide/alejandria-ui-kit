@@ -16,6 +16,7 @@ export * from "./components/ProgressRing";
 export * from "./components/SegmentedControl";
 export * from "./components/SelectField";
 export * from "./components/Scrollbar";
+export * from "./components/SideBar";
 export * from "./components/Skeleton";
 export * from "./components/Switch";
 export * from "./components/TaskCard";

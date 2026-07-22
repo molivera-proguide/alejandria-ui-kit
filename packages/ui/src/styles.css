@@ -49,6 +49,8 @@
     --ds-color-pdf-action: #494949;
     --ds-color-pdf-action-hover: #5a5a5a;
     --ds-color-pdf-critical: #ff0404;
+    --ds-color-pdf-shell: #282828;
+    --ds-color-pdf-notification: #e30000;
     --ds-color-white: #ffffff;
     --ds-color-on-primary: #04110f;
 
@@ -131,6 +133,7 @@
     --ds-font-weight-extralight: 200;
     --ds-font-weight-light: 300;
     --ds-font-weight-regular: 400;
+    --ds-font-weight-medium: 500;
     --ds-font-weight-semibold: 600;
     --ds-font-weight-bold: 700;
 
@@ -1306,6 +1309,195 @@
 
   .ds-empty__action {
     display: inline-flex;
+  }
+
+  .ds-sidebar {
+    background: var(--ds-color-pdf-shell);
+    box-sizing: border-box;
+    box-shadow: 4px 0 16px var(--ds-color-black-a24); /* PDF "Sombra derecha" — no blur/spread measurement given, provisional */
+    color: var(--ds-color-pdf-ink-muted);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    padding: 10px; /* calibrated ÷2 — PDF 20px */
+    transition: width var(--ds-duration-md) var(--ds-ease-standard);
+    width: var(--ds-size-card-min-w); /* provisional/reused — PDF does not annotate expanded width */
+  }
+
+  .ds-sidebar--collapsed {
+    width: var(--ds-size-control-lg); /* provisional/reused — PDF does not annotate collapsed width */
+  }
+
+  .ds-sidebar__header {
+    align-items: center;
+    display: flex;
+    flex-shrink: 0;
+    gap: 8px;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .ds-sidebar--collapsed .ds-sidebar__header {
+    justify-content: center;
+  }
+
+  .ds-sidebar__logo {
+    display: inline-flex;
+    min-width: 0;
+  }
+
+  .ds-sidebar__toggle {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    color: var(--ds-color-pdf-ink-muted);
+    cursor: pointer;
+    display: inline-flex;
+    flex-shrink: 0;
+    height: 25px; /* calibrated ÷2 — PDF/asset 50×50, provenance --ds-size-icon-50 */
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    width: 25px; /* same */
+  }
+
+  .ds-sidebar__toggle img {
+    display: block;
+    height: 100%;
+    object-fit: contain;
+    width: 100%;
+  }
+
+  .ds-sidebar__menu,
+  .ds-sidebar__secondary {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .ds-sidebar__secondary {
+    background: var(--ds-color-pdf-surface-warm);
+    margin-top: 12px;
+    padding: 8px;
+  }
+
+  .ds-sidebar__menu-label {
+    color: var(--ds-color-pdf-ink-muted);
+    font-family: var(--ds-font-body);
+    font-size: 6pt; /* provisional — PDF shows "Menú" heading, no type annotation */
+    font-weight: var(--ds-font-weight-regular);
+    line-height: var(--ds-leading-normal);
+  }
+
+  .ds-sidebar__list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .ds-sidebar__item {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    border-left: 2px solid transparent;
+    box-sizing: border-box;
+    color: inherit;
+    cursor: pointer;
+    display: flex;
+    font: inherit;
+    gap: 8px;
+    margin: 0;
+    min-height: 32px;
+    padding: 4px 6px;
+    text-align: left;
+    width: 100%;
+  }
+
+  .ds-sidebar__item--selected {
+    background: var(--ds-color-pdf-surface-warm);
+    border-left-color: var(--ds-color-white); /* PDF "Icono seleccionado línea: 2pt - #FFFFFF" */
+  }
+
+  .ds-sidebar--collapsed .ds-sidebar__item {
+    justify-content: center;
+    padding-inline: 0;
+  }
+
+  .ds-sidebar__item-icon {
+    align-items: center;
+    display: inline-flex;
+    flex-shrink: 0;
+    height: 25px; /* calibrated ÷2 — PDF/asset 50×50, provenance --ds-size-icon-50 */
+    justify-content: center;
+    width: 25px; /* same */
+  }
+
+  .ds-sidebar__item-icon img,
+  .ds-sidebar__item-icon svg {
+    display: block;
+    height: 100%;
+    object-fit: contain;
+    width: 100%;
+  }
+
+  .ds-sidebar__item-copy {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .ds-sidebar__item-label {
+    color: var(--ds-color-white);
+    font-family: var(--ds-font-body);
+    font-size: 7pt; /* provisional — PDF does not annotate item label type size */
+    font-weight: var(--ds-font-weight-regular);
+    line-height: var(--ds-leading-normal);
+  }
+
+  .ds-sidebar__item-caption {
+    color: var(--ds-color-pdf-ink-muted);
+    font-family: var(--ds-font-mono);
+    font-size: 7pt; /* calibrated ÷2 — PDF 14pt, Source Code Regular */
+    font-weight: var(--ds-font-weight-regular);
+    line-height: var(--ds-leading-normal);
+  }
+
+  .ds-sidebar__badge {
+    background: var(--ds-color-pdf-notification);
+    border-radius: var(--ds-radius-pill);
+    color: var(--ds-color-white);
+    flex-shrink: 0;
+    font-family: var(--ds-font-body);
+    font-size: 8.5pt; /* calibrated ÷2 — PDF 17pt */
+    font-weight: var(--ds-font-weight-bold);
+    line-height: 1.2;
+    padding: 0 5px; /* no PDF box measurement — provisional, sized to content */
+  }
+
+  .ds-sidebar__status {
+    background: var(--ds-color-pdf-shell);
+    color: var(--ds-color-pdf-line);
+    flex-shrink: 0;
+    font-family: var(--ds-font-mono);
+    font-size: 5pt; /* calibrated ÷2 — PDF 10pt */
+    font-weight: var(--ds-font-weight-medium);
+    line-height: 1.2;
+    padding: 2px 4px; /* no PDF box measurement — provisional, sized to content */
+    text-transform: uppercase;
+  }
+
+  .ds-sidebar--collapsed .ds-sidebar__item-copy,
+  .ds-sidebar--collapsed .ds-sidebar__menu-label,
+  .ds-sidebar--collapsed .ds-sidebar__badge,
+  .ds-sidebar--collapsed .ds-sidebar__status {
+    display: none;
   }
 
   .ds-skeleton {

@@ -131,6 +131,13 @@
       "storybook": "Alejandria/SelectField"
     },
     {
+      "id": "side-bar",
+      "name": "SideBar",
+      "path": "knowledge/components/SideBar.md",
+      "export": "packages/ui/src/components/SideBar.tsx",
+      "storybook": "Alejandria/SideBar"
+    },
+    {
       "id": "skeleton",
       "name": "Skeleton",
       "path": "knowledge/components/Skeleton.md",
@@ -404,6 +411,12 @@
       "name": "SelectField",
       "path": "knowledge/specs/components/SelectField.spec.md",
       "source": "packages/ui/src/styles.css (.ds-field / .ds-field__select)"
+    },
+    {
+      "id": "side-bar-spec",
+      "name": "SideBar",
+      "path": "knowledge/specs/components/SideBar.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-sidebar)"
     },
     {
       "id": "skeleton-spec",

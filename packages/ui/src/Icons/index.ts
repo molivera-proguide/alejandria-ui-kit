@@ -19,6 +19,7 @@ import menuEditarUrl from "./Menu/Editar-50x50.svg";
 import filtroUrl from "./Menu/Filtro-50x50.svg";
 import hamburguesaUrl from "./Menu/Hamburguesa-50x50.svg";
 import historialUrl from "./Menu/Historial-50x50.svg";
+import notificacionesUrl from "./Menu/Notificaciones-50x50.svg";
 import nuevaEntidadUrl from "./Menu/Nueva-entidad-50x50.svg";
 import nuevaRelacionUrl from "./Menu/Nueva-relacion-50x50.svg";
 import personalizarUrl from "./Menu/Personalizar-50x50.svg";
@@ -164,6 +165,12 @@ export const HamburguesaIcon: string = hamburguesaUrl;
  * @type {string}
  */
 export const HistorialIcon: string = historialUrl;
+
+/**
+ * @description Icono Alejandría: notificaciones (Menu, 50×50). URL string para `<img src>` u equivalente.
+ * @type {string}
+ */
+export const NotificacionesIcon: string = notificacionesUrl;
 
 /**
  * @description Icono Alejandría: nueva entidad (Menu, 50×50). URL string para `<img src>` u equivalente.
