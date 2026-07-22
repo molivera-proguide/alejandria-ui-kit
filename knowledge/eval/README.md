@@ -57,6 +57,7 @@ component roadmap, not the aesthetic score).
 - `golden-set.md` — the prompts (verbatim + intent + expected components + known gaps to watch).
 - `rubric.md` — scoring dimensions, anchors, gates, verdict bands, LLM-judge prompt.
 - `results/` — one file per run; the trend line lives here.
+- `next-steps.md` — prioritized plan for the next session (updated after each run).
 
 ## Honest limitations (do not silently ignore)
 
