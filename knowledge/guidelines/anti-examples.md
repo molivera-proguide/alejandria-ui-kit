@@ -95,6 +95,30 @@ Related: [`visual-grammar.md`](./visual-grammar.md), [`fidelity-validation.md`](
 
 ---
 
+## 7. Sizing — constrain compact components vs stretch/freeze in a layout
+
+| | |
+|--|--|
+| **Right** | Give compact/PDF-scale components their natural footprint: cap a kanban `TaskCard` column to ~the card width, wrap a ficha `MetricCard` row so tiles don't stretch, and constrain a `ChartCard`/`LineChartCard` with a `max-width`/`max-height` so it doesn't fill the viewport. |
+| **Wrong** | Drop these components straight into a wide CSS grid so they stretch to full column width (ficha metrics, kanban tiles → big empty tiles) or grow unbounded (line chart → dominates the screen). |
+| **Why wrong** | Several components are drawn at a fixed/compact ÷2 scale with no width cap; a full-width grid cell stretches them and exposes empty space (or, for SVG charts, balloons them). Composition must constrain them; the component's fixed size is not a full-bleed size. |
+| **Source** | Eval 2026-07-22 baseline: G1 (kanban tiles ≤140px in wide columns → empty space), G4 (ficha metrics stretched + `LineChartCard` filled the viewport), G5 (`Asistente` frozen at 774px @2×). See [eval/results/2026-07-22-baseline.md](../eval/results/2026-07-22-baseline.md). Root component fix tracked in [component-roadmap.md](../component-roadmap.md) (@2× → fluid). |
+| **Links** | Principle 01 (Fidelity — fixed ÷2 sizes are display-calibrated, not responsive); [visual-grammar.md](./visual-grammar.md) (layout); Anti-Pattern 02 (context) |
+
+---
+
+## 8. Tokens — type tokens on headings vs hardcoded weight/tracking
+
+| | |
+|--|--|
+| **Right** | For a page/section heading, use a component's title slot where one exists (e.g. `Card` eyebrow/title), else `font-family: var(--ds-font-display)` + `font-weight: var(--ds-font-weight-bold)` + `letter-spacing: var(--ds-tracking-tight)` (or `--ds-tracking-title`). |
+| **Wrong** | Hand-roll an `<h1>`/`<h2>` with `fontWeight: 700` and `letterSpacing: "0.04em"` as literals when the equivalent tokens (`--ds-font-weight-bold`, `--ds-tracking-tight`) exist. |
+| **Why wrong** | Hardcoding design-language values that are already tokenized (AP12); drifts from the scale if tokens change. |
+| **Source** | Eval 2026-07-22 baseline: G1 hand-styled the dashboard title with literals; G4 avoided it by using `Card`'s title prop. See [eval/results/2026-07-22-baseline.md](../eval/results/2026-07-22-baseline.md). |
+| **Links** | Anti-Pattern 12 (hardcoding design language); [design-language.md](./design-language.md) (type roles); Principle 08 (discoverability) |
+
+---
+
 ## Quick index
 
 | Failure mode | Pair § | Primary anti-pattern / principle |
@@ -105,3 +129,5 @@ Related: [`visual-grammar.md`](./visual-grammar.md), [`fidelity-validation.md`](
 | Modernize / polish | §4 | AP04; P01 |
 | Teal on PDF screen | §5 | AP02; dual-context grammar |
 | Stacked ÷2 / wrong scope | §6 | Scale calibration; P01 |
+| Stretch/freeze compact component | §7 | P01; layout grammar |
+| Hardcoded type vs tokens | §8 | AP12; type roles |

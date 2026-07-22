@@ -96,3 +96,22 @@ plus a `ComposedOnFondo` story that demos `--ds-color-pdf-surface-warm-a70` insi
 `DetailSheet` (Ficha) exists in `packages/ui/src/patterns/detail-sheet/` but is
 not exported from `packages/ui/src/index.ts`. Exporting it is a docs/barrel fix,
 not a component build — do it independently of the (now closed) timeline gaps above.
+
+## Post-baseline: coverage & hardening (from eval 2026-07-22)
+
+The p.2 timeline gaps are closed, but the first generation eval baseline
+([eval/results/2026-07-22-baseline.md](./eval/results/2026-07-22-baseline.md)) surfaced
+gaps a *real consumer* hits immediately. These are NOT on the PDF timeline; prioritise by
+observed consumer need, not by the PDF.
+
+| Item | Type | Priority | Evidence | Notes |
+|---|---|:---:|---|---|
+| **@2× → fluid sizing** | Component hardening | **High** | G1, G4, G5 (3/5 prompts) | Compact/PDF-scale components stretch (ficha `MetricCard`, kanban `TaskCard`) or freeze (`Asistente` 774px, `LineChartCard` full-viewport). Add responsive behavior + `max-*` defaults so they don't need per-consumer wrapping. Highest-leverage visual fix. See anti-examples §7. |
+| **Pagination** | New component | **High** | G3 | No export; consumer had to hand-build a page bar with `Button`. Needed by any list/table. |
+| **DataTable: sort / filter / paginate** | Component feature | **High** | G3 | Display-only today; realistic tables need at least sort + paginate. |
+| **Modal / Dialog** | New component | **High** | G6 | No real overlay primitive; `Asistente` is a `role="dialog"` shell, not a confirm/cancel dialog. Needs focus trap + Esc + `aria-modal`. |
+| **Ficha label contrast** | a11y / fidelity | Medium | G4 | Ficha `MetricCard` label (extralight + `--ds-color-pdf-ink-muted`) is spec-faithful but low-contrast on dark. Fidelity-vs-a11y tension to resolve with design. |
+| **Export `DetailSheet`** | Barrel fix | Low | G4 | See "Quick win" above — a detail/login composer would reuse it. |
+
+**Not a gap (validated by the eval):** subsystem selection (console teal vs PDF grey) is
+already well-specified — the agent chose correctly in all 5 builds. See anti-examples §2/§5.
