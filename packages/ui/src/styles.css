@@ -1311,6 +1311,11 @@
     display: inline-flex;
   }
 
+  .ds-sidebar-shell {
+    display: inline-flex;
+    position: relative;
+  }
+
   .ds-sidebar {
     background: var(--ds-color-pdf-shell);
     box-sizing: border-box;
@@ -1333,8 +1338,6 @@
     align-items: center;
     display: flex;
     flex-shrink: 0;
-    gap: 8px;
-    justify-content: space-between;
     margin-bottom: 12px;
   }
 
@@ -1347,26 +1350,22 @@
     min-width: 0;
   }
 
-  .ds-sidebar__toggle {
+  .ds-sidebar__edge-toggle {
     align-items: center;
-    background: transparent;
-    border: 0;
+    background: var(--ds-color-pdf-shell);
+    border: var(--ds-border-width-hair) solid var(--ds-color-pdf-line);
+    border-radius: var(--ds-radius-xs);
     color: var(--ds-color-pdf-ink-muted);
     cursor: pointer;
     display: inline-flex;
-    flex-shrink: 0;
-    height: 25px; /* calibrated ÷2 — PDF/asset 50×50, provenance --ds-size-icon-50 */
+    height: 20px; /* PDF shows a small square glyph with no measurement given — provisional */
     justify-content: center;
-    margin: 0;
     padding: 0;
-    width: 25px; /* same */
-  }
-
-  .ds-sidebar__toggle img {
-    display: block;
-    height: 100%;
-    object-fit: contain;
-    width: 100%;
+    position: absolute;
+    right: 0;
+    top: 12px; /* provisional — roughly aligned to header/logo row, not PDF-measured */
+    transform: translateX(50%); /* half outside the sidebar's own right border, per PDF */
+    width: 20px; /* same as height — provisional */
   }
 
   .ds-sidebar__menu,
@@ -1381,6 +1380,29 @@
     background: var(--ds-color-pdf-surface-warm);
     margin-top: 12px;
     padding: 8px;
+  }
+
+  .ds-sidebar__menu-heading {
+    align-items: center;
+    display: flex;
+    gap: 6px;
+  }
+
+  .ds-sidebar__menu-heading-icon {
+    align-items: center;
+    display: inline-flex;
+    flex-shrink: 0;
+    height: 25px; /* same calibrated icon size as .ds-sidebar__item-icon — visual match in the PDF artwork */
+    justify-content: center;
+    width: 25px;
+  }
+
+  .ds-sidebar__menu-heading-icon img,
+  .ds-sidebar__menu-heading-icon svg {
+    display: block;
+    height: 100%;
+    object-fit: contain;
+    width: 100%;
   }
 
   .ds-sidebar__menu-label {
@@ -1495,6 +1517,7 @@
 
   .ds-sidebar--collapsed .ds-sidebar__item-copy,
   .ds-sidebar--collapsed .ds-sidebar__menu-label,
+  .ds-sidebar--collapsed .ds-sidebar__menu-heading-icon,
   .ds-sidebar--collapsed .ds-sidebar__badge,
   .ds-sidebar--collapsed .ds-sidebar__status {
     display: none;

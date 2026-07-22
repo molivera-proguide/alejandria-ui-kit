@@ -63,8 +63,20 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const sidebarLogo = (
+  // Isotipo real de Alejandría: fill sólido #060606, invisible sobre el fondo oscuro del
+  // SideBar (#282828) sin invertir. Es una marca de un solo color (no multicolor como los
+  // demás iconos compartidos), así que el invert es preciso, no una recoloreada aproximada.
+  <img
+    src={Icons.AlejandriaLogoIcon}
+    alt="Alejandría"
+    style={{ display: "block", filter: "invert(1)", height: 28, width: "auto" }}
+  />
+);
+
 const sharedArgs: Omit<SideBarProps, "collapsed" | "onToggleCollapsed"> = {
-  logo: <span style={{ color: "#fff", fontFamily: "Montserrat, sans-serif", fontSize: 12 }}>ALEJANDRIA</span>,
+  logo: sidebarLogo,
+  menuIcon: <img src={Icons.HamburguesaIcon} alt="" />,
   menuLabel: "Menú",
   items: primaryItems,
   secondaryItems
@@ -111,6 +123,7 @@ export const Playground: Story = {
     return (
       <SideBar
         logo={sharedArgs.logo}
+        menuIcon={sharedArgs.menuIcon}
         menuLabel="Menú"
         items={items}
         secondaryItems={modules}

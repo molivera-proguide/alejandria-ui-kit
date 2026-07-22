@@ -1,3 +1,4 @@
+import logoUrl from "./Brand/Logo-198x284.svg";
 import cerrarUrl from "./Cards/Cerrar-20x20.svg";
 import editarUrl from "./Cards/Editar-20x20.svg";
 import eliminarUrl from "./Cards/Eliminar-20x20.svg";
@@ -33,6 +34,16 @@ import despliegueUrl from "./Modules/Despliegue-180x180.svg";
 import evidenciasUrl from "./Modules/Evidencias-180x180.svg";
 import generoUrl from "./Modules/Genero-180x180.svg";
 import investigacionesUrl from "./Modules/Investigaciones-180x180.svg";
+
+// Brand
+
+/**
+ * @description Isotipo de Alejandría (marca, 198×284). Un solo color sólido (`#060606`); no es un
+ * wordmark. URL string para `<img src>` u equivalente. Sobre fondos oscuros necesita inversión de
+ * color (p. ej. `filter: invert(1)` en el `<img>` consumidor) — el asset en sí no cambia.
+ * @type {string}
+ */
+export const AlejandriaLogoIcon: string = logoUrl;
 
 // Cards
 
