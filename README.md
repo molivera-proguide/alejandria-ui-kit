@@ -60,9 +60,30 @@ export function Example() {
 
 Icons ship in the package as URL strings (`data:` URLs or asset URLs). Use them as `src` on `<img>` (or equivalent).
 
+## App background (required for the Alejandría look)
+
+`@alejandria/ui-kit/style.css` ships the design tokens (`--ds-*`) and fonts but **does not paint a
+page background**. Components carry their own dark surfaces, so on a default (white) page you get dark
+cards floating on white. Give your app root the console backdrop using tokens:
+
+```tsx
+import "@alejandria/ui-kit/style.css";
+
+export function AppShell({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ minHeight: "100vh", background: "var(--ds-color-surface)", color: "var(--ds-color-ink)" }}>
+      {children}
+    </div>
+  );
+}
+```
+
+Use `var(--ds-*)` tokens for shell spacing too (`--ds-space-1..6`) — don't hardcode hex or px for
+design values.
+
 ## Fonts (network requirement)
 
-Importing `@alejandria/ui-kit/style.css` loads **Montserrat** and **Source Code Pro** from Google Fonts over the network. Offline or CSP-restricted consumers must self-host those fonts (deferred; not covered in this MVP).
+Importing `@alejandria/ui-kit/style.css` loads **Montserrat** and **Source Code Pro** from Google Fonts over the network (via a CSS `@import`). Offline or CSP-restricted consumers must self-host those two families — and drop the `@import` — or the Alejandría typography silently falls back to system fonts (deferred; not covered in this MVP).
 
 ## Consuming with an AI agent
 

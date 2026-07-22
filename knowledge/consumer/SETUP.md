@@ -8,6 +8,15 @@ Prereqs: `@alejandria/ui-kit` installed (tarball or git — see the package READ
 import "@alejandria/ui-kit/style.css";
 ```
 
+> **Fonts load from the network.** `style.css` pulls **Montserrat** + **Source Code Pro** from Google
+> Fonts via a CSS `@import`. Offline or CSP-restricted apps must self-host those two families (and drop
+> the `@import`) or the Alejandría typography silently falls back to system fonts.
+
+> **No page background.** The stylesheet ships tokens + fonts but does **not** paint a page
+> background — components carry their own dark surfaces, so on a default page you'd get dark cards on
+> white. Wrap your app root in `background: var(--ds-color-surface); color: var(--ds-color-ink)` (see
+> the "App shell" section of `AGENTS.template.md`).
+
 ## ⚠️ Import order (Tailwind / Next.js / any CSS reset)
 Import `@alejandria/ui-kit/style.css` **after** your framework's base/reset CSS (Tailwind's
 `@import "tailwindcss"`, your `globals.css`, etc.). The kit ships its component styles in a cascade

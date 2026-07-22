@@ -1,33 +1,29 @@
-import { writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 
-/** Entry types mirror `src/index.ts` (CSS side-effect omitted). */
-const PACKAGE_ENTRY_DTS = [
-  'export * from "./components/Badge";',
-  'export * from "./components/AlertBanner";',
-  'export * from "./components/Button";',
-  'export * from "./components/Card";',
-  'export * from "./components/ChartCard";',
-  'export * from "./components/BarChartCard";',
-  'export * from "./components/DonutChartCard";',
-  'export * from "./components/LineChartCard";',
-  'export * from "./components/DataTable";',
-  'export * from "./components/MetricCard";',
-  'export * from "./components/ProgressRing";',
-  'export * from "./components/SegmentedControl";',
-  'export * from "./components/SelectField";',
-  'export * from "./components/Scrollbar";',
-  'export * from "./components/Switch";',
-  'export * from "./components/TaskCard";',
-  'export * from "./components/ModuleCard";',
-  'export * from "./components/InvestigationCard";',
-  'export * from "./components/TextField";',
-  'export * from "./Icons";',
-  ""
-].join("\n");
+/**
+ * Derive the barrel's type entry from `src/index.ts` — the single source of truth for exports.
+ * vite-plugin-dts emits an empty `export {}` for this CSS+reexport barrel, so we regenerate it by
+ * keeping only the `export …` lines (dropping the `import "./styles.css"` side-effect, which has no
+ * type surface). Deriving instead of hand-listing means the shipped `.d.ts` can never drift from the
+ * runtime exports.
+ */
+function buildPackageEntryDts(): string {
+  const source = readFileSync(resolve(__dirname, "src/index.ts"), "utf8");
+  const exportLines = source
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith("export "));
+
+  if (exportLines.length === 0) {
+    throw new Error("buildPackageEntryDts: no `export` lines found in src/index.ts");
+  }
+
+  return exportLines.join("\n") + "\n";
+}
 
 export default defineConfig({
   plugins: [
@@ -39,8 +35,8 @@ export default defineConfig({
       insertTypesEntry: true,
       outDir: "dist",
       afterBuild: () => {
-        // vite-plugin-dts emits an empty `export {}` for this CSS+reexport barrel; rewrite for consumers.
-        writeFileSync(resolve(__dirname, "dist/src/index.d.ts"), PACKAGE_ENTRY_DTS, "utf8");
+        // Rewrite the barrel type entry from src/index.ts (single source of truth); see helper above.
+        writeFileSync(resolve(__dirname, "dist/src/index.d.ts"), buildPackageEntryDts(), "utf8");
       }
     })
   ],
