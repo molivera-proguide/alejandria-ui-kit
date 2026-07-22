@@ -12,6 +12,13 @@
       "storybook": "Alejandria/AlertBanner"
     },
     {
+      "id": "asistente",
+      "name": "Asistente",
+      "path": "knowledge/components/Asistente.md",
+      "export": "packages/ui/src/components/Asistente.tsx",
+      "storybook": "Alejandria/Asistente"
+    },
+    {
       "id": "badge",
       "name": "Badge",
       "path": "knowledge/components/Badge.md",
@@ -309,6 +316,12 @@
       "name": "AlertBanner",
       "path": "knowledge/specs/components/AlertBanner.spec.md",
       "source": "packages/ui/src/styles.css (.ds-alert)"
+    },
+    {
+      "id": "asistente-spec",
+      "name": "Asistente",
+      "path": "knowledge/specs/components/Asistente.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-asistente)"
     },
     {
       "id": "badge-spec",

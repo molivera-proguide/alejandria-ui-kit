@@ -44,6 +44,10 @@ importers:
         version: 8.0.16(@types/node@25.9.3)(esbuild@0.28.1)
 
   packages/ui:
+    dependencies:
+      lucide-react:
+        specifier: ^1.20.0
+        version: 1.20.0(react@19.2.7)
     devDependencies:
       '@storybook/react-vite':
         specifier: ^10.4.6
@@ -57,9 +61,6 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^6.0.2
         version: 6.0.2(vite@8.0.16(@types/node@25.9.3)(esbuild@0.28.1))
-      lucide-react:
-        specifier: ^1.20.0
-        version: 1.20.0(react@19.2.7)
       react:
         specifier: ^19.2.7
         version: 19.2.7

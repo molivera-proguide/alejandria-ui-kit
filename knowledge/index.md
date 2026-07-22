@@ -76,11 +76,12 @@ knowledge/
 
 ## Components
 
-The public exports of `@alejandria/ui-kit` have dedicated docs under `knowledge/components/` (23 exports).
+The public exports of `@alejandria/ui-kit` have dedicated docs under `knowledge/components/` (24 exports).
 
 | Component | Doc | Storybook |
 |-----------|-----|-----------|
 | AlertBanner | [AlertBanner.md](./components/AlertBanner.md) | `Alejandria/AlertBanner` |
+| Asistente | [Asistente.md](./components/Asistente.md) | `Alejandria/Asistente` |
 | Badge | [Badge.md](./components/Badge.md) | `Alejandria/Badge Chip` |
 | BarChartCard | [BarChartCard.md](./components/BarChartCard.md) | `Alejandria/ChartCard` (nested) |
 | Button | [Button.md](./components/Button.md) | `Alejandria/Button` |
@@ -145,7 +146,7 @@ No other Storybook screens exist today. The following are **not** documented bec
 
 - Login
 - Ficha (detail sheet)
-- Modal / asistente
+- Asistente fullscreen screen (component `Asistente` ships; no Storybook screen composition yet)
 - Módulos hub (only Module Grid pattern)
 - Reporting dashboard (only Chart Gallery pattern)
 - Full Operations Center from `apps/web` (demo app only)

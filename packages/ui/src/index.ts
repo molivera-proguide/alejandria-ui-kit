@@ -1,7 +1,8 @@
 import "./styles.css";
 
-export * from "./components/Badge";
 export * from "./components/AlertBanner";
+export * from "./components/Asistente";
+export * from "./components/Badge";
 export * from "./components/Button";
 export * from "./components/CalendarCard";
 export * from "./components/Card";

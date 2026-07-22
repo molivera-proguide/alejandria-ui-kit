@@ -1264,6 +1264,217 @@
     display: inline-flex;
   }
 
+  /* Asistente — CSS ported verbatim from patterns/modal/modal.css at raw @2× PDF scale
+     (NOT ÷2 display-calibrated; known tech debt — see Asistente.spec.md). */
+  .ds-asistente {
+    display: flex;
+    flex-direction: column;
+    width: 774px;
+  }
+
+  .ds-asistente__greeting {
+    color: var(--ds-color-pdf-line);
+    font-family: var(--ds-font-display);
+    font-size: 24px;
+    font-weight: var(--ds-font-weight-regular);
+    letter-spacing: var(--ds-tracking-none);
+    line-height: var(--ds-leading-snug);
+    margin: 0 0 9px 8px;
+  }
+
+  .ds-asistente__shell {
+    background: var(--ds-color-pdf-surface);
+    border: var(--ds-border-width-hair) solid var(--ds-color-pdf-line);
+    box-sizing: border-box;
+    color: var(--ds-color-pdf-ink-muted);
+    height: 208px;
+    position: relative;
+    width: 774px;
+  }
+
+  .ds-asistente__top {
+    align-items: start;
+    display: flex;
+    gap: var(--ds-space-3);
+    justify-content: space-between;
+    left: 34px;
+    min-width: 0;
+    position: absolute;
+    right: 22px;
+    top: 16px;
+  }
+
+  .ds-asistente__prompt.ds-field {
+    flex: 1;
+    gap: 0;
+    min-width: 0;
+  }
+
+  .ds-asistente__prompt .ds-field__label-row {
+    display: none;
+  }
+
+  .ds-asistente__prompt .ds-field__control {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    min-height: 0;
+  }
+
+  .ds-asistente__prompt .ds-field__control:focus-within {
+    border-color: transparent;
+    box-shadow: none;
+  }
+
+  .ds-asistente__prompt .ds-field__input {
+    color: var(--ds-color-pdf-ink-muted);
+    font-family: var(--ds-font-body);
+    font-size: 18px;
+    font-weight: var(--ds-font-weight-light);
+    letter-spacing: var(--ds-tracking-none);
+    line-height: var(--ds-leading-normal);
+    min-height: 0;
+    padding: 0;
+  }
+
+  .ds-asistente__prompt .ds-field__input::placeholder {
+    color: var(--ds-color-pdf-ink-muted);
+    opacity: 1;
+  }
+
+  .ds-asistente__prompt .ds-field__input:focus-visible {
+    box-shadow: none;
+  }
+
+  /* PDF p.12: «cuando se escribe pasa a #FFFFFF» — :not(:placeholder-shown) detects typed value */
+  .ds-asistente__prompt .ds-field__input:not(:placeholder-shown) {
+    color: var(--ds-color-white);
+  }
+
+  .ds-asistente__mic {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    color: var(--ds-color-pdf-ink-muted);
+    cursor: pointer;
+    display: inline-flex;
+    flex-shrink: 0;
+    height: 36px;
+    justify-content: center;
+    padding: 0;
+    width: 20px;
+  }
+
+  .ds-asistente__mic svg {
+    height: 28px;
+    width: 20px;
+  }
+
+  .ds-asistente__attach {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    color: var(--ds-color-pdf-ink-muted);
+    cursor: pointer;
+    display: inline-flex;
+    gap: 10px;
+    left: 38px;
+    padding: 0;
+    position: absolute;
+    top: 86px;
+  }
+
+  .ds-asistente__attach-plus {
+    display: block;
+    flex-shrink: 0;
+    height: 11px;
+    position: relative;
+    width: 11px;
+  }
+
+  .ds-asistente__attach-plus::before,
+  .ds-asistente__attach-plus::after {
+    background: var(--ds-color-pdf-ink-muted);
+    content: "";
+    position: absolute;
+  }
+
+  .ds-asistente__attach-plus::before {
+    height: 1px;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .ds-asistente__attach-plus::after {
+    bottom: 0;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    width: 1px;
+  }
+
+  .ds-asistente__attach-label {
+    font-family: var(--ds-font-body);
+    font-size: 14px;
+    font-weight: var(--ds-font-weight-light);
+    letter-spacing: var(--ds-tracking-none);
+    line-height: var(--ds-leading-normal);
+  }
+
+  .ds-asistente__execute.ds-button {
+    border: 0;
+    border-radius: 0;
+    bottom: 21px;
+    box-shadow: none;
+    font-family: var(--ds-font-body);
+    font-size: 13px;
+    font-weight: var(--ds-font-weight-bold);
+    letter-spacing: var(--ds-tracking-none);
+    min-height: 25px;
+    padding: 0;
+    position: absolute;
+    right: 34px;
+    text-transform: uppercase;
+    transform: none;
+    width: 135px;
+  }
+
+  .ds-asistente__execute.ds-button:hover:not(:disabled) {
+    box-shadow: none;
+    transform: none;
+  }
+
+  .ds-asistente__execute.ds-button:focus-visible {
+    box-shadow: none;
+  }
+
+  .ds-asistente__suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 53px;
+    list-style: none;
+    margin: 22px 0 0;
+    padding: 0 10px;
+  }
+
+  .ds-asistente__suggestion {
+    background: transparent;
+    border: 0;
+    color: var(--ds-color-pdf-ink-muted);
+    cursor: pointer;
+    font-family: var(--ds-font-display);
+    font-size: 14px;
+    font-weight: var(--ds-font-weight-regular);
+    letter-spacing: var(--ds-tracking-none);
+    line-height: var(--ds-leading-label);
+    padding: 0;
+    text-align: left;
+    white-space: nowrap;
+  }
+
   .ds-empty {
     align-items: center;
     background: transparent;
