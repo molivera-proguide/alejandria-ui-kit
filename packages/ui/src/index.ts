@@ -12,6 +12,7 @@ export * from "./components/DonutChartCard";
 export * from "./components/Empty";
 export * from "./components/LineChartCard";
 export * from "./components/DataTable";
+export * from "./patterns/detail-sheet/DetailSheet";
 export * from "./components/MetricCard";
 export * from "./components/ProgressRing";
 export * from "./components/SegmentedControl";
