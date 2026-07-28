@@ -3,6 +3,15 @@
 **Written:** 2026-07-22 (after the baseline run) · **Target session:** 2026-07-23
 **Baseline:** [results/2026-07-22-baseline.md](./results/2026-07-22-baseline.md) — aesthetic mean 22.6/24, 5/5 Ship-quality, both gap-probes passed.
 
+> **Status (2026-07-28): Focus A (sizing) done, one loop closed.** `DetailSheet` exported;
+> `ChartCard`/ficha `MetricCard` hardened; `TaskCard` boundary resolved as a composition
+> responsibility (documented, no code change). Re-run of G1/G4/G5 logged in
+> [results/2026-07-28-sizing.md](./results/2026-07-28-sizing.md) — G4 24/24 (+2), G1 23/24 (+1),
+> G5 unchanged (23/24, `Asistente` 774px still deferred). That log was **screenshot-only** — dims
+> 1/2/7/8 weren't re-verified against code. Before starting B or C below, either re-run G1/G4 once
+> more with the code captured, or accept the screenshot-only result and move on. What's still open:
+> `Asistente`'s 774px freeze (second pass) and picking B (Pagination/DataTable) or C (Modal) next.
+
 ## Where we are
 
 The baseline says the **knowledge and the generation contract work** (the agent reused components, chose the correct console-vs-PDF subsystem in all 5 builds, and reported gaps instead of inventing). The bottleneck is no longer the knowledge base — it's **component quality (sizing)** and **coverage (pagination, modal)**. So the work shifts from writing docs to hardening/extending components — but **every change is re-measured against the baseline**.
