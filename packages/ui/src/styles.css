@@ -686,6 +686,7 @@
 
   .ds-metric--ficha {
     background: transparent;
+    width: fit-content /* ficha tiles are compact in the PDF, not full-bleed — same technique as .ds-task, no invented dimension */;
   }
 
   .ds-metric--ficha .ds-metric__label {
@@ -1937,6 +1938,7 @@
     color: var(--ds-color-ink);
     display: grid;
     gap: 5px;
+    max-width: 280px /* Line/BarChartCard's own SVG viewBox width — caps growth at native chart resolution instead of upscaling into an unbounded grid cell */;
     min-width: 110px /* calibrated ÷2 */;
     padding: 5px;
   }

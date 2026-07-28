@@ -106,12 +106,43 @@ observed consumer need, not by the PDF.
 
 | Item | Type | Priority | Evidence | Notes |
 |---|---|:---:|---|---|
-| **@2× → fluid sizing** | Component hardening | **High** | G1, G4, G5 (3/5 prompts) | Compact/PDF-scale components stretch (ficha `MetricCard`, kanban `TaskCard`) or freeze (`Asistente` 774px, `LineChartCard` full-viewport). Add responsive behavior + `max-*` defaults so they don't need per-consumer wrapping. Highest-leverage visual fix. See anti-examples §7. |
+| **@2× → fluid sizing** | Component hardening | **Done (partial)** | G1, G4, G5 (3/5 prompts) | See "2026-07-28 sizing pass" below — `ChartCard`/`MetricCard` ficha fixed; kanban `TaskCard` resolved as a composition responsibility (no code change); `Asistente` 774px deferred. |
 | **Pagination** | New component | **High** | G3 | No export; consumer had to hand-build a page bar with `Button`. Needed by any list/table. |
 | **DataTable: sort / filter / paginate** | Component feature | **High** | G3 | Display-only today; realistic tables need at least sort + paginate. |
 | **Modal / Dialog** | New component | **High** | G6 | No real overlay primitive; `Asistente` is a `role="dialog"` shell, not a confirm/cancel dialog. Needs focus trap + Esc + `aria-modal`. |
 | **Ficha label contrast** | a11y / fidelity | Medium | G4 | Ficha `MetricCard` label (extralight + `--ds-color-pdf-ink-muted`) is spec-faithful but low-contrast on dark. Fidelity-vs-a11y tension to resolve with design. |
-| **Export `DetailSheet`** | Barrel fix | Low | G4 | See "Quick win" above — a detail/login composer would reuse it. |
+| **Export `DetailSheet`** | Barrel fix | ✅ Done (2026-07-28) | G4 | See "Quick win" above — a detail/login composer would reuse it. |
 
 **Not a gap (validated by the eval):** subsystem selection (console teal vs PDF grey) is
 already well-specified — the agent chose correctly in all 5 builds. See anti-examples §2/§5.
+
+### 2026-07-28 sizing pass (Focus A from `eval/next-steps.md`)
+
+Resolved the component-vs-composition boundary flagged in §7 for the two @2× sizing
+findings, differently per component depending on whether an intrinsic size exists to
+derive a cap from:
+
+- **`ChartCard` (`.ds-chart-card`)** — added `max-width: 280px`, the native SVG `viewBox`
+  width shared by `LineChartCard`/`BarChartCard`. This is an *intrinsic* cap (derived from
+  the chart's own coordinate space, not invented) — fixes G4's "`LineChartCard` fills the
+  viewport" for any standalone usage, not just inside `DetailSheet` (which already had its
+  own local height override in `detail-sheet.css` — that finding mostly hit the hand-composed
+  ficha screen consumers had to build *before* `DetailSheet` was exported).
+- **`MetricCard` ficha (`.ds-metric--ficha`)** — added `width: fit-content`, the same
+  technique already used by `.ds-task`. No PDF width measurement exists for this tile (see
+  `MetricCard.spec.md`), so a pixel cap would be invented; sizing to content isn't. Fixes
+  G4's "ficha `MetricCard` stretch full-width" regardless of the consumer's grid/flex choice.
+  Reporting `MetricCard` (dashboards) is untouched — it's *meant* to fill its grid cell.
+- **`TaskCard` kanban** — **no code change.** It already self-caps (`width: fit-content` +
+  `max-width: 140px` on `.ds-task--kanban`, predates this pass). G1's "sits ≤140px in wide
+  columns → empty space" is the grid track being wider than the card, which no component-side
+  change can fix — it's the consumer's grid column sizing (e.g. size kanban columns to
+  content instead of `1fr`). Documented as a **consumer/composition responsibility**, not a
+  kit gap.
+- **`Asistente` 774px** — deferred, per `next-steps.md`, to a second pass (biggest, most
+  design-risky of the four).
+
+Verified in Storybook (`ChartCard` Gallery/Line Chart stories, `MetricCard` Reporting-vs-Ficha
+story) at a 1600px viewport: charts cap at native resolution instead of growing with the
+viewport; the ficha tile is visibly narrower than the reporting tile now. Real-browser
+re-check still recommended before re-scoring the golden set (see eval loop discipline).

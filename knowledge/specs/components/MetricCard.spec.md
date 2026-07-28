@@ -45,7 +45,7 @@
 | Class | Effect | Source | Backed by CSS? (yes/no) |
 |-------|--------|--------|-------------------------|
 | .ds-metric--critical | value color #ff0404 | styles.css | yes |
-| .ds-metric--ficha | transparent bg; label Montserrat Extra Light; value 26px | styles.css | yes |
+| .ds-metric--ficha | transparent bg; label Montserrat Extra Light; value 26px; `width: fit-content` (added 2026-07-28, no PDF width exists — sizes to content instead of stretching a grid/flex cell; see anti-examples §7) | styles.css | yes |
 | .ds-metric--neutral | applied in TSX | knowledge/components/MetricCard.md | no dedicated CSS block |
 | .ds-metric--good | applied in TSX | knowledge/components/MetricCard.md | no dedicated CSS block |
 | .ds-metric--watch | applied in TSX | knowledge/components/MetricCard.md | no dedicated CSS block |

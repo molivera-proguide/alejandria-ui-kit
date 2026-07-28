@@ -105,6 +105,17 @@ Related: [`visual-grammar.md`](./visual-grammar.md), [`fidelity-validation.md`](
 | **Source** | Eval 2026-07-22 baseline: G1 (kanban tiles ≤140px in wide columns → empty space), G4 (ficha metrics stretched + `LineChartCard` filled the viewport), G5 (`Asistente` frozen at 774px @2×). See [eval/results/2026-07-22-baseline.md](../eval/results/2026-07-22-baseline.md). Root component fix tracked in [component-roadmap.md](../component-roadmap.md) (@2× → fluid). |
 | **Links** | Principle 01 (Fidelity — fixed ÷2 sizes are display-calibrated, not responsive); [visual-grammar.md](./visual-grammar.md) (layout); Anti-Pattern 02 (context) |
 
+**Resolved boundary (2026-07-28):** the component-vs-composition line is drawn by whether an
+*intrinsic* size exists to derive a cap from, not by which component looks broken. `ChartCard`
+got its own `max-width` because it's derived from the chart's own SVG `viewBox` — not invented.
+`MetricCard` ficha got `width: fit-content` (sizes to content, no pixel value invented) because
+no PDF width measurement exists for it. `TaskCard` kanban got **no component change** — it
+already self-caps (`fit-content` + `max-width: 140px`); a fixed-width card sitting narrow inside
+a wider `1fr` grid track is the grid track's problem, and no card-side CSS can size its parent's
+column. When a component has nothing intrinsic to cap against, prefer fixing it at the
+composition layer (the consumer's grid/flex choice) over inventing a dimension. See
+[component-roadmap.md](../component-roadmap.md#2026-07-28-sizing-pass).
+
 ---
 
 ## 8. Tokens — type tokens on headings vs hardcoded weight/tracking

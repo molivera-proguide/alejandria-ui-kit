@@ -13,6 +13,7 @@
 | border-width | 1 | px | styles.css | hairline — not scaled |
 | border-radius | var(--ds-radius-xs) → 2 | px | styles.css | — |
 | min-width | 110 | px | styles.css | display = 220÷2 |
+| max-width | 280 | px | styles.css (added 2026-07-28) | native SVG `viewBox` width shared by Line/BarChartCard — not a PDF measurement, an intrinsic one; caps growth in a wide grid cell instead of upscaling. See anti-examples §7. |
 | padding | 5 | px | styles.css | display = 10÷2 |
 | gap | 5 | px | styles.css | display = 10÷2 |
 | body min-height | 60 | px | styles.css | display = 120÷2 |
