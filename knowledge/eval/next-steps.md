@@ -1,65 +1,83 @@
 # Eval — next steps
 
-**Written:** 2026-07-22 (after the baseline run) · **Target session:** 2026-07-23
+**Written:** 2026-07-22 (baseline) · **Updated:** 2026-07-28 (Focus A closed)
 **Baseline:** [results/2026-07-22-baseline.md](./results/2026-07-22-baseline.md) — aesthetic mean 22.6/24, 5/5 Ship-quality, both gap-probes passed.
 
-> **Status (2026-07-28): Focus A (sizing) done, one loop closed.** `DetailSheet` exported;
-> `ChartCard`/ficha `MetricCard` hardened; `TaskCard` boundary resolved as a composition
-> responsibility (documented, no code change). Re-run of G1/G4/G5 logged in
-> [results/2026-07-28-sizing.md](./results/2026-07-28-sizing.md) — G4 24/24 (+2), G1 23/24 (+1),
-> G5 unchanged (23/24, `Asistente` 774px still deferred). That log was **screenshot-only** — dims
-> 1/2/7/8 weren't re-verified against code. Before starting B or C below, either re-run G1/G4 once
-> more with the code captured, or accept the screenshot-only result and move on. What's still open:
-> `Asistente`'s 774px freeze (second pass) and picking B (Pagination/DataTable) or C (Modal) next.
+## Status (2026-07-28): Focus A (sizing) closed
 
-## Where we are
+`DetailSheet` exported. `ChartCard`/ficha `MetricCard` hardened and **code-confirmed** against
+two real Cursor generations (not just screenshots). `TaskCard`'s kanban column-sizing gap got a
+defensive fix (a `style` prop can no longer silently override its calibrated `max-width` —
+`anti-examples.md` §9) but the *underlying* gap — agents not sizing the grid column to the card,
+per §7 — survived two consecutive real runs unresolved. **Decision: defer that one, it's still
+Ship-quality (22/24).** Full log: [results/2026-07-28-sizing.md](./results/2026-07-28-sizing.md).
 
-The baseline says the **knowledge and the generation contract work** (the agent reused components, chose the correct console-vs-PDF subsystem in all 5 builds, and reported gaps instead of inventing). The bottleneck is no longer the knowledge base — it's **component quality (sizing)** and **coverage (pagination, modal)**. So the work shifts from writing docs to hardening/extending components — but **every change is re-measured against the baseline**.
+| Prompt | Baseline (07-22) | Final (07-28) | Δ |
+|---|:-:|:-:|:-:|
+| G1 Dashboard | 22/24 | 22/24 | 0 (kanban column-sizing gap survives, see above) |
+| G4 Detail | 22/24 | **24/24** | +2, code-confirmed |
+| G5 Assistant | 23/24 | 23/24 | 0 (`Asistente` 774px still deferred) |
 
-## Warm-up (30–45 min · low risk)
+**Loop lesson to carry forward:** judge from code, not screenshots alone, whenever a change could
+be silently defeated by a local `style`/`className` override — a screenshot can look "fixed" for
+the wrong reason (this is exactly how G1 v1 was mis-scored 23/24 before the code review caught it).
 
-- **Export `DetailSheet`** from `packages/ui/src/index.ts` (the "Quick win" in `component-roadmap.md`). One re-export + confirm the barrel `.d.ts` regenerates (it derives from `index.ts` now). Unblocks reusing the Ficha for detail/login instead of composing by hand.
+## Next focus: B) Pagination + DataTable sort/paginate
 
-## Main focus — pick ONE (recommended: A)
+Chosen over C (Modal/Dialog) for this session. Closes a real, consumer-confirmed gap (G3: the
+2026-07-22 baseline agent had to hand-build a page bar with `Button` because no `Pagination`
+export exists, and `DataTable` is display-only). Also the intended venue to **pilot the spec-first
+flow** from the AI-native vision — write the component's spec/contract before implementing it,
+not after — since it's the next net-new component being built from scratch.
 
-### A) Harden sizing (Theme 1) — RECOMMENDED
-The single change that lifts **3 of 5 prompts** (G1, G4, G5), low risk if you follow one rule: **do NOT un-calibrate the ÷2 display scale** (it's correct per fidelity — see anti-examples §6). Only add **layout constraints**:
-- Sensible default `max-height`/`max-width` on `ChartCard` / `LineChartCard` (today they fill the viewport).
-- Decide the **component-vs-composition boundary** for the ficha `MetricCard` row and the kanban `TaskCard` (own cap, or stays a documented consumer responsibility per anti-examples §7).
-- `Asistente` fixed 774px is the biggest — defer to a second pass.
-- **Close the loop:** re-run G1/G4/G5 in the harness, log `results/2026-07-23-sizing.md`, compare. Expect dims 5 (spacing) and 6 (composition) to rise.
+**Open decision before starting (not resolved yet):** spec-first (author
+`knowledge/specs/components/Pagination.spec.md` + update `DataTable.spec.md` *before* writing any
+component code) vs. build-first (implement, then backfill the spec like every prior component in
+`component-roadmap.md` did). This is the first net-new component since the eval loop exists, so
+it's a natural point to try the spec-first order and see if it changes anything about the build
+quality or the eval score — but it's a real workflow change, not a default to assume silently.
 
-### B) Coverage: `Pagination` + `DataTable` sort/paginate
-Closes a real gap (G3). Bigger. Good opportunity to **pilot the spec-first flow** from the AI-native vision: write the spec/contract → implement → eval. One component, end to end.
+### Scope, once started
+- `Pagination`: new component. Needs at minimum: page indicator, prev/next, and probably
+  page-size — check `golden-set.md` G3 and the baseline's coverage-gap note for what a "realistic"
+  consumer actually reached for.
+- `DataTable`: add sort (column header click → asc/desc) and paginate (wire to the new
+  `Pagination`, or accept a controlled page/pageSize prop). Filter was already covered by
+  `SegmentedControl` in G3 — don't duplicate that.
+- Close the loop the same way as Focus A: re-run **G3** (and re-check G6 stays a clean gap-probe
+  pass — a shipped `Pagination` might tempt a future agent to also assume `Modal` exists) against
+  the repacked tarball, log `results/<date>-pagination.md` against the baseline, judge from code
+  not just screenshots.
 
-### C) `Modal` / `Dialog`
-The most important missing primitive (G6), but the most design work (focus trap, Esc, `aria-modal`). Do it after A or B validates the cycle — and build it accessible from day one (ties into the a11y track below).
+## Backlog (not this session)
+
+- **C) Modal / Dialog** — the most important missing primitive (G6), but the most design work
+  (focus trap, Esc, `aria-modal`). Natural pairing with the accessibility track below — build it
+  accessible from day one rather than retrofitting.
+- **`Asistente` 774px** — second sizing pass, deferred twice now.
+- **Kanban `TaskCard` column-sizing gap** — revisit if a future run regresses below Ship-quality,
+  or when doing general knowledge-format work. Leading candidate fix per this session's evidence:
+  a concrete copy-pasteable composition example, not another prose Right/Wrong pair — two real
+  agent runs didn't pick up §7 from prose alone.
+- **Accessibility track (parallel, from the original repo audit)** — `Switch` without
+  `role="switch"`; dialog-shaped components (incl. the future `Modal`) without focus-trap/Esc;
+  `AlertBanner` always `role="status"`; `SegmentedControl` prop-spread bug; field errors not in a
+  live region; `DataTable` `<th>` without `scope`. Track against the original audit, not the
+  aesthetic eval score. Good time to fold in: alongside building `Modal` (C).
+- **Ficha `MetricCard` label contrast** — spec-faithful but low-contrast on dark; a11y-vs-fidelity
+  tension for design to weigh in on, not a generation defect.
 
 ## The discipline that makes this a *loop* (non-negotiable)
 
-After any change: **re-run the affected golden-set prompts and log a new results file**, then compare to the baseline. Without it, the change is blind; with it, you have evidence it helped.
+After any change: **re-run the affected golden-set prompts and log a new results file**, judged
+from the generated **code**, not screenshots alone, then compare to the previous run. Without
+this, the change is blind.
 
-Re-pack the harness after changing the kit:
+Re-pack after changing the kit:
 ```bash
 # in the kit repo:
 pnpm build:ui && pnpm pack:ui
-# in alejandria-harness:
-rm -rf node_modules/@alejandria package-lock.json && npm install
+# in alejandria-harness (PowerShell):
+Remove-Item -Recurse -Force node_modules\@alejandria, package-lock.json
+npm install
 ```
-
-## Recommended order for 2026-07-23
-
-1. Warm-up: export `DetailSheet` (fast, measurable).
-2. Focus **A (sizing)** — highest leverage, lowest risk, measurable same day.
-3. Close the loop: `results/2026-07-23-sizing.md` vs. baseline.
-
-Defer **B / C (new builds)** to when you want to debut the spec-first flow — that's where daily work connects to the AI-native architecture (contract → component → validation).
-
-## Parallel track (radar, not for 2026-07-23)
-
-The eval does not touch the accessibility findings from the original repo audit: `Switch` without `role="switch"`, "dialog" components without focus-trap/Esc, `AlertBanner` always `role="status"`, `SegmentedControl` prop-spread bug, fields' errors not in a live region, `DataTable` `<th>` without `scope`. These are a separate hardening track; a good time to tackle them is alongside building `Modal` (C) accessibly. Track them against the original audit, not the aesthetic eval score.
-
-## Open decisions to make (not blockers)
-
-- **Component vs composition for sizing** — does the kit ship max constraints, or is constraining a documented consumer responsibility? (Affects A.)
-- **Spec-first pilot** — when building the first net-new component (Pagination/Modal), do we author a spec/contract first to pilot the AI-native generation flow, or build directly?
