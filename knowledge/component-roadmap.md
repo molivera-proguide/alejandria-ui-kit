@@ -133,6 +133,12 @@ derive a cap from:
   `MetricCard.spec.md`), so a pixel cap would be invented; sizing to content isn't. Fixes
   G4's "ficha `MetricCard` stretch full-width" regardless of the consumer's grid/flex choice.
   Reporting `MetricCard` (dashboards) is untouched — it's *meant* to fill its grid cell.
+  **Both this and the `ChartCard` fix above are confirmed against G4's actual generated code**
+  (not just the screenshot) — no `style`/`className` override on either component; `Card`'s own
+  `style={{ maxWidth: "590px" }}` on the ficha container is legitimate since `.ds-card` ships no
+  intrinsic width to defeat. G4 also used `Card`'s title/eyebrow slots instead of hand-rolling a
+  heading, avoiding the §8 hardcoded-type trap G1 fell into (see below). G4 scores 24/24 with
+  code-level confidence, not a screenshot-only estimate.
 - **`TaskCard` kanban** — **no code change**, reasoned as a consumer/composition
   responsibility (it already self-caps via `width: fit-content` + `max-width: 140px` on
   `.ds-task--kanban`). **The 2026-07-28 G1 re-run shows this reasoning wasn't enough on its
