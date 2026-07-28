@@ -45,11 +45,15 @@ export function TaskCard({
 }: TaskCardProps) {
   const isKanban = variant === "kanban";
   const kanbanMeta = meta.slice(0, 2);
+  // width/maxWidth dropped from an incoming style prop: TaskCard's own calibrated
+  // max-width (.ds-task--kanban) is fidelity, not a default — a consumer stretching
+  // a wide grid column shouldn't be able to silently override it via inline style.
+  const { width: _width, maxWidth: _maxWidth, ...safeStyle } = style ?? {};
 
   return (
     <article
       className={cn("ds-task", `ds-task--${tone}`, `ds-task--${variant}`, className)}
-      style={style}
+      style={safeStyle}
       {...props}
     >
       {isKanban ? (

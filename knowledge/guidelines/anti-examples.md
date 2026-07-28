@@ -130,6 +130,18 @@ composition layer (the consumer's grid/flex choice) over inventing a dimension. 
 
 ---
 
+## 9. Sizing override — fix the layout, don't defeat the component's own cap
+
+| | |
+|--|--|
+| **Right** | When a compact component sits inside a wide grid/flex track (e.g. a kanban `TaskCard` column), size the **track** to the card (`grid-auto-columns: max-content`, `minmax(140px, max-content)`, or similar) so the card keeps its calibrated footprint. |
+| **Wrong** | Pass `style={{ width: "100%", maxWidth: "100%" }}` (or an equivalent utility class) to a component that already ships its own `max-width`, forcing it to stretch and fill the track instead of fixing the track. |
+| **Why wrong** | An inline `style` always wins over a class rule, so this silently erases the component's calibrated ÷2 size — worse than §7's case (no cap at all), because the fidelity was already correct and got actively overridden. It also hides the real problem: the layout's column/track is still unconstrained. `TaskCard` now drops `width`/`maxWidth` from an incoming `style` prop for exactly this reason (`packages/ui/src/components/TaskCard.tsx`) — treat that as the pattern for any other self-capping component, not a one-off. |
+| **Source** | Eval 2026-07-28 sizing re-run: G1's `alejandria-harness/src/App.tsx:290` (`<TaskCard style={{ maxWidth: "100%", width: "100%" }} />` inside a `repeat(3, minmax(0, 1fr))` grid). Screenshot judging initially misread this as "fixed"; the code review caught it. See [eval/results/2026-07-28-sizing.md](../eval/results/2026-07-28-sizing.md). |
+| **Links** | §7 (the no-cap case this is distinct from); Principle 01 (Fidelity); Anti-Pattern 03 (sidestepping identity) — same family as §2, applied to sizing instead of color/variant. |
+
+---
+
 ## Quick index
 
 | Failure mode | Pair § | Primary anti-pattern / principle |
@@ -142,3 +154,4 @@ composition layer (the consumer's grid/flex choice) over inventing a dimension. 
 | Stacked ÷2 / wrong scope | §6 | Scale calibration; P01 |
 | Stretch/freeze compact component | §7 | P01; layout grammar |
 | Hardcoded type vs tokens | §8 | AP12; type roles |
+| Style prop defeats a component's own cap | §9 | AP03; P01 |

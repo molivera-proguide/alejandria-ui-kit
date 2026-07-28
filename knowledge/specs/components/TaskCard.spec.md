@@ -19,6 +19,7 @@
 | kanban max-width | 140 | px | styles.css | display = 280÷2 |
 | kanban padding | 5 | px | styles.css | display = 10÷2 |
 | kanban gap | 2.5 | px | styles.css | display = 5÷2 |
+| `style` width/maxWidth | dropped | — | TaskCard.tsx (added 2026-07-28) | a consumer-supplied `style` prop has `width`/`maxWidth` stripped before being applied — closes a real gap where a wide grid column caused an agent to override the kanban cap via inline style instead of fixing the column. See anti-examples §9. |
 
 ## Color
 | Role | Value | Matching --ds-* token? | Source | Delta |

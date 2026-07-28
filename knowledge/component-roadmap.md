@@ -106,7 +106,7 @@ observed consumer need, not by the PDF.
 
 | Item | Type | Priority | Evidence | Notes |
 |---|---|:---:|---|---|
-| **@2× → fluid sizing** | Component hardening | **Done (partial)** | G1, G4, G5 (3/5 prompts) | See "2026-07-28 sizing pass" below — `ChartCard`/`MetricCard` ficha fixed; kanban `TaskCard` resolved as a composition responsibility (no code change); `Asistente` 774px deferred. |
+| **@2× → fluid sizing** | Component hardening | **Done (partial) + 1 new gap found** | G1, G4, G5 (3/5 prompts) | See "2026-07-28 sizing pass" below — `ChartCard`/`MetricCard` ficha fixed and confirmed in a real re-run; kanban `TaskCard`'s empty-space finding wasn't actually fixed (the re-run agent overrode the card's own cap via a local `style` prop instead — a new, worse gap, see below); `Asistente` 774px deferred. |
 | **Pagination** | New component | **High** | G3 | No export; consumer had to hand-build a page bar with `Button`. Needed by any list/table. |
 | **DataTable: sort / filter / paginate** | Component feature | **High** | G3 | Display-only today; realistic tables need at least sort + paginate. |
 | **Modal / Dialog** | New component | **High** | G6 | No real overlay primitive; `Asistente` is a `role="dialog"` shell, not a confirm/cancel dialog. Needs focus trap + Esc + `aria-modal`. |
@@ -133,12 +133,19 @@ derive a cap from:
   `MetricCard.spec.md`), so a pixel cap would be invented; sizing to content isn't. Fixes
   G4's "ficha `MetricCard` stretch full-width" regardless of the consumer's grid/flex choice.
   Reporting `MetricCard` (dashboards) is untouched — it's *meant* to fill its grid cell.
-- **`TaskCard` kanban** — **no code change.** It already self-caps (`width: fit-content` +
-  `max-width: 140px` on `.ds-task--kanban`, predates this pass). G1's "sits ≤140px in wide
-  columns → empty space" is the grid track being wider than the card, which no component-side
-  change can fix — it's the consumer's grid column sizing (e.g. size kanban columns to
-  content instead of `1fr`). Documented as a **consumer/composition responsibility**, not a
-  kit gap.
+- **`TaskCard` kanban** — **no code change**, reasoned as a consumer/composition
+  responsibility (it already self-caps via `width: fit-content` + `max-width: 140px` on
+  `.ds-task--kanban`). **The 2026-07-28 G1 re-run shows this reasoning wasn't enough on its
+  own:** the agent didn't size the grid column to the card — it passed
+  `style={{ maxWidth: "100%", width: "100%" }}` straight to `TaskCard`
+  (`alejandria-harness/src/App.tsx:290`), which overrides the component's own cap (inline
+  style beats any class rule) so the card stretches to fill the still-wide `1fr` column. Visually
+  this reads as "fixed" (no empty space) but it's a fidelity regression, not a fix — see
+  [eval/results/2026-07-28-sizing.md](./eval/results/2026-07-28-sizing.md) correction. **New gap,
+  not yet fixed:** need either a new anti-example pair (local `style`/`className` override
+  defeating a shipped component's calibrated cap — distinct from §7, which assumes no cap exists)
+  or a harder guard in `TaskCard` itself (e.g. not merging `width`/`maxWidth` from an incoming
+  `style` prop).
 - **`Asistente` 774px** — deferred, per `next-steps.md`, to a second pass (biggest, most
   design-risky of the four).
 
