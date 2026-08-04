@@ -29,31 +29,33 @@ keywords:
   - TaskVariant
   - variant
   - kanban
+  - resumen
 tags:
   - data-display
   - cards
   - presentational
   - molecule
 
-last_reviewed: 2026-07-06
+last_reviewed: 2026-08-04
 ---
 
 # TaskCard
 
 ## Purpose
 
-Presenta una tarea operativa con identificador, estado, título, descripción y metadatos en consolas del Alejandria UI Kit, alineada con la sección **TARJETAS** del PDF de referencia.
+Presenta una tarea operativa con identificador, estado, título, descripción, metadatos, creador y fechas en consolas del Alejandria UI Kit, alineada con la sección **TARJETAS** del PDF de referencia.
 
 Describe:
 
 - **Responsabilidad principal:** mostrar el resumen de una tarea (identificador, estado, título, contexto) con codificación visual por tono mediante el acento de esquina superior derecha.
 - **Problema que resuelve:** unificar la estructura de tarjetas de tarea en grids de consola sin acoplar lógica de negocio, navegación ni acciones embebidas.
-- **Alcance:** componente presentacional basado en `<article>` con dos variantes visuales (`default`, `kanban`) definidas en PDF TARJETAS p. 3. **No incluye visualización de progreso.**
+- **Alcance:** componente presentacional basado en `<article>` con tres variantes visuales (`default`, `kanban`, `resumen`) definidas en PDF TARJETAS p. 3. **No incluye visualización de progreso.**
 
 **Referencia visual canónica:** `knowledge/references/design-reference.pdf` — sección TARJETAS (p. 3). El PDF es la única fuente de verdad para layout, proporciones y jerarquía visual.
 
 - La variante **Full TaskCard** (`variant="default"`) es la implementación canónica (sección superior del PDF).
-- La variante **Kanban TaskCard** (`variant="kanban"`) es una presentación compacta alternativa del mismo componente (sección inferior del PDF).
+- La variante **Kanban TaskCard** (`variant="kanban"`) es una presentación compacta alternativa del mismo componente ("Visualización Kanban" del PDF).
+- La variante **Resumen TaskCard** (`variant="resumen"`) es la presentación mínima ("Visualización Resumen" del PDF): solo identificador, estado y título.
 - Las nuevas variantes futuras deben heredar el mismo lenguaje visual; solo adaptan layout, no redefinen la identidad del componente.
 
 Exclude:
@@ -72,11 +74,12 @@ Documenta los comportamientos públicos en los que el consumidor puede confiar.
 ## This component guarantees
 
 - Renderizado como `<article>` con clases `ds-task`, `ds-task--{tone}` y `ds-task--{variant}`.
-- Acento de esquina superior derecha obligatorio en `variant="default"` vía `.ds-task::before`, coloreado por `--task-accent` según `tone`. **No se renderiza en `variant="kanban"`.**
+- Esquina superior derecha con chaflán (`clip-path`) obligatorio en `variant="default"`. Dentro del corte flota un triángulo de color vía `.ds-task::before` (coloreado por `--task-accent`) para `tone="success"|"warning"|"danger"`. **Para `tone="neutral"` el chaflán queda vacío (sin triángulo) — así se ve en la tercera card de ejemplo de PDF TARJETAS p.3, que no tiene ningún dibujo de triángulo.** El chaflán y el acento no se renderizan en absoluto en `variant="kanban"` o `variant="resumen"`.
 - `code` y `title` obligatorios en la firma de props; siempre renderizados en el DOM.
 - `status` por defecto `"En espera"`; `meta` por defecto `[]`; `progress` por defecto `0`; `tone` por defecto `"neutral"`; `variant` por defecto `"default"`.
-- **Variante `default` (canónica):** jerarquía identificador → estado → título → descripción → metadatos; `max-width: 120px`; `padding: 7.5px 5px`; `gap: 8px` (display scale).
-- **Variante `kanban`:** layout compacto con proporciones apaisadas; solo muestra título, hasta dos entradas de `meta`, identificador y estado; no renderiza `description`; `max-width: 140px`; `padding: 5px`; `gap: 2.5px` (display; CSS prior 280/10/5 @2×).
+- **Variante `default` (canónica):** jerarquía identificador → estado → título → descripción → metadatos → detalles (creador, fechas); `max-width: 170px`; `padding: 7.5px 5px`; `gap: 8px` (display scale; ancho medido contra la coordenada vectorial exacta del PDF, no una captura — antes 120px, nunca medido). El bloque de detalles (`creator`/`startDate`/`endDate`) solo se renderiza en `default`, con un gap mayor respecto a `meta` (`.ds-task__details { margin-top: 10px }`, medido contra el PDF — el salto entre "Causa Corion" y "Dependencia" es ~5.5× el gap normal entre líneas).
+- **Variante `kanban`:** layout compacto con proporciones apaisadas; solo muestra título, hasta dos entradas de `meta`, identificador y estado; no renderiza `description`; `max-width: 225px`; `padding: 5px`; `gap: 2.5px` (display; medido contra la coordenada vectorial exacta del PDF TARJETAS p.3 — antes 140px).
+- **Variante `resumen`:** layout mínimo; solo identificador, estado y título; no renderiza `description` ni `meta`; `max-width: 225px` (misma clase de ancho que `kanban`); `padding: 5px`; `gap: 2.5px` (display).
 - **Sin visualización de progreso:** no se renderiza barra, porcentaje ni espacio reservado para avance.
 - Fusión de `className` externa y `style` externo en el `<article>` raíz.
 - Repaso de atributos nativos de `HTMLAttributes<HTMLElement>` al `<article>` vía `...props` (`id`, `data-*`, `aria-*`, etc.).
@@ -155,7 +158,7 @@ Tipos exportados:
 - `TaskCard` — componente funcional.
 - `TaskCardProps` — props del componente.
 - `TaskTone` — unión de tonos semánticos para la prop `tone`.
-- `TaskVariant` — unión de variantes visuales (`"default"` | `"kanban"`).
+- `TaskVariant` — unión de variantes visuales (`"default"` | `"kanban"` | `"resumen"`).
 
 ---
 
@@ -164,13 +167,16 @@ Tipos exportados:
 | Prop | Type | Default | Required | Description |
 |------|------|----------|----------|-------------|
 | `code` | `string` | — | sí | Identificador de la tarea. Renderizado en `<span class="ds-task__code">` dentro del encabezado (primer nivel de jerarquía). |
-| `title` | `string` | — | sí | Título principal de la tarea. Renderizado en `<h3 class="ds-task__title">`. Mayúsculas vía CSS (`text-transform: uppercase`). |
-| `status` | `string` | `"En espera"` | no | Estado operativo. Renderizado en `<span class="ds-task__status">` como bloque independiente bajo el encabezado. Source Code Bold 9px display (CSS status was 18px @2× → 9px) `#ffffff`, mayúsculas vía CSS. |
-| `description` | `string` | — | no | Información secundaria. Renderizada en `<p class="ds-task__description">` solo si es truthy. |
-| `meta` | `string[]` | `[]` | no | Metadatos adicionales. Cada elemento renderizado como `<span>` en `.ds-task__meta` si el arreglo no está vacío. |
+| `title` | `string` | — | sí | Título principal de la tarea. Renderizado en `<h3 class="ds-task__title">`. Montserrat Light 9px display `#8a8b87`, sin mayúsculas (el texto del PDF está en minúsculas/oración, no aplica `text-transform`). |
+| `status` | `string` | `"En espera"` | no | Estado operativo. Renderizado en `<span class="ds-task__status">` como bloque independiente bajo el encabezado. Source Code Bold 10px display (PDF 20pt @2×) `#ffffff`, mayúsculas vía CSS (coincide con el texto del PDF, que ya está escrito en mayúsculas). |
+| `description` | `string` | — | no | Información secundaria. Renderizada en `<p class="ds-task__description">` solo si es truthy y `variant="default"`. **No corresponde a un campo de la card canónica del PDF** (ver Known Limitations) — es una generalización deliberada de la API, no una omisión. |
+| `meta` | `string[]` | `[]` | no | Metadatos adicionales. Cada elemento renderizado como `<span>` en `.ds-task__meta` si el arreglo no está vacío. En la card canónica del PDF corresponde a `Subactividad`/`Causa Corion`; no tiene límite de entradas salvo en `kanban` (máx. 2). |
+| `creator` | `string` | — | no | Entidad/dependencia que creó la tarea. Renderizado en `.ds-task__details` solo si `variant="default"`. Corresponde al callout "Creador" de PDF TARJETAS p.3, que señala la línea que en el ejemplo dice literalmente `"Dependencia"`. |
+| `startDate` | `string` | — | no | Fecha de inicio, como texto completo ya formateado (p. ej. `"Inicio 21/04/2022"` — el componente no antepone ninguna etiqueta). Renderizado en `.ds-task__details` solo si `variant="default"`. Corresponde al callout "Fecha" de PDF TARJETAS p.3. |
+| `endDate` | `string` | — | no | Fecha de vencimiento, mismo formato/comportamiento que `startDate` (p. ej. `"Vencimiento 23/07/2022"`). Renderizado en `.ds-task__details` solo si `variant="default"`. |
 | `progress` | `number` | `0` | no | **Legacy — sin salida visual.** Conservada por compatibilidad de API; el componente no renderiza indicadores de avance. |
 | `tone` | `TaskTone` | `"neutral"` | no | Tono semántico. Aplica clase `ds-task--{tone}` y define `--task-accent` para el acento de esquina superior derecha. |
-| `variant` | `TaskVariant` | `"default"` | no | Variante visual. `"default"` = Full TaskCard canónica; `"kanban"` = presentación compacta PDF. |
+| `variant` | `TaskVariant` | `"default"` | no | Variante visual. `"default"` = Full TaskCard canónica; `"kanban"` = presentación compacta PDF; `"resumen"` = presentación mínima PDF. |
 | `className` | `string` | — | no | Clases adicionales fusionadas con `ds-task`, el modificador de tono y el modificador de variante en el `<article>` raíz. |
 | `style` | `CSSProperties` | — | no | Estilos inline en el `<article>` raíz. |
 | `...props` | `HTMLAttributes<HTMLElement>` | — | no | Atributos nativos del `<article>` (`id`, `data-*`, `aria-*`, etc.). |
@@ -179,7 +185,7 @@ Tipos exportados:
 
 | Value | Description |
 |-------|-------------|
-| `"neutral"` | Valor por defecto. Clase `ds-task--neutral`. `--task-accent: #c1c1c1` en el acento de esquina. |
+| `"neutral"` | Valor por defecto. Clase `ds-task--neutral`. **Sin triángulo de acento** — el chaflán queda vacío, coincide con el ejemplo gris de PDF TARJETAS p.3 (que no tiene ningún triángulo dibujado). Antes de 2026-08-04 renderizaba un triángulo gris `#c1c1c1`, que no existe en el PDF. |
 | `"success"` | Clase `ds-task--success`. `--task-accent: var(--ds-color-green)`. |
 | `"warning"` | Clase `ds-task--warning`. `--task-accent: var(--ds-color-amber)`. |
 | `"danger"` | Clase `ds-task--danger`. `--task-accent: var(--ds-color-danger)`. |
@@ -188,7 +194,7 @@ Tipos exportados:
 
 # Variants
 
-El PDF TARJETAS (p. 1) define dos presentaciones del mismo componente. Ambas comparten tipografía, colores, tokens y ausencia de progreso. El acento de esquina aplica solo a `default`. Las variantes **solo adaptan layout y densidad informativa**.
+El PDF TARJETAS (p. 3) define tres presentaciones del mismo componente. Las tres comparten tipografía, colores, tokens y ausencia de progreso. El chaflán y el acento de esquina aplican solo a `default`. Las variantes **solo adaptan layout y densidad informativa**.
 
 ## Default (`variant="default"`) — canónica
 
@@ -196,33 +202,45 @@ Implementación de referencia. Corresponde a la sección superior del PDF.
 
 | Aspecto | Especificación |
 |---------|----------------|
-| Jerarquía | Identificador → estado → título → descripción → metadatos |
-| Proporciones | `max-width: 120px`, `width: fit-content`, gap display `8px` |
+| Jerarquía | Identificador → estado → título → descripción → metadatos → detalles (creador, fechas) |
+| Proporciones | `max-width: 170px`, `width: fit-content`, gap display `8px` |
 | Padding | `7.5px 5px` display (PDF 15/10 @2×) |
-| Contenido | Renderiza `description` y todas las entradas de `meta` cuando están presentes |
-| Acento | `.ds-task::before` obligatorio en `default`, color según `tone` |
+| Contenido | Renderiza `description`, todas las entradas de `meta`, y `creator`/`startDate`/`endDate` cuando están presentes — es la única variante que renderiza estos tres |
+| Acento | `.ds-task::before` obligatorio en `default` para `tone` `success`/`warning`/`danger`; sin triángulo (solo chaflán vacío) en `neutral` |
 
 ## Kanban (`variant="kanban"`) — compacta
 
-Presentación alternativa compacta. Corresponde a la sección inferior del PDF (Visualización Kanban).
+Presentación alternativa compacta. Corresponde a "Visualización Kanban" del PDF.
 
 | Aspecto | Especificación |
 |---------|----------------|
 | Jerarquía | Título → metadatos (máx. 2) → identificador → estado |
-| Proporciones | `max-width: 140px` display, densidad reducida (`gap: 2.5px`), layout apaisado |
+| Proporciones | `max-width: 225px` display, densidad reducida (`gap: 2.5px`), layout apaisado |
 | Padding | `5px` display |
 | Contenido | Solo título, primeras dos entradas de `meta`, `code` y `status`; **no** renderiza `description` |
-| Acento | Sin acento de esquina (PDF Kanban) |
+| Acento | Sin acento de esquina ni chaflán (PDF Kanban) |
+
+## Resumen (`variant="resumen"`) — mínima
+
+Presentación más reducida. Corresponde a "Visualización Resumen" del PDF; comparte la clase de ancho de `kanban`.
+
+| Aspecto | Especificación |
+|---------|----------------|
+| Jerarquía | Identificador → estado → título |
+| Proporciones | `max-width: 225px` display (misma clase de ancho que `kanban`), `gap: 2.5px` |
+| Padding | `5px` display |
+| Contenido | Solo `code`, `status` y `title`; **no** renderiza `description` ni `meta`, aunque se provean |
+| Acento | Sin acento de esquina ni chaflán (PDF Resumen) |
 
 ## Tonos (`tone`)
 
 Cuatro tonos públicos mediante modificadores BEM y variable CSS local `--task-accent`.
 
-**Acento de esquina obligatorio:** `.ds-task::before` renderiza un triángulo recortado en la esquina superior derecha (`19×19px` display, rotado 45°). Es un elemento de identidad visual del PDF y no debe eliminarse.
+**Chaflán + acento de esquina obligatorios en `default`:** la esquina superior derecha tiene un corte diagonal (`clip-path`, chaflán 31px display, en `.ds-task--default::after`) y `.ds-task::before` renderiza un triángulo de color (`24×24px` display) que flota *dentro* de ese corte con un pequeño gap respecto al borde del chaflán — no queda pegado al borde de la tarjeta. Es un elemento de identidad visual del PDF (TARJETAS p. 3, "Indicador de estado") y no debe eliminarse ni volver a implementarse como triángulo pegado sin chaflán. El chaflán vive en `.ds-task--default::after` (no en `.ds-task--default` directamente) precisamente para que su `clip-path` no recorte también a `.ds-task::before` — `clip-path` en un elemento recorta todo su subárbol de renderizado, pseudo-elementos incluidos.
 
 | Tone | Acento (`--task-accent`) | Regla CSS |
 |------|--------------------------|-----------|
-| `neutral` | `#c1c1c1` | `.ds-task--neutral` |
+| `neutral` | ninguno — `.ds-task--neutral::before` oculta el triángulo | `.ds-task--neutral` |
 | `success` | `var(--ds-color-green)` | `.ds-task--success` |
 | `warning` | `var(--ds-color-amber)` | `.ds-task--warning` |
 | `danger` | `var(--ds-color-danger)` | `.ds-task--danger` |
@@ -239,10 +257,13 @@ El tono codifica el estado semántico únicamente mediante el color del acento d
 |--------|-------------|
 | Default variant | `variant="default"`. Tarjeta completa canónica. |
 | Kanban variant | `variant="kanban"`. Tarjeta compacta; omite `description` y limita `meta` a dos entradas. |
+| Resumen variant | `variant="resumen"`. Tarjeta mínima; omite `description` y `meta` por completo. |
 | With description | Solo en `variant="default"`. Cuando `description` es truthy, se muestra `.ds-task__description`. |
-| Without description | En `default`, el párrafo no se renderiza si es falsy. En `kanban`, nunca se renderiza. |
-| With meta | Cuando `meta.length > 0`, se muestra `.ds-task__meta`. En `kanban`, máximo dos `<span>`. |
+| Without description | En `default`, el párrafo no se renderiza si es falsy. En `kanban` y `resumen`, nunca se renderiza. |
+| With meta | Cuando `meta.length > 0`, se muestra `.ds-task__meta` en `default`/`kanban`. En `kanban`, máximo dos `<span>`. En `resumen`, nunca se renderiza aunque `meta` tenga entradas. |
 | Without meta | Cuando `meta` está vacío, el bloque de metadatos no se renderiza. |
+| With details | Solo en `variant="default"`. Cuando al menos una de `creator`/`startDate`/`endDate` es truthy, se muestra `.ds-task__details` con las que estén presentes (cada una es independiente; no hace falta proveer las tres). |
+| Without details | Cuando ninguna de las tres está presente, o en `kanban`/`resumen` (se ignoran aunque se provean), el bloque no se renderiza. |
 
 ---
 
@@ -259,19 +280,30 @@ Jerarquía canónica, de arriba a abajo:
 | 3 | `h3.ds-task__title` | `title` |
 | 4 | `p.ds-task__description` | `description` (opcional) |
 | 5 | `div.ds-task__meta` | `meta` (opcional) |
+| 6 | `div.ds-task__details` | `creator`, `startDate`, `endDate` (opcionales, independientes entre sí) |
 
 ## Kanban TaskCard — `variant="kanban"`
 
-Jerarquía compacta PDF, de arriba a abajo:
+Jerarquía compacta PDF, de arriba a abajo (coincide con el orden real del DOM en `TaskCard.tsx`):
 
 | Nivel | Elemento DOM | Prop |
 |-------|--------------|------|
-| 1 | `h3.ds-task__title` | `title` |
-| 2 | `div.ds-task__meta` (máx. 2 `<span>`) | `meta` (opcional) |
-| 3 | `header.ds-task__header` → `.ds-task__code` | `code` |
-| 4 | `span.ds-task__status` | `status` |
+| 1 | `header.ds-task__header` → `.ds-task__code` | `code` |
+| 2 | `span.ds-task__status` | `status` |
+| 3 | `h3.ds-task__title` | `title` |
+| 4 | `div.ds-task__meta` (máx. 2 `<span>`) | `meta` (opcional) |
 
-El acento de esquina superior derecha (`.ds-task::before`) aplica solo a `variant="default"` y no forma parte del flujo de contenido.
+## Resumen TaskCard — `variant="resumen"`
+
+Jerarquía mínima PDF, de arriba a abajo:
+
+| Nivel | Elemento DOM | Prop |
+|-------|--------------|------|
+| 1 | `header.ds-task__header` → `.ds-task__code` | `code` |
+| 2 | `span.ds-task__status` | `status` |
+| 3 | `h3.ds-task__title` | `title` |
+
+El chaflán de esquina y el acento de color (`.ds-task::before`) aplican solo a `variant="default"` y no forman parte del flujo de contenido.
 
 No se incluye acción embebida ni visualización de progreso. Las acciones pertenecen a componentes hermanos (`Button`) en el patrón Task Board.
 
@@ -333,7 +365,7 @@ Document only responsive behavior implemented by the component itself.
 
 ## Children
 
-- No admite `children`. Solo contenido derivado de `code`, `title`, `status`, `description` y `meta`.
+- No admite `children`. Solo contenido derivado de `code`, `title`, `status`, `description`, `meta`, `creator`, `startDate` y `endDate`.
 
 ## Siblings
 
@@ -369,12 +401,14 @@ Document only responsive behavior implemented by the component itself.
 ## Labels
 
 - `code`: identificador operativo (p. ej. `"#1232142342 - 3408473"`). Renderizado en mono mayúsculas vía CSS.
-- `title`: nombre breve de la tarea (p. ej. `"Verificar zona costera"`). Mayúsculas vía CSS en `.ds-task__title`.
-- `status`: estado legible (p. ej. `"En espera"`, `"Asignada"`, `"Pendiente"`, `"Monitoreo"`). Sin formato automático.
+- `title`: nombre breve de la tarea (p. ej. `"Verificar zona costera"`). **Sin mayúsculas automáticas** — el PDF lo muestra en oración/minúsculas.
+- `status`: estado legible (p. ej. `"En espera"`, `"Asignada"`, `"Pendiente"`, `"Monitoreo"`). Mayúsculas vía CSS (el PDF ya lo muestra en mayúsculas).
 
 ## Values
 
-- `meta[]`: strings breves preformateados (p. ej. `"D+02"`, `"Prioridad alta"`). Sin localización ni formato automático.
+- `meta[]`: strings breves preformateados (p. ej. `"D+02"`, `"Prioridad alta"`). Sin localización ni formato automático — **sin mayúsculas automáticas** desde 2026-08-04 (el PDF muestra estas líneas en oración/minúsculas, mismo rol tipográfico que `title`).
+- `creator`: nombre de la entidad/dependencia (p. ej. `"Dependencia 4"`). Texto libre, sin formato automático.
+- `startDate` / `endDate`: texto ya formateado por el consumidor, incluyendo la etiqueta (p. ej. `"Inicio 21/04/2022"`, `"Vencimiento 23/07/2022"`) — el componente no antepone "Inicio"/"Vencimiento" automáticamente, a diferencia de lo que su nombre podría sugerir.
 
 ## Icons
 
@@ -397,8 +431,25 @@ import { TaskCard } from "@alejandria/ui-kit";
   code="#1232142342 - 3408473"
   status="En espera"
   title="Tareas investigativas"
-  description="Resumen minimo e indispensable de la tarea a realizar."
-  meta={["Subactividad", "Causa Corion", "Dependencia"]}
+  meta={["Subactividad", "Causa Corion"]}
+  creator="Dependencia"
+  startDate="Inicio 21/04/2022"
+  endDate="Vencimiento 23/07/2022"
+  tone="danger"
+/>
+```
+
+## With description
+
+```tsx
+import { TaskCard } from "@alejandria/ui-kit";
+
+<TaskCard
+  code="#1232142342 - 3408473"
+  status="En espera"
+  title="Tareas investigativas"
+  description="Cruce de datos satelitales y dependencia policial."
+  meta={["Subactividad", "Causa Corion"]}
   tone="danger"
 />
 ```
@@ -527,14 +578,13 @@ Only include tokens directly consumed by the component.
 | `#ffffff` | color | `.ds-task__code`, `.ds-task__title`, `.ds-task__status` |
 | `#8a8b87` | color | `.ds-task__description`, `.ds-task__meta` |
 | `--ds-radius-xs` | radius | `border-radius` de `.ds-task` |
-| `--ds-font-mono` | typography | `.ds-task__code`, `.ds-task__status`, `.ds-task__meta` |
-| `--ds-font-display` | typography | `.ds-task__title` |
-| `--ds-font-body` | typography | `.ds-task__description` |
+| `--ds-font-mono` | typography | `.ds-task__code`, `.ds-task__status` |
+| `--ds-font-body` | typography | `.ds-task__title`, `.ds-task__description`, `.ds-task__meta` (family corrected 2026-08-04, was `--ds-font-mono`) |
 | `--ds-color-green` | color | `--task-accent` en `.ds-task--success` |
 | `--ds-color-amber` | color | `--task-accent` en `.ds-task--warning` |
 | `--ds-color-danger` | color | `--task-accent` en `.ds-task--danger` |
 
-Nota: `--task-accent` alimenta `.ds-task::before` solo en `variant="default"`. Tipografía refinada: identificador 7px/400; estado 9px/700; título 8px/300; descripción 8px/300; meta 7px/400 (display). `gap: 8px` en default.
+Nota: `--task-accent` alimenta `.ds-task::before` solo en `variant="default"` y solo para `tone` `success`/`warning`/`danger` (`neutral` no renderiza triángulo). Tipografía confirmada contra los text-spans reales del PDF (2026-08-04): identificador 10px/700; estado 10px/700; título 9px/300 sin mayúsculas; meta 9px/300 sin mayúsculas (mismo rol "Párrafo" que título — antes usaba fuente mono y mayúsculas, ambos incorrectos); `creator`/`startDate`/`endDate` (`.ds-task__details`) mismo rol "Párrafo" que meta/título — 9px/300 sin mayúsculas, con `margin-top: 10px` extra para el gap de grupo medido contra el PDF; descripción 8px/300 (campo sin equivalente directo en el PDF, ver Known Limitations). `gap: 8px` en default.
 
 ---
 
@@ -561,7 +611,7 @@ packages/ui/src/components/TaskCard.tsx
 ## Dependencies
 
 - `cn()` from `packages/ui/src/utils/cn.ts`
-- `styles.css` (clases `ds-task`, `ds-task::before`, `ds-task--{tone}`, `ds-task--{variant}`, `ds-task__header`, `ds-task__code`, `ds-task__status`, `ds-task__title`, `ds-task__description`, `ds-task__meta`)
+- `styles.css` (clases `ds-task`, `ds-task::before`, `ds-task--{tone}`, `ds-task--{variant}`, `ds-task--default::after` (fondo/borde/chaflán del corte, capa separada de `::before`), `ds-task__header`, `ds-task__code`, `ds-task__status`, `ds-task__title`, `ds-task__description`, `ds-task__meta`, `ds-task__details`)
 
 ## DOM Structure
 
@@ -569,25 +619,40 @@ packages/ui/src/components/TaskCard.tsx
 
 ```text
 article.ds-task.ds-task--{tone}.ds-task--default
-├── ::before (acento de esquina superior derecha)
+├── ::after (fondo + borde + chaflán de esquina, z-index: -1 — capa separada del acento)
+├── ::before (acento de esquina superior derecha, flota sobre el chaflán de ::after)
 ├── header.ds-task__header
 │   └── span.ds-task__code
 ├── span.ds-task__status
 ├── h3.ds-task__title
 ├── p.ds-task__description (solo si description es truthy)
-└── div.ds-task__meta (solo si meta.length > 0)
-    └── span (× meta.length)
+├── div.ds-task__meta (solo si meta.length > 0)
+│   └── span (× meta.length)
+└── div.ds-task__details (solo si creator/startDate/endDate — al menos una truthy)
+    ├── span (creator, solo si truthy)
+    ├── span (startDate, solo si truthy)
+    └── span (endDate, solo si truthy)
 ```
 
 ### `variant="kanban"`
 
 ```text
 article.ds-task.ds-task--{tone}.ds-task--kanban
-├── h3.ds-task__title
-├── div.ds-task__meta (solo si meta.length > 0; máx. 2 span)
 ├── header.ds-task__header
 │   └── span.ds-task__code
-└── span.ds-task__status
+├── span.ds-task__status
+├── h3.ds-task__title
+└── div.ds-task__meta (solo si meta.length > 0; máx. 2 span)
+```
+
+### `variant="resumen"`
+
+```text
+article.ds-task.ds-task--{tone}.ds-task--resumen
+├── header.ds-task__header
+│   └── span.ds-task__code
+├── span.ds-task__status
+└── h3.ds-task__title
 ```
 
 ---
@@ -598,6 +663,7 @@ article.ds-task.ds-task--{tone}.ds-task--kanban
 - `meta` usa `item` como `key`; etiquetas duplicadas generan advertencias de React.
 - No expone `children`, acciones embebidas, navegación ni estado interactivo.
 - No hay estado visual `selected` (`#060606` del PDF); requeriría API adicional.
+- **`description` no tiene un campo equivalente en la card canónica del PDF.** Extrayendo los text-spans reales (PyMuPDF, 2026-08-04), el contenido pasa directo de título/estado a `Subactividad` — no hay párrafo intermedio en la card. El texto usado originalmente como `description` en las stories era en realidad una leyenda de diseño de otra parte de la página TARJETAS, no contenido de la card (ya corregido en las stories — ver `WithDescription`). **Decisión confirmada 2026-08-04: se mantiene como generalización deliberada de la API**, no como error a corregir; los consumidores que necesiten un resumen adicional pueden usarla aunque el PDF no la muestre.
 - Sin tests unitarios ni de integración en el repositorio.
 
 ---
@@ -618,3 +684,7 @@ article.ds-task.ds-task--{tone}.ds-task--kanban
 | 0.1.0 | Refinamiento visual Phase 1 (PDF TARJETAS): fondo `#2a2927`, borde `#c1c1c1`, tipografía PDF, Storybook con canvas oscuro; JSDoc en fuente. |
 | 0.1.0 | Corrección PDF: eliminada visualización de progreso; restaurado acento de esquina obligatorio; jerarquía identificador → estado → título → descripción → meta; `progress` legacy sin salida visual. |
 | 0.1.0 | Variantes `default` (Full TaskCard canónica) y `kanban` (compacta PDF); stories `Default` y `Kanban`; proporciones `max-width` y layout por variante. |
+| 0.1.0 | Pasada de fidelidad visual contra PDF TARJETAS p. 3, primer intento (medición pixel-level sobre captura): chaflán real (`clip-path`) en `default`, `kanban` `max-width` 140px→159px, nueva variante `resumen`, DOM de `kanban` documentado correctamente (`code → status → title → meta`). |
+| 0.1.0 | Pasada de fidelidad visual, corrección same-day: el `clip-path` del chaflán vivía en `.ds-task--default` junto con `::before`, y `clip-path` recorta todo el subárbol de un elemento — el acento nunca se veía. Movido el fondo/borde/chaflán a `.ds-task--default::after` (capa separada, `z-index:-1`) para que `::before` no quede recortado. Re-medidos chaflán/acento/anchos contra las coordenadas vectoriales exactas del PDF (PyMuPDF, no una captura): chaflán 31px, acento 24×24px, `default` `max-width` 120px→170px (nunca medido antes), `kanban`/`resumen` `max-width` →225px. La regla de calibración ÷2 (`specs/README.md`) sigue vigente; lo que cambió es la fuente del número en pt, no la regla. |
+| 0.1.0 | Pasada de fidelidad visual, tercera corrección same-day (feedback de usuario: card muy baja, `neutral` con punta gris incorrecta): extraídos los text-spans reales del PDF (fuente, tamaño, color exactos por PyMuPDF) en vez de asumir la taxonomía tipográfica. Corregido `.ds-task__code` (7px/400/line-height literal `0.2` → 10px/700/`--ds-leading-body`; el `0.2` era un valor atípico frente a todo el resto del archivo y aplastaba la caja de línea — causa principal de "necesita ser más alto"), `.ds-task__status` (mismo fix de line-height, 9px→10px), `.ds-task__title` (8px→9px, quitado `text-transform: uppercase` — el PDF no lo tiene en mayúsculas), `.ds-task__meta` (fuente mono→`--ds-font-body`, 7px→9px, quitado uppercase — mismo rol "Párrafo" que título). `tone="neutral"` deja de renderizar el triángulo de acento (antes gris `#c1c1c1`): la tercera card de ejemplo del PDF no tiene ningún triángulo dibujado, solo el chaflán vacío. Detectado (no resuelto en este paso): `description` no corresponde a ningún campo real de la card en el PDF; el agrupamiento visual del bloque `meta` (gap mayor entre Causa Corion→Dependencia) tampoco se reproducía. |
+| 0.1.0 | Pasada de fidelidad visual, cuarta corrección same-day (a pedido de usuario: mantener `description` y modelar los campos que señalan los callouts "Creador"/"Fecha" del PDF con props tipadas, no como strings sueltos en `meta`). Agregadas `creator`, `startDate`, `endDate` a `TaskCardProps`, renderizadas en un nuevo `div.ds-task__details` — solo en `variant="default"`, con `margin-top: 10px` que reproduce el gap de grupo medido en el PDF entre `meta` y este bloque (antes no reproducido, ver limitación cerrada arriba). Corregido un bug real detectado en el camino: `description` se filtraba a `variant="kanban"` si el consumidor la pasaba, contradiciendo el contrato documentado ("`kanban` no renderiza `description`") — ahora gateado a `variant === "default"` explícitamente. Actualizadas las stories: `canonicalTask` ya no incluye `description` (no es contenido real de la card canónica) ni los cinco `meta` originales (los tres últimos ahora son `creator`/`startDate`/`endDate`); nueva story `WithDescription` para no perder cobertura de ese campo. `description` queda confirmada como generalización deliberada de la API (ver Known Limitations), no como pendiente de eliminar. |

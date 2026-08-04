@@ -7,9 +7,9 @@ import { cn } from "../utils/cn";
 export type TaskTone = "neutral" | "success" | "warning" | "danger";
 
 /**
- * @description Variantes visuales de `TaskCard` definidas en PDF TARJETAS (p. 1)
+ * @description Variantes visuales de `TaskCard` definidas en PDF TARJETAS (p. 3)
  */
-export type TaskVariant = "default" | "kanban";
+export type TaskVariant = "default" | "kanban" | "resumen";
 
 /**
  * @description Props públicas del componente `TaskCard`
@@ -19,6 +19,9 @@ export interface TaskCardProps extends HTMLAttributes<HTMLElement> {
   title: string;
   status?: string;
   description?: string;
+  creator?: string;
+  startDate?: string;
+  endDate?: string;
   meta?: string[];
   progress?: number;
   tone?: TaskTone;
@@ -26,7 +29,7 @@ export interface TaskCardProps extends HTMLAttributes<HTMLElement> {
 }
 
 /**
- * @description Presenta una tarea operativa según PDF TARJETAS (`default` completa o `kanban` compacta)
+ * @description Presenta una tarea operativa según PDF TARJETAS (`default` completa, `kanban` compacta o `resumen` mínima)
  * @param {TaskCardProps} props - Propiedades de la tarjeta de tarea
  * @returns {JSX.Element} Artículo semántico con la estructura fija de la tarjeta
  */
@@ -35,6 +38,9 @@ export function TaskCard({
   title,
   status = "En espera",
   description,
+  creator,
+  startDate,
+  endDate,
   meta = [],
   progress: _progress = 0,
   tone = "neutral",
@@ -43,11 +49,15 @@ export function TaskCard({
   style,
   ...props
 }: TaskCardProps) {
+  const isDefault = variant === "default";
   const isKanban = variant === "kanban";
-  const kanbanMeta = meta.slice(0, 2);
+  const isResumen = variant === "resumen";
+  const visibleMeta = isKanban ? meta.slice(0, 2) : meta;
+  const hasDetails = Boolean(creator || startDate || endDate);
   // width/maxWidth dropped from an incoming style prop: TaskCard's own calibrated
-  // max-width (.ds-task--kanban) is fidelity, not a default — a consumer stretching
-  // a wide grid column shouldn't be able to silently override it via inline style.
+  // width (fixed per variant, see .ds-task--default/kanban/resumen) is fidelity, not a
+  // default — a consumer stretching a wide grid column shouldn't be able to silently
+  // override it via inline style.
   const { width: _width, maxWidth: _maxWidth, ...safeStyle } = style ?? {};
 
   return (
@@ -56,38 +66,26 @@ export function TaskCard({
       style={safeStyle}
       {...props}
     >
-      {isKanban ? (
-        <>
-          <header className="ds-task__header">
-            <span className="ds-task__code">{code}</span>
-          </header>
-          <span className="ds-task__status">{status}</span>
-          <h3 className="ds-task__title">{title}</h3>
-          {kanbanMeta.length ? (
-            <div className="ds-task__meta">
-              {kanbanMeta.map((item) => (
-                <span key={item}>{item}</span>
-              ))}
-            </div>
-          ) : null}
-        </>
-      ) : (
-        <>
-          <header className="ds-task__header">
-            <span className="ds-task__code">{code}</span>
-          </header>
-          <span className="ds-task__status">{status}</span>
-          <h3 className="ds-task__title">{title}</h3>
-          {description ? <p className="ds-task__description">{description}</p> : null}
-          {meta.length ? (
-            <div className="ds-task__meta">
-              {meta.map((item) => (
-                <span key={item}>{item}</span>
-              ))}
-            </div>
-          ) : null}
-        </>
-      )}
+      <header className="ds-task__header">
+        <span className="ds-task__code">{code}</span>
+      </header>
+      <span className="ds-task__status">{status}</span>
+      <h3 className="ds-task__title">{title}</h3>
+      {isDefault && description ? <p className="ds-task__description">{description}</p> : null}
+      {!isResumen && visibleMeta.length ? (
+        <div className="ds-task__meta">
+          {visibleMeta.map((item) => (
+            <span key={item}>{item}</span>
+          ))}
+        </div>
+      ) : null}
+      {isDefault && hasDetails ? (
+        <div className="ds-task__details">
+          {creator ? <span>{creator}</span> : null}
+          {startDate ? <span>{startDate}</span> : null}
+          {endDate ? <span>{endDate}</span> : null}
+        </div>
+      ) : null}
     </article>
   );
 }

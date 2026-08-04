@@ -802,41 +802,77 @@
     box-sizing: border-box;
     color: var(--ds-color-white);
     display: grid;
-    overflow: hidden;
     position: relative;
-    width: fit-content;
+    /* width is set per-variant below as a fixed px value, not here: the PDF card is a rigid
+       rectangle regardless of content length (every example card is identically sized). Neither
+       `fit-content` nor `100%` survives a `width:fit-content` ancestor (e.g. a Storybook decorator)
+       without the same shrink-to-content circularity that made this go narrow twice already —
+       a hardcoded width sidesteps that ancestor-dependent resolution entirely. */
   }
 
+  /* corner indicator floats above the chamfer with a gap, it does not sit flush — PDF TARJETAS p.3.
+     Lives on .ds-task (not .ds-task--default) so .ds-task--default's own clip-path (the chamfer,
+     applied via ::after below) never clips this pseudo-element — clip-path on an element clips its
+     whole subtree including ::before, so the chamfer and the accent cannot share one clipped box. */
   .ds-task::before {
     background: var(--task-accent);
+    clip-path: polygon(100% 0, 100% 100%, 0 0);
     content: "";
-    height: 19px /* calibrated ÷2 */;
+    height: 24px /* calibrated ÷2 — PDF vector path, was 19px (screenshot estimate) */;
     position: absolute;
-    right: -9px;
-    top: -9px;
-    transform: rotate(45deg);
-    width: 19px /* calibrated ÷2 */;
+    right: 2px;
+    top: 2px;
+    width: 24px /* calibrated ÷2 — PDF vector path, was 19px (screenshot estimate) */;
+    z-index: 1;
   }
 
   .ds-task--default {
+    background: none;
+    border: none;
     gap: 8px /* calibrated ÷2 */;
-    max-width: 120px /* calibrated ÷2 */;
     padding: 7.5px 5px;
+    width: 170px /* calibrated ÷2 — PDF vector path (340pt @2×), was 120px (invented, never measured). Fixed `width`, not `max-width`: see comment on .ds-task for why fit-content/100% don't survive a width:fit-content ancestor. */;
+  }
+
+  /* the card's own background/border/chamfer live here, not on .ds-task--default itself, so the
+     chamfer's clip-path never clips ::before (see comment on .ds-task::before) */
+  .ds-task--default::after {
+    background: var(--ds-color-pdf-surface-warm);
+    border: var(--ds-border-width-hair) solid var(--ds-color-pdf-line);
+    border-radius: var(--ds-radius-xs);
+    bottom: 0;
+    clip-path: polygon(0 0, calc(100% - 31px) 0, 100% 31px, 100% 100%, 0 100%) /* chamfer calibrated ÷2 from PDF vector path (62.5pt @2×) */;
+    content: "";
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: -1;
   }
 
   .ds-task--kanban {
     gap: 2.5px;
-    max-width: 140px /* calibrated ÷2 */;
     padding: 5px;
+    width: 225px /* calibrated ÷2 — PDF vector path (450.8pt @2×), was 140px. Fixed `width`, see .ds-task--default. */;
   }
 
-  .ds-task--kanban::before {
+  .ds-task--resumen {
+    gap: 2.5px;
+    padding: 5px;
+    width: 225px /* calibrated ÷2 — PDF vector path (450.7pt @2×), same width class as kanban. Fixed `width`, see .ds-task--default. */;
+  }
+
+  .ds-task--kanban::before,
+  .ds-task--resumen::before {
     content: none;
     display: none;
   }
 
-  .ds-task--neutral {
-    --task-accent: var(--ds-color-pdf-line);
+  /* neutral = no active status color in the PDF (TARJETAS p.3, third/gray example card): the
+     chamfer notch stays, but nothing floats inside it — no gray triangle */
+  .ds-task--neutral::before {
+    content: none;
+    display: none;
   }
 
   .ds-task--success {
@@ -855,14 +891,18 @@
     display: block;
   }
 
+  /* PDF TARJETAS p.3 text extraction (exact font/size/color per span, not a screenshot estimate):
+     code + status are both SourceCodeVariable-Roman 20pt @2× #ffffff — same size and weight, only
+     status is bold in our render because the PDF's own "EN ESPERA" text is authored in caps, not
+     because the font differs. font-size 10px = 20pt @2× ÷2. */
   .ds-task__code {
     color: var(--ds-color-white);
     display: block;
     font-family: var(--ds-font-mono);
-    font-size: 7px;
-    font-weight: var(--ds-font-weight-regular);
+    font-size: 10px /* calibrated ÷2 — was 7px, PDF span is 20pt @2× same as status, not smaller */;
+    font-weight: var(--ds-font-weight-bold) /* was regular — PDF code text is bold white like status */;
     letter-spacing: var(--ds-tracking-none);
-    line-height: 0.2;
+    line-height: var(--ds-leading-body) /* was literal 0.2 — an outlier vs every other line-height in this file, squashed the line box */;
     text-transform: uppercase;
   }
 
@@ -870,22 +910,23 @@
     color: var(--ds-color-white);
     display: block;
     font-family: var(--ds-font-mono);
-    font-size: 9px;
+    font-size: 10px /* calibrated ÷2 — was 9px, PDF span is 20pt @2× */;
     font-weight: var(--ds-font-weight-bold);
     letter-spacing: var(--ds-tracking-none);
-    line-height: 0.2;
+    line-height: var(--ds-leading-body) /* was literal 0.2 — an outlier vs every other line-height in this file, squashed the line box */;
     text-transform: uppercase;
   }
 
+  /* title + meta are both PDF "Párrafo" role — Montserrat-Light 18pt #8a8b87, sentence case (no
+     text-transform in the PDF source text itself) */
   .ds-task__title {
     color: var(--ds-color-pdf-ink-muted);
     font-family: var(--ds-font-body);
-    font-size: 8px;
+    font-size: 9px /* calibrated ÷2 — was 8px, PDF span is 18pt @2× */;
     font-weight: var(--ds-font-weight-light);
     letter-spacing: var(--ds-tracking-none);
     line-height: var(--ds-leading-normal);
-    margin: 10px /* calibrated ÷2 */ 0 0 0;
-    text-transform: uppercase;
+    margin: 12px /* calibrated ÷2 — was 10px, measured gap to prior line is ~24.7pt @2× */ 0 0 0;
   }
 
   .ds-task__description {
@@ -900,17 +941,31 @@
   .ds-task__meta {
     color: var(--ds-color-pdf-ink-muted);
     display: grid;
-    font-family: var(--ds-font-mono);
-    font-size: 7px;
-    font-weight: var(--ds-font-weight-regular);
+    font-family: var(--ds-font-body) /* was --ds-font-mono — PDF meta lines are Montserrat-Light, not a mono font */;
+    font-size: 9px /* calibrated ÷2 — was 7px, PDF span is 18pt @2×, same "Párrafo" role as title */;
+    font-weight: var(--ds-font-weight-light) /* was regular — PDF span is Montserrat-Light */;
     gap: 2px /* calibrated ÷2 */;
     letter-spacing: var(--ds-tracking-none);
     line-height: var(--ds-leading-relaxed);
-    text-transform: uppercase;
   }
 
   .ds-task--default .ds-task__meta {
     gap: 2.5px;
+  }
+
+  /* creator + startDate + endDate — PDF TARJETAS p.3 callouts "Creador"/"Fecha" point at these as
+     a distinct group, separated from .ds-task__meta by a real gap (measured ~18px display between
+     "Causa Corion" and "Dependencia", vs ~3px between other consecutive lines) */
+  .ds-task__details {
+    color: var(--ds-color-pdf-ink-muted);
+    display: grid;
+    font-family: var(--ds-font-body);
+    font-size: 9px;
+    font-weight: var(--ds-font-weight-light);
+    gap: 2.5px;
+    letter-spacing: var(--ds-tracking-none);
+    line-height: var(--ds-leading-relaxed);
+    margin-top: 10px /* on top of .ds-task--default's own 8px grid gap ≈ measured 18px total */;
   }
 
   .ds-task--kanban .ds-task__title {
@@ -932,6 +987,21 @@
     font-size: 6.5px;
     gap: 1px;
     line-height: var(--ds-leading-label);
+  }
+
+  .ds-task--resumen .ds-task__title {
+    font-size: 9px;
+    line-height: var(--ds-leading-snug);
+  }
+
+  .ds-task--resumen .ds-task__code {
+    font-size: 6.5px;
+    line-height: var(--ds-leading-label);
+  }
+
+  .ds-task--resumen .ds-task__status {
+    font-size: 8px;
+    line-height: var(--ds-leading-snug);
   }
 
   .ds-investigation-card {

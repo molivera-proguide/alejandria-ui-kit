@@ -5,14 +5,10 @@ const canonicalTask = {
   code: "#1232142342 - 3408473",
   status: "En espera",
   title: "Tareas investigativas",
-  description: "Resumen minimo e indispensable de la tarea a realizar.",
-  meta: [
-    "Subactividad",
-    "Causa Corion",
-    "Dependencia",
-    "Inicio 21/04/2022",
-    "Vencimiento 23/07/2022"
-  ]
+  meta: ["Subactividad", "Causa Corion"],
+  creator: "Dependencia",
+  startDate: "Inicio 21/04/2022",
+  endDate: "Vencimiento 23/07/2022"
 };
 
 const meta = {
@@ -31,7 +27,7 @@ const meta = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["default", "kanban"]
+      options: ["default", "kanban", "resumen"]
     },
     tone: {
       control: "select",
@@ -97,4 +93,22 @@ export const Kanban: Story = {
       <TaskCard {...args} tone="neutral" status="Monitoreo" />
     </div>
   )
+};
+
+export const WithDescription: Story = {
+  args: {
+    ...canonicalTask,
+    description: "Cruce de datos satelitales y dependencia policial.",
+    tone: "danger"
+  }
+};
+
+export const Resumen: Story = {
+  args: {
+    variant: "resumen",
+    code: "#1232142342 - 3408473",
+    status: "En espera",
+    title: "Tareas investigativas",
+    tone: "neutral"
+  }
 };
