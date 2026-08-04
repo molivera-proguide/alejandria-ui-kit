@@ -1012,10 +1012,13 @@
     color: var(--ds-color-white);
     display: grid;
     gap: 6px /* calibrated ÷2 */;
-    max-width: 140px /* calibrated ÷2 */;
     padding: 7.5px 5px;
     position: relative;
-    width: fit-content;
+    /* fixed width, not fit-content/max-width — same fix as .ds-task, see its comment.
+       PDF vector path (get_drawings): card rect 330.3pt @2× → ÷2 = 165px, was 140px (invented,
+       never measured) — fit-content let action buttons wrap onto their own line whenever the
+       content didn't need the full 140px. */
+    width: 165px /* calibrated ÷2 — PDF vector path (330.3pt @2×) */;
   }
 
   .ds-investigation-card--with-utilities {
@@ -1073,7 +1076,7 @@
   .ds-investigation-card__title {
     color: var(--ds-color-white);
     font-family: var(--ds-font-mono);
-    font-size: 6.5pt;
+    font-size: 6.5px /* calibrated ÷2 — was "6.5pt": a literal CSS pt unit renders ~33% larger than px (1pt = 1.333px), the ÷2 rule's output is always a display px value */;
     font-weight: var(--ds-font-weight-light);
     letter-spacing: var(--ds-tracking-tight);
     line-height: var(--ds-leading-normal);
@@ -1097,7 +1100,7 @@
     color: var(--ds-color-white);
     display: block;
     font-family: var(--ds-font-body);
-    font-size: 7pt;
+    font-size: 7px /* calibrated ÷2 — was "7pt", see .ds-investigation-card__title */;
     font-weight: var(--ds-font-weight-bold);
     line-height: var(--ds-leading-snug);
     text-transform: uppercase;
@@ -1107,7 +1110,7 @@
     color: var(--ds-color-pdf-line);
     display: block;
     font-family: var(--ds-font-body);
-    font-size: 5pt;
+    font-size: 5px /* calibrated ÷2 — was "5pt", see .ds-investigation-card__title */;
     font-weight: var(--ds-font-weight-extralight);
     line-height: var(--ds-leading-normal);
   }
@@ -1123,7 +1126,7 @@
     border: none;
     cursor: pointer;
     font-family: var(--ds-font-body);
-    font-size: 5.5pt;
+    font-size: 5.5px /* calibrated ÷2 — was "5.5pt", see .ds-investigation-card__title */;
     font-weight: var(--ds-font-weight-bold);
     line-height: var(--ds-leading-none);
     padding: 2.5px 10px /* calibrated ÷2 */;
@@ -1141,22 +1144,27 @@
     opacity: 0.58;
   }
 
+  /* PDF TARJETAS p.4's own two-button example (get_drawings) shows "ACCIÓN A" hovered and
+     "ACCIÓN B" at rest, not two permanently different colors (confirmed by user against the
+     source design) — #494949 is the shared resting fill (--ds-color-pdf-action, matches "ACCIÓN
+     B"), #8a8b87 (--ds-color-pdf-ink-muted) is what hover looks like on "ACCIÓN A". Neither button
+     is transparent at rest, which rules out the old ghost-is-transparent treatment. */
   .ds-investigation-card__action--primary {
     background: var(--ds-color-pdf-action);
     color: var(--ds-color-white);
   }
 
   .ds-investigation-card__action--primary:hover:not(:disabled) {
-    background: var(--ds-color-pdf-action-hover);
+    background: var(--ds-color-pdf-ink-muted);
   }
 
   .ds-investigation-card__action--ghost {
-    background: transparent;
+    background: var(--ds-color-pdf-action);
     color: var(--ds-color-white);
   }
 
   .ds-investigation-card__action--ghost:hover:not(:disabled) {
-    background: var(--ds-color-white-a06);
+    background: var(--ds-color-pdf-ink-muted);
   }
 
   .ds-progress {

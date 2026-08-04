@@ -36,7 +36,7 @@ tags:
   - presentational
   - molecule
 
-last_reviewed: 2026-07-06
+last_reviewed: 2026-08-04
 ---
 
 # InvestigationCard
@@ -84,7 +84,7 @@ Documenta los comportamientos públicos en los que el consumidor puede confiar.
 - Define navegación ni enrutamiento por sí mismo.
 - Expone slots `children` ni contenido libre.
 - Aplica media queries ni breakpoints propios.
-- Usa las variantes `primary`/`ghost` del componente `Button` global (estilos PDF `#494949` son locales a esta tarjeta).
+- Usa las variantes `primary`/`ghost` del componente `Button` global (estilos PDF `#494949` en reposo, `#8a8b87` en hover, idénticos entre ambas variantes, son locales a esta tarjeta).
 
 ---
 
@@ -116,7 +116,7 @@ siempre seguir estas reglas.
 - Agrupar instancias en un grid CSS, como en `InvestigationCard.stories.tsx` → `GridExample`.
 - Proporcionar cuatro métricas para completar la cuadrícula 2×2 canónica del PDF.
 - Pasar `utilities` con `type: "edit" | "delete" | "close"` cuando la tarjeta requiera utilidades de esquina superior derecha.
-- Usar `actions` con `variant: "primary"` para la acción rellena (`#494949`) y `variant: "ghost"` para la acción de texto.
+- Usar `actions` con `variant: "primary"` o `variant: "ghost"` según la semántica de la acción — ambas se ven igual en todo estado (`#494949` en reposo, `#8a8b87` en `:hover`, fondo sólido, no transparente).
 - Usar `key={investigation.title}` o identificador estable al mapear listas.
 
 ---
@@ -191,7 +191,7 @@ Tipos exportados:
 | Field | Type | Default | Required | Description |
 |-------|------|----------|----------|-------------|
 | `label` | `string` | — | sí | Texto del botón. Usado como `key` en el mapeo. |
-| `variant` | `InvestigationActionVariant` | `"primary"` | no | `"primary"` = fondo `#494949`; `"ghost"` = fondo transparente. |
+| `variant` | `InvestigationActionVariant` | `"primary"` | no | `"primary"` y `"ghost"` se ven **idénticos en todo estado** — reposo `#494949` y `:hover` `#8a8b87`, ambos iguales. Corregido 2026-08-04 en tres pasadas: primero se leyó "ACCIÓN A" (`#8a8b87`) y "ACCIÓN B" (`#494949`) del PDF como dos colores fijos distintos (invertidos respecto al CSS); la usuaria corrigió que "ACCIÓN A" está en `:hover` en el PDF; luego pidió que el hover de `ghost` sea igual al de `primary`. Hoy `InvestigationActionVariant` no tiene efecto visual, es puramente semántico. Ninguno de los dos es transparente en reposo. |
 | `onClick` | `MouseEventHandler<HTMLButtonElement>` | — | no | Manejador de clic del botón de acción. |
 | `disabled` | `boolean` | — | no | Deshabilita el botón de acción. |
 
@@ -213,8 +213,10 @@ No existen variantes de layout públicas. El componente aplica una única aparie
 
 | Variant | Apariencia | Clase CSS |
 |---------|------------|-----------|
-| `primary` | Fondo `#494949`, texto `#ffffff`, padding `2.5px 10px` (display) | `.ds-investigation-card__action--primary` |
-| `ghost` | Fondo transparente, texto `#ffffff` | `.ds-investigation-card__action--ghost` |
+| `primary` | Fondo `#494949` en reposo, `#8a8b87` en `:hover`, texto `#ffffff`, padding `2.5px 10px` (display) | `.ds-investigation-card__action--primary` |
+| `ghost` | Fondo `#494949` en reposo — no transparente, `#8a8b87` en `:hover` — idéntico a `primary` a pedido de la usuaria, texto `#ffffff` | `.ds-investigation-card__action--ghost` |
+
+**Nota de fidelidad (2026-08-04, tres pasadas):** medí las coordenadas vectoriales exactas del PDF (p. 4): "ACCIÓN A" tiene fondo `#8a8b87` y "ACCIÓN B" fondo `#494949`, ninguno transparente. En una primera pasada modelé esto como dos colores fijos y distintos por variante (e invertidos respecto al CSS que había). La usuaria corrigió que "ACCIÓN A" está capturada en estado `:hover` en el PDF, no en su color de reposo — el fondo de reposo real (compartido por ambas variantes) es `#494949` ("ACCIÓN B"), que es visualmente muy parecido al propio fondo de la card (`rgb(0 0 0 / 0.7)` sobre la página) y por eso se difumina — así se ve también en el PDF original, no es un defecto de contraste. Después pidió que el `:hover` de `ghost` fuera igual al de `primary` (`#8a8b87`), en vez del `#5a5a5a` que tenía — hoy ambas variantes son visualmente idénticas en todo estado.
 
 ---
 
@@ -290,13 +292,13 @@ Describe only accessibility behavior implemented by the component.
 
 Document only responsive behavior implemented by the component itself.
 
-`InvestigationCard` no define media queries. La altura la define el contenido; el ancho lo define el contenedor padre.
+`InvestigationCard` no define media queries. La altura la define el contenido; el ancho es fijo (no depende del contenedor padre ni del contenido).
 
 | Contexto | Behavior |
 |----------|----------|
-| Componente | Sin breakpoints. `max-width: 140px (display)`, `width: fit-content`. |
+| Componente | Sin breakpoints. `width: 165px` (display, fijo — corregido 2026-08-04, antes `max-width: 140px` + `width: fit-content`, que dejaba angostar la card por debajo de 140px cuando el contenido no lo necesitaba, y eso hacía que los botones de acción pasaran a dos líneas). |
 | Métricas | Cuadrícula `repeat(2, minmax(0, 1fr))`; dos columnas fijas. |
-| Acciones | `flex-wrap: wrap` permite que botones pasen a varias líneas si el ancho es insuficiente. |
+| Acciones | `flex-wrap: wrap` queda como resguardo defensivo, pero con el ancho fijo de 165px ambos botones del ejemplo canónico entran en una sola fila. |
 | Storybook `GridExample` | Contenedor padre con `gridTemplateColumns: repeat(auto-fit, minmax(130px, 1fr))`. |
 
 ---
@@ -468,10 +470,11 @@ Only include tokens directly consumed by the component.
 | `#606060` | color | Borde de `.ds-investigation-card` |
 | `#ffffff` | color | Título, valores de métrica, texto de acciones |
 | `#c1c1c1` | color | Etiquetas de métrica (`.ds-investigation-card__metric-label`) |
-| `#494949` | color | Fondo de acción primaria |
+| `#494949` | color | Fondo de reposo de `primary` y `ghost` por igual ("ACCIÓN B" del PDF) — corregido 2026-08-04, antes transparente en `ghost` e invertido en `primary` |
+| `#8a8b87` | color | Fondo `:hover` de `primary` y `ghost` por igual ("ACCIÓN A" del PDF, capturada en hover, no en reposo — el hover de `ghost` se igualó al de `primary` a pedido de la usuaria) |
 | `--ds-radius-xs` | radius | `border-radius` de `.ds-investigation-card` |
-| `--ds-font-mono` | typography | `.ds-investigation-card__title` (Source Code Pro Light 6.5pt display (13pt @2× ÷2)) |
-| `--ds-font-body` | typography | Valores, etiquetas y acciones (Montserrat Bold/Extralight) |
+| `--ds-font-mono` | typography | `.ds-investigation-card__title` (Source Code Pro Light 6.5px display — display = 13pt @2× ÷2; unidad CSS corregida 2026-08-04, antes literal `pt` en vez de `px`) |
+| `--ds-font-body` | typography | Valores, etiquetas y acciones (Montserrat Bold/Extralight); mismos display px que arriba, mismo fix de unidad `pt`→`px` |
 
 ---
 
@@ -528,6 +531,9 @@ article.ds-investigation-card[.ds-investigation-card--with-utilities]
 - Las acciones inferiores no reutilizan el componente `Button` global (divergencia intencional por fidelidad PDF).
 - Los iconos Cards para utilidades están embebidos en el componente; no son intercambiables vía props.
 - Sin tests unitarios ni de integración en el repositorio.
+- El botón de acción no tiene un ancho fijo — solo se ajusta al contenido. Los dos botones del ejemplo canónico del PDF (p. 4) miden lo mismo porque "ACCIÓN A"/"ACCIÓN B" tienen la misma longitud de texto, no porque haya un ancho forzado; etiquetas de largo distinto no van a quedar parejas.
+- El nombre `ghost` ya no implica fondo transparente (ver Deltas en `InvestigationCard.spec.md`) — es fiel al PDF, pero puede confundir a quien lea solo el tipo sin mirar el CSS.
+- `primary` y `ghost` se ven idénticos en todo estado — reposo (`#494949`) y `:hover` (`#8a8b87`, a pedido explícito de la usuaria). `InvestigationActionVariant` hoy no tiene ningún efecto visual, es puramente semántico. La lectura del reposo/hover viene del único ejemplo estático del PDF (un botón capturado en hover, el otro en reposo), confirmada por la usuaria — no es algo verificable de forma independiente desde el PDF (un export estático no puede mostrar dos estados de un mismo elemento). Si un futuro rediseño le da a cada variante un color distinto en algún estado, esta nota es la razón de por qué hoy son iguales.
 
 ---
 
@@ -535,7 +541,7 @@ article.ds-investigation-card[.ds-investigation-card--with-utilities]
 
 - [ ] Prop opcional para personalizar iconos de utilidad sin romper el default PDF.
 - [ ] Clave estable alternativa a `metric.label` para listas con etiquetas repetidas.
-- [ ] Tokenizar `#494949`, `#606060` y `rgb(0 0 0 / 0.7)` si se reutilizan en más componentes PDF.
+- [ ] Tokenizar `#8a8b87`/`#494949`/`#606060`/`rgb(0 0 0 / 0.7)` si se reutilizan en más componentes PDF.
 
 ---
 
@@ -545,3 +551,5 @@ article.ds-investigation-card[.ds-investigation-card--with-utilities]
 |----------|--------|
 | 0.1.0 | Implementación inicial de `InvestigationCard`, tipos públicos, estilos `ds-investigation-card` y stories en Storybook (`Default`, `Flight`, `GridExample`). Documentación en `knowledge/components/InvestigationCard.md`. |
 | 0.1.1 | Refactor arquitectónico: API unificada declarativa (`utilities[]` + `actions[]`); props legadas `onEdit`/`onDelete`/`onClose` deprecadas con adaptador interno; subcomponentes internos simétricos (`InvestigationCardUtility`, `InvestigationCardAction`); `HTMLAttributes<HTMLArticleElement>`. |
+| 0.1.1 | Pasada de fidelidad visual contra PDF INVESTIGATION CARD p. 4 (coordenadas vectoriales y text-spans exactos via PyMuPDF, no una captura): `width` fijo 165px reemplaza `max-width: 140px` + `width: fit-content` (los botones de acción pasaban a dos líneas porque la card se angostaba por debajo de 140px cuando el contenido no llenaba ese ancho — mismo patrón que TaskCard). Corregido un bug de unidad CSS en cuatro `font-size` (`pt` literal en vez de `px`; el número ya estaba bien, la unidad hacía que el texto renderizara ~33% más grande) — mismo bug detectado en `CalendarCard`, `Empty` y `SideBar`, no corregido ahí todavía. |
+| 0.1.1 | Corrección de colores de botón, en tres pasadas el mismo día: primero se leyeron los dos fondos del PDF ("ACCIÓN A" `#8a8b87`, "ACCIÓN B" `#494949`) como colores fijos por variante, invertidos respecto al CSS existente — se corrigieron pero seguían modelados como dos colores permanentes. La usuaria señaló que "ACCIÓN A" está capturada en `:hover` en el PDF, no en reposo, así que `primary`/`ghost` pasaron a compartir el mismo fondo de reposo `#494949` (ninguno transparente) diferenciándose solo en `:hover`. Después pidió que el `:hover` de `ghost` fuera igual al de `primary` (`#8a8b87`) en vez de `#5a5a5a` — hoy `primary` y `ghost` son visualmente idénticas en todo estado; `InvestigationActionVariant` es puramente semántico. |
