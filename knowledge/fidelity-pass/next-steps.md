@@ -58,9 +58,8 @@ Backlog below is now split accordingly.
   "el número que está alineado a la izquierda", both confirmed as real, evidenced bugs, not
   misreadings. Card was `min-width`/`min-height: 130px` only (4th confirmed case of the
   fixed-width-vs-fit-content pattern) → fixed `width`/`height: 194px` (PDF vector bbox is a
-  388.6×388.6pt @2× square). Icon was 90×90px, PDF vector bbox for the shield icon is only
-  ~71.6×70.9pt @2× → fixed to 36×36px (was ~2.5× too big — likely measured against a different
-  reference on the same PDF page, not the actual card mockup). The metric row was
+  388.6×388.6pt @2× square). Icon size was touched and then reverted same day — see the dedicated
+  lesson below, don't repeat it. The metric row was
   `justify-content: space-between` (value pushed to the card's far right edge); PDF text-spans
   show `"CASOS ABIERTOS: 15"` as one tight inline pair on the card's *left* side — changed to
   `justify-content: flex-start` with a small gap. Also added `text-transform: uppercase` and a
@@ -126,6 +125,25 @@ same way (there may still be bugs, just not "measured wrong against a PDF page")
 - `packages/ui/src/patterns/login/`, `packages/ui/src/patterns/mission/` — not yet checked against
   the PDF for an existing spec page; confirm whether either has one before assuming this pass
   covers them the same way.
+
+**Process note (2026-08-05):** wait for the user to actually look at Storybook and say go-ahead
+before committing/pushing a fix — don't push right after a build+screenshot check on my own.
+ModuleCard's icon-size mistake (below) shipped in the same commit as the good fixes because I
+pushed before she'd reviewed it; she caught it visually afterward. Verifying in Storybook myself is
+necessary but not sufficient — it doesn't replace her actually looking at it before it goes to
+`eval-loop`.
+
+**Lesson: a PDF reference/annotation diagram is not always drawn at the same scale as the real
+asset it's illustrating.** ModuleCard's icon was "fixed" from 90×90px to 36×36px based on measuring
+the small shield icon in the PDF's own "PROCESOS POLICIALES" callout diagram (~71.6×70.9pt @2×) —
+wrong: that diagram is a shrunk illustration, not 1:1 with the real icon assets. The real SVGs
+(`packages/ui/src/Icons/Modules/*-180x180.svg`) declare `viewBox="0 0 180 180"`, an unambiguous,
+asset-declared @2× size that confirms the original 90px was already correct. **When a component
+has real, named/declared assets (SVG viewBox, filename with dimensions, etc.), check those FIRST
+and treat them as higher-confidence than a small illustrative diagram inside the PDF** — the PDF's
+vector/text data is the right source of truth for layout, color, and spacing that has no other
+declared source, but for an icon/asset's own size, the asset itself outranks a miniature drawing of
+it.
 
 ## Reusable technique notes for next session
 

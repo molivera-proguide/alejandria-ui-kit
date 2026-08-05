@@ -102,7 +102,7 @@ siempre seguir estas reglas.
 - Proporcionar `onClick` cuando la tarjeta deba navegar o ejecutar una acción.
 - Agrupar instancias en un contenedor con grid CSS, como en la story `GridExample` (`repeat(auto-fit, minmax(130px, 1fr))`).
 - Pasar `aria-label` explícito si el título visible no describe suficientemente la acción del botón.
-- Usar iconos de módulo de `@alejandria/ui-kit` como en las stories de Storybook; el CSS los renderiza a 36×36 px (display) — corregido 2026-08-05, antes 90×90px (medido contra una referencia distinta al mockup real de la card, el ícono se veía casi el doble de grande de lo esperado).
+- Usar iconos de módulo de `@alejandria/ui-kit` (SVG artboard 180×180, ver `packages/ui/src/Icons/Modules/*-180x180.svg`) como en las stories de Storybook; el CSS los renderiza a 90×90 px (display = 180÷2). Nota: este valor se cambió a 36px por error durante la pasada de fidelidad del 2026-08-05 (medido contra el ícono chico del diagrama de anotación del PDF, no contra el asset real) y se revirtió al detectar visualmente que los íconos quedaban demasiado chicos.
 
 ---
 
@@ -217,7 +217,7 @@ Documenta solo el comportamiento responsivo implementado por el componente mismo
 |----------|----------|
 | Componente | Sin breakpoints. Tamaño mínimo fijo; el ancho efectivo lo define el contenedor padre. |
 | Storybook `GridExample` | Contenedor padre con `gridTemplateColumns: repeat(auto-fit, minmax(130px, 1fr))` y `gap: 20`; el colapso responsivo depende del grid del padre, no del componente. |
-| Icono `<img>` / `svg` | `.ds-module-card__icon img` y `svg` fijan `height` y `width` a 36px (display, corregido 2026-08-05, antes 90px) con `object-fit: contain`. |
+| Icono `<img>` / `svg` | `.ds-module-card__icon img` y `svg` fijan `height` y `width` a 90px (display = 180÷2, confirmado 2026-08-05 contra el `viewBox` real de los SVG) con `object-fit: contain`. |
 
 ---
 
@@ -497,4 +497,5 @@ button.ds-module-card
 |----------|--------|
 | 0.1.0 | Implementación inicial de `ModuleCard`, `ModuleCardProps` y `ModuleMetric` con estilos `ds-module-card` y stories en Storybook. |
 | 0.1.0 | Refinamiento visual PDF (MÓDULOS): padding superior 25px display, título 12px Regular, métricas Montserrat 8px Light/Bold, icono 90×90 display, divisor 0.75px, hover/focus sin teal, Storybook en fondo oscuro. |
-| 0.1.1 | Pasada de fidelidad visual contra PDF MÓDULOS p.6 (coordenadas vectoriales y text-spans exactos vía PyMuPDF, a pedido de reporte de usuario: "distintos tamaños en el storybook" + "el número que está alineado a la izquierda"). `width`/`height` fijo 194×194px (card cuadrada, medida en el PDF) reemplaza `min-width`/`min-height: 130px` (nunca medido, dejaba el ancho variar con el largo del título — la causa real de los "distintos tamaños"). Ícono corregido de 90×90px a 36×36px (medido contra el ícono real del mockup, no contra una referencia distinta). `.ds-module-card__metric` corregido de `justify-content: space-between` (valor empujado al borde derecho) a un par inline pegado a la izquierda — el PDF muestra "CASOS ABIERTOS: 15" como una unidad compacta, no una fila de ancho completo; esta era la causa real del reporte sobre el número. Agregado `text-transform: uppercase` y separador `:` vía CSS a `.ds-module-card__metric-label`, fieles al texto real del PDF. |
+| 0.1.1 | Pasada de fidelidad visual contra PDF MÓDULOS p.6 (coordenadas vectoriales y text-spans exactos vía PyMuPDF, a pedido de reporte de usuario: "distintos tamaños en el storybook" + "el número que está alineado a la izquierda"). `width`/`height` fijo 194×194px (card cuadrada, medida en el PDF) reemplaza `min-width`/`min-height: 130px` (nunca medido, dejaba el ancho variar con el largo del título — la causa real de los "distintos tamaños"). `.ds-module-card__metric` corregido de `justify-content: space-between` (valor empujado al borde derecho) a un par inline pegado a la izquierda — el PDF muestra "CASOS ABIERTOS: 15" como una unidad compacta, no una fila de ancho completo; esta era la causa real del reporte sobre el número. Agregado `text-transform: uppercase` y separador `:` vía CSS a `.ds-module-card__metric-label`, fieles al texto real del PDF. En el mismo paso se cambió el ícono de 90×90px a 36×36px midiendo contra el diagrama de anotación chico del PDF — **revertido en 0.1.2**, ver abajo. |
+| 0.1.2 | Revertido el tamaño de ícono a 90×90px (display = 180÷2). El cambio a 36px en 0.1.1 midió el ícono del diagrama de anotación "PROCESOS POLICIALES" del PDF, que es una ilustración achicada, no el asset real a escala. Los SVG reales (`packages/ui/src/Icons/Modules/*-180x180.svg`) declaran `viewBox="0 0 180 180"` — evidencia inequívoca del tamaño real. La usuaria detectó visualmente que los íconos quedaron demasiado chicos antes de confirmar el commit. |

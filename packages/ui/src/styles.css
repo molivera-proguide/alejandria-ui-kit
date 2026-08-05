@@ -734,9 +734,9 @@
   .ds-module-card__icon img,
   .ds-module-card__icon svg {
     display: block;
-    height: 36px /* calibrated ÷2 — PDF vector path (shield icon bbox ~71.6×70.9pt @2×), was 90px (invented, measured against a different reference — the icon rendered nearly half the card's own width) */;
+    height: 90px /* calibrated ÷2 — reverted 2026-08-05, see spec Deltas: the real icon assets (packages/ui/src/Icons/Modules/*-180x180.svg) declare viewBox="0 0 180 180", an unambiguous @2× artboard → ÷2 = 90px. The 36px "fix" earlier in this same session measured the PDF's small "PROCESOS POLICIALES" annotation-diagram shield icon instead, which is a shrunk illustration, not the real asset's declared size — wrong source of truth, reverted after user caught it visually. */;
     object-fit: contain;
-    width: 36px /* calibrated ÷2 — PDF vector path (~71.6pt @2×) */;
+    width: 90px /* calibrated ÷2 — see height comment */;
   }
 
   .ds-module-card__headline {

@@ -20,8 +20,8 @@ real, evidenced mismatches — see Dimensions/Color/Deltas below.
 | height | 194 | px | styles.css | **changed 2026-08-05** — same vector measurement; the card is square. Was `min-height: 130px`. |
 | padding | 25px 10px 12.5px 10px | px | styles.css | display = 50/20/25/20 ÷2 — matches the PDF legend directly, unaffected by today's correction |
 | gap | 10 | px | styles.css | was `--ds-space-5` → 10px calibrated |
-| icon | 36×36 | px | styles.css | **changed 2026-08-05** — PDF vector path: the shield icon in the "PROCESOS POLICIALES" example is two paths spanning a combined bbox of ~71.6×70.9pt @2× → ÷2 ≈ 36×35px. Was `90×90px` (display = 180÷2) — that 180pt @2× figure doesn't match this card's own icon; it was seemingly measured against a different reference (maybe the standalone "Iconos" legend swatches on the same page, which are shown at a different, larger canonical size than how they render inside an actual module card) without cross-checking against the card mockup itself. The icon was rendering at roughly 2.5× its real size. |
-| icon region min-height | 36 | px | styles.css | changed 2026-08-05 to match icon size above |
+| icon | 90×90 | px | styles.css | **unchanged, confirmed correct 2026-08-05** — briefly "fixed" to 36×36px earlier the same session (see Deltas: was measured against the small "PROCESOS POLICIALES" annotation-diagram shield icon, ~71.6×70.9pt @2× in that shrunk illustration). User caught visually that icons had become too small; reverted after checking the real SVG assets (`packages/ui/src/Icons/Modules/*-180x180.svg`), which all declare `viewBox="0 0 180 180"` — an unambiguous, asset-declared @2× artboard → ÷2 = 90×90px. The PDF's small reference-diagram icon is not drawn at the same scale as the real exported assets; don't use it as the size source when a named/declared asset size is available. |
+| icon region min-height | 90 | px | styles.css | unchanged — see icon row above |
 | metric value min-width | dropped | — | styles.css | removed 2026-08-05 — was a prop of the old `space-between` layout (see Color/Deltas); no longer needed once the metric row is a tight inline pair instead of a spread row |
 | hover translateY | -2 | px | styles.css | transform — not scaled |
 
@@ -79,3 +79,13 @@ real, evidenced mismatches — see Dimensions/Color/Deltas below.
   the second real metric was filled in), not two intentionally distinct metrics. The shipped
   stories all use two *different* metrics per card (e.g. "Casos abiertos" + "Alertas"), which this
   reading is consistent with.
+- **Corrected same-day mistake: icon size.** First pass in this session changed the icon from
+  90×90px to 36×36px, measured against the small shield icon drawn in the PDF's own "PROCESOS
+  POLICIALES" annotation diagram (~71.6×70.9pt @2×). That diagram turned out to be a shrunk
+  illustration, not drawn at the real asset's scale — the actual SVG files
+  (`packages/ui/src/Icons/Modules/*-180x180.svg`) all declare `viewBox="0 0 180 180"`, an
+  unambiguous @2× artboard that halves cleanly to the original 90×90px. User caught this visually
+  ("los íconos de la module card se ven muuuuy chicos") before it was pushed further; reverted.
+  **Lesson: when a PDF reference diagram and a real, named/declared asset disagree on size, the
+  asset wins** — small annotation diagrams in this PDF are illustrative, not necessarily drawn
+  1:1 with the real exported assets they're depicting.
