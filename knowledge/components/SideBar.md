@@ -31,7 +31,7 @@ tags:
   - molecule
   - controlled
 
-last_reviewed: 2026-07-22
+last_reviewed: 2026-08-05
 ---
 
 # SideBar
@@ -47,8 +47,8 @@ Presenta el menú central colapsable de la plataforma Alejandría, desde el que 
 Describe:
 
 - **Responsabilidad principal:** renderizar un rail de navegación con lista primaria declarativa, lista secundaria opcional (módulos), logo y toggle de colapso controlado.
-- **Problema que resuelve:** unificar el chrome SIDE BAR PDF (fondo `#282828`, ítems con bajada/badge/estado, navegación secundaria `#2a2927`, animación de ancho) sin acoplar un router.
-- **Alcance:** componente de app-shell basado en `<nav class="ds-sidebar">`; el consumidor provee `items` / `secondaryItems`, controla `collapsed` / `onToggleCollapsed` y cablea navegación vía `onClick`.
+- **Problema que resuelve:** unificar el chrome SIDE BAR PDF (fondo `#282828`, ítems con bajada/badge/estado, animación de ancho) sin acoplar un router.
+- **Alcance:** componente de app-shell basado en `<nav class="ds-sidebar">`; el consumidor provee `items` (grupo primario, anclado arriba) / `secondaryItems` (grupo secundario/utilidades, anclado abajo vía `margin-top: auto`), controla `collapsed` / `onToggleCollapsed` y cablea navegación vía `onClick`.
 
 Exclude:
 
@@ -70,12 +70,13 @@ Documenta los comportamientos públicos en los que el consumidor puede confiar.
 - Estado de colapso **solo controlado**: requiere `collapsed` + `onToggleCollapsed` (sin estado interno; mismo convenio que `SegmentedControl`).
 - Edge-toggle `.ds-sidebar__edge-toggle` como **hermano** del `<nav>` (no hijo del header), con `aria-expanded={!collapsed}` e `aria-label` «Contraer menú» / «Expandir menú»; chevron hand-drawn que apunta izquierda (expandido) o derecha (colapsado).
 - Encabezado `.ds-sidebar__header` solo con slot `logo` opcional (sin toggle).
-- Heading de menú `div.ds-sidebar__menu-heading` solo si `menuIcon` o `menuLabel` (ícono de sección + label).
+- Heading de menú primario `button.ds-sidebar__menu-heading` solo si `menuIcon` o `menuLabel` (ícono de sección + label); `onClick` llama a `onToggleCollapsed` (mismo toggle que el edge-toggle — el ícono hamburguesa es la convención universal para esto, no hay prop nueva). El heading secundario (`secondaryIcon`/`secondaryLabel`) sigue siendo un `div` no interactivo.
+- Highlight de hover (`--ds-color-white-a06`) en cada `.ds-sidebar__item` y en el botón de heading primario; el ítem seleccionado mantiene su fondo cálido en hover (no se superpone un segundo tono).
 - Lista primaria desde `items` como `<ul class="ds-sidebar__list">` de botones `<button type="button">` dentro de `<li>`.
 - Lista secundaria renderizada solo si `secondaryItems?.length` es truthy, dentro de `.ds-sidebar__secondary` (mismo patrón de heading con `secondaryIcon` / `secondaryLabel`).
 - Ítem seleccionado con clase `ds-sidebar__item--selected` y `aria-current="page"`.
 - Capas opcionales por ítem: `caption` → `.ds-sidebar__item-caption`; `badge` → `.ds-sidebar__badge`; `status` → `.ds-sidebar__status`.
-- Colapso por CSS (mismo DOM): oculta copy, menu-label, menu-heading-icon, badge y status; anima `width` en `.ds-sidebar`.
+- Colapso por CSS (mismo DOM): oculta copy, menu-label, menu-heading-icon y status; el `badge` permanece visible (acento de esquina sobre el ícono); anima `width` en `.ds-sidebar`.
 - Fusión de `className` externa con `ds-sidebar` mediante `cn()` en el `<nav>`.
 - Repaso de atributos nativos de `Omit<ComponentPropsWithoutRef<"nav">, "children">` al `<nav>` vía `...props` (no al shell).
 
@@ -195,16 +196,17 @@ Apariencia completa alineada a PDF p.13 SIDE BAR. Modificador BEM ausente cuando
 | Elemento | Rol visual (PDF p.13, display ÷2) |
 |----------|-----------------------------------|
 | Raíz | Fondo `#282828`, padding `10px` (`20px` @2×), sombra derecha provisional, ancho reutilizado `--ds-size-card-min-w` (220px) |
-| Ícono | Pozo `25×25` (`50×50` @2×; provenance `--ds-size-icon-50`) |
-| Seleccionado | Fondo `#2a2927` + `border-left: 2px solid #fff` |
-| Bajada | Source Code Regular `7pt` (`14pt` @2×), `#8a8b87` |
-| Badge | Montserrat Bold `8.5pt` (`17pt` @2×), blanco sobre `#e30000` |
-| Estado | Montserrat Medium `5pt` (`10pt` @2×), uppercase, `#c1c1c1` sobre `#282828` |
-| Secundaria | Fondo `#2a2927` |
+| Ícono | Pozo `25×25` (`50×50` @2×; provenance `--ds-size-icon-50`); `#8a8b87` por defecto, `#FFFFFF` (vía `filter: brightness(0) invert(1)`) cuando el ítem está seleccionado |
+| Label del ítem | `#8a8b87` por defecto, `#FFFFFF` cuando está seleccionado (2026-08-05 — antes blanco siempre) |
+| Seleccionado | Fondo `#2a2927` + `border-left: 2px solid #fff` + label/ícono blancos |
+| Bajada | Source Code Regular `7px` (`14pt` @2×), `#8a8b87` (no cambia con la selección) |
+| Badge | Montserrat Bold `8.5px` (`17pt` @2×), blanco sobre `#e30000`; círculo fijo `10×10px` posicionado como acento sobre la esquina superior derecha del ícono (no una pill en línea con el label) |
+| Estado | Montserrat Medium `5px` (`10pt` @2×), uppercase, `#c1c1c1` sobre `#282828` |
+| Grupo secundario | Sin fondo propio — mismo `#282828` del panel; anclado al borde inferior vía `margin-top: auto` |
 
 ## Collapsed
 
-Modificador `ds-sidebar--collapsed`: ancho `--ds-size-control-lg` (48px); oculta copy, menu-label, menu-heading-icon, badge y status (rail de íconos). El edge-toggle permanece visible fuera del chrome.
+Modificador `ds-sidebar--collapsed`: ancho `--ds-size-control-lg` (48px); oculta copy, menu-label y status (rail de íconos). El `badge` y el ícono del heading («Menú») permanecen visibles — el PDF muestra el mismo contador «2» y el mismo ícono hamburguesa en ambas columnas (Desplegada y Colapsada), centrados igual que los demás ítems. El edge-toggle permanece visible fuera del chrome.
 
 ---
 
@@ -214,8 +216,9 @@ Modificador `ds-sidebar--collapsed`: ancho `--ds-size-control-lg` (48px); oculta
 |--------|-------------|
 | Expanded | `collapsed={false}`; muestra labels, captions, badges y status. |
 | Collapsed | `collapsed={true}` + clase `ds-sidebar--collapsed`; solo íconos de ítem (+ logo si cabe); edge-toggle con chevron derecha. |
-| Item selected | `item.selected`; clase `ds-sidebar__item--selected` + `aria-current="page"`. |
+| Item selected | `item.selected`; clase `ds-sidebar__item--selected` + `aria-current="page"`; label e ícono pasan de `#8a8b87` a `#FFFFFF`. |
 | Item with caption / badge / status | Capas opcionales renderizadas solo si truthy / `badge != null`. |
+| Hover | Highlight sutil (`--ds-color-white-a06`) en cualquier `.ds-sidebar__item` y en el botón «Menú»; el ítem seleccionado no cambia de tono en hover. |
 
 No hay variantes de tono ni de tamaño.
 
@@ -238,8 +241,8 @@ Describe only accessibility behavior implemented by the component.
 
 | Attribute | Usage |
 |-----------|-------|
-| `aria-expanded` | En `.ds-sidebar__edge-toggle` (`!collapsed`). |
-| `aria-label` | En el edge-toggle («Contraer menú» / «Expandir menú»). |
+| `aria-expanded` | En `.ds-sidebar__edge-toggle` y en el botón «Menú» (`!collapsed`; ambos controlan el mismo toggle, 2026-08-05). |
+| `aria-label` | En el edge-toggle y en el botón «Menú» («Contraer menú» / «Expandir menú»). |
 | `aria-current="page"` | En el botón del ítem cuando `selected`. |
 | `aria-hidden="true"` | En `.ds-sidebar__item-icon` y `.ds-sidebar__menu-heading-icon`. |
 
@@ -311,13 +314,13 @@ Document only responsive behavior implemented by the component itself.
 ## Labels
 
 - `menuLabel`: encabezado corto (PDF: `"Menú"`).
-- Ítems fijos típicos: Mis tareas, Historial, Reportes, Notificaciones, Mi cuenta, Configuración, Ayuda, Cerrar sesión.
-- Módulos en secundaria: títulos en mayúsculas como en ModuleCard (p. ej. `"CATÁSTROFES"`).
+- Grupo primario (`items`, anclado arriba, PDF orden real): Mis tareas, Historial, Reportes, Catástrofes.
+- Grupo secundario (`secondaryItems`, anclado abajo vía `margin-top: auto`, PDF orden real): Notificaciones, Mi cuenta, Configuración, Ayuda, Cerrar sesión.
 
 ## Values
 
-- `badge`: entero de no leídos (PDF muestra contadores).
-- `status`: chip uppercase corto (PDF: `"EN VIVO"`).
+- `badge`: entero de no leídos (PDF muestra contadores); se renderiza como acento sobre la esquina del ícono, visible en expandido y colapsado.
+- `status`: chip uppercase corto (PDF: `"EN VIVO"`). **No confirmado como parte de un ítem normal de lista** — el único «EN VIVO» del PDF p.13 vive en el estado «Reducida» (logo + chip, sin lista de ítems), que este componente no implementa (ver Known Limitations). Ningún ítem de las stories actuales usa `status`.
 
 ## Icons
 
@@ -371,7 +374,10 @@ import {
   SideBar,
   CatastrofesIcon,
   HamburguesaIcon,
-  NotificacionesIcon
+  HistorialIcon,
+  MenuBandejaIcon,
+  NotificacionesIcon,
+  ReportsIcon
 } from "@alejandria/ui-kit";
 
 function AppShellNav() {
@@ -384,17 +390,16 @@ function AppShellNav() {
       collapsed={collapsed}
       onToggleCollapsed={() => setCollapsed((v) => !v)}
       items={[
+        { icon: <img src={MenuBandejaIcon} alt="" />, label: "Mis tareas", selected: true },
+        { icon: <img src={HistorialIcon} alt="" />, label: "Historial" },
+        { icon: <img src={ReportsIcon} alt="" />, label: "Reportes" },
+        { icon: <img src={CatastrofesIcon} alt="" />, label: "Catástrofes" }
+      ]}
+      secondaryItems={[
         {
           icon: <img src={NotificacionesIcon} alt="" />,
           label: "Notificaciones",
           badge: 2
-        }
-      ]}
-      secondaryItems={[
-        {
-          icon: <img src={CatastrofesIcon} alt="" />,
-          label: "CATÁSTROFES",
-          status: "EN VIVO"
         }
       ]}
     />
@@ -460,7 +465,7 @@ Only include tokens directly consumed by the component.
 |--------|----------|-------|
 | `--ds-color-pdf-shell` | color | Fondo de `.ds-sidebar`, chip `.ds-sidebar__status` y edge-toggle (`#282828`) |
 | `--ds-color-pdf-notification` | color | Fondo de `.ds-sidebar__badge` (`#e30000`) |
-| `--ds-color-pdf-surface-warm` | color | Fondo secundaria / ítem seleccionado (`#2a2927`) |
+| `--ds-color-pdf-surface-warm` | color | Fondo del ítem seleccionado (`#2a2927`) |
 | `--ds-color-pdf-ink-muted` | color | Color de tinta muted / caption / chevron del edge-toggle (`#8a8b87`) |
 | `--ds-color-pdf-line` | color | Texto del chip de estado + borde del edge-toggle (`#c1c1c1`) |
 | `--ds-color-white` | color | Label / badge / línea seleccionada |
@@ -518,16 +523,17 @@ div.ds-sidebar-shell
 │   ├── div.ds-sidebar__header (solo si logo)
 │   │   └── span.ds-sidebar__logo
 │   ├── div.ds-sidebar__menu
-│   │   ├── div.ds-sidebar__menu-heading (solo si menuIcon o menuLabel)
+│   │   ├── button.ds-sidebar__menu-heading (solo si menuIcon o menuLabel; onClick → onToggleCollapsed)
 │   │   │   ├── span.ds-sidebar__menu-heading-icon (solo si menuIcon)
 │   │   │   └── span.ds-sidebar__menu-label (solo si menuLabel)
 │   │   └── ul.ds-sidebar__list
 │   │       └── li → button.ds-sidebar__item[.ds-sidebar__item--selected]
 │   │           ├── span.ds-sidebar__item-icon
+│   │           │   ├── {icon}
+│   │           │   └── span.ds-sidebar__badge (solo si badge != null — acento absoluto sobre el ícono)
 │   │           ├── span.ds-sidebar__item-copy
 │   │           │   ├── span.ds-sidebar__item-label
 │   │           │   └── span.ds-sidebar__item-caption (solo si caption)
-│   │           ├── span.ds-sidebar__badge (solo si badge)
 │   │           └── span.ds-sidebar__status (solo si status)
 │   └── div.ds-sidebar__secondary (solo si secondaryItems?.length)
 │       ├── div.ds-sidebar__menu-heading (solo si secondaryIcon o secondaryLabel)
@@ -542,7 +548,16 @@ div.ds-sidebar-shell
 
 # Known Limitations
 
-- **Icono seleccionado `#FFFFFF` no implementado:** los assets compartidos son SVGs multi-color aplanados servidos como `<img src>`; no son tintables con `currentColor`/`fill`. Solo se implementa la línea izquierda 2pt blanca + lift de fondo.
+- **«Navegación secundaria» (rail de 6 íconos: buscar, seleccionar/crop, compartir, intercambiar,
+  editar, ajustes; `fondo #2a2927`) no está implementada.** Es un elemento visualmente distinto en
+  el PDF p.13, dibujado a la derecha de los mockups Desplegada/Colapsada — no es el grupo
+  secundario (`secondaryItems`) de este componente. No existe ningún componente/patrón del kit que
+  lo implemente hoy; queda como descubrimiento de backlog (ver
+  `knowledge/fidelity-pass/next-steps.md`).
+- **Ritmo vertical de la lista primaria sin resolver:** la anotación PDF «25 px» junto al hueco
+  entre ítems no se pudo conciliar limpiamente con `.ds-sidebar__list{gap: 2px}` ni con una lectura
+  ÷2 directa (el pitch medido entre labels varía 49–54pt @2× entre los 4 ítems primarios). No se
+  tocó sin evidencia más limpia — re-medir si se reporta que el espaciado se ve mal.
 - **Edge-toggle glyph simplificado:** el PDF muestra un pictograma pequeño de dos rectángulos («panel»); se implementó un chevron direccional plain porque el glifo exacto no se pudo reproducir pixel-a-pixel desde la referencia. Tamaño (`20×20`) y posición (`top: 12px`, `translateX(50%)` straddling el borde) son **provisionales**, no medidos.
 - **«Flechas de navegación»:** interpretadas como el ícono del propio edge-toggle cambiando de dirección según `collapsed` (← expandido / → colapsado), no como un control separado siempre visible — interpretación, no lectura confirmada del PDF.
 - **«Mis tareas» → `MenuBandejaIcon`:** mapeo inferido (bandeja/inbox), no confirmado por el PDF.
@@ -560,8 +575,9 @@ div.ds-sidebar-shell
 - [ ] Confirmar con design el pictograma exacto del edge-toggle (panel de dos rectángulos vs chevron)
 - [ ] Medir tamaño/posición del edge-toggle y anchos expandido/colapsado en artboard
 - [ ] Confirmar mapeo de ícono «Mis tareas»
-- [ ] Evaluar íconos tintables / swap condicional si design exige ícono blanco al seleccionar
 - [ ] Integrar en un patrón/screen de app-shell cuando se documente
+- [ ] Construir el rail «Navegación secundaria» (PDF p.13) como componente/patrón propio si producto lo pide
+- [ ] Re-medir el ritmo vertical de la lista primaria («25 px») con evidencia más limpia
 
 ---
 
@@ -569,5 +585,9 @@ div.ds-sidebar-shell
 
 | Version | Change |
 |----------|--------|
+| 0.1.5 | **Third same-day follow-up (2026-08-05), user-reported:** the selected item's label and icon are now painted white — PDF legend gives «Iconos: #8a8b87» (default) vs «Icono seleccionado: #FFFFFF» (selected), but the previous CSS hardcoded the label to white for every row (verified via `getComputedStyle()`, not just visual guessing) and never recolored the icon. Changed the label's base color to `--ds-color-pdf-ink-muted` with a white override on `.ds-sidebar__item--selected`, and added `filter: brightness(0) invert(1)` on the selected item's icon. This required correcting a prior (wrong) Known Limitation: the shared icon SVGs were assumed to be flat multi-color and therefore non-tintable — inspecting the actual asset source showed every one is genuinely monochrome (`Icons/Menu/*-50x50.svg`, `Modules/Catastrofes-180x180.svg`), so the filter trick works reliably. Also removed the `caption: "Bandeja operativa"` demo prop from "Mis tareas" — user-reported it looked out of place as the only item with a subtitle; the `caption` prop itself stays supported. |
+| 0.1.4 | **Second same-day follow-up (2026-08-05), user-reported:** the selected item's white accent line sat visibly inset from the sidebar's edge because `.ds-sidebar`'s own `padding: 10px` pushed every row inward. Moved the horizontal inset onto each row instead: `.ds-sidebar{padding: 10px 0}`, `.ds-sidebar__item`/`button.ds-sidebar__menu-heading{padding: 4px 16px}` (was `4px 6px`), `.ds-sidebar__header{padding-inline: 10px}` (new). Icon/label screen position is unchanged (the math is inset-preserving); only the row's own background/accent now spans flush to the true edge. Collapsed mode needed no change — centered icons land in the same spot regardless of padding value. |
+| 0.1.3 | **Same-day follow-up (2026-08-05), user-reported:** «Menú» heading was a non-interactive `<div>` — user asked for it to be a real button too, and for a hover highlight generally. Primary `.ds-sidebar__menu-heading` is now a `<button>` wired to the existing `onToggleCollapsed` (no new prop). Added `:hover` background to `.ds-sidebar__item` and the new heading button. Fixed a bug surfaced while testing collapsed mode: `.ds-sidebar--collapsed` was hiding `.ds-sidebar__menu-heading-icon` entirely, so the new button had nothing visible/clickable once collapsed — PDF's own Colapsada column shows the hamburger icon present and centered like every other row; removed it from the collapsed hide-list and centered it to match. |
+| 0.1.2 | **Fidelity pass (2026-08-05), user-reported:** corregido el agrupamiento de ítems en las stories — «Catástrofes» estaba modelado como un chip de estado «EN VIVO» en `secondaryItems` en solitario, y todo lo demás (incluyendo Notificaciones/Mi cuenta/Configuración/Ayuda/Cerrar sesión) vivía junto en `items`. PDF p.13 confirma el orden real: `items` = Mis tareas/Historial/Reportes/Catástrofes (arriba); `secondaryItems` = Notificaciones/Mi cuenta/Configuración/Ayuda/Cerrar sesión (abajo). `.ds-sidebar__secondary` pasa de `margin-top: 12px` + fondo `#2a2927` (color mal atribuido desde un diagrama no relacionado del mismo PDF, ver spec) a `margin-top: auto` (ancla real al borde inferior). El badge de notificación se reposiciona como acento absoluto sobre la esquina del ícono (antes era una pill en línea después del label, y se ocultaba por completo en colapsado — el PDF muestra el mismo badge en ambas columnas). Corregido el bug de unidad `pt`→`px` en los 5 `font-size` de este bloque (mismo bug ya documentado para `CalendarCard`/`Empty`). |
 | 0.1.1 | **Corrección mismo día (artwork PDF real, no solo text extract):** `HamburguesaIcon` pasa a `menuIcon` junto a «Menú»; toggle sale del header y se convierte en `.ds-sidebar__edge-toggle` (hermano del `<nav>` dentro de `.ds-sidebar-shell`) con chevron hand-drawn; props `menuIcon` / `secondaryIcon`. |
 | 0.1.0 | Implementación inicial de `SideBar` / `SideBarProps` / `SideBarItem` con estilos `ds-sidebar` según PDF p.13 SIDE BAR; export `NotificacionesIcon`; stories `Expanded`, `Collapsed`, `Playground`. |

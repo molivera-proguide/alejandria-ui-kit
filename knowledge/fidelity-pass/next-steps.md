@@ -127,16 +127,70 @@ Backlog below is now split accordingly.
   `:not(:placeholder-shown)` state) before commit. See the new reusable-technique note below on
   telling real vector/glyph geometry apart from a prose legend when both are on the same page.
 
+- **SideBar** (PDF p.13 / `doc[12]`, "SIDE BAR") — user-reported: item grouping was wrong. The
+  story's demo data put everything except "Catástrofes" into `items` (one undifferentiated top
+  list), and modeled "Catástrofes" alone as a `secondaryItems` entry with `status: "EN VIVO"`
+  instead of a plain nav item. `SideBar.tsx` itself already supported the real primary/secondary
+  split correctly (`items` top-anchored, `secondaryItems` — only the demo data was wrong). Fixed via
+  `page.get_text("dict")` on `doc[12]`, which gives the unambiguous real stacking order: `items` =
+  Mis tareas/Historial/Reportes/Catástrofes; `secondaryItems` = Notificaciones/Mi cuenta/
+  Configuración/Ayuda/Cerrar sesión. Anchoring the bottom group required two more fixes: (1)
+  `.ds-sidebar__secondary` was `margin-top: 12px` (not `auto`), so it never actually reached the
+  panel's bottom edge — changed to `margin-top: auto`; (2) the Storybook decorator wrapping div
+  had no `display: flex`, so `.ds-sidebar-shell`'s `height: 100%` (needed for the nav to fill the
+  decorator's fixed height, which `margin-top: auto` needs somewhere to push against) resolved to
+  auto/content-size instead — added `display: "flex"` to the decorator. Also fixed the same `pt`-
+  instead-of-`px` unit bug (see the carried-forward finding below) on all 5 of this component's
+  `font-size` declarations, and repositioned the notification badge: it was a same-row trailing
+  pill (rendered after the label, hidden entirely when collapsed) but PDF vector measurement shows
+  it's actually a corner accent centered on the icon's own top-right corner, present in **both**
+  the expanded and collapsed columns — moved it inside `.ds-sidebar__item-icon` in the JSX and made
+  it `position: absolute; top: 0; right: 0; transform: translate(50%, -50%)`.
+  **New discovery, left unbuilt:** the PDF page also has a completely separate "Navegación
+  secundaria" rail (6 icons — buscar/crop/compartir/intercambiar/editar/ajustes — on a `#2a2927`
+  background) drawn to the right of the SideBar mockups. A previous pass had misattributed that
+  `#2a2927` legend line to `.ds-sidebar__secondary` (removed a background+padding that didn't
+  belong there — see the lesson below). No component/pattern in the kit implements this rail yet;
+  flagged as backlog, not built.
+  **Same-day follow-up (user-reported):** "Menú" was a non-interactive `<div>` — user wanted it to
+  be a real button too, plus a hover highlight generally (there was none anywhere in this
+  component before). Made the primary `.ds-sidebar__menu-heading` a `<button>` wired to the
+  existing `onToggleCollapsed` (hamburger = toggle-nav convention; no new prop). Added `:hover`
+  backgrounds to items and the new button. Doing this surfaced a real, unrelated bug: collapsed
+  mode was hiding `.ds-sidebar__menu-heading-icon` entirely, so the new button had nothing visible
+  once collapsed — but PDF's own Colapsada column shows the hamburger icon present, centered like
+  every other row. Fixed the hide-list and centering to match.
+  **Second same-day follow-up (user-reported):** the selected item's white accent line sat visibly
+  inset from the sidebar's own edge — `.ds-sidebar{padding: 10px}` was pushing every row inward.
+  Moved the horizontal inset off the container and onto each row instead (`padding: 10px 0` on the
+  nav; `padding: 4px 16px` on items and the menu-heading button, up from `4px 6px`; new
+  `padding-inline: 10px` on the header for the logo). Inset-preserving by construction — icon/label
+  screen position doesn't move, only the row's own background/accent now reaches the true edge.
+  Collapsed mode needed no change (centered icons land in the same spot regardless of padding).
+  **Third same-day follow-up (user-reported):** wanted the selected item's label + icon painted
+  white too. `getComputedStyle()` in a live tab showed the label was ALREADY `rgb(255,255,255)` for
+  every row, selected or not (a hardcoded, unconditional white), and the icon had `filter: none`
+  regardless of selection. PDF legend's «Iconos: #8a8b87 / Icono seleccionado: #FFFFFF» implies a
+  real default/selected split was intended. Changed the label's base color to
+  `--ds-color-pdf-ink-muted` (white only when selected) and added `filter: brightness(0) invert(1)`
+  on the selected item's icon — **this required correcting a prior wrong Known Limitation**: a
+  previous pass assumed the shared icon assets were "flat multi-color `<img>`, not tintable," but
+  checking the actual SVG source (`Icons/Menu/*-50x50.svg`, `Modules/Catastrofes-180x180.svg`) shows
+  every one is genuinely monochrome (single fill/stroke color per file) — the invert-filter trick
+  works reliably on all of them. Also removed the `caption: "Bandeja operativa"` demo prop from
+  "Mis tareas" (user: "se sale de tono con los demás" — it was the only item with a subtitle).
+  **Lesson:** a documented "Known Limitation" is a claim made at some point in time, not a
+  permanent fact — when a fix seems blocked by one, check the actual asset/source before assuming
+  it still holds, the same way memory/spec claims get re-verified before being relied on.
+
 ## Carried-forward finding (not yet fixed anywhere)
 
 **CSS `pt`-instead-of-`px` unit bug**, found while fixing InvestigationCard, confirmed present via
-`grep -n "[0-9]pt;" packages/ui/src/styles.css` in three more components that haven't had their
-fidelity pass yet:
+`grep -n "[0-9]pt;" packages/ui/src/styles.css` in two more components that haven't had their
+fidelity pass yet (fixed in `SideBar` as of 2026-08-05 — see Done above):
 
 - `CalendarCard` — `.ds-calendar-card__month`, `.ds-calendar-card__description`
 - `Empty` — `.ds-empty__title`, `.ds-empty__description`
-- `SideBar` — `.ds-sidebar__menu-label`, `.ds-sidebar__item-label`, `.ds-sidebar__item-caption`,
-  `.ds-sidebar__badge`, `.ds-sidebar__status`
 
 Check these specifically when their turn comes — the number is usually already right (someone did
 the ÷2 math correctly), only the CSS unit is wrong (1pt = 1.333px, not 1px).
@@ -156,7 +210,6 @@ In roughly PDF page order (per `knowledge/component-roadmap.md`'s gap table — 
 index with PyMuPDF before trusting it, page numbers there are 1-indexed "p.N" labels, not raw
 `doc[i]` indices):
 
-- **SideBar** — PDF p.13 (has the `pt` bug above, plus whatever else a real pass finds)
 - **Skeleton** — PDF p.14
 - **CalendarCard** — PDF p.15 (has the `pt` bug above)
 - **Empty** — PDF p.16 (has the `pt` bug above)
@@ -255,6 +308,17 @@ it.
   else on the page. Don't let a legend's stated unit override what `get_drawings()`/`get_text()`
   actually measures — when they disagree, the geometry wins, same as the ModuleCard icon lesson
   below (declared/measured source of truth beats an annotation drawn or labeled loosely).
+- **A PDF page can contain more than one diagram, and a legend line near the one you're fixing may
+  belong to a totally different one.** SideBar's page (p.13) has the Desplegada/Colapsada mockups
+  AND a separate, unrelated 6-icon "secondary nav rail" drawn further right, both sharing the same
+  page. A previous pass read the legend line "Navegación secundaria: fondo #2a2927" as describing
+  SideBar's own bottom item group and gave `.ds-sidebar__secondary` that background — wrong: the
+  actual `#2a2927` background rect (`get_drawings()`, rect x=681.5–813.1) and that legend's own
+  leader line (`get_drawings()`, segment at x=825.6–888.1) both sit well outside the SideBar mockup
+  entirely, wrapped around a distinct icon cluster (search/crop/share/exchange/edit/sliders) that
+  isn't part of SideBar at all. Proximity on the page is not evidence of association — check the
+  leader-line vector (or the colored background rect's actual bounds) before attributing a legend
+  line to the component you're currently fixing, especially on a page with multiple diagrams.
 - **`display: grid` with no explicit `grid-template-columns` can silently ignore asymmetric
   padding overrides.** Overriding just `padding-right` on a variant class had zero effect on an
   implicit single auto-column's computed width (confirmed via `getComputedStyle().

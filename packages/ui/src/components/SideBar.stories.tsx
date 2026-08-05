@@ -9,11 +9,14 @@ const primaryItems: SideBarItem[] = [
   {
     icon: menuIcon(Icons.MenuBandejaIcon),
     label: "Mis tareas",
-    caption: "Bandeja operativa",
     selected: true
   },
   { icon: menuIcon(Icons.HistorialIcon), label: "Historial" },
   { icon: menuIcon(Icons.ReportsIcon), label: "Reportes" },
+  { icon: menuIcon(Icons.CatastrofesIcon), label: "Catástrofes" }
+];
+
+const secondaryItems: SideBarItem[] = [
   {
     icon: menuIcon(Icons.NotificacionesIcon),
     label: "Notificaciones",
@@ -25,15 +28,8 @@ const primaryItems: SideBarItem[] = [
   { icon: menuIcon(Icons.CerrarSesionIcon), label: "Cerrar sesión" }
 ];
 
-const secondaryItems: SideBarItem[] = [
-  {
-    icon: menuIcon(Icons.CatastrofesIcon),
-    label: "CATÁSTROFES",
-    status: "EN VIVO"
-  }
-];
-
 const frameStyle = {
+  display: "flex",
   height: 520,
   padding: 32
 } as const;

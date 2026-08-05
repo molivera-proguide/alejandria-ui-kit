@@ -131,12 +131,14 @@ function SideBarListItem({ item }: { item: SideBarItem }): ReactElement {
       >
         <span className="ds-sidebar__item-icon" aria-hidden="true">
           {icon}
+          {/* PDF p.13: the notification badge is a corner accent on the icon itself (same
+              position in both Desplegada and Colapsada), not an inline pill after the label. */}
+          {badge != null ? <span className="ds-sidebar__badge">{badge}</span> : null}
         </span>
         <span className="ds-sidebar__item-copy">
           <span className="ds-sidebar__item-label">{label}</span>
           {caption ? <span className="ds-sidebar__item-caption">{caption}</span> : null}
         </span>
-        {badge != null ? <span className="ds-sidebar__badge">{badge}</span> : null}
         {status ? <span className="ds-sidebar__status">{status}</span> : null}
       </button>
     </li>
@@ -179,14 +181,20 @@ export function SideBar({
 
         <div className="ds-sidebar__menu">
           {hasMenuHeading ? (
-            <div className="ds-sidebar__menu-heading">
+            <button
+              type="button"
+              className="ds-sidebar__menu-heading"
+              onClick={onToggleCollapsed}
+              aria-expanded={!collapsed}
+              aria-label={collapsed ? "Expandir menú" : "Contraer menú"}
+            >
               {menuIcon ? (
                 <span className="ds-sidebar__menu-heading-icon" aria-hidden="true">
                   {menuIcon}
                 </span>
               ) : null}
               {menuLabel ? <span className="ds-sidebar__menu-label">{menuLabel}</span> : null}
-            </div>
+            </button>
           ) : null}
           <ul className="ds-sidebar__list">
             {items.map((item) => (

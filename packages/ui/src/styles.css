@@ -1692,7 +1692,8 @@
     flex-direction: column;
     height: 100%;
     overflow: hidden;
-    padding: 10px; /* calibrated ÷2 — PDF 20px */
+    padding: 10px 0; /* calibrated ÷2 — PDF 20px; horizontal inset moved onto each row (item/menu-heading)
+      so the selected-item accent line and hover highlight can span flush to the sidebar's own edge */
     transition: width var(--ds-duration-md) var(--ds-ease-standard);
     width: var(--ds-size-card-min-w); /* provisional/reused — PDF does not annotate expanded width */
   }
@@ -1706,6 +1707,7 @@
     display: flex;
     flex-shrink: 0;
     margin-bottom: 12px;
+    padding-inline: 10px; /* preserves the logo's inset now that .ds-sidebar has no horizontal padding */
   }
 
   .ds-sidebar--collapsed .ds-sidebar__header {
@@ -1744,15 +1746,30 @@
   }
 
   .ds-sidebar__secondary {
-    background: var(--ds-color-pdf-surface-warm);
-    margin-top: 12px;
-    padding: 8px;
+    margin-top: auto;
   }
 
   .ds-sidebar__menu-heading {
     align-items: center;
     display: flex;
     gap: 6px;
+  }
+
+  button.ds-sidebar__menu-heading {
+    background: transparent;
+    border: 0;
+    border-radius: var(--ds-radius-xs);
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    margin: 0;
+    padding: 4px 16px; /* absorbs .ds-sidebar's removed 10px horizontal inset, same total as before */
+    text-align: left;
+    width: 100%;
+  }
+
+  button.ds-sidebar__menu-heading:hover {
+    background: var(--ds-color-white-a06);
   }
 
   .ds-sidebar__menu-heading-icon {
@@ -1775,7 +1792,7 @@
   .ds-sidebar__menu-label {
     color: var(--ds-color-pdf-ink-muted);
     font-family: var(--ds-font-body);
-    font-size: 6pt; /* provisional — PDF shows "Menú" heading, no type annotation */
+    font-size: 7px; /* calibrated ÷2 — PDF text span confirms 14pt, same size as item labels */
     font-weight: var(--ds-font-weight-regular);
     line-height: var(--ds-leading-normal);
   }
@@ -1802,9 +1819,18 @@
     gap: 8px;
     margin: 0;
     min-height: 32px;
-    padding: 4px 6px;
+    padding: 4px 16px; /* absorbs .ds-sidebar's removed 10px horizontal inset, same total as before —
+      lets the selected border-left / hover background span flush to the sidebar's own edge */
     text-align: left;
     width: 100%;
+  }
+
+  .ds-sidebar__item:hover {
+    background: var(--ds-color-white-a06);
+  }
+
+  .ds-sidebar__item--selected:hover {
+    background: var(--ds-color-pdf-surface-warm);
   }
 
   .ds-sidebar__item--selected {
@@ -1812,7 +1838,20 @@
     border-left-color: var(--ds-color-white); /* PDF "Icono seleccionado línea: 2pt - #FFFFFF" */
   }
 
-  .ds-sidebar--collapsed .ds-sidebar__item {
+  .ds-sidebar__item--selected .ds-sidebar__item-label {
+    color: var(--ds-color-white);
+  }
+
+  .ds-sidebar__item--selected .ds-sidebar__item-icon img,
+  .ds-sidebar__item--selected .ds-sidebar__item-icon svg {
+    /* PDF "Icono seleccionado: #FFFFFF" — shared icon assets are flat #8a8b87 line art (confirmed
+       monochrome, not multi-color), so brightness(0) + invert(1) recolors them to solid white
+       without needing a tintable currentColor/fill source. */
+    filter: brightness(0) invert(1);
+  }
+
+  .ds-sidebar--collapsed .ds-sidebar__item,
+  .ds-sidebar--collapsed button.ds-sidebar__menu-heading {
     justify-content: center;
     padding-inline: 0;
   }
@@ -1823,6 +1862,7 @@
     flex-shrink: 0;
     height: 25px; /* calibrated ÷2 — PDF/asset 50×50, provenance --ds-size-icon-50 */
     justify-content: center;
+    position: relative;
     width: 25px; /* same */
   }
 
@@ -1843,9 +1883,9 @@
   }
 
   .ds-sidebar__item-label {
-    color: var(--ds-color-white);
+    color: var(--ds-color-pdf-ink-muted); /* white only when selected — see .ds-sidebar__item--selected */
     font-family: var(--ds-font-body);
-    font-size: 7pt; /* provisional — PDF does not annotate item label type size */
+    font-size: 7px; /* calibrated ÷2 — PDF text span confirms 14pt */
     font-weight: var(--ds-font-weight-regular);
     line-height: var(--ds-leading-normal);
   }
@@ -1853,21 +1893,29 @@
   .ds-sidebar__item-caption {
     color: var(--ds-color-pdf-ink-muted);
     font-family: var(--ds-font-mono);
-    font-size: 7pt; /* calibrated ÷2 — PDF 14pt, Source Code Regular */
+    font-size: 7px; /* calibrated ÷2 — PDF 14pt, Source Code Regular */
     font-weight: var(--ds-font-weight-regular);
     line-height: var(--ds-leading-normal);
   }
 
   .ds-sidebar__badge {
+    align-items: center;
     background: var(--ds-color-pdf-notification);
     border-radius: var(--ds-radius-pill);
     color: var(--ds-color-white);
-    flex-shrink: 0;
+    display: flex;
     font-family: var(--ds-font-body);
-    font-size: 8.5pt; /* calibrated ÷2 — PDF 17pt */
+    font-size: 8.5px; /* calibrated ÷2 — PDF 17pt */
     font-weight: var(--ds-font-weight-bold);
-    line-height: 1.2;
-    padding: 0 5px; /* no PDF box measurement — provisional, sized to content */
+    height: 10px; /* calibrated ÷2 — PDF badge circle 20.3×20.3pt */
+    justify-content: center;
+    line-height: 1;
+    min-width: 10px;
+    padding: 0 2px;
+    position: absolute; /* PDF: badge is a corner accent centered on the icon's top-right corner */
+    right: 0;
+    top: 0;
+    transform: translate(50%, -50%);
   }
 
   .ds-sidebar__status {
@@ -1875,7 +1923,7 @@
     color: var(--ds-color-pdf-line);
     flex-shrink: 0;
     font-family: var(--ds-font-mono);
-    font-size: 5pt; /* calibrated ÷2 — PDF 10pt */
+    font-size: 5px; /* calibrated ÷2 — PDF 10pt */
     font-weight: var(--ds-font-weight-medium);
     line-height: 1.2;
     padding: 2px 4px; /* no PDF box measurement — provisional, sized to content */
@@ -1884,8 +1932,6 @@
 
   .ds-sidebar--collapsed .ds-sidebar__item-copy,
   .ds-sidebar--collapsed .ds-sidebar__menu-label,
-  .ds-sidebar--collapsed .ds-sidebar__menu-heading-icon,
-  .ds-sidebar--collapsed .ds-sidebar__badge,
   .ds-sidebar--collapsed .ds-sidebar__status {
     display: none;
   }
