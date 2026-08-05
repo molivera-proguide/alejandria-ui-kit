@@ -99,13 +99,11 @@ siempre seguir estas reglas.
 - Importar desde `@alejandria/ui-kit` y cargar `styles.css` del paquete (`@alejandria/ui-kit/style.css`).
 - Proveer `greeting`, `prompt`, `executeLabel`, `attachLabel` y `suggestions`.
 - Tratar PDF p.12 como referencia canónica de apariencia.
-- **Nota de escala:** el CSS de este componente está a escala cruda @2× del PDF (sin calibración ÷2). Ver Known Limitations.
 
 ## Forbidden
 
 - Inventar props de chat/thread (`messages`, `history`, `onSendMessage`, etc.).
 - Hardcodear las tareas rápidas dentro del componente (AP13: set abierto → array declarativo).
-- «Arreglar» la escala ÷2 en este pass sin un pase dedicado de calibración.
 - Usar `Asistente` como modal genérico / dialog de confirmación.
 
 ## Recommendations
@@ -182,13 +180,13 @@ Tipos exportados:
 
 Una sola apariencia pública, alineada a PDF p.12 ASISTENTE. No hay modificadores BEM `ds-asistente--*` ni props de eje visual.
 
-| Elemento | Rol visual (PDF p.12; **valores CSS actuales = raw @2×, no ÷2**) |
+| Elemento | Rol visual (PDF p.12; valores CSS calibrados ÷2 desde el vector @2×) |
 |----------|------------------------------------------------------------------|
-| Shell | Fondo `#060606`, borde `0.75pt` `#c1c1c1`, caja `774×208` (CSS actual) |
-| Saludo | Source Code Regular `24px` (CSS; PDF «24pt»), `#c1c1c1`, uppercase en copy |
-| Tarea / prompt | Montserrat Light `18px`, `#8a8b87` → `#FFFFFF` al escribir |
-| Adjuntar | Montserrat Light `14px`, `#8a8b87` |
-| Tareas rápidas | Source Code Regular `14px`, `#8a8b87` |
+| Shell | Fondo `#060606`, borde `0.75px` `#c1c1c1`, caja `387×104` |
+| Saludo | Source Code Regular `12px`, `#c1c1c1`, uppercase en copy |
+| Tarea / prompt | Montserrat Light `9px`, `#8a8b87` → `#FFFFFF` al escribir |
+| Adjuntar | Montserrat Light `7px`, `#8a8b87` |
+| Tareas rápidas | Source Code Regular `7px`, `#8a8b87` |
 
 ---
 
@@ -237,7 +235,7 @@ Describe only accessibility behavior implemented by the component.
 
 Document only responsive behavior implemented by the component itself.
 
-`Asistente` no define media queries. El ancho del shell es fijo (`774px` en CSS actual, escala @2× no calibrada).
+`Asistente` no define media queries. El ancho del shell es fijo (`387px`, calibrado ÷2 desde el PDF).
 
 | Contexto | Behavior |
 |----------|----------|
@@ -436,7 +434,7 @@ Only include tokens directly consumed by the component.
 | `--ds-leading-label` | typography | Sugerencias |
 | `--ds-space-3` | space | Gap del row prompt + mic |
 
-Nota: tamaños en px del bloque `.ds-asistente*` son literales a escala @2× (no calibrados ÷2).
+Nota: tamaños en px del bloque `.ds-asistente*` están calibrados ÷2 desde el vector/glyph @2× del PDF (2026-08-05).
 
 ---
 
@@ -489,7 +487,6 @@ div.ds-asistente
 
 # Known Limitations
 
-- **Scale bug carried forward on purpose:** el CSS vive a escala cruda @2× del PDF (p. ej. saludo `font-size: 24px`, shell `774×208`), sin la calibración `display px = PDF annotation ÷ 2` que usan el resto de componentes PDF-context del kit. Renderiza ~2× más grande relativo a siblings. **Deliberadamente no corregido** en esta promoción (decisión del mantenedor humano); pendiente de un pase dedicado de calibración.
 - **Chat/thread behavior is NOT implemented** — solo el landing shell estático (saludo + un prompt + sugerencias estáticas). El PDF especifica «Chat tipo asistente IA» con comportamiento basado en historial.
 - **Dynamic per-user suggestions are NOT implemented** — `suggestions` es un prop estático; el PDF dice que «van a ser dinámicas, según el perfil o el patrón de uso del usuario.» Eso es concern de app-layer.
 - **No `className` / `...props` / native-HTML-attrs passthrough** — heredado del patrón `Modal` original; divergencia respecto a la convención «props extend native HTML» del resto del kit. No introducida por esta promoción.
@@ -500,7 +497,6 @@ div.ds-asistente
 
 # Future Improvements
 
-- [ ] Pase dedicado de calibración ÷2 (alinear escala con el resto del kit PDF-context)
 - [ ] Evaluar `className` / `...props` en el raíz para alinear con la convención del kit
 - [ ] Chat/thread UI cuando design cierre el comportamiento de historial
 - [ ] Documentar screen/patrón de composición con `SideBar` si el PDF lo exige en producto
@@ -511,4 +507,5 @@ div.ds-asistente
 
 | Version | Change |
 |----------|--------|
+| 0.1.1 | **Fidelity pass (2026-08-05):** corregida la escala ÷2 que llevaba dos pases diferidos ("Asistente 774px"). Todo el bloque `.ds-asistente*` estaba a escala cruda @2× (idéntico al valor pt medido en el vector del PDF, sin dividir por 2) — shell 774×208→387×104, mic 36×20→18×10, attach-plus 11→6, execute 135×25→67×12, offsets y font-sizes (24/18/14/14/13px→12/9/7/7/6.5px) halved. Confirmado con `page.get_drawings()`/`page.get_text("dict")` sobre la página 11 del PDF (artboard 1920×1080 = @2×) y verificado en Storybook (`Default`, `Playground`, estado de texto tipeado). |
 | 0.1.0 | **Promoción:** historia previa como `patterns/modal/Modal.tsx` (2026-07-13; página entonces «MODALES», numeración pre-v2). Promovido a `components/Asistente.tsx` el 2026-07-22 con props aplanadas, handlers de acción, regla CSS de color al tipear, export en barrel, docs/spec/manifest. Cierra el último gap del component-build-track (Empty / Skeleton / CalendarCard / SideBar / Asistente). |

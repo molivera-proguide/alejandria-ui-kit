@@ -1425,17 +1425,17 @@
   .ds-asistente {
     display: flex;
     flex-direction: column;
-    width: 774px;
+    width: 387px;
   }
 
   .ds-asistente__greeting {
     color: var(--ds-color-pdf-line);
     font-family: var(--ds-font-display);
-    font-size: 24px;
+    font-size: 12px;
     font-weight: var(--ds-font-weight-regular);
     letter-spacing: var(--ds-tracking-none);
     line-height: var(--ds-leading-snug);
-    margin: 0 0 9px 8px;
+    margin: 0 0 5px 4px;
   }
 
   .ds-asistente__shell {
@@ -1443,9 +1443,9 @@
     border: var(--ds-border-width-hair) solid var(--ds-color-pdf-line);
     box-sizing: border-box;
     color: var(--ds-color-pdf-ink-muted);
-    height: 208px;
+    height: 104px;
     position: relative;
-    width: 774px;
+    width: 387px;
   }
 
   .ds-asistente__top {
@@ -1453,11 +1453,11 @@
     display: flex;
     gap: var(--ds-space-3);
     justify-content: space-between;
-    left: 34px;
+    left: 17px;
     min-width: 0;
     position: absolute;
-    right: 22px;
-    top: 16px;
+    right: 11px;
+    top: 8px;
   }
 
   .ds-asistente__prompt.ds-field {
@@ -1486,7 +1486,7 @@
   .ds-asistente__prompt .ds-field__input {
     color: var(--ds-color-pdf-ink-muted);
     font-family: var(--ds-font-body);
-    font-size: 18px;
+    font-size: 9px;
     font-weight: var(--ds-font-weight-light);
     letter-spacing: var(--ds-tracking-none);
     line-height: var(--ds-leading-normal);
@@ -1516,15 +1516,15 @@
     cursor: pointer;
     display: inline-flex;
     flex-shrink: 0;
-    height: 36px;
+    height: 18px;
     justify-content: center;
     padding: 0;
-    width: 20px;
+    width: 10px;
   }
 
   .ds-asistente__mic svg {
-    height: 28px;
-    width: 20px;
+    height: 14px;
+    width: 10px;
   }
 
   .ds-asistente__attach {
@@ -1534,19 +1534,19 @@
     color: var(--ds-color-pdf-ink-muted);
     cursor: pointer;
     display: inline-flex;
-    gap: 10px;
-    left: 38px;
+    gap: 5px;
+    left: 19px;
     padding: 0;
     position: absolute;
-    top: 86px;
+    top: 43px;
   }
 
   .ds-asistente__attach-plus {
     display: block;
     flex-shrink: 0;
-    height: 11px;
+    height: 6px;
     position: relative;
-    width: 11px;
+    width: 6px;
   }
 
   .ds-asistente__attach-plus::before,
@@ -1574,7 +1574,7 @@
 
   .ds-asistente__attach-label {
     font-family: var(--ds-font-body);
-    font-size: 14px;
+    font-size: 7px;
     font-weight: var(--ds-font-weight-light);
     letter-spacing: var(--ds-tracking-none);
     line-height: var(--ds-leading-normal);
@@ -1583,19 +1583,19 @@
   .ds-asistente__execute.ds-button {
     border: 0;
     border-radius: 0;
-    bottom: 21px;
+    bottom: 10px;
     box-shadow: none;
     font-family: var(--ds-font-body);
-    font-size: 13px;
+    font-size: 6.5px;
     font-weight: var(--ds-font-weight-bold);
     letter-spacing: var(--ds-tracking-none);
-    min-height: 25px;
+    min-height: 12px;
     padding: 0;
     position: absolute;
-    right: 34px;
+    right: 17px;
     text-transform: uppercase;
     transform: none;
-    width: 135px;
+    width: 67px;
   }
 
   .ds-asistente__execute.ds-button:hover:not(:disabled) {
@@ -1610,10 +1610,10 @@
   .ds-asistente__suggestions {
     display: flex;
     flex-wrap: wrap;
-    gap: 53px;
+    gap: 26px;
     list-style: none;
-    margin: 22px 0 0;
-    padding: 0 10px;
+    margin: 11px 0 0;
+    padding: 0 5px;
   }
 
   .ds-asistente__suggestion {
@@ -1622,7 +1622,7 @@
     color: var(--ds-color-pdf-ink-muted);
     cursor: pointer;
     font-family: var(--ds-font-display);
-    font-size: 14px;
+    font-size: 7px;
     font-weight: var(--ds-font-weight-regular);
     letter-spacing: var(--ds-tracking-none);
     line-height: var(--ds-leading-label);

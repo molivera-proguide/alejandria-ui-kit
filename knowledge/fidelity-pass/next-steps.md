@@ -110,6 +110,23 @@ Backlog below is now split accordingly.
   of the comparison — also sidesteps the overlap risk structurally, since "Humedad" is short
   enough to never need any of the CSS fixes above to stay clear of the utility icons.
 
+- **Asistente** (PDF p.12 / `doc[11]`, "ASISTENTE") — this was the `component-roadmap.md`-flagged
+  "Asistente 774px — second sizing pass, deferred twice" issue, now closed. Every single dimension
+  in `.ds-asistente*` (shell 774×208, mic 36×20/svg 28×20, attach-plus 11×11, execute button
+  135×25 + its `right`/`bottom` offsets, all five font-sizes, all absolute-position offsets,
+  suggestions `gap`/`margin`/`padding`) was the *raw* @2× PDF pt value used directly as px, with
+  zero ÷2 applied — unlike every other component in this pass. Proven conclusively by cross-
+  checking `page.get_drawings()`/`page.get_text("dict")` on `doc[11]` (confirmed @2× via
+  `page.mediabox` = 1920×1080) against the current CSS: e.g. shell vector rect measured
+  774.4×207.7pt, current CSS was `774×208px` — a near-exact 1:1 match to the *unhalved* number,
+  repeated across every single measured value (execute button 134.7×24.5pt vs CSS `135×25px`,
+  attach-plus lines 11.2×11.2pt vs CSS `11×11px`, suggestions margin-top 22.2pt vs CSS `22px`,
+  etc.) This spec's own previous "Deltas" section had already flagged this as a known, deliberately
+  unfixed bug ("carried forward on purpose... pending a future dedicated calibration pass") — this
+  was that pass. Halved everything; verified in Storybook (`Default`, `Playground`, typed-text
+  `:not(:placeholder-shown)` state) before commit. See the new reusable-technique note below on
+  telling real vector/glyph geometry apart from a prose legend when both are on the same page.
+
 ## Carried-forward finding (not yet fixed anywhere)
 
 **CSS `pt`-instead-of-`px` unit bug**, found while fixing InvestigationCard, confirmed present via
@@ -139,8 +156,6 @@ In roughly PDF page order (per `knowledge/component-roadmap.md`'s gap table — 
 index with PyMuPDF before trusting it, page numbers there are 1-indexed "p.N" labels, not raw
 `doc[i]` indices):
 
-- **Asistente** — PDF p.12 (static landing shell only per component-roadmap.md; chat/thread UI is
-  explicitly out of scope, don't try to "fix" that)
 - **SideBar** — PDF p.13 (has the `pt` bug above, plus whatever else a real pass finds)
 - **Skeleton** — PDF p.14
 - **CalendarCard** — PDF p.15 (has the `pt` bug above)
@@ -230,6 +245,16 @@ it.
   translucent-background component, don't reflexively reach for the same dark token the component
   fill uses (`--ds-color-pdf-surface`) — pick a *different* dark tone (e.g.
   `--ds-color-pdf-surface-warm`) so the translucency has something to visibly darken.
+- **When a page has both a prose "legend" (design notes in plain text) and real vector/glyph
+  geometry, trust the vector/glyph geometry — the legend can use unit labels loosely.** Asistente's
+  page had a legend note reading "Padding: 20px 30px" alongside "Borde 0,75pt" and "Saludo ...
+  24pt" — different unit words for values on the same page. Cross-checking the padding number
+  against the actual measured vector offset (prompt text sits 33.5pt @2× from the shell's left
+  edge, i.e. ~16.75px once halved — nowhere near the legend's "30px") showed the legend's "px"
+  label didn't mean "already display-scale"; it was just as much a raw @2× number as everything
+  else on the page. Don't let a legend's stated unit override what `get_drawings()`/`get_text()`
+  actually measures — when they disagree, the geometry wins, same as the ModuleCard icon lesson
+  below (declared/measured source of truth beats an annotation drawn or labeled loosely).
 - **`display: grid` with no explicit `grid-template-columns` can silently ignore asymmetric
   padding overrides.** Overriding just `padding-right` on a variant class had zero effect on an
   implicit single auto-column's computed width (confirmed via `getComputedStyle().
