@@ -66,6 +66,50 @@ Backlog below is now split accordingly.
   `::after { content: ":" }` separator to the metric label, matching the PDF's literal
   `"CASOS ABIERTOS:"` text (was rendering sentence-case with no colon).
 
+- **MetricCard** (PDF p.11, "Metric card") — user reported 3 issues, all confirmed real: (1) card
+  widths varying in Storybook (no explicit width at all, only `min-height: 66px` — 5th confirmed
+  case of the fixed-size pattern, this time surfacing via CSS-grid track auto-sizing rather than
+  `fit-content` directly); fixed to `width/height: 113×91px` reporting, `83×55px` ficha (PDF vector
+  bboxes, all 4 reporting examples and all 3 ficha examples are each internally identical in size).
+  (2) `appearance="ficha"` nearly invisible next to `"reporting"` — it has no background of its
+  own by design ("sin fondo, respeta el fondo de la ficha que lo contiene"), and the `Scales` story
+  demoed it with nothing behind it; added a dark panel wrapper around just that example, matching
+  the PDF's own illustration. Also fixed the label font-size (6px→8px, a delta this spec had
+  already flagged as unresolved before today) and the story's missing dark decorator (same
+  Storybook bug as `Empty`/`ChartCard`, this time also making the utility icons' `#c1c1c1` stroke
+  blend into the card). (3) missing edit/delete utility buttons — the PDF vector path shows pencil/
+  trash icon paths inside all 4 reporting example cards, none inside the 3 ficha tiles. Added a
+  `utilities` prop structurally identical to `InvestigationCard.utilities` (same SVG assets, same
+  order/metadata pattern), gated to `appearance === "reporting"` per that evidence.
+  **Second-round review same day** caught two things the first pass got wrong: the `Scales`
+  ("Reporting vs Ficha") story's own "Reporting" example never got `utilities` added (only `Tones`
+  did — inconsistent, fixed). And the ficha fix actually *broke* the tile ("se ve roto", not just
+  "hard to see") — a fixed `height: 55px` (from the same PDF bbox) overflowed once combined with
+  the already-correct padding/gap/font-sizes, and the ficha label was still inheriting reporting's
+  extreme `letter-spacing: 0.41em` ("Inteletrado 410" — the PDF legend states that only for
+  reporting's title, not ficha's), which alone made "HECTOPASCALES" too wide for the 83px tile and
+  clipped. Fixed by reverting ficha's height to `auto` (kept only the width fix, which is what the
+  user actually reported as inconsistent) and setting the ficha label's letter-spacing to none.
+  **Third-round review same day**, three more: (1) reporting's own fixed height (91px) had the
+  same overflow problem ficha's did — reverted to `auto` too, same reasoning. (2) The 20%-opacity
+  fill was invisible because the Storybook decorator's backdrop (`--ds-color-pdf-surface`,
+  #060606) was literally the same color the fill is built from — `rgb(6 6 6 / 0.2)` over a #060606
+  backdrop composites back to exactly #060606, mathematically indistinguishable from no background
+  at all. Changed the decorator to `--ds-color-pdf-surface-warm` (#2a2927) so the darkening is
+  visible. (3) A genuine CSS grid bug: `.ds-metric--with-utilities`'s `padding-right: 32px` had
+  zero effect on the implicit grid column's computed width (confirmed via `getComputedStyle` —
+  the property read back as `32px`, but `gridTemplateColumns` didn't shrink), so a long
+  single-word label ("HECTOPASCALES", nothing to wrap at) still ran under the utility icons.
+  Fixed by making the single column explicit (`grid-template-columns: minmax(0, 1fr)`), which is
+  what actually made the padding take effect, plus `overflow-wrap: break-word` on the label as a
+  second line of defense for any label long enough to still need it.
+  **Fourth-round request same day** was data, not CSS: the `Scales` story's demo data mixed three
+  different metrics from the same PDF section ("Hectopascales" as the label — that's actually the
+  *reference* field for "Humedad" — plus a value and reference belonging to yet other metrics on
+  that page). Swapped in the PDF's real, single "Humedad 87% Hectopascales" example on both sides
+  of the comparison — also sidesteps the overlap risk structurally, since "Humedad" is short
+  enough to never need any of the CSS fixes above to stay clear of the utility icons.
+
 ## Carried-forward finding (not yet fixed anywhere)
 
 **CSS `pt`-instead-of-`px` unit bug**, found while fixing InvestigationCard, confirmed present via
@@ -95,8 +139,6 @@ In roughly PDF page order (per `knowledge/component-roadmap.md`'s gap table — 
 index with PyMuPDF before trusting it, page numbers there are 1-indexed "p.N" labels, not raw
 `doc[i]` indices):
 
-- **MetricCard** — PDF "Metric card" (has both a dashboard variant and a `.ds-metric--ficha`
-  variant — check both against whichever PDF page(s) show them)
 - **Asistente** — PDF p.12 (static landing shell only per component-roadmap.md; chat/thread UI is
   explicitly out of scope, don't try to "fix" that)
 - **SideBar** — PDF p.13 (has the `pt` bug above, plus whatever else a real pass finds)
@@ -167,3 +209,33 @@ it.
   `get_drawings()`/`get_text()` output looks unexpectedly large or duplicated for a page, don't
   force a clean read — cross-check against the user's own screenshot (legend text is usually
   readable directly) rather than trusting noisy extracted data.
+- **Fixing `width` from a PDF bbox is low-risk; fixing `height` from one is not.** A too-narrow
+  fixed width just wraps text — cosmetic. A too-short fixed height, once combined with already-
+  correct padding/gap/font-sizes, can genuinely overflow/clip content (MetricCard ficha, 2026-08-
+  05: measured 55px directly from the bbox, but label+value+change needed ~55px on their own,
+  before padding). Before fixing a height from a raw PDF measurement, add up the actual
+  padding+gaps+line-heights that will sit inside it and check they fit — or default to `height:
+  auto` and only fix `width`, especially for anything with more than one text row.
+- **Letter-spacing/tracking figures in this PDF's legends are per-role, not global.** The
+  "Interletrado 410" tracking value shows up next to specific title specs (e.g. reporting's Source
+  Code title) but is silently absent from others (e.g. the same page's ficha title, a different
+  font). Don't let a CSS rule for one role's tracking leak into a sibling role via inheritance —
+  check whether the legend actually repeats the tracking figure for each role or only states it
+  once.
+- **A translucent-fill token is only visible if the demo backdrop differs from the color the fill
+  itself is built from.** `rgb(6 6 6 / 0.2)` (20%-opacity `--ds-color-pdf-surface`) composited over
+  a `--ds-color-pdf-surface` backdrop resolves back to `--ds-color-pdf-surface` exactly — a
+  perfectly faithful implementation of "X at 20% opacity" can still look like "no background at
+  all" if the demo happens to put it on top of X itself. When adding a dark decorator for a
+  translucent-background component, don't reflexively reach for the same dark token the component
+  fill uses (`--ds-color-pdf-surface`) — pick a *different* dark tone (e.g.
+  `--ds-color-pdf-surface-warm`) so the translucency has something to visibly darken.
+- **`display: grid` with no explicit `grid-template-columns` can silently ignore asymmetric
+  padding overrides.** Overriding just `padding-right` on a variant class had zero effect on an
+  implicit single auto-column's computed width (confirmed via `getComputedStyle().
+  gridTemplateColumns` staying the same regardless) — the padding property itself read back
+  correctly, it just didn't feed into the column-sizing algorithm as expected. Making the column
+  explicit (`grid-template-columns: minmax(0, 1fr)`) fixed it immediately. If a padding/width
+  override on a `display: grid` element with implicit columns doesn't seem to take effect
+  visually, check `getComputedStyle().gridTemplateColumns` before assuming the padding itself is
+  wrong — it may be applied correctly and just not doing anything.

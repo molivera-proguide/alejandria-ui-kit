@@ -645,21 +645,75 @@
     background: var(--ds-color-pdf-surface-a20);
     border: var(--ds-border-width-hair) solid var(--ds-color-pdf-line-light);
     border-radius: var(--ds-radius-xs);
+    box-sizing: border-box;
     color: var(--ds-color-ink);
     display: grid;
     gap: 5.5px;
-    min-height: 66px /* calibrated ÷2 */;
+    grid-template-columns: minmax(0, 1fr);
+    /* fixed width, not height: PDF vector path (get_drawings), the 4 "reporting" example cards are
+       all an identical 225.3×181.7pt @2× → ÷2 = 113×91px. Width was invented before (no rule at
+       all, just `min-height: 66px`) and is now measured — same width-inconsistency fix as
+       .ds-task/.ds-investigation-card/.ds-module-card. Height stays `auto` (reverted 2026-08-05,
+       same lesson as .ds-metric--ficha below): a fixed 91px overflowed once a two-word label like
+       "Riesgo operativo" wrapped to 2 lines, pushing `change` outside the card entirely. */
     padding: 5px;
     position: relative;
+    width: 113px /* calibrated ÷2 */;
+  }
+
+  .ds-metric--with-utilities {
+    /* reserves room so a long label can't run under the absolutely-positioned utility buttons —
+       same technique as .ds-investigation-card--with-utilities. Full shorthand, not just
+       `padding-right`, to sidestep a grid auto-column sizing quirk where overriding only the
+       longhand wasn't shrinking the implicit column's computed width. */
+    padding: 5px 32px 5px 5px;
+  }
+
+  .ds-metric__utilities {
+    display: flex;
+    gap: 4px /* calibrated ÷2 */;
+    justify-content: flex-end;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+  }
+
+  .ds-metric__utility {
+    align-items: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    height: 10px /* calibrated ÷2 */;
+    justify-content: center;
+    padding: 0;
+    width: 10px /* calibrated ÷2 */;
+  }
+
+  .ds-metric__utility:focus-visible {
+    box-shadow: 0 0 0 2px var(--ds-color-pdf-line-a45);
+    outline: none;
+  }
+
+  .ds-metric__utility img {
+    display: block;
+    height: 10px /* calibrated ÷2 */;
+    object-fit: contain;
+    width: 10px /* calibrated ÷2 */;
   }
 
   .ds-metric__label {
     color: var(--ds-color-pdf-ink-muted);
     font-family: var(--ds-font-mono);
-    font-size: 6px;
+    font-size: 8px /* calibrated ÷2 — was 6px, PDF legend gives 16pt @2× for both reporting and ficha titles */;
     font-weight: var(--ds-font-weight-bold);
     letter-spacing: var(--ds-tracking-metric);
     line-height: var(--ds-leading-label);
+    /* a long single-word label (e.g. "HECTOPASCALES") has no space to wrap at and, combined with
+       the 0.41em tracking above, was overflowing straight through the reserved utilities padding
+       and under the edit/delete icons ("HECTOPASCALES se superpone con los botoncitos"). Allow a
+       mid-word break as a fallback so it wraps instead of overflowing. */
+    overflow-wrap: break-word;
     text-transform: uppercase;
   }
 
@@ -686,12 +740,27 @@
 
   .ds-metric--ficha {
     background: transparent;
-    width: fit-content /* ficha tiles are compact in the PDF, not full-bleed — same technique as .ds-task, no invented dimension */;
+    /* PDF vector path: the 3 "En ficha" example tiles are all an identical 165.8×109.6pt @2× →
+       ÷2 = 83px wide. Was `width: fit-content` — now measured, not invented. Height stays auto
+       (reverted 2026-08-05): a fixed 55px from that same bbox overflowed once label+value+change
+       were stacked with the already-correct padding/gap/font-sizes — the 3 lines need slightly
+       more room than the bbox alone accounts for (the PDF tile likely has tighter line-height than
+       reporting's; not independently re-measured), so a hard height clipped/overlapped content.
+       Fixing only the width (the dimension the user actually reported as inconsistent) avoids
+       that failure mode. */
+    width: 83px /* calibrated ÷2 */;
   }
 
   .ds-metric--ficha .ds-metric__label {
     font-family: var(--ds-font-body);
     font-weight: var(--ds-font-weight-extralight);
+    /* PDF legend gives reporting's title "Inteletrado 410" explicitly but omits it for the ficha
+       title entirely ("Título: Montserrat Extra Light - 16pt - #8a8b87 - Uppercase", no tracking
+       figure) — the extreme letter-spacing is a reporting/Source-Code-specific detail, not shared.
+       Base .ds-metric__label's `letter-spacing: var(--ds-tracking-metric)` (0.41em) was still
+       inherited here; at 0.41em × 8px a label like "HECTOPASCALES" needs far more than the 83px
+       tile can hold and visibly overflows/clips — this was the main cause of "se ve roto". */
+    letter-spacing: var(--ds-tracking-none);
   }
 
   .ds-metric--ficha .ds-metric__value {

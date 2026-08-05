@@ -37,20 +37,20 @@ tags:
   - presentational
   - molecule
 
-last_reviewed: 2026-07-13
+last_reviewed: 2026-08-05
 ---
 
 # MetricCard
 
 ## Purpose
 
-Presenta un indicador operativo de solo lectura con etiqueta, valor principal y texto de cambio opcional en consolas del Alejandria UI Kit.
+Presenta un indicador operativo de solo lectura con etiqueta, valor principal y texto de cambio opcional en consolas del Alejandria UI Kit, alineado con la sección **METRIC CARD** del PDF de referencia (p.11).
 
 Describe:
 
 - **Responsabilidad principal:** mostrar un KPI puntual (p. ej. riesgo operativo, unidades activas, alertas abiertas) en una tarjeta compacta con jerarquía visual fija.
 - **Problema que resuelve:** unificar la presentación de métricas de resumen en filas de dashboard sin acoplar formato numérico, cálculo de tendencias ni navegación.
-- **Alcance:** componente presentacional basado en `<div>`; el consumidor provee strings preformateados para `label`, `value` y `change`, y opcionalmente un `tone` semántico y una `appearance` de escala (reporting vs ficha).
+- **Alcance:** componente presentacional basado en `<div>`; el consumidor provee strings preformateados para `label`, `value` y `change`, y opcionalmente un `tone` semántico, una `appearance` de escala (reporting vs ficha) y `utilities` de editar/eliminar (solo en `appearance="reporting"`, agregado 2026-08-05).
 
 Exclude:
 
@@ -72,6 +72,7 @@ Documenta los comportamientos públicos en los que el consumidor puede confiar.
 - `change` renderizado en `<span class="ds-metric__change">` solo cuando su valor es truthy.
 - `tone` por defecto `"neutral"`; la clase modificadora `ds-metric--{tone}` se aplica en la raíz.
 - `appearance` por defecto `"reporting"`; cuando es `"ficha"`, aplica además `ds-metric--ficha` en la raíz (composable con `tone`).
+- `utilities` (editar/eliminar) solo se renderiza cuando `appearance="reporting"` — PDF METRIC CARD p.11 no muestra estos botones en las tiles "En ficha". Agregado 2026-08-05, mismo patrón que `InvestigationCard.utilities`.
 - Fusión de `className` externa con `ds-metric`, el modificador de tono y el de apariencia mediante `cn()`.
 - Repaso de atributos nativos de `HTMLAttributes<HTMLDivElement>` al `<div>` raíz vía `...props` (`id`, `style`, `data-*`, `aria-*`, etc.).
 
@@ -80,7 +81,7 @@ Documenta los comportamientos públicos en los que el consumidor puede confiar.
 - Obtiene, calcula ni formatea datos numéricos.
 - Renderiza iconos, gráficos ni `children`.
 - Compone internamente `Card`, `ModuleCard`, `ProgressRing`, `Badge` ni otros componentes del kit.
-- Define interactividad, manejadores de clic ni semántica de botón o enlace.
+- Define interactividad, manejadores de clic ni semántica de botón o enlace **fuera de los botones `utilities` de editar/eliminar** (agregado 2026-08-05) — la tarjeta en sí (el `<div>` raíz) sigue sin ser clickable ni focusable.
 - Aplica estilos responsivos propios (sin media queries en `.ds-metric`).
 - Define roles ARIA, etiquetas accesibles ni manejo de teclado propios.
 - Diferencia visualmente los tonos `good` ni `watch` (sin color PDF definido). `critical` colorea el valor en `#ff0404`; `neutral` usa valor `#ffffff`.
@@ -112,7 +113,7 @@ siempre seguir estas reglas.
 
 ## Recommendations
 
-- Agrupar instancias en un contenedor con CSS Grid, como en la story `Tones` (`repeat(4, minmax(180px, 1fr))`) o en `apps/web` (`.ops-metrics` con `repeat(4, minmax(0, 1fr))`).
+- Agrupar instancias en un contenedor flex o grid, como en la story `Tones` (`display: flex; flexWrap: wrap`, corregido 2026-08-05) o en `apps/web` (`.ops-metrics` con `repeat(4, minmax(0, 1fr))`). Con ancho fijo (113px), un grid `minmax(N, 1fr)` funciona igual de bien siempre que `N` no sea menor a 113.
 - Usar `key={metric.label}` al mapear listas, como en `apps/web/src/App.tsx`.
 - Envolver la fila de métricas en `<section aria-label="...">` cuando el grupo requiera región semántica; `MetricCard` no la provee.
 - Reservar `change` para contexto breve del valor (p. ej. `"critico"`, `"en campo"`, `"7 sin leer"`).
@@ -140,7 +141,9 @@ import {
   MetricCard,
   type MetricCardProps,
   type MetricTone,
-  type MetricAppearance
+  type MetricAppearance,
+  type MetricUtility,
+  type MetricUtilityType
 } from "@alejandria/ui-kit";
 ```
 
@@ -150,6 +153,8 @@ Tipos exportados:
 - `MetricCardProps` — props del componente.
 - `MetricTone` — unión de tonos semánticos para la prop `tone`.
 - `MetricAppearance` — unión de escalas visuales para la prop `appearance`.
+- `MetricUtility` — configuración de una utilidad de esquina (`{ type, onClick, label? }`), agregado 2026-08-05.
+- `MetricUtilityType` — unión `"edit" | "delete"`, agregado 2026-08-05.
 
 ---
 
@@ -162,6 +167,7 @@ Tipos exportados:
 | `change` | `string` | — | no | Texto de referencia/contexto. Renderizado en `<span class="ds-metric__change">` solo si es truthy. Estilo Montserrat Extralight 8px (display; 16÷2) `#ffffff` (sin `text-transform`). |
 | `tone` | `MetricTone` | `"neutral"` | no | Tono semántico. Aplica clase `ds-metric--{tone}` en la raíz. Solo `critical` cambia el color del valor a `#ff0404`. Composable con `appearance`. |
 | `appearance` | `MetricAppearance` | `"reporting"` | no | Escala visual. `"reporting"` conserva la métrica grande de dashboard. `"ficha"` aplica `ds-metric--ficha` (escala compacta PDF MÉTRICAS «En ficha»). |
+| `utilities` | `MetricUtility[]` | `[]` | no | Botones de editar/eliminar en la esquina superior derecha. **Solo se renderizan si `appearance="reporting"`** — se ignoran silenciosamente en `"ficha"`, aunque se provean. Agregado 2026-08-05; mismo patrón que `InvestigationCard.utilities` (mismos iconos `Editar-20x20.svg`/`Eliminar-20x20.svg`). |
 | `className` | `string` | — | no | Clases adicionales fusionadas con `ds-metric` y los modificadores de tono/apariencia en el `<div>` raíz. |
 | `...props` | `HTMLAttributes<HTMLDivElement>` | — | no | Atributos nativos del `<div>` raíz (`id`, `style`, `data-*`, `aria-*`, etc.). |
 
@@ -181,6 +187,16 @@ Tipos exportados:
 | `"reporting"` | Escala por defecto (dashboard / reporting). Valor 42px (display; PDF 84pt @2× ÷2), título Source Code Bold, fondo `#060606` 20%. Sin clase modificadora adicional. |
 | `"ficha"` | Escala compacta para layouts densos / DetailSheet. Clase `ds-metric--ficha`. Valor 26px (display; PDF 52pt @2× ÷2), título Montserrat Extra Light, fondo transparente. |
 
+### MetricUtility / MetricUtilityType
+
+Agregado 2026-08-05 — PDF METRIC CARD p.11 muestra iconos de editar/eliminar en la esquina superior derecha de las 4 cards de ejemplo "Reporting"; ninguna tile "En ficha" los muestra.
+
+| Field | Type | Default | Required | Description |
+|-------|------|----------|----------|-------------|
+| `type` | `MetricUtilityType` | — | sí | `"edit"` o `"delete"`. Determina icono y orden canónico (edit antes que delete). |
+| `onClick` | `MouseEventHandler<HTMLButtonElement>` | — | sí | Manejador de clic del botón de utilidad. |
+| `label` | `string` | según `type` | no | Etiqueta accesible (`aria-label`). Por defecto: `"Editar"` o `"Eliminar"`. |
+
 ---
 
 # Variants
@@ -189,7 +205,7 @@ Describe every public visual variant.
 
 ## Default
 
-Apariencia de reporting PDF (MÉTRICAS): fondo `rgb(6 6 6 / 0.2)`, borde `0.75px solid #e6e6e6`, padding `5px`, `min-height: 66px`, layout en grid con `gap: 5.5px` (display scale). Etiqueta Source Code Pro Bold 6px display `#8a8b87` uppercase con `letter-spacing: 0.41em`. Valor Montserrat Bold 42px `#ffffff`. Referencia (`change`) Montserrat Extralight (200) 8px `#ffffff`.
+Apariencia de reporting PDF (MÉTRICAS): fondo `rgb(6 6 6 / 0.2)` (nota: solo se ve como un fondo distinguible si el contenedor real detrás es más claro que `#060606` — ver Known Limitations), borde `0.75px solid #e6e6e6`, padding `5px`, `width: 113px` fijo (medido en el vector del PDF; alto `auto`, ver Responsive Behavior), layout en grid con `gap: 5.5px` (display scale). Etiqueta Source Code Pro Bold 8px display `#8a8b87` uppercase con `letter-spacing: 0.41em` (corregido 2026-08-05, antes 6px). Valor Montserrat Bold 42px `#ffffff`. Referencia (`change`) Montserrat Extralight (200) 8px `#ffffff`.
 
 `tone="critical"` aplica `.ds-metric--critical` y colorea `.ds-metric__value` en `#ff0404`. Los tonos `good` y `watch` no tienen acento de color en el PDF y comparten el valor blanco de `neutral`.
 
@@ -245,12 +261,12 @@ Describe only accessibility behavior implemented by the component.
 
 Document only responsive behavior implemented by the component itself.
 
-`MetricCard` no define media queries. Impone `min-height: 66px` (display) en `.ds-metric`; el ancho lo define el contenedor padre.
+`MetricCard` no define media queries. Impone solo `width` fijo en `.ds-metric` (113px reporting, 83px ficha) — corregido 2026-08-05, antes solo `min-height: 66px` sin ancho, lo que dejaba variar el ancho de cada card según el largo de su `label` dentro de un grid ("los tamaños de ancho varían" per reporte de usuario). El alto quedó `auto` en ambas apariencias: un alto fijo (91px reporting, 55px ficha, ambos medidos en el mismo vector del PDF) desbordaba en cuanto un label de dos palabras envolvía a dos líneas — pasó primero en ficha, y al confirmarlo en la story `Tones` pasó también en reporting ("Riesgo operativo" empujando `change` fuera de la card). `.ds-metric` también fija `grid-template-columns: minmax(0, 1fr)` explícitamente — sin esto, el padding-right reservado para los botones de `utilities` no achicaba la columna implícita del grid (bug real de navegador, no de fidelidad).
 
 | Contexto | Behavior |
 |----------|----------|
-| Componente | Sin breakpoints. Tamaño mínimo vertical fijo; el ancho efectivo depende del grid o flex del padre. |
-| Storybook `Tones` | Contenedor padre con `gridTemplateColumns: repeat(4, minmax(180px, 1fr))` y `gap: 14`; el colapso responsivo depende del grid del padre, no del componente. |
+| Componente | Sin breakpoints. Tamaño fijo (ancho y alto); no se ajusta al contenedor padre. |
+| Storybook `Tones` | Contenedor `display: flex; flexWrap: wrap; gap: 14` (cambiado 2026-08-05, antes un grid `minmax(180px, 1fr)` que ya no aplica con ancho fijo). |
 | `apps/web` `.ops-metrics` | Grid de 4 columnas en viewport amplio; media query del consumidor colapsa a `grid-template-columns: 1fr` bajo `@media (max-width: 960px)`. |
 
 ---
@@ -490,12 +506,16 @@ packages/ui/src/components/MetricCard.tsx
 ## Dependencies
 
 - `cn()` from `packages/ui/src/utils/cn.ts`
-- `styles.css` (clases `ds-metric`, `ds-metric--{tone}`, `ds-metric--ficha`, `ds-metric__topline`, `ds-metric__label`, `ds-metric__value`, `ds-metric__change`)
+- `styles.css` (clases `ds-metric`, `ds-metric--{tone}`, `ds-metric--ficha`, `ds-metric__utilities`, `ds-metric__utility` (agregadas 2026-08-05), `ds-metric__topline`, `ds-metric__label`, `ds-metric__value`, `ds-metric__change`)
+- `Editar-20x20.svg`, `Eliminar-20x20.svg` de `packages/ui/src/Icons/Cards/` (agregado 2026-08-05, mismos assets que `InvestigationCard`)
 
 ## DOM Structure
 
 ```text
 div.ds-metric.ds-metric--{tone}[.ds-metric--ficha]
+├── div.ds-metric__utilities (solo si appearance="reporting" y utilities.length > 0)
+│   └── button.ds-metric__utility (× utilities.length, orden edit → delete)
+│       └── img
 ├── div.ds-metric__topline
 │   └── span.ds-metric__label
 ├── strong.ds-metric__value
@@ -513,8 +533,10 @@ div.ds-metric.ds-metric--{tone}[.ds-metric--ficha]
 - `.ds-metric__topline` no tiene reglas CSS propias; actúa solo como contenedor estructural.
 - Sin estados interactivos (`hover`, `focus`, `disabled`) ni semántica de control.
 - Sin tests unitarios ni de integración en el repositorio.
-- Etiquetas con `letter-spacing: 0.41em` pueden desbordar anchos estrechos en grids de 4 columnas.
+- Etiquetas largas (p. ej. "Riesgo operativo") pueden pasar a dos líneas dentro del ancho fijo de 113px — es el comportamiento esperado de una card de tamaño fijo, no un bug; ver `MetricCard.spec.md`.
 - Colores hardcodeados; migración incompleta a tokens del design system.
+- `utilities` no tiene props legadas equivalentes a las de `InvestigationCard` (`onEdit`/`onDelete` sueltos) — solo el array `utilities[]`, sin necesidad de compatibilidad retroactiva porque es una prop nueva.
+- **El fondo `rgb(6 6 6 / 0.2)` de `appearance="reporting"` solo se percibe si el contenedor real detrás es visualmente distinto de `--ds-color-pdf-surface` (#060606).** Sobre un fondo idéntico a ese color, la composición matemática da el mismo `#060606` — indistinguible de "sin fondo". No es un bug del componente (el fill se sigue aplicando), pero sí una responsabilidad del consumidor: si la "pantalla de reporting" real usa un negro puro, esta card no se va a notar. La story de Storybook usa `--ds-color-pdf-surface-warm` (#2a2927) precisamente para evitar este caso.
 
 ---
 
@@ -534,3 +556,7 @@ div.ds-metric.ds-metric--{tone}[.ds-metric--ficha]
 | 0.1.0 | Implementación inicial de `MetricCard`, `MetricCardProps` y `MetricTone` con estilos `ds-metric` y stories en Storybook (`Playground`, `Tones`). Uso en `Components.stories.tsx` → `OperationsConsole` y `apps/web/src/App.tsx`. |
 | 0.1.0 | Refinamiento visual PDF (MÉTRICAS reporting): borde `#e6e6e6` 0.75px, label 16px Bold interlettering 410, value 42px display Montserrat Bold, reference Extralight 8px, `critical` → `#ff0404`, sin sombra, Storybook fondo oscuro. |
 | 0.1.0 | Escala ficha aditiva: prop `appearance` (`"reporting" \| "ficha"`), modificador `.ds-metric--ficha` (valor 26px display, título Extra Light, fondo transparente), consumo en DetailSheet, story `Reporting vs Ficha`. |
+| 0.1.1 | Pasada de fidelidad visual contra PDF METRIC CARD p.11 (coordenadas vectoriales y text-spans exactos vía PyMuPDF, a pedido de reporte de usuario con 3 puntos, los 3 confirmados reales): (1) `width`/`height` fijo 113×91px (reporting) reemplaza `min-height` sin ancho — la card se angostaba/ensanchaba con el largo del label dentro de un grid; (2) label corregido de 6px a 8px (PDF legend 16pt÷2, ya estaba anotado como delta pendiente en el spec); (3) agregada la prop `utilities` (editar/eliminar, solo en `appearance="reporting"`), mismo patrón que `InvestigationCard.utilities`, con evidencia directa en el vector del PDF (íconos de lápiz/tacho en las 4 cards reporting de ejemplo, ausentes en las 3 tiles ficha). Corregido también el bug de decorador oscuro faltante en Storybook (mismo patrón que `Empty`/`ChartCard`) que hacía que la card se viera gris clara y los íconos de utilidad (`#c1c1c1`) se fundieran con ella; agregado un panel oscuro dedicado alrededor del ejemplo "En ficha" en la story `Scales`, ya que esa variante no tiene fondo propio por diseño y se veía "casi invisible" sin un contenedor real detrás. |
+| 0.1.2 | Segunda revisión de la usuaria el mismo día detectó dos problemas reales que 0.1.1 no había resuelto bien: la story `Scales` nunca le agregó `utilities` al ejemplo "Reporting" (solo `Tones` las tenía) — agregado. Y la ficha se veía "rota": el alto fijo de 55px (misma medición del PDF) desbordaba una vez sumados el padding/gap/tamaños ya correctos — revertido a `auto`, se deja solo el ancho fijo (83px, que era el problema real reportado). Además, el label de ficha heredaba el `letter-spacing: 0.41em` de reporting ("Inteletrado 410"), que la leyenda del PDF solo menciona para el título Source Code de reporting, no para el Montserrat de ficha — a ese espaciado, "HECTOPASCALES" no entraba en 83px y se veía cortado; corregido a `letter-spacing: 0`. |
+| 0.1.3 | Tercera revisión de la usuaria el mismo día, tres hallazgos más: (1) el mismo desborde de alto fijo que ya se había corregido en ficha estaba también en reporting (91px) — un label de dos palabras envolviendo a dos líneas empujaba `change` fuera de la card en la story `Tones`; revertido a `auto`, igual que ficha. (2) El fondo semitransparente se veía como un simple recuadro blanco vacío: el decorador de Storybook usaba `--ds-color-pdf-surface` (#060606), el mismo color base del propio fill al 20% de opacidad — `rgb(6,6,6/0.2)` sobre un fondo `#060606` da exactamente `#060606`, matemáticamente indistinguible. Cambiado el decorador a `--ds-color-pdf-surface-warm` (#2a2927, sigue siendo oscuro, pero distinto) para que la opacidad se note. (3) "HECTOPASCALES" seguía superponiéndose con los botones a pesar del `padding-right` agregado en la ronda anterior — resultó ser un bug real de CSS grid: la columna implícita de `.ds-metric` (sin `grid-template-columns` explícito) no achicaba su ancho computado aunque el `padding-right` sí se aplicaba (confirmado con `getComputedStyle`). Se agregó `grid-template-columns: minmax(0, 1fr)` explícito (eso fue lo que realmente lo arregló) más `overflow-wrap: break-word` en el label como resguardo adicional para palabras largas sin espacios. |
+| 0.1.4 | A pedido de la usuaria, corregidos los datos de ejemplo de la story `Scales`: mezclaban tres métricas distintas de la misma página del PDF ("Hectopascales" como label, cuando en realidad es la referencia de "Humedad"; "1013" sin corresponder a ningún valor real de esa página; "PRECIPITACIONES" siendo el título de una tercera métrica). Ahora ambos lados de la comparación usan la métrica real del PDF ("Humedad" / "87%" / "Hectopascales"), consistente entre reporting y ficha — y además "Humedad" es corta, así que no depende de los fixes de CSS de la ronda anterior para no tocar los botones. |
