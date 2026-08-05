@@ -227,16 +227,32 @@ Backlog below is now split accordingly.
   pass instead (see `Empty` pt-bug precedent — some findings are correctly deferred, not force-fit
   into the current component's fix).
 
+- **Empty** (PDF p.16 / `doc[15]`, "EMPTY") — triggered by two user-reported visual issues, both
+  confirmed real via `page.get_drawings()`/`page.get_text("dict")` on `doc[15]`: (1) "el ícono está
+  con un fondo redondo gris" — `.ds-empty__icon` had no `border-radius` (square well), but this
+  page's own vector for the icon well is a closed path of **4 `c` (curve) segments with zero
+  straight edges** on both demo instances, i.e. a literal circle. Fixed to
+  `border-radius: var(--ds-radius-pill)`. (2) "Título y texto están más juntos en el PDF" —
+  confirmed by glyph-bbox deltas: title-bottom→description-top measures **≈ −1.9pt @2×** on both
+  demos (bboxes essentially touching, no visible gap beyond normal line leading), while the
+  component had a uniform `gap: 8px` applying equally between every element. Replaced that single
+  `gap` with per-element margins reflecting the PDF's three very different measured gaps:
+  icon→title ≈21.7px avg (`--ds-space-5`, 20px), title→description ≈0px (no margin at all), and
+  description→action ≈25.85px avg (`--ds-space-6`, 24px) — the last one added a
+  `.ds-empty__title + .ds-empty__action` fallback rule for the title-then-action-with-no-description
+  case. Also closed the last remaining carried-forward `pt`-vs-`px` bug on `.ds-empty__title`/
+  `.ds-empty__description` (`8pt`/`7pt` → `8px`/`7px`). **Not fully resolved:** the
+  description→action gap disagrees by ~40% between the PDF's own two demo instances (30.05px vs
+  21.65px) — used the average, flagged as a real source-file inconsistency in the spec rather than
+  a measurement artifact worth chasing further.
+
 ## Carried-forward finding (not yet fixed anywhere)
 
-**CSS `pt`-instead-of-`px` unit bug**, found while fixing InvestigationCard, confirmed present via
-`grep -n "[0-9]pt;" packages/ui/src/styles.css` in one more component that hasn't had its fidelity
-pass yet (fixed in `SideBar` and `CalendarCard` as of 2026-08-05 — see Done above):
-
-- `Empty` — `.ds-empty__title`, `.ds-empty__description`
-
-Check this specifically when its turn comes — the number is usually already right (someone did
-the ÷2 math correctly), only the CSS unit is wrong (1pt = 1.333px, not 1px).
+**CSS `pt`-instead-of-`px` unit bug**, found while fixing InvestigationCard — all components this
+pass has touched so far had it (`InvestigationCard`, `SideBar`, `CalendarCard`, `Empty`); none
+remain flagged in the current backlog below. If a new one turns up on a later component,
+`grep -n "[0-9]pt;" packages/ui/src/styles.css` finds it fast — the number is usually already right
+(someone did the ÷2 math correctly), only the CSS unit is wrong (1pt = 1.333px, not 1px).
 
 **Storybook missing-dark-decorator bug** (2nd+3rd confirmed occurrence after `Empty`, which was
 already fixed before this pass started): any component whose own background is *translucent*
@@ -253,7 +269,6 @@ In roughly PDF page order (per `knowledge/component-roadmap.md`'s gap table — 
 index with PyMuPDF before trusting it, page numbers there are 1-indexed "p.N" labels, not raw
 `doc[i]` indices):
 
-- **Empty** — PDF p.16 (has the `pt` bug above)
 - **Form** — PDF p.17. `component-roadmap.md` flags this page's spec as looking like an unfinished
   placeholder (near-identical to Empty's spec block, no field list/layout/validation) — no
   dedicated `Form` component exists. Probably not a fidelity-pass target; confirm the real spec

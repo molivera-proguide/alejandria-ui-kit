@@ -1637,18 +1637,24 @@
     color: var(--ds-color-pdf-line-light);
     display: flex;
     flex-direction: column;
-    gap: 8px; /* PDF p.16 does not annotate inter-element gap — provisional; see Empty.spec.md */
     text-align: center;
+    /* no uniform `gap` — PDF p.16 measures three very different inter-element gaps
+       (icon→title ~22px, title→description ~0px, description→action ~24px); see
+       the per-element margins below and Empty.spec.md for the exact figures */
   }
 
   .ds-empty__icon {
     align-items: center;
     background: var(--ds-color-pdf-action);
+    border-radius: var(--ds-radius-pill); /* PDF vector is a closed circle (4 `c` curve segments, no straight edges) — was square (no radius) */
+    box-sizing: border-box;
     color: var(--ds-color-pdf-ink-muted);
     display: inline-flex;
-    height: var(--ds-size-icon-xl); /* calibrated ÷2 — PDF 40×40 */
+    height: 32px; /* well grown beyond the PDF-measured 20×20 (--ds-size-icon-xl) so the icon (kept at its previous 20×20 visual size via padding, below) has breathing room instead of touching the circle's edge — user-reported "queda muy justo con el tamaño del ícono"; directionally consistent with the PDF's own icon glyph (~16×14pt @2×) filling well under half of its 40×40 well */
     justify-content: center;
-    width: var(--ds-size-icon-xl); /* calibrated ÷2 — PDF 40×40 */
+    margin-bottom: var(--ds-space-5); /* measured ÷2 icon→title gap, ~21.7px avg across both PDF demos */
+    padding: 6px;
+    width: 32px;
   }
 
   .ds-empty__icon svg {
@@ -1660,18 +1666,22 @@
   .ds-empty__title {
     color: var(--ds-color-pdf-line-light);
     font-family: var(--ds-font-body);
-    font-size: 8pt; /* calibrated ÷2 — PDF 16pt */
+    font-size: 8px; /* calibrated ÷2 — PDF 16pt; was `8pt` (1pt = 1.333px, rendered ~33% oversized) */
     font-weight: var(--ds-font-weight-bold);
     line-height: var(--ds-leading-normal);
+  }
+
+  .ds-empty__title + .ds-empty__action {
+    margin-top: var(--ds-space-6); /* same gap as description→action below, for the title-then-action case with no description */
   }
 
   .ds-empty__description {
     color: var(--ds-color-pdf-line-light);
     font-family: var(--ds-font-body);
-    font-size: 7pt; /* calibrated ÷2 — PDF 14pt */
+    font-size: 7px; /* calibrated ÷2 — PDF 14pt; was `7pt` (1pt = 1.333px, rendered ~33% oversized) */
     font-weight: var(--ds-font-weight-light);
     line-height: var(--ds-leading-body);
-    margin: 0;
+    margin: 0 0 var(--ds-space-6) 0; /* measured ÷2 description→action gap, ~25.9px avg (range 21.65–30.05px across the 2 PDF demos, see spec); no margin-top — title→description measures ~0 in the PDF */
   }
 
   .ds-empty__action {

@@ -30,7 +30,7 @@ tags:
   - presentational
   - molecule
 
-last_reviewed: 2026-07-21
+last_reviewed: 2026-08-05
 ---
 
 # Empty
@@ -46,7 +46,7 @@ Presenta un estado vacío centrado cuando aún no hay elementos (tareas, investi
 Describe:
 
 - **Responsabilidad principal:** comunicar la ausencia de contenido con ícono, título, texto de apoyo opcional y una acción contextual opcional.
-- **Problema que resuelve:** unificar el empty state PDF (sin fondo, tipografía Montserrat, pozo de ícono `#494949`) sin acoplar copy fija ni un `Button` del kit.
+- **Problema que resuelve:** unificar el empty state PDF (sin fondo, tipografía Montserrat, pozo de ícono **circular** `#494949`) sin acoplar copy fija ni un `Button` del kit.
 - **Alcance:** componente presentacional basado en `<div class="ds-empty">`; el consumidor provee `title` y, opcionalmente, `description`, `icon` y `action` como `ReactNode`.
 
 Exclude:
@@ -67,9 +67,9 @@ Documenta los comportamientos públicos en los que el consumidor puede confiar.
 - Renderizado como `<div class="ds-empty">` sin fondo propio (`background: transparent`).
 - `title` obligatorio en la firma de props; renderizado en `<strong class="ds-empty__title">`.
 - `description` renderizada en `<p class="ds-empty__description">` solo cuando su valor es truthy.
-- `icon` renderizado en `<span class="ds-empty__icon" aria-hidden="true">` solo cuando es truthy.
+- `icon` renderizado en `<span class="ds-empty__icon" aria-hidden="true">` solo cuando es truthy, con pozo **circular** (`border-radius: var(--ds-radius-pill)`; PDF vector confirmado — ver spec), `32×32px` con `padding: 6px` para que el ícono (que mantiene su tamaño visual anterior, ~20×20px) no toque el borde del círculo (ajuste post-revisión de usuario, ver spec).
 - `action` renderizado en `<div class="ds-empty__action">` solo cuando es truthy.
-- Contenido apilado en columna y centrado horizontalmente (`flex` + `align-items: center` + `text-align: center`).
+- Contenido apilado en columna y centrado horizontalmente (`flex` + `align-items: center` + `text-align: center`), con espaciado **no uniforme** entre elementos (icono→título ~22px, título→descripción ~0px, descripción→acción ~24px — medido del PDF; ver spec), no un `gap` parejo.
 - Fusión de `className` externa con `ds-empty` mediante `cn()`.
 - Repaso de atributos nativos de `HTMLAttributes<HTMLDivElement>` al `<div>` raíz vía `...props` (`id`, `style`, `data-*`, `aria-*`, etc.).
 
@@ -166,10 +166,10 @@ Una sola apariencia pública, alineada a PDF p.16 EMPTY. No hay modificadores BE
 
 | Elemento | Rol visual (PDF p.16, display ÷2) |
 |----------|-----------------------------------|
-| Raíz | Sin fondo; columna centrada |
-| Ícono | Pozo `20×20` (`40×40` @2×), fondo `#494949`, tinta `#8a8b87` |
-| Título | Montserrat Bold `8pt` (`16pt` @2×), `#e6e6e6` |
-| Texto | Montserrat Light `7pt` (`14pt` @2×), `#e6e6e6` |
+| Raíz | Sin fondo; columna centrada; gaps no uniformes (ver Spacing en spec) |
+| Ícono | Pozo **circular** `32×32` con `padding: 6px` (ícono interior ~`20×20`), `border-radius: var(--ds-radius-pill)`, fondo `#494949`, tinta `#8a8b87` — el pozo PDF mide `20×20` (`40×40` @2×) sin holgura, pero se agrandó tras revisión de usuario para que el ícono no toque el borde (ver spec § Deltas) |
+| Título | Montserrat Bold `8px` (`16pt` @2×), `#e6e6e6` |
+| Texto | Montserrat Light `7px` (`14pt` @2×), `#e6e6e6` |
 | Acción | Slot; el PDF muestra botón Bold `16pt`, blanco sobre `#494949`, padding display `5px` / `15px` — **no** aplicado por `Empty` al slot |
 
 ---
@@ -222,7 +222,7 @@ Document only responsive behavior implemented by the component itself.
 
 | Contexto | Behavior |
 |----------|----------|
-| Componente | Sin breakpoints. Flex column, `align-items: center`, `text-align: center`. |
+| Componente | Sin breakpoints. Flex column, `align-items: center`, `text-align: center`, gaps no uniformes vía `margin` por elemento (ver spec), no `gap` del contenedor. |
 | Storybook decorator | `padding: 32` + `background: var(--ds-color-pdf-surface)` en el contenedor centrado de `Empty.stories.tsx` — necesario porque `Empty` no dibuja fondo propio (título/texto usan `--ds-color-pdf-line-light`, casi blanco) y el addon `backgrounds` de Storybook no está registrado en `.storybook/main.ts` (`parameters.backgrounds` no tiene efecto). |
 
 ---
@@ -407,7 +407,10 @@ Only include tokens directly consumed by the component.
 | `--ds-color-pdf-action` | color | Fondo de `.ds-empty__icon` (`#494949`) |
 | `--ds-color-pdf-ink-muted` | color | Color del ícono en `.ds-empty__icon` (`#8a8b87`) |
 | `--ds-color-pdf-line-light` | color | Color de título y descripción (`#e6e6e6`); color base de `.ds-empty` |
-| `--ds-size-icon-xl` | size | Caja del ícono `20×20` (PDF `40×40` ÷ 2) |
+| `--ds-size-icon-xl` | size | ~ícono interior efectivo del pozo (`32px` pozo − `6px` padding × 2 = `20px`, coincide con el token aunque ya no se referencia directo en CSS — ver spec) |
+| `--ds-radius-pill` | radius | `border-radius` del pozo de ícono (círculo completo — PDF vector confirmado) |
+| `--ds-space-5` | space | `margin-bottom` de `.ds-empty__icon` (`20px`, medido ÷2 del gap icono→título, ~21.7px promedio) |
+| `--ds-space-6` | space | `margin-bottom` de `.ds-empty__description` y `margin-top` de `.ds-empty__title + .ds-empty__action` (`24px`, medido ÷2 del gap descripción→acción, ~25.9px promedio) |
 | `--ds-font-body` | typography | `font-family` de título y descripción (Montserrat) |
 | `--ds-font-weight-bold` | typography | Peso del título |
 | `--ds-font-weight-light` | typography | Peso de la descripción |
@@ -460,7 +463,6 @@ div.ds-empty
 # Known Limitations
 
 - No expone `children`, `variant`, `tone`, `size` ni composición interna de `Button`.
-- El gap vertical entre elementos (`8px`) no está anotado en PDF p.16; es provisional (ver spec).
 - El chrome exacto del botón PDF no vive en `.ds-empty__action`; depende del nodo en `action`.
 - Sin centrado viewport automático; el padre debe centrar el bloque.
 - Sin tests unitarios ni de integración en el repositorio.
@@ -470,8 +472,7 @@ div.ds-empty
 
 # Future Improvements
 
-- [ ] Confirmar gap inter-elemento con design (hoy provisional `8px`)
-- [ ] Confirmar si el pozo del ícono tiene `border-radius` (PDF p.16 no lo anota)
+- [ ] Confirmar con design el gap descripción→acción exacto (PDF muestra ~30px en un demo y ~22px en el otro; se usó el promedio redondeado a `--ds-space-6`, ver spec § Deltas)
 - [ ] Integrar como empty state de `DataTable` / listas cuando el patrón se documente
 - [ ] Resolver si Form (PDF p.17) es un componente distinto o reutiliza `Empty`
 
@@ -482,3 +483,5 @@ div.ds-empty
 | Version | Change |
 |----------|--------|
 | 0.1.0 | Implementación inicial de `Empty` / `EmptyProps` con estilos `ds-empty` según PDF p.16 EMPTY, y stories `Playground`, `NoTasks`, `NoInvestigations`. |
+| 0.1.1 | Fidelity pass 2026-08-05 contra PDF p.16 (`doc[15]`, medido con PyMuPDF), a partir de dos observaciones de usuario confirmadas: (1) el pozo de `.ds-empty__icon` pasa de cuadrado (sin radio) a **circular** (`--ds-radius-pill`) — el vector PDF es un path cerrado de 4 curvas `c`, sin lados rectos, en ambos demos de la página; (2) el `gap: 8px` uniforme del contenedor se reemplaza por márgenes por elemento que reflejan tres gaps muy distintos medidos en el PDF: icono→título ~22px (`--ds-space-5`), título→descripción ~0px (casi tocándose — la observación de usuario), descripción→acción ~24px (`--ds-space-6`, promedio de un rango 21.65–30.05px entre los dos demos de la página). De paso, cerró el bug `pt`→`px` carried-forward en `font-size` de título/descripción (`8pt`/`7pt` → `8px`/`7px`, ~33% sobredimensionados). |
+| 0.1.2 | Ajuste post-revisión 2026-08-05: usuario reportó que el círculo del ícono "queda muy justo con el tamaño del ícono" (el SVG llenaba el pozo al 100%, tocando el borde). Pozo agrandado de `20×20` (`--ds-size-icon-xl`, el tamaño exacto medido en el PDF) a `32×32` con `padding: 6px`, dejando el ícono en su tamaño visual anterior (~`20×20`) pero con aire alrededor. No es una medición PDF nueva — es un ajuste de usuario en una dirección que el PDF sí respalda (su propio glifo de ícono ocupa bien menos de la mitad del diámetro del pozo, ~16×14pt @2× dentro de un pozo de 40×40pt @2×), pero sin llevar el número a ese extremo. |
