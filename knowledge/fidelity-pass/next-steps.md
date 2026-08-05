@@ -183,16 +183,59 @@ Backlog below is now split accordingly.
   permanent fact — when a fix seems blocked by one, check the actual asset/source before assuming
   it still holds, the same way memory/spec claims get re-verified before being relied on.
 
+- **Skeleton** (PDF p.14 / `doc[13]`, "SKELETON") — first component in this pass with **zero code
+  changes**: confirmed via `page.get_drawings()`/`page.get_text("dict")` that every already-
+  documented value is exact. Fill color: legend text says «Recuadros: #2a2927», and independently
+  every recuadro shape's own `get_drawings()` fill is `(0.165, 0.161, 0.153)` → `#2a2927` to the
+  pixel — matches `--ds-color-pdf-surface-warm` with no delta. «Fondo: #2a2927 - 70% de opacidad» is
+  (correctly) not painted by `.ds-skeleton` itself — it's parent responsibility, already documented,
+  and already exercised in `ComposedOnFondo`'s wrapper. None of the three recurring bugs from this
+  session applied: no `font-size` declarations exist at all (component has no text nodes, so the
+  `pt`-vs-`px` bug is structurally impossible here); no default `width`/`max-width` exists to trigger
+  the `fit-content` bug (dimensions are 100% consumer-supplied, by design); and the Storybook
+  decorator already used an opaque dark background distinct from the component's own translucent
+  parent-wash token (`--ds-color-pdf-surface` outer vs `--ds-color-pdf-surface-warm-a70` inner in
+  `ComposedOnFondo`) — the same fix other components needed was already in place here, likely
+  because `.ds-skeleton`'s own fill is solid/opaque (only the *parent* wash token is translucent, and
+  that's explicitly not drawn by the component). The PDF's illustrative two-card composition mockup
+  (measured: see `Skeleton.spec.md` § Deltas for exact px) was **not** adopted as literal default
+  sizes — same "diagram ≠ asset spec" caveat as the ModuleCard icon lesson, and the component doc
+  already flagged recuadro sizes as intentionally unspecified. Verified visually in Storybook
+  (`Playground`, `Rect`, `Circle`, `ComposedOnFondo`) — solid fill, pill-radius circle, opacity-pulse
+  animation all render as documented against the opaque decorator.
+
+- **CalendarCard** (PDF p.15 / `doc[14]`, "CALENDAR CARD") — 4 real, measured deltas fixed via
+  `page.get_drawings()`/`page.get_text("dict")` on `doc[14]`: (1) the carried-forward `pt`-vs-`px`
+  bug, confirmed here too (`font-size: 15pt`/`6pt` on day/month/description, rendering ~33%
+  oversized — `getComputedStyle` showed `15pt` computing to `20px`); (2) `max-width: 140px`
+  (unmeasured, reused from `.ds-task--kanban`) replaced with `width: 72px` — the PDF's own vector
+  draws this card as a literal square, bbox 144.02×144.02pt @2× ÷2 = 72.01px; the old `max-width`
+  combined with the story decorator's `width: fit-content` let the card shrink to ~59px in
+  `WithoutDescription` (confirmed via `getComputedStyle` before the fix), the same recurring
+  fit-content bug as TaskCard/InvestigationCard/ModuleCard/MetricCard. (3) `border-radius` from
+  `var(--ds-radius-xs)` (2px, an assumed "same as `.ds-task`" convention) to `0` — this page's own
+  vector item is a plain `re` rectangle with zero curve segments, i.e. the PDF draws square corners
+  here, unlike `.ds-task`'s own page which does draw rounded ones. (4) root gap from
+  `--ds-space-2` (8px, provisional) to `--ds-space-1` (4px), derived indirectly from glyph-bbox
+  deltas between the date block and description (7.30pt @2× ÷2 ≈ 3.65px) — cross-checked for
+  plausibility against the day→month baseline gap (30.18pt vs 30pt font-size, ratio 1.006,
+  confirming bboxes track this font's real typography tightly) before trusting the smaller,
+  indirectly-derived number. **Left unresolved on purpose:** the description's measured line-height
+  ratio (~1.167 from bbox baselines) vs the shared `--ds-leading-body` token (1.45) — a real ~24%
+  gap, but that token is consumed by several already-reviewed components, so a single page's
+  evidence isn't enough to justify overriding it here alone; flagged for a dedicated calibration
+  pass instead (see `Empty` pt-bug precedent — some findings are correctly deferred, not force-fit
+  into the current component's fix).
+
 ## Carried-forward finding (not yet fixed anywhere)
 
 **CSS `pt`-instead-of-`px` unit bug**, found while fixing InvestigationCard, confirmed present via
-`grep -n "[0-9]pt;" packages/ui/src/styles.css` in two more components that haven't had their
-fidelity pass yet (fixed in `SideBar` as of 2026-08-05 — see Done above):
+`grep -n "[0-9]pt;" packages/ui/src/styles.css` in one more component that hasn't had its fidelity
+pass yet (fixed in `SideBar` and `CalendarCard` as of 2026-08-05 — see Done above):
 
-- `CalendarCard` — `.ds-calendar-card__month`, `.ds-calendar-card__description`
 - `Empty` — `.ds-empty__title`, `.ds-empty__description`
 
-Check these specifically when their turn comes — the number is usually already right (someone did
+Check this specifically when its turn comes — the number is usually already right (someone did
 the ÷2 math correctly), only the CSS unit is wrong (1pt = 1.333px, not 1px).
 
 **Storybook missing-dark-decorator bug** (2nd+3rd confirmed occurrence after `Empty`, which was
@@ -210,8 +253,6 @@ In roughly PDF page order (per `knowledge/component-roadmap.md`'s gap table — 
 index with PyMuPDF before trusting it, page numbers there are 1-indexed "p.N" labels, not raw
 `doc[i]` indices):
 
-- **Skeleton** — PDF p.14
-- **CalendarCard** — PDF p.15 (has the `pt` bug above)
 - **Empty** — PDF p.16 (has the `pt` bug above)
 - **Form** — PDF p.17. `component-roadmap.md` flags this page's spec as looking like an unfinished
   placeholder (near-identical to Empty's spec block, no field list/layout/validation) — no

@@ -31,7 +31,7 @@ tags:
   - presentational
   - atom
 
-last_reviewed: 2026-07-21
+last_reviewed: 2026-08-05
 ---
 
 # Skeleton
@@ -442,6 +442,7 @@ div.ds-skeleton[.ds-skeleton--circle][aria-hidden="true"]
 - Sin integración `loading` en MetricCard / ChartCard / InvestigationCard / TaskCard.
 - Sin tests unitarios ni de integración en el repositorio.
 - Sin uso documentado en `apps/web`; evidencia en Storybook (`Playground`, `Rect`, `Circle`, `ComposedOnFondo`).
+- El PDF ilustra una composición de ejemplo (dos "cards" con recuadros + líneas de distinto ancho/alto — ver spec § Deltas para las coordenadas exactas) pero **no** anota el tamaño de ningún recuadro individual como valor de spec; es una ilustración de layout, no una medida a replicar 1:1 (misma distinción que la "lección ModuleCard": un diagrama en el PDF no siempre es la fuente de verdad de tamaño). `ComposedOnFondo` ya refleja el mismo patrón compositivo (avatar circular + líneas + bloque) sin copiar coordenadas literales.
 
 ---
 
