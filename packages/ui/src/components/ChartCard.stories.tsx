@@ -11,8 +11,11 @@ const meta = {
     layout: "centered"
   },
   decorators: [
+    // Outer decorator stays opaque `--ds-color-pdf-surface` (Storybook backgrounds addon is not
+    // registered — `.ds-chart-card`'s own bg is a 20%-opacity black, meant to sit over a dark
+    // screen; without this it washes out light gray on Storybook's default canvas).
     (Story) => (
-      <div style={{ minWidth: 320, padding: 32 }}>
+      <div style={{ background: "var(--ds-color-pdf-surface)", minWidth: 320, padding: 32 }}>
         <Story />
       </div>
     )

@@ -4,7 +4,10 @@
 - Source-of-truth order: PDF (page N) > component doc > implemented CSS
 - CSS block: `.ds-donut-chart` (styles.css — PDF-context block)
 - Export: packages/ui/src/components/DonutChartCard.tsx
-- PDF reference: none cited
+- PDF reference: p.9 "GRAFICOS" (page index 8), "Torta" legend block — found 2026-08-05, was "none
+  cited". Legend: "Número grande: Montserrat Bold - 32pt - #FFFFFF - #8a8b87. Referencia:
+  Montserrat Extra Light - 14pt - #FFFFFF - #8a8b87. Porcion completada: 25pt de grosor - #FFFFFF -
+  #8a8b87. Eje: 25pt de grosor - #494949."
 - Scale: display values = PDF annotation ÷ 2 (see [specs/README.md — Scale calibration](../README.md#scale-calibration))
 
 ## Dimensions
@@ -20,8 +23,8 @@
 ## Color
 | Role | Value | Matching --ds-* token? | Source | Delta |
 |------|-------|------------------------|--------|-------|
-| track stroke | #8a8b87 | --ds-color-pdf-ink-muted | styles.css | — |
-| track opacity | 0.25 | UNTOKENIZED — candidate | styles.css | — |
+| track stroke | #494949 | --ds-color-pdf-action | styles.css (changed 2026-08-05) | was `--ds-color-pdf-ink-muted` (#8a8b87) at 25% opacity — PDF legend says "Eje: 25pt de grosor - #494949", a solid dark gray, not a dimmed ink-muted. |
+| default segment colors | #ffffff / #8a8b87 | --ds-color-white / --ds-color-pdf-ink-muted | DonutChartCard.tsx (changed 2026-08-05) | was the same 5-color rainbow as BarChartCard's default `CHART_COLORS` — PDF legend: "Porcion completada: 25pt de grosor - #FFFFFF - #8a8b87". The shipped `DonutChart`/`Gallery` stories already passed explicit per-datum colors matching this, so this was a latent fallback-only bug, not visible in the existing stories. |
 | stat strong | #fff | --ds-color-white | styles.css | — |
 | stat span | #8a8b87 | --ds-color-pdf-ink-muted | styles.css | — |
 
@@ -49,4 +52,7 @@
 
 ## Deltas & open questions (facts only — DO NOT resolve)
 - Stroke width constant `STROKE = 14` in TSX is viewBox-relative (scales with CSS chart width); not a styles.css literal.
-- PDF page not cited.
+- Same page-extraction caveat as `BarChartCard.spec.md`: page index 8 mixes this reference diagram
+  with an unrelated dashboard mockup in overlapping coordinates; colors/text above are trusted from
+  the user's screenshot and from drawings that were unambiguous, not from a fully clean isolated
+  vector read of just the "Torta" example.

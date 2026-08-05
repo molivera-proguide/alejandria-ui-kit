@@ -88,7 +88,8 @@ export function LineChartCard({
   title,
   footer,
   data,
-  color = "var(--ds-color-teal)",
+  // PDF GRAFICOS p.9's own legend: "Línea: 0,75pt - #c1c1c1" — a gray line, not teal.
+  color = "var(--ds-color-pdf-line)",
   maxValue,
   className,
   ...props

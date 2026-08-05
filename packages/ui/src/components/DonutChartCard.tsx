@@ -31,13 +31,10 @@ export interface DonutChartCardProps extends Omit<HTMLAttributes<HTMLDivElement>
   total?: number;
 }
 
-const CHART_COLORS = [
-  "var(--ds-color-teal)",
-  "var(--ds-color-blue)",
-  "var(--ds-color-green)",
-  "var(--ds-color-amber)",
-  "var(--ds-color-coral)"
-];
+// PDF GRAFICOS p.9's own legend: "Porcion completada: 25pt de grosor - #FFFFFF - #8a8b87" — the
+// shipped Donut story already overrides these per-datum (white/#8a8b87); this default fallback
+// was still a rainbow, which would surprise a consumer who doesn't pass an explicit color.
+const CHART_COLORS = ["var(--ds-color-white)", "var(--ds-color-pdf-ink-muted)"];
 
 const SIZE = 120;
 const STROKE = 14;

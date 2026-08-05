@@ -38,7 +38,7 @@ last_reviewed: 2026-07-02
 
 ## Purpose
 
-Presenta un gráfico de dona en SVG con estadísticas opcionales flotantes, dentro de una tarjeta con título y pie en consolas del Alejandria UI Kit.
+Presenta un gráfico de dona en SVG con estadísticas opcionales flotantes, dentro de una tarjeta con título y pie en consolas del Alejandria UI Kit, alineado con la sección **GRAFICOS** del PDF de referencia (p.9, bloque "Torta").
 
 Describe:
 
@@ -67,7 +67,7 @@ Documenta los comportamientos públicos en los que el consumidor puede confiar.
 - Círculo de seguimiento (`<circle class="ds-donut-chart__track">`) siempre visible.
 - Un segmento (`<circle class="ds-donut-chart__segment">`) por cada entrada en `data`, con arco calculado mediante `strokeDasharray` y `strokeDashoffset`.
 - `chartTotal` para escala de segmentos: `total` si se provee, o `100` por defecto.
-- Color de segmento: `item.color` si está definido; si no, ciclo sobre `CHART_COLORS` (tokens `--ds-color-teal`, `--ds-color-blue`, `--ds-color-green`, `--ds-color-amber`, `--ds-color-coral`).
+- Color de segmento: `item.color` si está definido; si no, ciclo sobre `CHART_COLORS` (tokens `--ds-color-white`, `--ds-color-pdf-ink-muted`). Corregido 2026-08-05: antes era el mismo ciclo arcoíris de 5 colores que `BarChartCard` — no visible en las stories existentes porque `DonutChart`/`Gallery` ya pasan `color` explícito por dato, pero era un fallback incorrecto para cualquier consumidor que no lo hiciera.
 - `primaryStat` renderizado en `<div class="ds-donut-chart__stat ds-donut-chart__stat--primary">` solo cuando es truthy, con `<strong>` para `value` y `<span>` para `label`.
 - `secondaryStat` renderizado en `<div class="ds-donut-chart__stat ds-donut-chart__stat--secondary">` solo cuando es truthy, con la misma estructura.
 - `role="img"` y `aria-label={`Gráfico de dona: ${title}`}` en el SVG.
@@ -443,14 +443,11 @@ Only include tokens directly consumed by the component.
 
 | Token | Category | Usage |
 |--------|----------|-------|
-| `--ds-color-teal` | color | Color por defecto de segmento (índice 0 en `CHART_COLORS`) |
-| `--ds-color-blue` | color | Color por defecto de segmento (índice 1) |
-| `--ds-color-green` | color | Color por defecto de segmento (índice 2) |
-| `--ds-color-amber` | color | Color por defecto de segmento (índice 3) |
-| `--ds-color-coral` | color | Color por defecto de segmento (índice 4) |
+| `--ds-color-white` | color | Color por defecto de segmento (índice 0 en `CHART_COLORS`) — corregido 2026-08-05, antes `--ds-color-teal` |
+| `--ds-color-pdf-ink-muted` | color | Color por defecto de segmento (índice 1) — corregido 2026-08-05, antes `--ds-color-blue` |
 | `--ds-font-body` | typography | `font-family` de `.ds-donut-chart__stat strong` y `span` |
 
-Nota: el track usa `stroke: #8a8b87` hardcodeado. Los colores de stats (`#fff`, `#8a8b87`) están hardcodeados. Posiciones del SVG (`left: 45px` display) y stats son fijas en CSS. `ChartCard` aporta tokens adicionales en el contenedor.
+Nota: el track usa `stroke: #494949` hardcodeado (corregido 2026-08-05, antes `#8a8b87` al 25% de opacidad — la leyenda del PDF dice "Eje: 25pt de grosor - #494949", un gris oscuro sólido). Los colores de stats (`#fff`, `#8a8b87`) están hardcodeados y coinciden con la leyenda ("Referencia: ... #FFFFFF - #8a8b87"). Posiciones del SVG (`left: 45px` display) y stats son fijas en CSS. `ChartCard` aporta tokens adicionales en el contenedor.
 
 ---
 
@@ -533,3 +530,4 @@ Constantes internas: `SIZE = 120`, `STROKE = 14`, `RADIUS = (SIZE - STROKE) / 2`
 | Version | Change |
 |----------|--------|
 | 0.1.0 | Implementación inicial de `DonutChartCard`, `DonutChartCardProps`, `DonutChartDatum` y `DonutChartStat` con SVG puro, stats opcionales y composición de `ChartCard`. Documentación JSDoc en español. Stories en `ChartCard.stories.tsx` (`DonutChart`, `Gallery`). Export en `packages/ui/src/index.ts`. |
+| 0.1.1 | Pasada de fidelidad visual contra PDF GRAFICOS p.9, bloque "Torta": `CHART_COLORS` (fallback, no usado por las stories existentes) corregido de arcoíris a blanco/gris; track del donut corregido de `#8a8b87` al 25% a `#494949` sólido, fiel a la leyenda ("Eje: 25pt de grosor - #494949"). |

@@ -21,12 +21,13 @@ export interface BarChartCardProps extends Omit<HTMLAttributes<HTMLDivElement>, 
   maxValue?: number;
 }
 
+// PDF GRAFICOS p.9's own legend: "Barra tradicional: 15px de ancho - #c1c1c1 - #8a8b87 - #060606" —
+// bars cycle through this grayscale, not a rainbow. A consumer can still override per-datum via
+// BarChartDatum.color.
 const CHART_COLORS = [
-  "var(--ds-color-teal)",
-  "var(--ds-color-blue)",
-  "var(--ds-color-green)",
-  "var(--ds-color-amber)",
-  "var(--ds-color-coral)"
+  "var(--ds-color-pdf-line)",
+  "var(--ds-color-pdf-ink-muted)",
+  "var(--ds-color-pdf-surface)"
 ];
 
 const CHART_WIDTH = 280;

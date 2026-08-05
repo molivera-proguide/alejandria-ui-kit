@@ -4,7 +4,10 @@
 - Source-of-truth order: PDF (page N) > component doc > implemented CSS
 - CSS block: `.ds-line-chart` (styles.css — PDF-context block)
 - Export: packages/ui/src/components/LineChartCard.tsx
-- PDF reference: none cited
+- PDF reference: p.9 "GRAFICOS" (page index 8), "Líneas" legend block — found 2026-08-05, was "none
+  cited". Legend: "Número: Montserrat Extra Light - 10pt - #FFFFFF - #ff0404. Referencia:
+  Montserrat Extra Light - 16pt - #8a8b87. Línea: 0,75pt - #c1c1c1. Fondo cuadrícula: 0,25pt -
+  #8a8b87."
 - Scale: display values = PDF annotation ÷ 2 (see [specs/README.md — Scale calibration](../README.md#scale-calibration))
 
 ## Dimensions
@@ -20,7 +23,7 @@
 |------|-------|------------------------|--------|-------|
 | label fill | #8a8b87 | --ds-color-pdf-ink-muted | styles.css | — |
 | grid stroke | rgb(255 255 255 / 0.08) | UNTOKENIZED — candidate | styles.css | — |
-| series color default | var(--ds-color-teal) via prop default | --ds-color-teal | knowledge/components/LineChartCard.md | — |
+| series color default | var(--ds-color-pdf-line) (#c1c1c1) via prop default | --ds-color-pdf-line | LineChartCard.tsx (changed 2026-08-05) | was `--ds-color-teal` — PDF legend: "Línea: 0,75pt - #c1c1c1", a gray line, not teal. Line/area/point all derive from this one `color` prop, so all three followed. |
 
 ## Typography
 | Element | Font family | Size | Weight | Letter-spacing | Line-height | Casing | Source |
@@ -42,5 +45,11 @@
 
 ## Deltas & open questions (facts only — DO NOT resolve)
 - Point radius 3 cited in knowledge/components/LineChartCard.md as TSX — not present as a CSS literal.
-- PDF page not cited.
+- **Not implemented: per-point red highlight.** PDF legend's "Número: ... #FFFFFF - #ff0404" and
+  the visible red-highlighted low point + "50" label in the PDF's own "Líneas" example suggest a
+  specific data point (e.g. a low/alert value) can get a red number label distinct from the rest.
+  `LineChartCard` has no such per-point override today — every point/label shares the one `color`
+  prop. Not attempted this session (would be a real API addition, not a CSS fix).
+- Same page-extraction caveat as `BarChartCard.spec.md`/`DonutChartCard.spec.md` — page index 8
+  mixes this reference diagram with an unrelated dashboard mockup in overlapping coordinates.
 - SVG viewBox constants in TSX were not changed.

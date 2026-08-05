@@ -35,7 +35,7 @@ last_reviewed: 2026-07-02
 
 ## Purpose
 
-Presenta un gráfico de barras verticales en SVG dentro de una tarjeta con título y pie en consolas del Alejandria UI Kit.
+Presenta un gráfico de barras verticales en SVG dentro de una tarjeta con título y pie en consolas del Alejandria UI Kit, alineado con la sección **GRAFICOS** del PDF de referencia (p.9, bloque "Barras").
 
 Describe:
 
@@ -62,7 +62,8 @@ Documenta los comportamientos públicos en los que el consumidor puede confiar.
 - Renderizado de un `<svg class="ds-bar-chart">` con `viewBox="0 0 280 120"` (dimensiones fijas en código).
 - Una barra (`<rect class="ds-bar-chart__bar">`) y una etiqueta (`<text class="ds-bar-chart__label">`) por cada entrada en `data`, en el orden del array.
 - Altura de barra proporcional a `item.value / resolvedMax`, donde `resolvedMax` es `maxValue` o `Math.max(...data.map(item => item.value), 1)`.
-- Color de barra: `item.color` si está definido; si no, ciclo sobre `CHART_COLORS` (tokens `--ds-color-teal`, `--ds-color-blue`, `--ds-color-green`, `--ds-color-amber`, `--ds-color-coral`).
+- Color de barra: `item.color` si está definido; si no, ciclo sobre `CHART_COLORS` (tokens `--ds-color-pdf-line`, `--ds-color-pdf-ink-muted`, `--ds-color-pdf-surface`). Corregido 2026-08-05: antes era un ciclo de 5 colores (`--ds-color-teal`/`blue`/`green`/`amber`/`coral`) que no corresponde a la leyenda del PDF ("Barra tradicional: 15px de ancho - #c1c1c1 - #8a8b87 - #060606").
+- `.ds-bar-chart__bar` tiene un borde sutil (`--ds-color-pdf-line-a60`, 0.75) agregado 2026-08-05: el color más oscuro del ciclo (`#060606`) es casi idéntico al fondo de `.ds-chart-card`, así que sin borde esa barra desaparece.
 - Etiquetas de barra centradas bajo cada barra con `textAnchor="middle"`.
 - `role="img"` y `aria-label={`Gráfico de barras: ${title}`}` en el SVG.
 - Fusión de `className` y `...props` en el `ChartCard` raíz (no en el SVG).
@@ -157,7 +158,7 @@ Tipos exportados:
 |------|------|----------|----------|-------------|
 | `label` | `string` | — | sí | Etiqueta bajo la barra. Usada como clave React y texto del `<text>`. |
 | `value` | `number` | — | sí | Valor numérico que determina la altura de la barra. |
-| `color` | `string` | color de `CHART_COLORS[index]` | no | Color de relleno del `<rect>`. Acepta tokens CSS (`var(--ds-color-teal)`) o valores hex. |
+| `color` | `string` | color de `CHART_COLORS[index]` | no | Color de relleno del `<rect>`. Acepta tokens CSS (`var(--ds-color-pdf-line)`) o valores hex. |
 
 ---
 
@@ -413,11 +414,9 @@ Only include tokens directly consumed by the component.
 
 | Token | Category | Usage |
 |--------|----------|-------|
-| `--ds-color-teal` | color | Color por defecto de barra (índice 0 en `CHART_COLORS`) |
-| `--ds-color-blue` | color | Color por defecto de barra (índice 1) |
-| `--ds-color-green` | color | Color por defecto de barra (índice 2) |
-| `--ds-color-amber` | color | Color por defecto de barra (índice 3) |
-| `--ds-color-coral` | color | Color por defecto de barra (índice 4) |
+| `--ds-color-pdf-line` | color | Color por defecto de barra (índice 0 en `CHART_COLORS`) — corregido 2026-08-05, antes `--ds-color-teal` |
+| `--ds-color-pdf-ink-muted` | color | Color por defecto de barra (índice 1) — corregido 2026-08-05, antes `--ds-color-blue` |
+| `--ds-color-pdf-surface` | color | Color por defecto de barra (índice 2) — corregido 2026-08-05, antes `--ds-color-green`. Idéntico al fondo de la card; ver `.ds-bar-chart__bar` borde. |
 | `--ds-font-display` | typography | `font-family` de `.ds-bar-chart__label` |
 
 Nota: el color de etiquetas (`fill: #8a8b87`) está hardcodeado. La clase `.ds-bar-chart__bar` no tiene reglas CSS; el relleno se aplica inline en el atributo `fill` del `<rect>`. `ChartCard` aporta tokens adicionales en el contenedor (ver `ChartCard.md`).
@@ -498,3 +497,4 @@ Constantes internas (no exportadas): `CHART_WIDTH = 280`, `CHART_HEIGHT = 120`, 
 | Version | Change |
 |----------|--------|
 | 0.1.0 | Implementación inicial de `BarChartCard`, `BarChartCardProps` y `BarChartDatum` con SVG puro, composición de `ChartCard` y documentación JSDoc en español. Stories en `ChartCard.stories.tsx` (`BarChart`, `Gallery`). Export en `packages/ui/src/index.ts`. |
+| 0.1.1 | Pasada de fidelidad visual contra PDF GRAFICOS p.9, bloque "Barras" (leyenda leída de la captura del usuario, cruzada con `page.get_drawings()`/`get_text()`): `CHART_COLORS` pasó de un ciclo arcoíris de 5 colores a un ciclo gris de 3 (`#c1c1c1`/`#8a8b87`/`#060606`), fiel a la leyenda. Agregado un borde sutil a `.ds-bar-chart__bar` porque el color más oscuro del ciclo es casi idéntico al fondo de la card y sin borde desaparecía. Detectado (no resuelto): el fondo lavado de la story `Gallery` en Storybook era el mismo bug de decorador ya visto en `Empty` — arreglado en `ChartCard.stories.tsx`, no en este archivo. |

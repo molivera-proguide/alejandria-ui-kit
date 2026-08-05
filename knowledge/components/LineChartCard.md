@@ -37,7 +37,7 @@ last_reviewed: 2026-07-02
 
 ## Purpose
 
-Presenta un gráfico de línea con área rellena y rejilla horizontal en SVG, dentro de una tarjeta con título y pie en consolas del Alejandria UI Kit.
+Presenta un gráfico de línea con área rellena y rejilla horizontal en SVG, dentro de una tarjeta con título y pie en consolas del Alejandria UI Kit, alineado con la sección **GRAFICOS** del PDF de referencia (p.9, bloque "Líneas").
 
 Describe:
 
@@ -66,7 +66,7 @@ Documenta los comportamientos públicos en los que el consumidor puede confiar.
 - Área rellena (`<path class="ds-line-chart__area">`) bajo la línea, con `fill={color}` y `opacity: 0.18` vía CSS.
 - Línea (`<path class="ds-line-chart__line">`) con `stroke={color}` y `stroke-width: 2` vía CSS.
 - Un punto (`<circle class="ds-line-chart__point">`, `r={3}`) y una etiqueta (`<text class="ds-line-chart__label">`) por cada entrada en `data`.
-- `color` por defecto `"var(--ds-color-teal)"`; aplica a área, línea y puntos.
+- `color` por defecto `"var(--ds-color-pdf-line)"`; aplica a área, línea y puntos.
 - `resolvedMax` para escala vertical: `maxValue` o `Math.max(...data.map(item => item.value), 1)`.
 - Rutas SVG vacías cuando `data` está vacío (`buildLinePath` y `buildAreaPath` retornan `""`).
 - `role="img"` y `aria-label={`Gráfico de línea: ${title}`}` en el SVG.
@@ -157,7 +157,7 @@ Funciones internas no exportadas: `buildLinePath`, `buildAreaPath`.
 | `title` | `string` | — | sí | Título de la tarjeta. Reenviado a `ChartCard`. |
 | `footer` | `string` | — | sí | Pie de la tarjeta. Reenviado a `ChartCard`. |
 | `data` | `LineChartDatum[]` | — | sí | Puntos de la serie. Cada entrada genera un `<circle>` y un `<text>`. |
-| `color` | `string` | `"var(--ds-color-teal)"` | no | Color de área, línea y puntos. |
+| `color` | `string` | `"var(--ds-color-pdf-line)"` | no | Color de área, línea y puntos. |
 | `maxValue` | `number` | máximo de `data` o `1` | no | Valor máximo del eje vertical para escalar posiciones Y. |
 | `className` | `string` | — | no | Clases adicionales fusionadas en el `ChartCard` raíz. |
 | `...props` | `Omit<HTMLAttributes<HTMLDivElement>, "children">` | — | no | Atributos nativos del `<div>` raíz de `ChartCard`. |
@@ -427,7 +427,7 @@ Only include tokens directly consumed by the component.
 
 | Token | Category | Usage |
 |--------|----------|-------|
-| `--ds-color-teal` | color | Color por defecto de área, línea y puntos (`color` prop default) |
+| `--ds-color-pdf-line` | color | Color por defecto de área, línea y puntos (`color` prop default) — corregido 2026-08-05, antes `--ds-color-teal`. PDF GRAFICOS p.9 "Líneas": "Línea: 0,75pt - #c1c1c1". |
 | `--ds-font-display` | typography | `font-family` de `.ds-line-chart__label` |
 
 Nota: la rejilla usa `stroke: rgb(255 255 255 / 0.08)` hardcodeado. Las etiquetas usan `fill: #8a8b87` hardcodeado. La opacidad del área (`0.18`) y el grosor de línea (`2`) están en CSS, no en tokens. `ChartCard` aporta tokens adicionales en el contenedor.
@@ -514,3 +514,4 @@ Constantes internas: `CHART_WIDTH = 280`, `CHART_HEIGHT = 120`, `CHART_PADDING_X
 | Version | Change |
 |----------|--------|
 | 0.1.0 | Implementación inicial de `LineChartCard`, `LineChartCardProps` y `LineChartDatum` con SVG puro (línea, área, rejilla, puntos), composición de `ChartCard` y documentación JSDoc en español. Stories en `ChartCard.stories.tsx` (`LineChart`, `Gallery`). Export en `packages/ui/src/index.ts`. |
+| 0.1.1 | Pasada de fidelidad visual contra PDF GRAFICOS p.9, bloque "Líneas": `color` por defecto pasó de `--ds-color-teal` a `--ds-color-pdf-line` (#c1c1c1), fiel a la leyenda. Detectado (no resuelto): el PDF muestra un punto de dato con número resaltado en rojo (`#ff0404`) que el componente no soporta hoy — cada punto/etiqueta comparte el mismo `color`, no hay override por punto. Sería una prop nueva, no un fix de CSS. |

@@ -36,7 +36,7 @@ last_reviewed: 2026-07-02
 
 ## Purpose
 
-Provee un contenedor reutilizable con título, área de contenido y pie de texto para gráficos en consolas del Alejandria UI Kit.
+Provee un contenedor reutilizable con título, área de contenido y pie de texto para gráficos en consolas del Alejandria UI Kit, alineado con la sección **GRAFICOS** del PDF de referencia (p.9) — el fondo/borde compartido por `BarChartCard`/`DonutChartCard`/`LineChartCard` viven en `.ds-chart-card`.
 
 Describe:
 
@@ -451,3 +451,4 @@ div.ds-chart-card
 | Version | Change |
 |----------|--------|
 | 0.1.0 | Implementación inicial de `ChartCard` y `ChartCardProps` con estilos `ds-chart-card` y documentación JSDoc en español. Stories en Storybook bajo `Alejandria/ChartCard` (`Base`, `BarChart`, `DonutChart`, `LineChart`, `Gallery`). Export en `packages/ui/src/index.ts`. Referencias cruzadas en `Card.md` y `MetricCard.md`. |
+| 0.1.1 | Pasada de fidelidad visual contra PDF GRAFICOS p.9: `border-width` corregido de `--ds-border-width-1` (1px) a `--ds-border-width-hair` (0.75px), fiel a la leyenda ("Borde: 0,75pt"). Agregado fondo oscuro explícito al decorador de `ChartCard.stories.tsx` — mismo bug que `Empty` (el addon de backgrounds de Storybook no está registrado), la card semitransparente al 20% se veía gris clara en vez de oscura sin un fondo oscuro real detrás. Detectado (no resuelto): el tamaño de fuente de título/pie usa tokens `rem` (~14.4px) en vez del valor literal ÷2 de la leyenda (16pt→8px display) — posible decisión deliberada de legibilidad, no confirmado, ver `ChartCard.spec.md`. |

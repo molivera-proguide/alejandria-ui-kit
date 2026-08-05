@@ -2011,7 +2011,7 @@
 
   .ds-chart-card {
     background: var(--ds-color-pdf-surface-a20);
-    border: var(--ds-border-width-1) solid var(--ds-color-pdf-line-a60);
+    border: var(--ds-border-width-hair) /* was --ds-border-width-1 (1px) — PDF legend says "Borde: 0,75pt", the hairline convention used everywhere else */ solid var(--ds-color-pdf-line-a60);
     border-radius: var(--ds-radius-xs);
     color: var(--ds-color-ink);
     display: grid;
@@ -2057,6 +2057,13 @@
     width: 100%;
   }
 
+  .ds-bar-chart__bar {
+    /* the grayscale cycle's darkest fill (--ds-color-pdf-surface, #060606) matches .ds-chart-card's
+       own background almost exactly — without an outline that bar disappears entirely */
+    stroke: var(--ds-color-pdf-line-a60);
+    stroke-width: 0.75;
+  }
+
   .ds-bar-chart__label,
   .ds-line-chart__label {
     fill: var(--ds-color-pdf-ink-muted);
@@ -2067,8 +2074,8 @@
   }
 
   .ds-donut-chart__track {
-    stroke: var(--ds-color-pdf-ink-muted);
-    stroke-opacity: 0.25;
+    /* PDF legend: "Eje: 25pt de grosor - #494949" — a solid dark gray, not a dimmed ink-muted */
+    stroke: var(--ds-color-pdf-action);
   }
 
   .ds-donut-chart__segment {
