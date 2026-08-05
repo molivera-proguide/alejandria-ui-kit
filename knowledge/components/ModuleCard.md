@@ -33,14 +33,14 @@ tags:
   - interactive
   - molecule
 
-last_reviewed: 2026-07-03
+last_reviewed: 2026-08-05
 ---
 
 # ModuleCard
 
 ## Purpose
 
-Presenta un módulo operativo navegable con icono identificador, título y métricas resumidas en consolas del Alejandria UI Kit.
+Presenta un módulo operativo navegable con icono identificador, título y métricas resumidas en consolas del Alejandria UI Kit, alineado con la sección **MÓDULOS** del PDF de referencia (p.6).
 
 Describe:
 
@@ -102,7 +102,7 @@ siempre seguir estas reglas.
 - Proporcionar `onClick` cuando la tarjeta deba navegar o ejecutar una acción.
 - Agrupar instancias en un contenedor con grid CSS, como en la story `GridExample` (`repeat(auto-fit, minmax(130px, 1fr))`).
 - Pasar `aria-label` explícito si el título visible no describe suficientemente la acción del botón.
-- Usar iconos de módulo de `@alejandria/ui-kit` (SVG 180×180 artboard) como en las stories de Storybook; el CSS los renderiza a 90×90 px (display).
+- Usar iconos de módulo de `@alejandria/ui-kit` como en las stories de Storybook; el CSS los renderiza a 36×36 px (display) — corregido 2026-08-05, antes 90×90px (medido contra una referencia distinta al mockup real de la card, el ícono se veía casi el doble de grande de lo esperado).
 
 ---
 
@@ -153,8 +153,8 @@ Tipos exportados:
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `label` | `string` | sí | Etiqueta de la métrica. Usada como `key` en el mapeo y renderizada en `.ds-module-card__metric-label`. |
-| `value` | `string \| number` | sí | Valor de la métrica. Renderizado en `.ds-module-card__metric-value` sin formato adicional. |
+| `label` | `string` | sí | Etiqueta de la métrica. Usada como `key` en el mapeo y renderizada en `.ds-module-card__metric-label`. Mayúsculas y `:` final vía CSS (corregido 2026-08-05) — no hace falta escribir el label en mayúsculas ni agregar el separador. |
+| `value` | `string \| number` | sí | Valor de la métrica. Renderizado en `.ds-module-card__metric-value`, inmediatamente después del label (par inline, no una fila con el valor empujado al borde derecho — corregido 2026-08-05, ver Known Limitations / spec). |
 
 ---
 
@@ -172,7 +172,7 @@ No existen variantes públicas. El componente aplica una única apariencia media
 
 | State | Description |
 |--------|-------------|
-| Default | Apariencia base de `.ds-module-card`. `min-width: 130px`, `min-height: 130px`, padding `25px 10px 12.5px 10px` (display), borde `0.75px solid #c1c1c1`. |
+| Default | Apariencia base de `.ds-module-card`. `width: 194px`, `height: 194px` — card cuadrada de tamaño fijo, corregido 2026-08-05 (antes `min-width`/`min-height: 130px`, que dejaba variar el ancho según el largo del título, la causa de "distintos tamaños en el storybook"). Padding `25px 10px 12.5px 10px` (display), borde `0.75px solid #c1c1c1`. |
 | Hover | Borde `#ffffff`, sombra `0 16px 42px rgb(0 0 0 / 0.22)`, `transform: translateY(-2px)`. |
 | Focus-visible | `outline: none`, anillo de enfoque `box-shadow: 0 0 0 3px rgb(193 193 193 / 0.35)`. |
 | Disabled | Atributo `disabled` nativo del `<button>` vía `...props`. Sin reglas CSS específicas en `.ds-module-card:disabled`. |
@@ -211,13 +211,13 @@ Describe solo el comportamiento accesible implementado por el componente.
 
 Documenta solo el comportamiento responsivo implementado por el componente mismo.
 
-`ModuleCard` no define media queries. Impone `min-width: 130px` y `min-height: 130px` (display) en `.ds-module-card`.
+`ModuleCard` no define media queries. Impone `width: 194px` y `height: 194px` (display, fijo) en `.ds-module-card` — corregido 2026-08-05, antes `min-width`/`min-height: 130px` (dejaba crecer el ancho con el largo del título).
 
 | Contexto | Behavior |
 |----------|----------|
 | Componente | Sin breakpoints. Tamaño mínimo fijo; el ancho efectivo lo define el contenedor padre. |
 | Storybook `GridExample` | Contenedor padre con `gridTemplateColumns: repeat(auto-fit, minmax(130px, 1fr))` y `gap: 20`; el colapso responsivo depende del grid del padre, no del componente. |
-| Icono `<img>` / `svg` | `.ds-module-card__icon img` y `svg` fijan `height` y `width` a 90px (display) con `object-fit: contain`. |
+| Icono `<img>` / `svg` | `.ds-module-card__icon img` y `svg` fijan `height` y `width` a 36px (display, corregido 2026-08-05, antes 90px) con `object-fit: contain`. |
 
 ---
 
@@ -497,3 +497,4 @@ button.ds-module-card
 |----------|--------|
 | 0.1.0 | Implementación inicial de `ModuleCard`, `ModuleCardProps` y `ModuleMetric` con estilos `ds-module-card` y stories en Storybook. |
 | 0.1.0 | Refinamiento visual PDF (MÓDULOS): padding superior 25px display, título 12px Regular, métricas Montserrat 8px Light/Bold, icono 90×90 display, divisor 0.75px, hover/focus sin teal, Storybook en fondo oscuro. |
+| 0.1.1 | Pasada de fidelidad visual contra PDF MÓDULOS p.6 (coordenadas vectoriales y text-spans exactos vía PyMuPDF, a pedido de reporte de usuario: "distintos tamaños en el storybook" + "el número que está alineado a la izquierda"). `width`/`height` fijo 194×194px (card cuadrada, medida en el PDF) reemplaza `min-width`/`min-height: 130px` (nunca medido, dejaba el ancho variar con el largo del título — la causa real de los "distintos tamaños"). Ícono corregido de 90×90px a 36×36px (medido contra el ícono real del mockup, no contra una referencia distinta). `.ds-module-card__metric` corregido de `justify-content: space-between` (valor empujado al borde derecho) a un par inline pegado a la izquierda — el PDF muestra "CASOS ABIERTOS: 15" como una unidad compacta, no una fila de ancho completo; esta era la causa real del reporte sobre el número. Agregado `text-transform: uppercase` y separador `:` vía CSS a `.ds-module-card__metric-label`, fieles al texto real del PDF. |

@@ -54,6 +54,19 @@ Backlog below is now split accordingly.
   much larger dashboard mockup in overlapping coordinates; colors were confirmed from the user's
   clean screenshot's legend text instead of fighting the messy extraction.
 
+- **ModuleCard** (PDF p.6, "Módulos") — user-reported "distintos tamaños en el storybook" +
+  "el número que está alineado a la izquierda", both confirmed as real, evidenced bugs, not
+  misreadings. Card was `min-width`/`min-height: 130px` only (4th confirmed case of the
+  fixed-width-vs-fit-content pattern) → fixed `width`/`height: 194px` (PDF vector bbox is a
+  388.6×388.6pt @2× square). Icon was 90×90px, PDF vector bbox for the shield icon is only
+  ~71.6×70.9pt @2× → fixed to 36×36px (was ~2.5× too big — likely measured against a different
+  reference on the same PDF page, not the actual card mockup). The metric row was
+  `justify-content: space-between` (value pushed to the card's far right edge); PDF text-spans
+  show `"CASOS ABIERTOS: 15"` as one tight inline pair on the card's *left* side — changed to
+  `justify-content: flex-start` with a small gap. Also added `text-transform: uppercase` and a
+  `::after { content: ":" }` separator to the metric label, matching the PDF's literal
+  `"CASOS ABIERTOS:"` text (was rendering sentence-case with no colon).
+
 ## Carried-forward finding (not yet fixed anywhere)
 
 **CSS `pt`-instead-of-`px` unit bug**, found while fixing InvestigationCard, confirmed present via
@@ -83,7 +96,6 @@ In roughly PDF page order (per `knowledge/component-roadmap.md`'s gap table — 
 index with PyMuPDF before trusting it, page numbers there are 1-indexed "p.N" labels, not raw
 `doc[i]` indices):
 
-- **ModuleCard** — PDF "Módulos", p.6
 - **MetricCard** — PDF "Metric card" (has both a dashboard variant and a `.ds-metric--ficha`
   variant — check both against whichever PDF page(s) show them)
 - **Asistente** — PDF p.12 (static landing shell only per component-roadmap.md; chat/thread UI is

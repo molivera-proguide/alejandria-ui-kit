@@ -706,11 +706,11 @@
     cursor: pointer;
     display: grid;
     gap: 10px /* calibrated ÷2 */;
-    min-height: 130px /* calibrated ÷2 */;
-    min-width: 130px /* calibrated ÷2 */;
+    height: 194px /* calibrated ÷2 — PDF vector path (388.6pt @2× square card), was min-height 130px (invented, never measured — same fit-content-adjacent bug as .ds-task/.ds-investigation-card: a min-height/min-width floor with no matching fixed size let cards vary with content, "distintos tamaños" per longer/shorter titles) */;
     padding: 25px 10px /* calibrated ÷2 */ 12.5px 10px /* calibrated ÷2 */;
     text-align: center;
     transition: transform var(--ds-duration-md) var(--ds-ease-standard), box-shadow var(--ds-duration-md) var(--ds-ease-standard), border-color var(--ds-duration-md) var(--ds-ease-standard);
+    width: 194px /* calibrated ÷2 — PDF vector path (388.6pt @2×), was min-width 130px */;
   }
 
   .ds-module-card:hover {
@@ -734,9 +734,9 @@
   .ds-module-card__icon img,
   .ds-module-card__icon svg {
     display: block;
-    height: 90px /* calibrated ÷2 */;
+    height: 36px /* calibrated ÷2 — PDF vector path (shield icon bbox ~71.6×70.9pt @2×), was 90px (invented, measured against a different reference — the icon rendered nearly half the card's own width) */;
     object-fit: contain;
-    width: 90px /* calibrated ÷2 */;
+    width: 36px /* calibrated ÷2 — PDF vector path (~71.6pt @2×) */;
   }
 
   .ds-module-card__headline {
@@ -769,9 +769,14 @@
   }
 
   .ds-module-card__metric {
-    align-items: center;
+    /* PDF text-span extraction: "CASOS ABIERTOS: 15" sits as one tight inline pair on the card's
+       left side — not spread edge-to-edge. Was `justify-content: space-between` + value
+       `text-align: right`, which pushed the value hard against the card's right edge instead. */
+    align-items: baseline;
     display: flex;
-    justify-content: space-between;
+    gap: 4px /* calibrated ÷2 */;
+    justify-content: flex-start;
+    text-align: left;
   }
 
   .ds-module-card__metric-label {
@@ -781,7 +786,11 @@
     font-size: 8px;
     font-weight: var(--ds-font-weight-light);
     line-height: var(--ds-leading-normal);
-    text-align: left;
+    text-transform: uppercase /* PDF legend: "Info destacada: ... Uppercase" — PDF source text is itself "CASOS ABIERTOS", not lowercased then transformed */;
+  }
+
+  .ds-module-card__metric-label::after {
+    content: ":" /* PDF text-span is literally "CASOS ABIERTOS:" — the colon is part of the design, not consumer-supplied punctuation */;
   }
 
   .ds-module-card__metric-value {
@@ -791,8 +800,7 @@
     font-size: 8px;
     font-weight: var(--ds-font-weight-bold);
     line-height: var(--ds-leading-normal);
-    min-width: 16px /* calibrated ÷2 */;
-    text-align: right;
+    text-transform: uppercase;
   }
 
   .ds-task {
