@@ -398,12 +398,12 @@
   .ds-calendar-card {
     background: var(--ds-color-pdf-surface-warm);
     border: var(--ds-border-width-hair) solid var(--ds-color-pdf-line);
-    border-radius: var(--ds-radius-xs);
+    border-radius: 0; /* PDF vector is a plain `re` rect, no curve items — measured, not the .ds-task-style rounded corner */
     box-sizing: border-box;
     display: grid;
-    gap: var(--ds-space-2); /* PDF p.15 does not annotate root gap — provisional; see CalendarCard.spec.md */
-    max-width: 140px /* calibrated ÷2 — no PDF measurement, reused from .ds-task--kanban precedent */;
+    gap: var(--ds-space-1); /* measured ÷2 from PDF glyph bboxes (~3.65px); was --ds-space-2 (8px), unmeasured/provisional */
     padding: 7.5px 5px; /* same literal as .ds-task--default — PDF 15/10 @2× */
+    width: 72px; /* PDF vector bbox 144.02×144.02pt @2× (a literal square) ÷2 — was max-width: 140px, an unmeasured value reused from .ds-task--kanban and, via fit-content, letting the card shrink well below even that */
   }
 
   .ds-calendar-card__date {
@@ -414,7 +414,7 @@
   .ds-calendar-card__month {
     color: var(--ds-color-white);
     font-family: var(--ds-font-body);
-    font-size: 15pt; /* calibrated ÷2 — PDF 30pt */
+    font-size: 15px; /* calibrated ÷2 — PDF 30pt; was `15pt` (1pt = 1.333px, rendered ~33% oversized) */
     font-weight: var(--ds-font-weight-bold);
     line-height: var(--ds-leading-tight);
     text-transform: uppercase;
@@ -423,7 +423,7 @@
   .ds-calendar-card__description {
     color: var(--ds-color-pdf-ink-muted);
     font-family: var(--ds-font-body);
-    font-size: 6pt; /* calibrated ÷2 — PDF 12pt */
+    font-size: 6px; /* calibrated ÷2 — PDF 12pt; was `6pt` (1pt = 1.333px, rendered ~33% oversized) */
     font-weight: var(--ds-font-weight-light);
     line-height: var(--ds-leading-body);
     margin: 0;

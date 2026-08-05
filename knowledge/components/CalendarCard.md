@@ -31,7 +31,7 @@ tags:
   - presentational
   - molecule
 
-last_reviewed: 2026-07-21
+last_reviewed: 2026-08-05
 ---
 
 # CalendarCard
@@ -46,7 +46,7 @@ Presenta un tile estático de fecha/evento (día, mes y descripción opcional) e
 
 Describe:
 
-- **Responsabilidad principal:** mostrar una fecha compacta (`day` + `month`) con texto de apoyo opcional sobre la superficie PDF cálida (`#2a2927`) y borde hairline.
+- **Responsabilidad principal:** mostrar una fecha compacta (`day` + `month`) con texto de apoyo opcional sobre la superficie PDF cálida (`#2a2927`), borde hairline y **esquinas rectas** (sin `border-radius`; PDF vector confirmado).
 - **Problema que resuelve:** unificar el widget CALENDAR CARD del PDF sin acoplar un date-picker, grilla de mes ni lógica de agenda.
 - **Alcance:** molécula presentacional basada en `<article class="ds-calendar-card">`; anatomía fija (`day` / `month` / `description?`); sin `children` libres.
 
@@ -65,10 +65,10 @@ Documenta los comportamientos públicos en los que el consumidor puede confiar.
 
 ## This component guarantees
 
-- Renderizado como `<article class="ds-calendar-card">` con fondo opaco `var(--ds-color-pdf-surface-warm)` y borde `var(--ds-border-width-hair) solid var(--ds-color-pdf-line)`.
+- Renderizado como `<article class="ds-calendar-card">` con fondo opaco `var(--ds-color-pdf-surface-warm)`, borde `var(--ds-border-width-hair) solid var(--ds-color-pdf-line)` y `border-radius: 0` (esquinas rectas — PDF vector medido, ver spec).
 - `day` y `month` obligatorios; renderizados como dos líneas apiladas dentro de `.ds-calendar-card__date` (misma tipografía «Fecha»).
 - `description` renderizada en `<p class="ds-calendar-card__description">` solo cuando su valor es truthy.
-- Layout raíz en una columna (`display: grid`) con gap provisional `var(--ds-space-2)`.
+- Layout raíz en una columna (`display: grid`) con `width: 72px` fijo (PDF vector bbox 144×144pt @2× ÷2, una card literalmente cuadrada) y gap `var(--ds-space-1)` (4px, medido ÷2 desde los bboxes de glifos del PDF).
 - Padding raíz `7.5px 5px` (misma literal que `.ds-task--default` para PDF 15/10 @2×).
 - Fusión de `className` externa con `ds-calendar-card` mediante `cn()`.
 - Repaso de atributos nativos de `Omit<ComponentPropsWithoutRef<"article">, "children">` al `<article>` raíz vía `...props` (`id`, `style`, `data-*`, `aria-*`, etc.).
@@ -82,7 +82,7 @@ Documenta los comportamientos públicos en los que el consumidor puede confiar.
 - Usa `forwardRef`.
 - Define estados interactivos propios (`hover`, `focus`) en `.ds-calendar-card`.
 - Aplica media queries ni breakpoints propios.
-- Impone un `width`/`min-width` distinto al `max-width: 140px` provisional (reutilizado de `.ds-task--kanban`; PDF no anota tamaño).
+- Impone un `width` distinto de `72px` (medido del vector PDF; ver spec — reemplaza el `max-width: 140px` provisional que existía antes de esta pasada).
 
 ---
 
@@ -164,9 +164,9 @@ Una sola apariencia pública, alineada a PDF p.15 CALENDAR CARD. No hay modifica
 
 | Elemento | Rol visual (PDF p.15, display ÷2) |
 |----------|-----------------------------------|
-| Raíz | Fondo `#2a2927`, borde hairline `#c1c1c1`, padding `7.5px 5px` |
-| Fecha (`day` / `month`) | Montserrat Bold `15pt` (`30pt` @2×), `#ffffff`, uppercase |
-| Descripción | Montserrat Light `6pt` (`12pt` @2×), `#8a8b87`; sin `text-transform` |
+| Raíz | Fondo `#2a2927`, borde hairline `#c1c1c1`, esquinas rectas, `width: 72px` (144×144pt @2× — cuadrada), padding `7.5px 5px`, gap `4px` |
+| Fecha (`day` / `month`) | Montserrat Bold `15px` (`30pt` @2×), `#ffffff`, uppercase |
+| Descripción | Montserrat Light `6px` (`12pt` @2×), `#8a8b87`; sin `text-transform` |
 
 ---
 
@@ -210,12 +210,12 @@ Describe only accessibility behavior implemented by the component.
 
 Document only responsive behavior implemented by the component itself.
 
-`CalendarCard` no define media queries. El layout es una columna grid con `max-width: 140px` provisional (reutilizado de `.ds-task--kanban` / TaskCard compact tile; PDF no anota ancho).
+`CalendarCard` no define media queries. El layout es una columna grid con `width: 72px` fijo (medido del vector PDF; ver spec).
 
 | Contexto | Behavior |
 |----------|----------|
-| Componente | Sin breakpoints. `display: grid`, gap provisional `8px`. |
-| Storybook decorator | `padding: 32` en contenedor `fit-content` (`CalendarCard.stories.tsx`), mismo patrón que `TaskCard`. El card dibuja fondo opaco propio; no hace falta override de canvas. |
+| Componente | Sin breakpoints. `display: grid`, `width: 72px`, gap `4px` (medido). |
+| Storybook decorator | `padding: 32` en contenedor `fit-content` (`CalendarCard.stories.tsx`), mismo patrón que `TaskCard`. Ahora inocuo: el card fija su propio `width`, así que `fit-content` solo envuelve ese ancho fijo en vez de permitir que se achique. El card dibuja fondo opaco propio; no hace falta override de canvas. |
 
 ---
 
@@ -370,8 +370,7 @@ Only include tokens directly consumed by the component.
 | `--ds-color-pdf-surface-warm` | color | Fondo de `.ds-calendar-card` (`#2a2927`) |
 | `--ds-color-pdf-line` | color | Color del borde (`#c1c1c1`) |
 | `--ds-border-width-hair` | border | Ancho del borde (`0.75px`) |
-| `--ds-radius-xs` | radius | `border-radius` de la raíz |
-| `--ds-space-2` | space | Gap raíz entre bloque de fecha y descripción (`8px`, provisional) |
+| `--ds-space-1` | space | Gap raíz entre bloque de fecha y descripción (`4px`, medido ÷2 desde bboxes del PDF; antes `--ds-space-2` 8px, provisional) |
 | `--ds-color-white` | color | Color de `.ds-calendar-card__day` / `__month` |
 | `--ds-color-pdf-ink-muted` | color | Color de `.ds-calendar-card__description` (`#8a8b87`) |
 | `--ds-font-body` | typography | `font-family` de fecha y descripción (Montserrat) |
@@ -380,7 +379,7 @@ Only include tokens directly consumed by the component.
 | `--ds-leading-tight` | typography | `line-height` de día/mes |
 | `--ds-leading-body` | typography | `line-height` de la descripción |
 
-Nota: el padding `7.5px 5px` es literal reutilizada de `.ds-task--default` (PDF 15/10 @2×); no hay token de padding dedicado.
+Nota: el padding `7.5px 5px` es literal reutilizada de `.ds-task--default` (PDF 15/10 @2×); no hay token de padding dedicado. `width: 72px` y `border-radius: 0` son también literales (medidos del vector PDF), no tokens — no hay `--ds-*` de radio o tamaño dedicado para esta card cuadrada.
 
 ---
 
@@ -425,8 +424,8 @@ article.ds-calendar-card
 
 - No expone `children`, `variant`, `tone`, `size` ni interacción de calendario.
 - El layout día/mes apilado es una interpretación (la capa de texto del PDF pierde posición; misma caveat que p.2).
-- El gap raíz (`8px`) no está anotado en PDF p.15; es provisional (ver spec).
-- El tile tiene un `max-width: 140px` provisional (no medido en PDF; reutilizado del compact tile de TaskCard / `.ds-task--kanban`).
+- El gap raíz (`4px`) no está anotado literalmente en PDF p.15 como valor de spec; se derivó midiendo los bboxes de glifos (`get_text("dict")`) entre el bloque de fecha y la descripción — ver spec § Deltas para el detalle y el margen de incertidumbre del método.
+- El tile tiene `width: 72px`, medido del vector PDF (`get_drawings()` — bbox 144.02×144.02pt @2×, una card literalmente cuadrada); reemplaza el `max-width: 140px` provisional (no medido, reutilizado de TaskCard) que tenía antes de la pasada de fidelidad 2026-08-05.
 - Sin tests unitarios ni de integración en el repositorio.
 - Sin uso documentado en `apps/web`; evidencia en Storybook (`Playground`, `WithoutDescription`, `List`).
 
@@ -435,7 +434,7 @@ article.ds-calendar-card
 # Future Improvements
 
 - [ ] Confirmar con design si día/mes van apilados o en línea
-- [ ] Confirmar gap inter-bloque y éventual `width` / `min-width`
+- [ ] Confirmar con design si el `line-height` de la descripción debe recalibrarse (`--ds-leading-body` 1.45 vs ~1.17 medido en el bbox del PDF — ver spec § Deltas; no tocado en esta pasada porque el token es compartido por varios componentes ya revisados)
 - [ ] Integrar en un patrón de lista de eventos cuando se documente
 
 ---
@@ -445,3 +444,4 @@ article.ds-calendar-card
 | Version | Change |
 |----------|--------|
 | 0.1.0 | Implementación inicial de `CalendarCard` / `CalendarCardProps` con estilos `ds-calendar-card` según PDF p.15 CALENDAR CARD, y stories `Playground`, `WithoutDescription`, `List`. |
+| 0.1.1 | Fidelity pass 2026-08-05 contra PDF p.15 (`doc[14]`, medido con PyMuPDF): (1) bug `pt`→`px` en `font-size` de `.ds-calendar-card__day`/`__month`/`__description` (renderizaba ~33% sobredimensionado); (2) `max-width: 140px` provisional (sin medir, reutilizado de `.ds-task--kanban`) reemplazado por `width: 72px` fijo — bbox del vector PDF mide 144.02×144.02pt @2×, una card literalmente cuadrada, y el `fit-content` del decorator de la story dejaba encoger la card hasta ~59px sin este fix; (3) `border-radius` de `var(--ds-radius-xs)` a `0` — el vector PDF es un `re` (rectángulo plano) sin curvas de esquina, no una `.ds-task`-style rounded corner; (4) gap raíz de `--ds-space-2` (8px) a `--ds-space-1` (4px), medido de los bboxes de glifos entre el bloque de fecha y la descripción. |
