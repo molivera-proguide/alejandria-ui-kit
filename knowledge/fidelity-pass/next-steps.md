@@ -1,5 +1,48 @@
 # Fidelity pass — next steps
 
+## 🔖 Session handoff — pick up here (last updated 2026-08-06)
+
+**Status:** all originally-planned components are fidelity-passed (`Skeleton`, `CalendarCard`,
+`Empty` this week; `TaskCard`/`InvestigationCard`/`ChartCard` family/`ModuleCard`/`MetricCard`/
+`Asistente`/`SideBar` earlier). On top of that, today's page-by-page PDF sweep turned up a real
+**coverage gap** (not a fidelity bug) — GRAFICOS p.9 had 3 chart types nothing in the kit rendered
+— and it's now closed: new `LinearBarChartCard` + `ProgressRing` `variant="pdf"` (now the default).
+Both went through 2 rounds of user review/fixes in Storybook before commit — see "New components
+built" right below for the specifics. **Everything described in this file is already committed
+and pushed to `eval-loop`** (`git log --oneline -3` to confirm before starting new work).
+
+**Next up, in order** (see "Backlog — components" further down for full detail on each):
+1. **Form** (PDF p.17) — likely *not* a real build target. `component-roadmap.md` flags its PDF
+   spec block as looking like an unfinished placeholder (near-identical to Empty's, no field
+   list/layout/validation). Confirm with design before building anything; don't invent an API from
+   a placeholder page.
+2. **AlertBanner** (PDF p.18, "Alert") — check `specs/README.md`'s scale-calibration section first;
+   `.ds-alert` may be a "teal/console" (rem-based) component **out of scope** for this pass, same
+   as `Button`/`Badge`/`Card`/etc. Confirm the classification before assuming p.18 applies the same
+   `@2× ÷2` treatment TaskCard/InvestigationCard/etc. got.
+3. Once components are done (or confirmed out of scope): move to **patterns**
+   (`packages/ui/src/patterns/*` — `detail-sheet`, `login`, `mission`), per the 2026-08-05 decision
+   below.
+
+**Before touching any of the above**, also do a fresh full-PDF page sweep for more "GRAFICOS
+p.9-style" coverage gaps — today's discovery came from the user spotting one by eye in a
+screenshot, not from a systematic check. `component-roadmap.md`'s gap table should not be trusted
+at face value (it was wrong for p.9) — cross-check every remaining "✅" row against an actual
+PyMuPDF read of that PDF page before assuming it's real.
+
+**Process reminders that apply to every item above** (see full detail further down):
+- Wait for the user to actually look at Storybook and say go-ahead before committing/pushing —
+  don't push right after your own build+screenshot check (see the 2026-08-05 process note below).
+- A PDF diagram/illustration isn't always at 1:1 scale with the real asset it's showing (ModuleCard
+  icon lesson, below) — check declared asset sizes (SVG `viewBox`, etc.) first when available.
+- When a page mixes a clean reference diagram with noisy/duplicated/unrelated content in the same
+  coordinate space (GRAFICOS p.9's own extraction had this), don't force a clean read from
+  `get_drawings()`/`get_text()` alone — cross-check with the user's screenshot or look for a
+  systematic scale artifact (see the "0.887 ratio" note in `LinearBarChartCard.spec.md`) before
+  trusting either source blindly.
+
+---
+
 **Started:** 2026-08-04
 **Goal:** go component by component and check the built code against the real PDF (exact vector
 coordinates + text-spans via PyMuPDF — `python -c "import fitz; ..."`, not screenshots/estimates),
@@ -322,10 +365,14 @@ index with PyMuPDF before trusting it, page numbers there are 1-indexed "p.N" la
   for TaskCard/InvestigationCard.
 
 **Explicitly out of scope for this pass** (per `specs/README.md`'s own scale-calibration section):
-`Button`, `Badge`, `Card`, `Switch`, `SegmentedControl`, `DataTable`, `ProgressRing`, base `TextField`/
-`SelectField` — these are "teal/console" components on the display-scale `rem` convention, not the
-PDF's literal `@2×` artboard convention. A fidelity pass against the PDF doesn't apply to them the
-same way (there may still be bugs, just not "measured wrong against a PDF page").
+`Button`, `Badge`, `Card`, `Switch`, `SegmentedControl`, `DataTable`, base `TextField`/`SelectField`
+— these are "teal/console" components on the display-scale `rem` convention, not the PDF's literal
+`@2×` artboard convention. A fidelity pass against the PDF doesn't apply to them the same way
+(there may still be bugs, just not "measured wrong against a PDF page"). **`ProgressRing` is now a
+partial exception** (2026-08-06): its default `variant="console"` render is still out of scope for
+the same reason as the components above, but `variant="pdf"` (now the *default* value of that prop)
+is in scope and has its own PDF citation (p.9 "Torta") — see the "New components built" entry above
+and `ProgressRing.spec.md`.
 
 ## Backlog — patterns (after all components above are done)
 
