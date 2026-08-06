@@ -40,7 +40,8 @@ already.
 | Tarjetas | p.3 | ✅ | ✅ | `Card.tsx`, `TaskCard.tsx` |
 | Investigation card | p.4 | ✅ | ✅ | `InvestigationCard.tsx` |
 | Ficha | p.5 | ✅ | ✅ | `patterns/detail-sheet/DetailSheet.tsx` — **built but not exported from the main `index.ts` barrel** |
-| Módulos | p.6 | ✅ | ✅ | `ModuleCard.tsx` |
+| Módulos (p.6 — "Icono, título y preview de información") | p.6 | ✅ | ✅ | `ModuleCard.tsx` |
+| Módulos (p.7 — "De loguin") | p.7 (`doc[6]`) | not on timeline | not on timeline | `patterns/login/Login.tsx`. **Row added/corrected 2026-08-06**: same class of miss as the p.9/p.10 GRAFICOS pair — p.6 and p.7 share the section title "MÓDULOS" but are distinct pages; p.7's own subtitle is "De loguin", not a separate "Ingresar" page title (an earlier pass of this correction mis-cited it that way from an out-of-order text read — the button label "INGRESAR" on the mockup isn't the page title). Real spec: fondo `#060606`, borde `0,75pt #c1c1c1`, padding `20px` (legend value — real vector geometry measures ~23.07pt @2×, see `login-card` CSS comment), input `#2a2927`, círculos patrón `45×45px`, botón `#494949`. Fidelity-checked against `Login.tsx` 2026-08-06 — see `fidelity-pass/next-steps.md`. |
 | Gráficos (p.10 — Barra tradicional/Torta comparativa/Líneas) | p.10 (`doc[9]`) | ✅ | ✅ | `ChartCard.tsx`, `BarChartCard.tsx`, `DonutChartCard.tsx`, `LineChartCard.tsx` |
 | Gráficos (p.9 — Barras lineal horizontal/vertical, Torta gauge) | p.9 (`doc[8]`) | ✅ | ✅ | **Corrected 2026-08-06**: this row previously said "p.9–10" and pointed at the same 4 files above — wrong. p.9 is a distinct page under the same "GRAFICOS" title with 3 chart types those files don't cover (thin "linear" bars, not rectangles; a status-color gauge, not a grayscale comparison donut). Now built: `LinearBarChartCard.tsx` (horizontal/vertical) + `ProgressRing.tsx` `variant="pdf"` (gauge). |
 | Metric card | p.11 | ✅ | ✅ | `MetricCard.tsx` |
@@ -51,12 +52,13 @@ already.
 | **Empty** | p.16 | ✅ | ✅ | `Empty.tsx` — built 2026-07-21 |
 | Form | p.17 | not on timeline | not on timeline | no dedicated `Form`; scattered field primitives exist (`TextField`, `SelectField`, `SegmentedControl`, `Switch`, `DataTable`) |
 | Alert | p.18 | not on timeline | not on timeline | `AlertBanner.tsx` — already built as the "teal/console" notification card, out of scope for PDF `@2×÷2` fidelity (confirmed 2026-08-06, `specs/README.md`). Visually unlike the PDF's p.18 bar (full-width flat dark strip, centered uppercase text, no card/icon) — closed as a naming coincidence, not pursued as a fidelity target. |
-| Ingresar (Login) | p.7 (`doc[6]`) | not on timeline | not on timeline | `patterns/login/Login.tsx` — already built, naming differs from PDF ("Ingresar"). **Row added 2026-08-06**: missing from this table entirely until the fidelity-pass full-page sweep caught it (same class of miss as the p.9 GRAFICOS row, but a missing row instead of a wrong one). Has a real spec: fondo `#060606`, borde `0,75pt #c1c1c1`, padding `20px`, input `#2a2927`, círculos patrón `45×45px`, botón `#494949`. Not yet fidelity-checked against `Login.tsx` — queued in `fidelity-pass/next-steps.md`'s patterns backlog. |
 
-**Note on Form, Alert, and Ingresar:** none of the three appear on the p.2 timeline at
-all, so they sit outside the design team's own tracked scope. Alert and Ingresar are
-non-issues for *coverage* — `AlertBanner`/`Login` already ship, just under different
-names than their PDF titles. Form is confirmed **not ready** (2026-08-06, user-confirmed):
+**Note on Form, Alert, and the p.7 Login page:** none of these appear as their own row on
+the p.2 timeline, so they sit outside the design team's own tracked scope (p.7 rides along
+under the "Módulos" timeline dot instead, since it shares that section title with p.6).
+Alert and the p.7 Login page are non-issues for *coverage* — `AlertBanner`/`Login` already
+ship, just under different names/groupings than a literal PDF page title. Form is confirmed
+**not ready** (2026-08-06, user-confirmed):
 its p.17 spec block reads as an unfinished placeholder (near-identical to p.16 Empty's —
 same icon/title/text/button spec, no field list/layout/validation) because it genuinely
 is one — the designer is still actively working on the real Form spec. No dedicated

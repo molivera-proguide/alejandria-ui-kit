@@ -4,8 +4,9 @@
 
 **Status: all *components* are now closed** — either fidelity-passed (`Skeleton`, `CalendarCard`,
 `Empty`, `TaskCard`/`InvestigationCard`/`ChartCard` family/`ModuleCard`/`MetricCard`/`Asistente`/
-`SideBar`) or confirmed out of scope / not yet buildable (`Form`, `AlertBanner` — see items 1–2
-below). **Next real work is patterns** (`detail-sheet`/`login`/`mission`). Earlier today's
+`SideBar`) or confirmed out of scope / not yet buildable (`Form`, `AlertBanner`). **Patterns work
+has started: `login` is done** (see "Done — patterns" below) — `detail-sheet`/`mission` remain.
+Earlier today's
 page-by-page PDF check turned up a real **coverage gap** (not a fidelity bug) — GRAFICOS p.9 had
 3 chart types nothing in the kit rendered — and it's now closed: new `LinearBarChartCard` +
 `ProgressRing` `variant="pdf"` (now the default). Both went through 2 rounds of user review/fixes
@@ -17,18 +18,22 @@ in Storybook before commit — see "New components built" right below for the sp
 `component-roadmap.md`'s gap table):** confirmed titles/mapping for every page already in the
 table (re-verified p.3/p.4/p.5/p.10/p.11 with proper reading-order blocks — `TARJETAS`/
 `INVESTIGATION CARD`/`FICHAS`/`GRAFICOS`/`METRIC CARD`, all correct, no more p.9-style
-mismappings). Found **one real gap the table doesn't list at all**: p.7 "INGRESAR" (Login) — see
+mismappings). Found **one real gap the table doesn't list at all**: p.7 (`doc[6]`) — see
 "New finding" below. p.8 "ICONOS" confirmed as a reference/legend page, not a component. No other
 gaps found — the sweep is done, don't re-run it from scratch next session.
 
-**New finding (2026-08-06): p.7 "INGRESAR" has a real, uncited spec page.** Not in
-`component-roadmap.md`'s gap table, not on the p.2 timeline either (the timeline's 11 dots don't
-include it) — but `doc[6]` has real measurements: Fondo `#060606`, Borde `0,75pt - #c1c1c1`,
-Padding `20px`, Input Source Code Light 20pt padding 10px fondo `#2a2927`, Círculos patrón
-`45pxX45px - #2a2927`, Botón Montserrat Bold 18pt `#FFFFFF` padding top/bottom 10px left/right
-120px fondo `#494949`. This resolves the open question in "Backlog — patterns" below about
-`packages/ui/src/patterns/login/` — it **does** have a citable PDF page, unlike `mission` (still
-unconfirmed). Not fixed yet — patterns come after components per the 2026-08-05 order decision.
+**New finding (2026-08-06): p.7 has a real, uncited spec page — corrected same day.** First read
+of `get_text()` (unordered) mis-cited this page as "INGRESAR" — that's actually just the button
+label drawn on the mockup, not the page title. Re-read with position-sorted blocks: the real title
+is **"MÓDULOS"**, subtitle **"De loguin"** — p.7 is a *second* "MÓDULOS" page, sharing that section
+title with p.6 (the already-built `ModuleCard` page) the same way GRAFICOS p.9/p.10 share theirs.
+Real measurements from `doc[6]`: Fondo `#060606`, Borde `0,75pt - #c1c1c1`, Padding `20px` (legend
+value; real vector geometry measures a symmetric ~23.07pt @2× card-to-content inset, not exactly
+20pt — see the fix below), Input Source Code Light 20pt padding 10px fondo `#2a2927`, Círculos
+patrón `45pxX45px - #2a2927`, Botón Montserrat Bold 18pt `#FFFFFF` padding top/bottom 10px
+left/right 120px fondo `#494949`. This resolves the open question in "Backlog — patterns" below
+about `packages/ui/src/patterns/login/` — it **does** have a citable PDF page, unlike `mission`
+(still unconfirmed). **Fidelity-checked the same day** — see "Done — patterns" below.
 
 **Also noted for later, not acted on:** p.18 "ALERT" text is sparse (`get_text()` alone looks like
 just two example strings + boilerplate description text duplicated from p.8) but `get_drawings()`
@@ -53,10 +58,9 @@ to check against, not just the sparse text.
    unlike `.ds-alert`'s rounded icon-card-with-accent-border shape. See `AlertBanner.spec.md`'s
    Deltas section for the exact measurements if this ever gets revisited as a *new* component
    instead of a fix to the existing one.
-**All components are now done or confirmed out of scope — next up is patterns** (see "Backlog —
-patterns" further down): `packages/ui/src/patterns/*` — `detail-sheet`, `login`, `mission`, per
-the 2026-08-05 decision below. `login` now has a confirmed PDF citation (p.7, see "New finding"
-above) — `mission` still doesn't, check that one fresh when the time comes.
+**All components are now done or confirmed out of scope. Patterns are next** (per the 2026-08-05
+decision below): `login` is done (2026-08-06, see "Done — patterns"); `detail-sheet` (PDF "Ficha",
+p.5) and `mission` remain — `mission` still has no confirmed PDF citation, check that fresh.
 
 **Process reminders that apply to every item above** (see full detail further down):
 - Wait for the user to actually look at Storybook and say go-ahead before committing/pushing —
@@ -396,14 +400,33 @@ the same reason as the components above, but `variant="pdf"` (now the *default* 
 is in scope and has its own PDF citation (p.9 "Torta") — see the "New components built" entry above
 and `ProgressRing.spec.md`.
 
+## Done — patterns
+
+- **Login** (`packages/ui/src/patterns/login/`) — PDF p.7 (`doc[6]`), title **"MÓDULOS"**, subtitle
+  **"De loguin"** — 2026-08-06. Not "INGRESAR" (that's the button label on the mockup, not the page
+  title — an earlier same-day pass mis-cited it from an unordered `get_text()` read; corrected after
+  rendering the page as an image and visually confirming the title). p.7 is a sibling page to p.6
+  (the already-built `ModuleCard` page) sharing the "MÓDULOS" section title, the same relationship
+  as GRAFICOS p.9/p.10 — not its own standalone "Ingresar" component. Two real fixes: (1) both
+  `Login.tsx`'s and `Login.stories.tsx`'s PDF-citation comments said "página 6" — wrong page number,
+  now "página 7". (2) `.login-card`'s `padding` was `10px`, naively halved from the legend's
+  "Padding: 20px" — real vector geometry (`get_drawings()` on `doc[6]`) measures a symmetric
+  23.07pt @2× card-edge-to-content inset on both variants (pattern-grid and credentials-fields),
+  ÷2 = 11.5px, not 10px. Fixed to `11.5px`, and trimmed `.login-card__body--credentials`'s
+  `padding-top` from `12.5px` to `11px` to keep the *total* card-top → first-field-top offset
+  matching the measured ~22.5px (previously 10+12.5=22.5 by coincidence of two wrong numbers
+  cancelling out; now 11.5+11=22.5 from two corrected ones). Everything else already matched
+  exactly: card size (206.5px vs measured 206.3px, noise), pattern-dot size/gap (legend's round
+  "45×45px"/2=22.5px trusted over the slightly noisier raw diagram measurement, same call as the
+  LinearBarChartCard 0.887-ratio precedent), button dimensions (content-sized via padding, cross-
+  checked against the measured 178.5×20.05px rect — matches), button font/padding/colors (Montserrat
+  Bold 18pt→9px, padding 10/120pt→5/60px, fondo `#494949`, white text), field font/padding (Source
+  Code Light-weight 20pt→10px, padding 10pt→5px), and all 3 colors (`#060606`/`#c1c1c1`/`#2a2927`,
+  exact token matches). Verified in Storybook (`DeLoguin` story, both variants) before commit.
+
 ## Backlog — patterns (after all components above are done)
 
 - **DetailSheet** (`packages/ui/src/patterns/detail-sheet/`) — PDF "Ficha", p.5
-- **Login** (`packages/ui/src/patterns/login/`) — PDF "INGRESAR", p.7 (`doc[6]`) — confirmed
-  2026-08-06 during the full-page sweep (see handoff block above for the exact measurements:
-  fondo `#060606`, borde `0,75pt #c1c1c1`, padding `20px`, input `#2a2927`, círculos patrón
-  `45×45px`, botón `#494949`). Not on `component-roadmap.md`'s gap table or the p.2 timeline —
-  add it there too when this pattern's turn comes up.
 - `packages/ui/src/patterns/mission/` — still not checked against the PDF for an existing spec
   page; confirm whether it has one before assuming this pass covers it the same way.
 
@@ -499,3 +522,15 @@ it.
   override on a `display: grid` element with implicit columns doesn't seem to take effect
   visually, check `getComputedStyle().gridTemplateColumns` before assuming the padding itself is
   wrong — it may be applied correctly and just not doing anything.
+- **`page.get_text()`'s default (unordered) string is not reading order — don't identify a page's
+  title from it.** Misread p.7's title as "INGRESAR" from the raw unordered dump because that
+  string happened to appear first; the real title ("MÓDULOS") and subtitle ("De loguin") were
+  further down in the same dump, and "INGRESAR" was actually the button label baked into the
+  mockup, repeated across both login-card examples (hence 4 near-duplicate occurrences — another
+  instance of the "duplicated text" noise already seen on the GRAFICOS page). Caught by rendering
+  the page as an image (`page.get_pixmap()`) and looking at it directly — the title sits top-right
+  in a large letter-spaced font, same position as every other page's title, immediately obvious
+  once actually seen. **When citing what a page is *about* (not just measuring a value on it),
+  either sort `get_text('blocks')` by y-position first (as already practiced for p.3/p.4/p.10/p.11
+  earlier this same session) or render the page as an image and look — don't trust which string
+  `get_text()`'s plain-string mode happens to emit first.**

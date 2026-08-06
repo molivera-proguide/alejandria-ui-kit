@@ -3,7 +3,7 @@ import { TextField } from "../../components/TextField";
 import "./login.css";
 
 /**
- * @description Variante visual del módulo de login según la referencia PDF (página 6)
+ * @description Variante visual del módulo de login según la referencia PDF (página 7, "MÓDULOS" — subtítulo "De loguin"; una página distinta de la p.6 "MÓDULOS", que cubre el ModuleCard)
  */
 export type LoginVariant = "pattern" | "credentials";
 
@@ -26,7 +26,7 @@ const PATTERN_DOT_COUNT = 9;
 /**
  * @description Composición del patrón Login a partir de componentes existentes del Design System
  * @param {LoginProps} props - Variantes visibles del módulo de login
- * @returns {JSX.Element} Superficie de autenticación según la referencia PDF — página 6
+ * @returns {JSX.Element} Superficie de autenticación según la referencia PDF — página 7 ("MÓDULOS" — "De loguin")
  */
 export function Login({ variants = ["pattern", "credentials"] }: LoginProps) {
   return (

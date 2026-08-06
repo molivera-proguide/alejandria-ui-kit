@@ -20,7 +20,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * @description Ambas variantes del módulo de login según la referencia PDF — página 6 (MÓDULOS — De loguin)
+ * @description Ambas variantes del módulo de login según la referencia PDF — página 7 (MÓDULOS — De loguin;
+ * página distinta de la p.6 "MÓDULOS" que cubre ModuleCard — mismo título de sección, contenido propio,
+ * igual que GRAFICOS p.9/p.10)
  */
 export const DeLoguin: Story = {
   args: {

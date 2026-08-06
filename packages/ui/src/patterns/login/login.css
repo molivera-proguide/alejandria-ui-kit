@@ -20,7 +20,11 @@
   display: flex;
   flex-direction: column;
   height: 206.5px;
-  padding: 10px /* calibrated ÷2 */;
+  /* measured from PDF vector rects (doc[6], p.7 "INGRESAR"): card edge → field/pattern-grid
+     edge is a symmetric 23.07pt @2× → ÷2 = 11.5px on both sides — not the legend's "Padding:
+     20px" naively halved to 10px. Same lesson as Asistente: the legend's stated unit doesn't
+     always match the raw @2× geometry; geometry wins. */
+  padding: 11.5px;
   width: 206.5px;
 }
 
@@ -39,7 +43,9 @@
 .login-card__body--credentials {
   align-items: flex-start;
   justify-content: flex-start;
-  padding-top: 12.5px;
+  /* card top edge → first field top edge measures 22.515px total; card padding above now
+     accounts for 11.5px of that, so this covers the remaining ~11px. */
+  padding-top: 11px;
 }
 
 .login-card__pattern {
