@@ -50,15 +50,18 @@ already.
 | **Calendar card** | p.15 | ✅ | ✅ | `CalendarCard.tsx` — built 2026-07-21 |
 | **Empty** | p.16 | ✅ | ✅ | `Empty.tsx` — built 2026-07-21 |
 | Form | p.17 | not on timeline | not on timeline | no dedicated `Form`; scattered field primitives exist (`TextField`, `SelectField`, `SegmentedControl`, `Switch`, `DataTable`) |
-| Alert | p.18 | not on timeline | not on timeline | `AlertBanner.tsx` — already built, naming differs from PDF ("Alert") |
+| Alert | p.18 | not on timeline | not on timeline | `AlertBanner.tsx` — already built as the "teal/console" notification card, out of scope for PDF `@2×÷2` fidelity (confirmed 2026-08-06, `specs/README.md`). Visually unlike the PDF's p.18 bar (full-width flat dark strip, centered uppercase text, no card/icon) — closed as a naming coincidence, not pursued as a fidelity target. |
+| Ingresar (Login) | p.7 (`doc[6]`) | not on timeline | not on timeline | `patterns/login/Login.tsx` — already built, naming differs from PDF ("Ingresar"). **Row added 2026-08-06**: missing from this table entirely until the fidelity-pass full-page sweep caught it (same class of miss as the p.9 GRAFICOS row, but a missing row instead of a wrong one). Has a real spec: fondo `#060606`, borde `0,75pt #c1c1c1`, padding `20px`, input `#2a2927`, círculos patrón `45×45px`, botón `#494949`. Not yet fidelity-checked against `Login.tsx` — queued in `fidelity-pass/next-steps.md`'s patterns backlog. |
 
-**Note on Form and Alert:** neither appears on the p.2 timeline at all, so they sit
-outside the design team's own tracked scope. Alert is a non-issue — `AlertBanner`
-already ships. Form is the one open question: its p.17 spec block is nearly
-word-for-word identical to p.16 Empty (same icon/title/text/button spec, no field
-list, no layout, no validation states) — it reads as an unfinished placeholder
-page, not a real spec. **Recommendation: confirm the actual Form spec with design
-before scoping a build.**
+**Note on Form, Alert, and Ingresar:** none of the three appear on the p.2 timeline at
+all, so they sit outside the design team's own tracked scope. Alert and Ingresar are
+non-issues for *coverage* — `AlertBanner`/`Login` already ship, just under different
+names than their PDF titles. Form is confirmed **not ready** (2026-08-06, user-confirmed):
+its p.17 spec block reads as an unfinished placeholder (near-identical to p.16 Empty's —
+same icon/title/text/button spec, no field list/layout/validation) because it genuinely
+is one — the designer is still actively working on the real Form spec. No dedicated
+`Form` component exists and none should be built from the current placeholder page;
+revisit once design ships a real spec.
 
 ## Build order (timeline gaps closed)
 

@@ -52,3 +52,13 @@
 ## Deltas & open questions (facts only — DO NOT resolve)
 - `ds-alert--info` applied in DOM without dedicated CSS rule (knowledge/components/AlertBanner.md).
 - PDF page not cited.
+- **2026-08-06 fidelity-pass scope check:** `.ds-alert` is named explicitly in
+  `knowledge/specs/README.md`'s scale-calibration section as a teal/console component, out of
+  scope for the PDF `@2× ÷2` rule (same bucket as `.ds-button`/`.ds-badge`/`.ds-card`) — confirmed,
+  not applying that treatment here. Separately, PDF p.18 ("ALERT", `doc[17]`) does exist and has
+  its own real visual spec — a full-width dark bar (`#494949` fill / `#060606` border, ~21px tall
+  @2×÷2), no card/icon/rounded-corner treatment, category line white + message line red, centered
+  uppercase text — structurally unlike this component's rounded icon-card-with-accent-border
+  shape. User-confirmed 2026-08-06: not pursuing this as a fidelity target for `.ds-alert` (closing
+  the AlertBanner item in `fidelity-pass/next-steps.md` as out of scope). The PDF p.18 bar remains
+  undescribed by any shipped component — noted as a fact, not actioned.

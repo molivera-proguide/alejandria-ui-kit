@@ -1,34 +1,62 @@
 # Fidelity pass — next steps
 
-## 🔖 Session handoff — pick up here (last updated 2026-08-06)
+## 🔖 Session handoff — pick up here (last updated 2026-08-06, evening)
 
-**Status:** all originally-planned components are fidelity-passed (`Skeleton`, `CalendarCard`,
-`Empty` this week; `TaskCard`/`InvestigationCard`/`ChartCard` family/`ModuleCard`/`MetricCard`/
-`Asistente`/`SideBar` earlier). On top of that, today's page-by-page PDF sweep turned up a real
-**coverage gap** (not a fidelity bug) — GRAFICOS p.9 had 3 chart types nothing in the kit rendered
-— and it's now closed: new `LinearBarChartCard` + `ProgressRing` `variant="pdf"` (now the default).
-Both went through 2 rounds of user review/fixes in Storybook before commit — see "New components
-built" right below for the specifics. **Everything described in this file is already committed
-and pushed to `eval-loop`** (`git log --oneline -3` to confirm before starting new work).
+**Status: all *components* are now closed** — either fidelity-passed (`Skeleton`, `CalendarCard`,
+`Empty`, `TaskCard`/`InvestigationCard`/`ChartCard` family/`ModuleCard`/`MetricCard`/`Asistente`/
+`SideBar`) or confirmed out of scope / not yet buildable (`Form`, `AlertBanner` — see items 1–2
+below). **Next real work is patterns** (`detail-sheet`/`login`/`mission`). Earlier today's
+page-by-page PDF check turned up a real **coverage gap** (not a fidelity bug) — GRAFICOS p.9 had
+3 chart types nothing in the kit rendered — and it's now closed: new `LinearBarChartCard` +
+`ProgressRing` `variant="pdf"` (now the default). Both went through 2 rounds of user review/fixes
+in Storybook before commit — see "New components built" right below for the specifics.
+**Everything described in this file is already committed and pushed to `eval-loop`**
+(`git log --oneline -3` to confirm before starting new work).
+
+**Full-PDF sweep done this session (all 18 pages, `doc[0]`–`doc[17]`, cross-checked against
+`component-roadmap.md`'s gap table):** confirmed titles/mapping for every page already in the
+table (re-verified p.3/p.4/p.5/p.10/p.11 with proper reading-order blocks — `TARJETAS`/
+`INVESTIGATION CARD`/`FICHAS`/`GRAFICOS`/`METRIC CARD`, all correct, no more p.9-style
+mismappings). Found **one real gap the table doesn't list at all**: p.7 "INGRESAR" (Login) — see
+"New finding" below. p.8 "ICONOS" confirmed as a reference/legend page, not a component. No other
+gaps found — the sweep is done, don't re-run it from scratch next session.
+
+**New finding (2026-08-06): p.7 "INGRESAR" has a real, uncited spec page.** Not in
+`component-roadmap.md`'s gap table, not on the p.2 timeline either (the timeline's 11 dots don't
+include it) — but `doc[6]` has real measurements: Fondo `#060606`, Borde `0,75pt - #c1c1c1`,
+Padding `20px`, Input Source Code Light 20pt padding 10px fondo `#2a2927`, Círculos patrón
+`45pxX45px - #2a2927`, Botón Montserrat Bold 18pt `#FFFFFF` padding top/bottom 10px left/right
+120px fondo `#494949`. This resolves the open question in "Backlog — patterns" below about
+`packages/ui/src/patterns/login/` — it **does** have a citable PDF page, unlike `mission` (still
+unconfirmed). Not fixed yet — patterns come after components per the 2026-08-05 order decision.
+
+**Also noted for later, not acted on:** p.18 "ALERT" text is sparse (`get_text()` alone looks like
+just two example strings + boilerplate description text duplicated from p.8) but `get_drawings()`
+shows a real visual spec: two stacked bars, `#494949` fill / `#060606` border, ~42.6pt @2× (~21px)
+tall each, ~36pt @2× gap between them; category line white 20pt @2× (~10px), message line red
+`#ff0000` 20pt @2× (~10px). Useful once the `.ds-alert` scope question (item 2 below) is resolved
+either way — if it turns out to be in scope for the `@2× ÷2` treatment, these are the real numbers
+to check against, not just the sparse text.
 
 **Next up, in order** (see "Backlog — components" further down for full detail on each):
-1. **Form** (PDF p.17) — likely *not* a real build target. `component-roadmap.md` flags its PDF
-   spec block as looking like an unfinished placeholder (near-identical to Empty's, no field
-   list/layout/validation). Confirm with design before building anything; don't invent an API from
-   a placeholder page.
-2. **AlertBanner** (PDF p.18, "Alert") — check `specs/README.md`'s scale-calibration section first;
-   `.ds-alert` may be a "teal/console" (rem-based) component **out of scope** for this pass, same
-   as `Button`/`Badge`/`Card`/etc. Confirm the classification before assuming p.18 applies the same
-   `@2× ÷2` treatment TaskCard/InvestigationCard/etc. got.
-3. Once components are done (or confirmed out of scope): move to **patterns**
-   (`packages/ui/src/patterns/*` — `detail-sheet`, `login`, `mission`), per the 2026-08-05 decision
-   below.
-
-**Before touching any of the above**, also do a fresh full-PDF page sweep for more "GRAFICOS
-p.9-style" coverage gaps — today's discovery came from the user spotting one by eye in a
-screenshot, not from a systematic check. `component-roadmap.md`'s gap table should not be trusted
-at face value (it was wrong for p.9) — cross-check every remaining "✅" row against an actual
-PyMuPDF read of that PDF page before assuming it's real.
+1. ~~**Form** (PDF p.17)~~ — **closed 2026-08-06, confirmed not a build target yet, no code
+   change.** User confirmed directly: the designer is still actively working on this spec — the
+   placeholder-looking p.17 block (near-identical to Empty's) isn't a documentation gap on our
+   side, it's genuinely unfinished upstream. Nothing to build against yet; re-check with design
+   once a real Form spec lands, don't infer an API from the current placeholder page.
+2. ~~**AlertBanner** (PDF p.18, "Alert")~~ — **closed 2026-08-06, confirmed out of scope, no code
+   change.** `.ds-alert` is named explicitly in `specs/README.md`'s scale-calibration section as a
+   teal/console component, out of scope for the `@2× ÷2` rule, same bucket as `Button`/`Badge`/
+   `Card`. User confirmed: not pursuing the PDF's p.18 bar as a fidelity target for this component.
+   Real mismatch noted for the record (not actioned): the PDF's p.18 "ALERT" is a full-width flat
+   dark bar with centered uppercase text (no card/icon/rounded-corner treatment) — visually
+   unlike `.ds-alert`'s rounded icon-card-with-accent-border shape. See `AlertBanner.spec.md`'s
+   Deltas section for the exact measurements if this ever gets revisited as a *new* component
+   instead of a fix to the existing one.
+**All components are now done or confirmed out of scope — next up is patterns** (see "Backlog —
+patterns" further down): `packages/ui/src/patterns/*` — `detail-sheet`, `login`, `mission`, per
+the 2026-08-05 decision below. `login` now has a confirmed PDF citation (p.7, see "New finding"
+above) — `mission` still doesn't, check that one fresh when the time comes.
 
 **Process reminders that apply to every item above** (see full detail further down):
 - Wait for the user to actually look at Storybook and say go-ahead before committing/pushing —
@@ -348,21 +376,15 @@ Check any remaining backlog item whose CSS background uses an alpha value (`rgb(
 named token ending in `-aNN`) for the same gap before assuming its Storybook rendering reflects
 the real component.
 
-## Backlog — components (finish these before moving to patterns)
+## Backlog — components (empty — all closed, see below)
 
-In roughly PDF page order (per `knowledge/component-roadmap.md`'s gap table — confirm exact page
-index with PyMuPDF before trusting it, page numbers there are 1-indexed "p.N" labels, not raw
-`doc[i]` indices):
-
-- **Form** — PDF p.17. `component-roadmap.md` flags this page's spec as looking like an unfinished
-  placeholder (near-identical to Empty's spec block, no field list/layout/validation) — no
-  dedicated `Form` component exists. Probably not a fidelity-pass target; confirm the real spec
-  with design before building anything here, don't invent a Form component from a placeholder page.
-- **AlertBanner** — PDF p.18 ("Alert"). Uncertain whether this is meant to follow the PDF's `@2×
-  ÷2` pixel calibration at all — `specs/README.md`'s scale-calibration section lists `.ds-alert` as
-  a "teal/console" component explicitly **out of scope** for that rule (rem-based instead). Check
-  this classification first before assuming a fidelity pass here even applies the same way it did
-  for TaskCard/InvestigationCard.
+- ~~**Form**~~ — PDF p.17. **Closed 2026-08-06**, confirmed not a build target yet, no code
+  change. User confirmed directly: the designer is still actively working on this spec — the
+  placeholder-looking p.17 block (near-identical to Empty's, no field list/layout/validation) is
+  genuinely unfinished upstream, not a doc gap on our side. Re-open when a real Form spec lands.
+- ~~**AlertBanner**~~ — PDF p.18 ("Alert"). **Closed 2026-08-06**, confirmed out of scope, no code
+  change — see the handoff block above for the full reasoning and the real p.18 bar measurements
+  kept on file in case this resurfaces as a *new*-component question later.
 
 **Explicitly out of scope for this pass** (per `specs/README.md`'s own scale-calibration section):
 `Button`, `Badge`, `Card`, `Switch`, `SegmentedControl`, `DataTable`, base `TextField`/`SelectField`
@@ -377,9 +399,13 @@ and `ProgressRing.spec.md`.
 ## Backlog — patterns (after all components above are done)
 
 - **DetailSheet** (`packages/ui/src/patterns/detail-sheet/`) — PDF "Ficha", p.5
-- `packages/ui/src/patterns/login/`, `packages/ui/src/patterns/mission/` — not yet checked against
-  the PDF for an existing spec page; confirm whether either has one before assuming this pass
-  covers them the same way.
+- **Login** (`packages/ui/src/patterns/login/`) — PDF "INGRESAR", p.7 (`doc[6]`) — confirmed
+  2026-08-06 during the full-page sweep (see handoff block above for the exact measurements:
+  fondo `#060606`, borde `0,75pt #c1c1c1`, padding `20px`, input `#2a2927`, círculos patrón
+  `45×45px`, botón `#494949`). Not on `component-roadmap.md`'s gap table or the p.2 timeline —
+  add it there too when this pattern's turn comes up.
+- `packages/ui/src/patterns/mission/` — still not checked against the PDF for an existing spec
+  page; confirm whether it has one before assuming this pass covers it the same way.
 
 **Process note (2026-08-05):** wait for the user to actually look at Storybook and say go-ahead
 before committing/pushing a fix — don't push right after a build+screenshot check on my own.
