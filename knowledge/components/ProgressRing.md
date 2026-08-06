@@ -32,20 +32,26 @@ tags:
   - presentational
   - atom
 
-last_reviewed: 2026-07-02
+last_reviewed: 2026-08-06
 ---
 
 # ProgressRing
 
+Canonical design reference (default `variant="pdf"`): `knowledge/references/design-reference.pdf`
+**page 9 — GRAFICOS › "Torta"** (`doc[8]`). `variant="console"` (opt-in, no longer the default as
+of 2026-08-06) has no PDF reference — it's a "teal/console" component on the display-scale `rem`
+convention (see `specs/README.md`'s scale-calibration section), unrelated to this PDF page; its
+Storybook stories were removed at the user's request, but the code path itself is untouched.
+
 ## Purpose
 
-Presenta un indicador circular de avance porcentual con valor central, etiqueta opcional y tono semántico en consolas del Alejandria UI Kit.
+Presenta un indicador circular de avance porcentual con valor central, etiqueta opcional y tono semántico. Por defecto (`variant="pdf"`, desde 2026-08-06) es el gauge de estado de GRAFICOS p.9 "Torta" — antes de esa fecha ese tipo de gráfico del PDF no tenía ningún componente asociado. `variant="console"` sigue existiendo (código sin cambios) para el sistema de consola sin referencia PDF, pero ya no tiene stories propias en Storybook.
 
 Describe:
 
 - **Responsabilidad principal:** mostrar un porcentaje de progreso (0–100) en un anillo visual con valor numérico destacado.
-- **Problema que resuelve:** unificar la lectura de avance operativo (misión, riesgo, red) sin acoplar cálculo de progreso ni navegación.
-- **Alcance:** componente presentacional basado en `<div>`; el consumidor provee `value`, opcionalmente `label`, `tone` y `size`.
+- **Problema que resuelve:** unificar la lectura de avance operativo (misión, riesgo, red) sin acoplar cálculo de progreso ni navegación. `variant="pdf"` además cubre el gauge de estado (rojo/ámbar/verde) que el PDF muestra para métricas como "Evacuados" en pantallas de reporting.
+- **Alcance:** componente presentacional basado en `<div>`; el consumidor provee `value`, opcionalmente `label`, `tone`, `size` y `variant`.
 
 Exclude:
 
@@ -136,7 +142,8 @@ import {
   ProgressRing,
   type ProgressRingProps,
   type ProgressRingTone,
-  type ProgressRingSize
+  type ProgressRingSize,
+  type ProgressRingVariant
 } from "@alejandria/ui-kit";
 ```
 
@@ -146,6 +153,7 @@ Tipos exportados:
 - `ProgressRingProps` — props del componente.
 - `ProgressRingTone` — unión de tonos semánticos.
 - `ProgressRingSize` — unión de tamaños.
+- `ProgressRingVariant` — unión `"console" | "pdf"` (agregado 2026-08-06).
 
 ---
 
@@ -156,7 +164,8 @@ Tipos exportados:
 | `value` | `number` | — | sí | Porcentaje de progreso. Acotado internamente a 0–100. Alimenta el arco visual (`--progress-value`) y el texto `{value}%`. |
 | `label` | `string` | — | no | Etiqueta bajo el porcentaje. Renderizada en `<span class="ds-progress__label">`. Incluida en `aria-label` si está presente. |
 | `tone` | `ProgressRingTone` | `"neutral"` | no | Tono semántico del acento. Aplica clase `ds-progress--{tone}`. |
-| `size` | `ProgressRingSize` | `"md"` | no | Tamaño del anillo. Aplica clase `ds-progress--{size}`. |
+| `size` | `ProgressRingSize` | `"md"` | no | Tamaño del anillo. Escala `--ds-size-progress-pdf-*` + fuente inline (`pdf`) o clase `ds-progress--{size}` (`console`). |
+| `variant` | `ProgressRingVariant` | `"pdf"` (desde 2026-08-06; antes `"console"`) | no | `"pdf"`: anillo SVG de dos trazos según GRAFICOS p.9 "Torta" — ver spec. `"console"` (opt-in): `conic-gradient` original, sin stories propias. |
 | `className` | `string` | — | no | Clases adicionales fusionadas en el `<div>` raíz. |
 | `style` | `CSSProperties` | — | no | Estilos inline fusionados con `--progress-value` en el `<div>` raíz. |
 | `...props` | `HTMLAttributes<HTMLDivElement>` | — | no | Atributos nativos del contenedor (`id`, `data-*`, etc.). El spread se aplica después de `role` y `aria-label`; el consumidor puede sobrescribirlos. |
@@ -202,6 +211,37 @@ Cuatro tonos y tres tamaños públicos implementados en CSS mediante modificador
 | `lg` | `width: 148px`; porcentaje `2.15rem`. |
 
 El fondo del anillo usa `radial-gradient` sobre `--ds-color-surface` y tramo restante en `rgb(255 255 255 / 0.09)`. Pseudo-elemento `::before` añade borde interior decorativo.
+
+## PDF (`variant="pdf"`, default)
+
+Anillo SVG de dos trazos, calibrado @2× ÷2 según GRAFICOS p.9 "Torta" (`doc[8]`): arco de progreso
+más grueso (color de `tone`) sobre un eje/track más delgado (`--ds-color-pdf-line-light`, siempre
+visible detrás — no es un "resto" separado, el arco grueso lo tapa donde corresponde). Número
+(`{value}%`) centrado **dentro** del anillo en el color de `tone`; `label` (si existe) va
+**debajo** del anillo, no apilado dentro como en `variant="console"`. Empieza a las 12 en punto
+(mismo criterio visual que el `conic-gradient` de `variant="console"`, no confirmado en el PDF).
+
+| Tone (`pdf`) | Color medido en el PDF |
+|------|-------------------------|
+| `success` | `--ds-color-pdf-success` (`#28a500`) |
+| `warning` | `--ds-color-pdf-warning` (`#e3a500`) — único ejemplo visible en la página ("Evacuados 75%") |
+| `danger` | `--ds-color-pdf-critical` (`#ff0404`) |
+| `neutral` | `--ds-color-pdf-ink-muted` (`#8a8b87`) — sin ejemplo en el PDF, elegido por no inventar un 4º tono |
+
+**Escala de tamaños recalibrada 2026-08-06 (feedback de usuario):** la v1 (2026-08-06, misma
+sesión) usaba el tamaño *literalmente medido* del PDF (36px de diámetro) como `"md"` — en la
+práctica se sentía muy chico y el número llegaba a tocar el trazo de progreso. Ahora `"md"` es el
+tamaño que antes era `"lg"` (48px, ya extrapolado en la v1), y `"sm"`/`"lg"` se re-derivan de este
+nuevo `"md"` con la misma razón proporcional (0.696 / 1 / 1.321) — pero aplicada esta vez a **las
+cuatro** magnitudes (diámetro, ambos trazos, y las dos fuentes de número/label, antes fijas sin
+importar `size`), así la relación texto-anillo se mantiene constante en los tres tamaños y ninguno
+corre riesgo de superposición, no solo el que antes era `"lg"`.
+
+| Size (`pdf`) | Diámetro | Trazo progreso / track | Fuente número / label | Medido o derivado |
+|------|----------|--------------------------|--------------------------|------------------------|
+| `sm` | `33px` | `6.9px` / `3.2px` | `6px` / `7px` | derivado de `md` ×0.696 |
+| `md` | `48px` | `9.9px` / `4.6px` | `9px` / `10px` | **el `sm`/`md` originalmente medido en el PDF era 36px/7.5px/3.5px/9px/10px — ver Deltas en el spec**; este `md` es el ex-`lg` extrapolado, promovido tras revisión de usuario |
+| `lg` | `63px` | `13.1px` / `6.1px` | `12px` / `13px` | derivado de `md` ×1.321 |
 
 ---
 
@@ -465,6 +505,19 @@ Only include tokens directly consumed by the component.
 
 Nota: tramo restante del `conic-gradient` (`rgb(255 255 255 / 0.09)`), borde interior de `::before` (`rgb(255 255 255 / 0.08)`) y sombras no usan tokens con nombre. La variable custom `--progress-value` la establece el componente en runtime, no en `:root`.
 
+## `variant="pdf"` (agregado 2026-08-06)
+
+| Token | Category | Usage |
+|--------|----------|-------|
+| `--ds-color-pdf-success` | color | Arco + número cuando `tone="success"` (`#28a500`) |
+| `--ds-color-pdf-warning` | color | Arco + número cuando `tone="warning"` (`#e3a500`) |
+| `--ds-color-pdf-critical` | color | Arco + número cuando `tone="danger"` |
+| `--ds-color-pdf-ink-muted` | color | Arco + número cuando `tone="neutral"` (sin ejemplo PDF, ver Variants) |
+| `--ds-color-pdf-line-light` | color | Track/eje del anillo y `label` |
+| `--ds-size-progress-pdf-sm/md/lg` | size | Diámetro del anillo (solo `md` medido, ver Variants) |
+| `--ds-font-body` | typography | `font-family` de número y `label` (Montserrat, no display/mono como `console`) |
+| `--ds-space-1` | space | Gap entre el anillo y `label` (medido ~4.8px) |
+
 ---
 
 # Implementation Notes
@@ -502,6 +555,20 @@ div.ds-progress.ds-progress--{tone}.ds-progress--{size}[role="img"][aria-label][
     └── {label}
 ```
 
+### `variant="pdf"`
+
+```text
+div.ds-progress-pdf
+├── div.ds-progress-pdf__ring
+│   ├── svg[role="img"][aria-label]
+│   │   ├── circle.ds-progress-pdf__track
+│   │   └── circle.ds-progress-pdf__arc
+│   └── span.ds-progress-pdf__value
+│       └── {clampedValue}%
+└── span.ds-progress-pdf__label (solo si label)
+    └── {label}
+```
+
 ---
 
 # Known Limitations
@@ -517,6 +584,9 @@ div.ds-progress.ds-progress--{tone}.ds-progress--{size}[role="img"][aria-label][
 - Sin tests unitarios ni de integración en el repositorio.
 - Sin documentación JSDoc en `ProgressRing.tsx` según convenciones del repositorio.
 - `TaskCard` no compone `ProgressRing` aunque ambos comunican progreso en la consola.
+- `variant="pdf"`: ninguno de los tres `size` públicos coincide hoy con la instancia literal del PDF (36px de diámetro) — esa medida quedó "entre" `sm` (33px) y `md` (48px) tras la recalibración 2026-08-06 (ver Variants). `sm`/`lg` siguen siendo extrapolaciones proporcionales de `md`, no mediciones independientes.
+- `variant="pdf"`, `tone="neutral"`: sin ejemplo en el PDF (la página solo muestra un caso, ámbar); el color elegido (`--ds-color-pdf-ink-muted`) es una elección razonable, no una medición.
+- `variant="pdf"` no envuelve el gauge en un `ChartCard` (fondo/borde/padding de "GRAFICOS"), aunque el PDF muestra esa leyenda compartida para toda la página — queda a criterio del consumidor, mismo patrón que otros átomos del kit.
 
 ---
 
@@ -538,3 +608,5 @@ div.ds-progress.ds-progress--{tone}.ds-progress--{size}[role="img"][aria-label][
 | Version | Change |
 |----------|--------|
 | 0.1.0 | Implementación inicial de `ProgressRing`, `ProgressRingProps`, `ProgressRingTone` y `ProgressRingSize` con estilos `ds-progress`, acotado de `value`, variable CSS `--progress-value` y stories en Storybook (`Playground`, `Tones`, `Sizes`). Uso en `Card.stories.tsx`, `Components.stories.tsx` y `apps/web/src/App.tsx`. |
+| 0.2.0 | Agregado `variant: "console" \| "pdf"` — GRAFICOS p.9 "Torta" (`doc[8]`) no tenía ningún componente asociado (el roadmap listaba "Gráficos p.9–10 ✅✅" atribuyendo ambas páginas a `ChartCard`/`BarChartCard`/`DonutChartCard`/`LineChartCard`, pero esos solo cubren p.10 — corregido en `component-roadmap.md`). `variant="pdf"` es un render SVG separado (no reusa el `conic-gradient` de `console`, que no puede expresar un trazo de progreso más grueso que el del track) con arco 7.5px + track 3.5px, colores de `tone` mapeados a hex exactos del PDF (`#e3a500`/`#ff0404`/`#28a500`), número dentro del anillo y `label` afuera/abajo (a diferencia de `console`, que apila ambos dentro). Stories `PdfGauge`, `PdfTones`, `PdfSizes` con decorator oscuro (mismo patrón que otros componentes PDF — `--ds-color-pdf-line-light` es casi invisible en el canvas claro por defecto de Storybook). `variant="console"` sin cambios, verificado sin regresión. |
+| 0.2.1 | Feedback de usuario, mismo día: (1) sacadas las stories `Playground`/`Tones`/`Sizes` originales de `variant="console"` y renombradas las tres stories `Pdf*` a `Playground`/`Tones`/`Sizes` (el código de `variant="console"` no se tocó, solo sus stories). (2) `variant` default cambia de `"console"` a `"pdf"` — el sistema console ya no tiene ninguna story propia en Storybook. (3) Escala de tamaños recalibrada: el diámetro literal medido del PDF (36px) se sentía chico y el número tocaba el arco de progreso; el ex-`"lg"` extrapolado (48px) pasa a ser el nuevo `"md"`, y `"sm"`/`"lg"` se re-derivan de él con la misma razón 0.696/1.321 — esta vez aplicada también a ambos trazos y a las dos fuentes (número/label), que antes eran fijas (9px/10px) sin importar `size`, la otra mitad del problema de superposición a tamaños chicos. Verificado en Storybook: ningún tamaño toca el arco. |

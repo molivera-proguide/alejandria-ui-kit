@@ -10,6 +10,7 @@ export * from "./components/ChartCard";
 export * from "./components/BarChartCard";
 export * from "./components/DonutChartCard";
 export * from "./components/Empty";
+export * from "./components/LinearBarChartCard";
 export * from "./components/LineChartCard";
 export * from "./components/DataTable";
 export * from "./patterns/detail-sheet/DetailSheet";

@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ProgressRing } from "./ProgressRing";
 
+// `variant="pdf"` (default) — GRAFICOS p.9 "Torta" gauge (`doc[8]`). Dark decorator required:
+// `.ds-progress-pdf`'s label/track use `--ds-color-pdf-line-light` (#e6e6e6), same "Storybook
+// backgrounds addon isn't registered" caveat as other PDF components.
 const meta = {
   title: "Alejandria/ProgressRing",
   component: ProgressRing,
@@ -22,13 +25,13 @@ const meta = {
   },
   args: {
     value: 75,
-    label: "avance",
+    label: "Evacuados",
     tone: "warning",
     size: "md"
   },
   decorators: [
     (Story) => (
-      <div style={{ minWidth: 320, padding: 32 }}>
+      <div style={{ background: "var(--ds-color-pdf-surface)", minWidth: 320, padding: 32 }}>
         <Story />
       </div>
     )
@@ -43,10 +46,10 @@ export const Playground: Story = {};
 export const Tones: Story = {
   render: () => (
     <div style={{ alignItems: "center", display: "flex", flexWrap: "wrap", gap: 20 }}>
-      <ProgressRing value={45} label="red" />
-      <ProgressRing value={72} label="avance" tone="success" />
-      <ProgressRing value={75} label="mision" tone="warning" />
-      <ProgressRing value={18} label="riesgo" tone="danger" />
+      <ProgressRing value={45} label="Evacuados" />
+      <ProgressRing value={72} label="Evacuados" tone="success" />
+      <ProgressRing value={75} label="Evacuados" tone="warning" />
+      <ProgressRing value={18} label="Evacuados" tone="danger" />
     </div>
   )
 };

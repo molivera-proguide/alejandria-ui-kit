@@ -18,6 +18,48 @@ with the exact numbers and *why* (not just "changed X to Y").
 before starting on *patterns* (`packages/ui/src/patterns/*`: `detail-sheet`, `login`, `mission`).
 Backlog below is now split accordingly.
 
+**2026-08-06 update:** this pass isn't only finding *fidelity bugs* in already-built components —
+today it found a **coverage gap**: `component-roadmap.md`'s gap table listed "Gráficos | p.9–10 |
+✅ | ✅" as if both pages were covered by the same 4 chart components, but p.9 and p.10 are two
+distinct pages that both happen to be titled "GRAFICOS" (`doc[8]` and `doc[9]`), each with
+different chart types. Only p.10 was ever built. See "New components built" below — same PyMuPDF
+methodology, just building instead of fixing.
+
+## New components built (coverage gap, not a fidelity fix)
+
+- **LinearBarChartCard** + **ProgressRing `variant="pdf"`** (PDF p.9 "GRAFICOS" › "Barras lineal
+  horizontal"/"Barras lineal vertical"/"Torta", `doc[8]`) — 2026-08-06, user-initiated: she pointed
+  at a PDF screenshot and asked to verify whether this page's charts were built. Confirmed via
+  `page.get_text()` that `doc[8]` (p.9) and `doc[9]` (p.10) are two separate pages both titled
+  "GRAFICOS" — `doc[9]` is the grayscale "Barra tradicional"/comparison-Torta/"Líneas" page
+  already covered by `BarChartCard`/`DonutChartCard`/`LineChartCard`; `doc[8]` is a genuinely
+  different page with 3 chart types none of the existing components render.
+  - **LinearBarChartCard** (new component): thin-stroke "linear" bars (not filled rectangles) in
+    `orientation="horizontal"` (ranking list, PDF "HISTÓRICO INCENDIOS") or `"vertical"` (grouped
+    bars, PDF "PRECIPITACIONES ESTACIONALES"). Measured stroke width 5pt→2.5px, título/número
+    grande/número chico/referencia font-sizes (16/20/10/16pt→8/10/5/8px), destacada color `#ff0404`.
+    Discovered and documented a page-specific artifact: every font-size and the stroke-width on
+    this diagram measures ~0.887× the legend's own round pt values (14.19 vs 16, 17.74 vs 20, 4.436
+    vs 5 — a consistent ratio across 3 unrelated properties, not per-element noise) — used the
+    legend's round numbers, not the diagram's raw measured ones (see LinearBarChartCard.spec.md).
+    Storybook review caught a real bug before commit: the vertical orientation's inter-bar gap
+    (invented at 4px) made adjacent value labels overlap — fixed to the actually-measured ~15px
+    center-to-center spacing.
+  - **ProgressRing `variant="pdf"`**: user corrected the initial plan (proposed as a new
+    `GaugeRingCard` or a `DonutChartCard` extension) — the PDF's "Torta" gauge on this page is a
+    single-value status ring (color driven by tone: red/amber/green) matching `ProgressRing`'s
+    existing `value`/`tone`/`label`/`size` shape exactly, just needing a PDF-faithful render path.
+    Added because the existing `variant="console"` render (CSS `conic-gradient`, uniform ring
+    thickness) structurally cannot express the PDF's asymmetric stroke widths (15pt/7pt progress
+    vs track) — built a parallel SVG-based render for `variant="pdf"` only, `variant="console"`
+    left untouched and re-verified with no regression. All Torta measurements on this page (colors,
+    both stroke widths, both font sizes) matched their own legend exactly — no 0.887-ratio artifact
+    here, confirming that quirk is specific to the "Barras lineal" diagram instance, not the whole
+    page's extraction.
+  - Added 2 new color tokens (`--ds-color-pdf-warning: #e3a500`, `--ds-color-pdf-success:
+    #28a500`) and 3 new size tokens (`--ds-size-progress-pdf-sm/md/lg`).
+  - Corrected `component-roadmap.md`'s gap table (see 2026-08-06 note above).
+
 ## Done
 
 - **TaskCard** (PDF p.3, "Tarjetas") — commit `e2ceaa6`. Chamfer/accent floating-triangle fix (and

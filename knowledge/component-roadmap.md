@@ -41,7 +41,8 @@ already.
 | Investigation card | p.4 | ✅ | ✅ | `InvestigationCard.tsx` |
 | Ficha | p.5 | ✅ | ✅ | `patterns/detail-sheet/DetailSheet.tsx` — **built but not exported from the main `index.ts` barrel** |
 | Módulos | p.6 | ✅ | ✅ | `ModuleCard.tsx` |
-| Gráficos | p.9–10 | ✅ | ✅ | `ChartCard.tsx`, `BarChartCard.tsx`, `DonutChartCard.tsx`, `LineChartCard.tsx` |
+| Gráficos (p.10 — Barra tradicional/Torta comparativa/Líneas) | p.10 (`doc[9]`) | ✅ | ✅ | `ChartCard.tsx`, `BarChartCard.tsx`, `DonutChartCard.tsx`, `LineChartCard.tsx` |
+| Gráficos (p.9 — Barras lineal horizontal/vertical, Torta gauge) | p.9 (`doc[8]`) | ✅ | ✅ | **Corrected 2026-08-06**: this row previously said "p.9–10" and pointed at the same 4 files above — wrong. p.9 is a distinct page under the same "GRAFICOS" title with 3 chart types those files don't cover (thin "linear" bars, not rectangles; a status-color gauge, not a grayscale comparison donut). Now built: `LinearBarChartCard.tsx` (horizontal/vertical) + `ProgressRing.tsx` `variant="pdf"` (gauge). |
 | Metric card | p.11 | ✅ | ✅ | `MetricCard.tsx` |
 | **Asistente** | p.12 | ✅ | ✅ | `Asistente.tsx` — promoted 2026-07-22 from `patterns/modal/Modal.tsx` (static landing shell only; chat/thread + dynamic suggestions out of scope) |
 | **Side bar** | p.13 | ✅ | ✅ | `SideBar.tsx` — built 2026-07-22 |
