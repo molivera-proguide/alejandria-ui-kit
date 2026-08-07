@@ -1,0 +1,101 @@
+# Grafo de dominio — generado por /sdd-scan. Fuente de routing de contexto:
+# ante una tarea, identificá el dominio afectado acá y leé SOLO sus `files`.
+
+meta:
+  generated_by: sdd-scan
+  commit: 11c9a51
+  updated: 2026-08-07
+
+domains:
+  design-tokens:
+    description: "Tokens visuales (--ds-*), tipografía, fuentes — capa base que todo lo demás consume"
+    entities: []
+    services: []
+    components: []
+    storage: n/a
+    features: []
+    depends_on: []
+    files:
+      styles: [packages/ui/src/styles.css]
+      docs: [knowledge/tokens/, knowledge/guidelines/design-language.md]
+
+  component-catalog:
+    description: "Componentes exportados de @alejandria/ui-kit — un .tsx + un .stories.tsx por archivo, plano"
+    entities: []
+    services: []
+    components:
+      [Button, Badge, Card, TextField, AlertBanner, SelectField, Switch,
+       SegmentedControl, MetricCard, TaskCard, ProgressRing, DataTable,
+       ModuleCard, ChartCard, BarChartCard, LineChartCard, DonutChartCard,
+       LinearBarChartCard, CalendarCard, SideBar, Skeleton, Empty,
+       InvestigationCard, Asistente]
+    storage: n/a
+    features: []
+    depends_on: [design-tokens]
+    files:
+      components: [packages/ui/src/components/]
+      barrel: [packages/ui/src/index.ts]
+      docs: [knowledge/components/, knowledge/specs/components/]
+
+  composed-patterns:
+    description: "Composiciones de varios componentes (no exportadas como layout) — login, ficha, mission"
+    entities: []
+    services: []
+    components: [Login, DetailSheet, Mission]
+    storage: n/a
+    features: []
+    depends_on: [component-catalog, design-tokens]
+    files:
+      patterns: [packages/ui/src/patterns/]
+      docs: [knowledge/patterns/, knowledge/screens/]
+
+  icon-set:
+    description: "Set de iconos Alejandría exportado desde el barrel (URL strings, no componentes)"
+    entities: []
+    services: []
+    components: []
+    storage: n/a
+    features: []
+    depends_on: []
+    files:
+      icons: [packages/ui/src/Icons/]
+
+  knowledge-base:
+    description: "Documentación AI-first que gobierna decisiones visuales (fuente de verdad de diseño)"
+    entities: []
+    services: []
+    components: []
+    storage: n/a
+    features: []
+    depends_on: []
+    files:
+      governance: [knowledge/index.md, knowledge/reasoning/decision-order.md,
+                   knowledge/design-system-manifest.json, knowledge/design-principles.md,
+                   knowledge/design-system-rules.md, knowledge/anti-patterns.md]
+      roadmap: [knowledge/component-roadmap.md, knowledge/roadmap.md]
+      audit_eval: [knowledge/audit/, knowledge/eval/]
+
+  distribution:
+    description: "Empaquetado y consumo externo del kit (tarball, entrypoint para agentes consumidores)"
+    entities: []
+    services: []
+    components: []
+    storage: n/a
+    features: []
+    depends_on: [component-catalog, knowledge-base]
+    files:
+      scripts: [scripts/copy-knowledge.mjs]
+      consumer_docs: [knowledge/consumer/AGENTS.template.md, knowledge/consumer/SETUP.md]
+      readme: [README.md]
+
+  demo-app:
+    description: "App Vite que consume @alejandria/ui-kit como workspace dependency (referencia visual, no producto)"
+    entities: []
+    services: []
+    components: []
+    storage: n/a
+    features: []
+    depends_on: [component-catalog, composed-patterns]
+    files:
+      app: [apps/web/src/]
+      config: [apps/web/vite.config.ts, apps/web/tsconfig.json]
