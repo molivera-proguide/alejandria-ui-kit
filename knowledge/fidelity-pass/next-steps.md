@@ -243,6 +243,60 @@ property has a `transition` before assuming the CSS selector/cascade is wrong. S
 same-session `FormSelect` open/close check that looked broken was actually two real toggle clicks
 cancelling out (`onClick` is a plain toggle) — not a bug either.
 
+## Full PyMuPDF visual sweep of p.17–20 (2026-08-07, post-review)
+
+Luna asked directly: "¿hiciste el chequeo de todas las páginas con PyMuPDF?" — honest
+answer at that point was no. Only p.21 (mid-build, to resolve the datepicker gate) and
+p.22 (reactively, after she flagged the color) had been rendered as images; p.17–20 had
+only gone through the text-only extract. Rendered all 4 with `get_pixmap()` +
+`get_drawings()`/`get_text()` proactively rather than wait for her to spot each one:
+
+- **p.17 (FormTextInput `login` variant)** — no bugs found. Fondo `#2a2927`, active-state
+  white border, label sizes/colors all matched the already-shipped implementation exactly
+  (confirmed via `get_drawings()` rect fills/strokes, not just the legend text).
+- **p.18 (FormSelect)** — **1 real bug**: `get_text()` span colors for "Admin"/"Editor"/
+  "General" inside the open dropdown are all `#ffffff` — no dimming on the selected one.
+  The shipped code dimmed the selected option's text to `--ds-color-pdf-form-muted`
+  instead. `get_drawings()` shows the actual differentiator is a small check-glyph
+  (stroke-only path, `#8a8b87`) next to the selected row. Fixed: text stays white always,
+  added an SVG checkmark next to `aria-selected="true"` options.
+- **p.19 (FormCheckable)** — no bugs found, and it independently *confirmed* the checkbox
+  checkmark fix from earlier this session (made from Luna's Storybook screenshot, before
+  this sweep): `get_drawings()` shows the checked checkbox as a white-filled square with a
+  separate **stroke-only** path inside (`stroke=#060606, fill=none`) — a check glyph, not
+  a filled dot — exactly what got shipped. Radio (white ring + solid dark dot) and switch
+  (track/thumb swap) both matched pixel-for-pixel too.
+- **p.20 (FormFileUpload)** — **structural rebuild**, not a color tweak. The text extract
+  undersold this page badly. Real structure, confirmed via `get_pixmap()` + `get_drawings()`:
+  - A **list panel** (header "ADJUNTAR ARCHIVOS" + rows) is a *separate* element from the
+    empty/drop-zone card — not one zone that just swaps its inner text. Non-image files
+    render as plain rows (name + type/size + a remove ✕ button — the shipped version had
+    **no remove affordance at all**); image files render as thumbnail cards (image preview
+    + remove ✕ overlaid top-right + name/size below) — the shipped version rendered
+    *every* file the same way, no thumbnails.
+  - The empty/drop-zone card has an icon badge (circular, `#494949` fill, `#8a8b87`
+    document-icon stroke), bold instructional text, and a literal **"SUBIR ARCHIVO"
+    button** — the shipped version was plain centered text with no icon and no button.
+  - 2 colors disagreed with their own page's legend, same class of bug as Modal p.22: file
+    meta text (`WORD - 2.4 Mb` etc.) measures `#c1c1c1` in `get_text()`, not the legend's
+    stated `#8d8d8d`; the drop-zone's instructional/formats text measures `#e6e6e6`, not
+    `#8d8d8d`. Both fixed to the measured values.
+  - Rebuilt `FormFileUpload.tsx` end to end: list panel with a "+" add trigger, mixed row/
+    thumbnail list (`display: flex; flex-wrap: wrap` — rows force `width: 100%`, thumbnails
+    stay fixed-width so multiple sit side by side, matching the PDF's 2 stacked rows + 3
+    thumbnails-in-a-row layout), remove buttons wired to actual state removal (didn't exist
+    before), and the empty card only absolutely overlays the list when both exist at once
+    (drag-over with files already attached) — otherwise it's the plain in-flow content when
+    there are zero files yet.
+
+**Process lesson, worth repeating for any future PDF page in this kit:** the text-only
+extract (`pdf-text-extract.md`) is a *starting point*, not a substitute for rendering the
+page. It missed real UI elements entirely (remove buttons, thumbnails, an icon+button on
+p.20) that no amount of re-reading the text would have surfaced — those only show up in
+`get_drawings()` (shape geometry) or the rendered pixmap itself. Default to rendering
+every page a component is built from before calling it done, not just the ones that turn
+out ambiguous in text form.
+
 ## Done
 
 - **TaskCard** (PDF p.3, "Tarjetas") — commit `e2ceaa6`. Chamfer/accent floating-triangle fix (and

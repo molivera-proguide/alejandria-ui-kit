@@ -2681,13 +2681,15 @@
   }
 
   .ds-form-select__option {
+    align-items: center;
     background: transparent;
     border: 0;
     color: var(--ds-color-white);
     cursor: pointer;
-    display: block;
+    display: flex;
     font-family: var(--ds-font-body);
     font-size: 8px;
+    justify-content: space-between;
     padding: 10px 11px;
     text-align: left;
     width: 100%;
@@ -2697,8 +2699,13 @@
     background: var(--ds-color-white-a06);
   }
 
-  .ds-form-select__option--selected {
-    color: var(--ds-color-pdf-form-muted);
+  /* Selected option: text stays white (PDF get_text() shows "Admin"/"Editor"/"General"
+     all as #ffffff, no dimming) — only the check glyph marks the selection. */
+  .ds-form-select__option-check {
+    color: var(--ds-color-pdf-ink-muted); /* #8a8b87, measured check-glyph stroke */
+    flex: 0 0 auto;
+    height: 8px;
+    width: 10px;
   }
 
   .ds-form-select__option:disabled {
@@ -2852,87 +2859,248 @@
     gap: var(--ds-space-3);
   }
 
-  /* --- FormFileUpload --- */
+  /* --- FormFileUpload ---
+     Rebuilt after rendering PDF p.20 directly via PyMuPDF get_pixmap() — the text-only
+     extract undersold this page's real structure: a "list panel" (header + rows for
+     non-image files + thumbnail cards for images, each with its own remove button) and
+     a separate "empty/drop-zone" card (icon badge, bold instructional copy, a real
+     "SUBIR ARCHIVO" button) — not one plain zone with placeholder text. Both share the
+     same measured width, 505.5pt @2× → 253px. Several colors here also disagree with
+     the page's own legend text (get_text() span colors win, same rule as Modal p.22):
+     file meta is #c1c1c1 not #8d8d8d; the drop-zone's instructional/formats text is
+     #e6e6e6 not #8d8d8d. */
 
-  .ds-form-file__zone {
-    cursor: pointer;
-    min-height: 96px;
-    padding: var(--ds-space-3);
+  .ds-form-file {
+    color: var(--ds-color-white);
+    display: grid;
+    gap: var(--ds-space-2);
     position: relative;
-  }
-
-  .ds-form-file__zone--drag {
-    /* "Opción de Drag and drop" has no interaction spec from the designer beyond intent
-       ("escucho sugerencias... mientras busco referencias") — a highlighted border/background
-       on drag-over is a reasonable placeholder, see DECISIONS.md */
-    border-color: var(--ds-color-white);
+    width: 253px;
   }
 
   .ds-form-file__input {
-    cursor: pointer;
-    height: 100%;
-    left: 0;
+    height: 1px;
     opacity: 0;
+    overflow: hidden;
     position: absolute;
-    top: 0;
-    width: 100%;
+    width: 1px;
   }
 
-  .ds-form-file__input:disabled {
+  .ds-form-file__list-panel {
+    display: grid;
+    gap: var(--ds-space-2);
+  }
+
+  .ds-form-file__list-header {
+    align-items: center;
+    background: var(--ds-color-pdf-surface);
+    border: var(--ds-border-width-hair) solid var(--ds-color-pdf-border);
+    display: flex;
+    height: 15px; /* calibrated ÷2 — PDF header bar 30pt @2× */
+    justify-content: space-between;
+    padding: 0 11px;
+  }
+
+  .ds-form-file__list-label {
+    color: var(--ds-color-pdf-line); /* "ADJUNTAR ARCHIVOS" — measured span color #c1c1c1 */
+    font-family: var(--ds-font-mono);
+    font-size: 8px; /* calibrated ÷2 — PDF 16pt */
+    font-weight: var(--ds-font-weight-light);
+    text-transform: uppercase;
+  }
+
+  .ds-form-file__add {
+    background: transparent;
+    border: 0;
+    color: var(--ds-color-pdf-line);
+    cursor: pointer;
+    font-size: 12px;
+    line-height: 1;
+    padding: 0;
+  }
+
+  .ds-form-file__add:disabled {
     cursor: not-allowed;
+    opacity: 0.58;
   }
 
   .ds-form-file__list {
-    display: grid;
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--ds-space-2);
     list-style: none;
     margin: 0;
     padding: 0;
   }
 
-  .ds-form-file__item {
+  .ds-form-file__row {
+    align-items: center;
+    background: var(--ds-color-pdf-surface);
+    display: flex;
+    justify-content: space-between;
+    min-height: 24px; /* calibrated ÷2 — PDF row 48.6pt @2× */
+    padding: 0 11px;
+    width: 100%; /* full-width row, same as .ds-form-file__list-header — thumbnails (below) don't get this */
+  }
+
+  .ds-form-file__row-copy {
     display: grid;
     gap: 2px;
+    min-width: 0;
   }
 
   .ds-form-file__name {
     color: var(--ds-color-white); /* "Nombre archivo: Montserrat Regular - 16pt - #ffffff" */
     font-family: var(--ds-font-body);
     font-size: 8px; /* calibrated ÷2 — PDF 16pt */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .ds-form-file__meta {
-    color: var(--ds-color-pdf-form-muted); /* "Descripción archivo: Montserrat Regular - 10pt - #8d8d8d" */
+    color: var(--ds-color-pdf-line); /* measured span color #c1c1c1 — legend says #8d8d8d, span wins */
     font-family: var(--ds-font-body);
     font-size: 5px; /* calibrated ÷2 — PDF 10pt */
     text-transform: uppercase;
   }
 
-  .ds-form-file__empty {
-    align-items: center;
-    background: var(--ds-color-pdf-surface-a50);
+  .ds-form-file__remove {
+    background: transparent;
+    border: 0;
+    color: var(--ds-color-white);
+    cursor: pointer;
+    flex: 0 0 auto;
+    padding: 4px;
+  }
+
+  .ds-form-file__remove-icon {
+    display: block;
+    height: 7px;
+    width: 7px;
+  }
+
+  .ds-form-file__thumb {
+    background: var(--ds-color-pdf-surface);
     display: grid;
-    height: 100%;
-    inset: 0;
-    justify-items: center;
-    position: absolute; /* "al estar activo, el empty se superpone al input" */
-    text-align: center;
+    gap: 2px;
+    padding: var(--ds-space-1);
+    position: relative;
+    width: 83px; /* calibrated ÷2 — PDF thumbnail card 165×153.1pt @2× */
+  }
+
+  .ds-form-file__thumb-image {
+    aspect-ratio: 1;
+    display: block;
+    object-fit: cover;
     width: 100%;
   }
 
+  .ds-form-file__remove--thumb {
+    background: var(--ds-color-black-a70);
+    position: absolute;
+    right: 4px;
+    top: 4px;
+  }
+
+  .ds-form-file__empty {
+    align-items: center;
+    background: var(--ds-color-pdf-surface); /* "Fondo: #060606 - 50%" — solid here since the drop-zone sits on the field's own surface, not layered over content */
+    border: var(--ds-border-width-hair) solid var(--ds-color-pdf-border);
+    display: grid;
+    gap: var(--ds-space-1);
+    height: 156px; /* calibrated ÷2 — PDF drop-zone rect 311.4pt @2× */
+    justify-items: center;
+    padding: var(--ds-space-3);
+    position: relative;
+    text-align: center;
+    width: 253px;
+  }
+
+  .ds-form-file__empty--overlay {
+    /* "al estar activo, el empty se superpone al input" — only when layered on top of
+       an existing file list (drag-over), not when it's the only content */
+    height: 100%;
+    inset: 0;
+    position: absolute;
+    width: 100%;
+  }
+
+  .ds-form-file__empty--drag {
+    border-color: var(--ds-color-white);
+  }
+
+  .ds-form-file__empty-label {
+    color: var(--ds-color-pdf-form-muted); /* "ADJUNTAR" own small label, measured #8d8d8d */
+    font-family: var(--ds-font-mono);
+    font-size: 5px; /* calibrated ÷2 — PDF 10pt */
+    left: 8px;
+    position: absolute;
+    text-transform: uppercase;
+    top: 6px;
+  }
+
+  .ds-form-file__empty-icon {
+    align-items: center;
+    background: var(--ds-color-pdf-action); /* #494949, measured badge fill */
+    border-radius: var(--ds-radius-pill);
+    color: var(--ds-color-pdf-ink-muted); /* #8a8b87, measured icon stroke */
+    display: flex;
+    height: 33px; /* calibrated ÷2 — PDF badge ~66.5pt @2× */
+    justify-content: center;
+    margin-top: 10px;
+    width: 31px; /* calibrated ÷2 — PDF badge ~61.5pt @2× */
+  }
+
+  .ds-form-file__icon {
+    height: 16px;
+    width: 14px;
+  }
+
   .ds-form-file__empty-line {
-    color: var(--ds-color-white);
+    color: var(--ds-color-pdf-line-light); /* measured span color #e6e6e6 — legend says #8d8d8d */
     font-family: var(--ds-font-body);
-    font-size: 8px;
+    font-size: 8px; /* calibrated ÷2 — PDF 16pt */
+    font-weight: var(--ds-font-weight-bold);
     margin: 0;
   }
 
   .ds-form-file__formats {
-    color: var(--ds-color-pdf-form-muted);
+    color: var(--ds-color-pdf-line-light); /* measured span color #e6e6e6 */
     font-family: var(--ds-font-body);
-    font-size: 6px;
-    margin: var(--ds-space-2) 0 0;
+    font-size: 7px; /* calibrated ÷2 — PDF 14pt */
+    font-weight: var(--ds-font-weight-light);
+    margin: 4px 0 0;
+  }
+
+  .ds-form-file__upload-button {
+    background: var(--ds-color-pdf-action); /* #494949, measured button fill */
+    border: 0;
+    color: var(--ds-color-white);
+    cursor: pointer;
+    font-family: var(--ds-font-body);
+    font-weight: var(--ds-font-weight-bold);
+    margin-top: 10px;
+    padding: 10px 32px; /* approximates measured button 224.3×37.9pt @2× ÷2 ≈ 112×19px */
     text-transform: uppercase;
+  }
+
+  .ds-form-file__upload-button:hover:not(:disabled) {
+    background: var(--ds-color-pdf-action-hover);
+  }
+
+  .ds-form-file__upload-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.58;
+  }
+
+  .ds-form-file.ds-form-field--invalid .ds-form-file__empty,
+  .ds-form-file.ds-form-field--invalid .ds-form-file__list-header {
+    border-color: var(--ds-color-pdf-critical);
+  }
+
+  .ds-form-file.ds-form-field--disabled {
+    opacity: 0.58;
   }
 
   /* --- FormDatePicker ---

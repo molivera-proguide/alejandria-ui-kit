@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from "react";
+import { useId, useMemo, useRef, useState } from "react";
 import type { ChangeEvent, DragEvent, HTMLAttributes } from "react";
 import { cn } from "../utils/cn";
 
@@ -21,32 +21,56 @@ export interface FormFileUploadProps extends Omit<HTMLAttributes<HTMLDivElement>
   onFilesChange?: (files: File[]) => void;
 }
 
-/**
- * @description Formatea el tamaño de un archivo como "2.4 Mb", igual que el ejemplo del PDF
- * @param {number} bytes - Tamaño en bytes
- * @returns {string} Tamaño formateado en MB con 1 decimal
- */
 function formatSizeMb(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} Mb`;
 }
 
-/**
- * @description Extrae una etiqueta de formato en mayúsculas a partir del nombre de archivo
- * (ej. "Archivo_1.doc" → "DOC"), igual que el PDF ("WORD" para .doc, "PDF" para .pdf)
- * @param {string} fileName - Nombre del archivo
- * @returns {string} Extensión en mayúsculas
- */
 function formatLabel(fileName: string): string {
   const extension = fileName.split(".").pop() ?? "";
   return extension.toUpperCase();
 }
 
+function isImageFile(file: File): boolean {
+  return file.type.startsWith("image/");
+}
+
 /**
- * @description Upload de archivos con drag&drop básico y click-to-upload (PDF v3 p.20
- * "FORM - ADJUNTOS"). Cuando el input está activo (drag-hover), el estado "empty" se
- * superpone a la lista de archivos ya cargados, en vez de reemplazarla — mismo overlay
- * que usa `FormSelect`. Drag&drop es intencionalmente básico (sin preview, progreso ni
- * reorder): el PDF no especifica esa interacción, ver DECISIONS.md.
+ * @description Ícono genérico de documento (PDF p.20: badge circular #494949 con ícono
+ * #8a8b87 dentro, ~61.5×66.5pt @2× → ~31×33px)
+ */
+function DocumentIcon() {
+  return (
+    <svg className="ds-form-file__icon" viewBox="0 0 20 22" fill="none">
+      <path
+        d="M3 1h9l5 5v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1Z"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinejoin="round"
+      />
+      <path d="M12 1v5h5" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function RemoveIcon() {
+  return (
+    <svg className="ds-form-file__remove-icon" viewBox="0 0 12 12" fill="none">
+      <path d="M1 1L11 11M11 1L1 11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/**
+ * @description Upload de archivos (PDF v3 p.20 "FORM - ADJUNTOS"). Renderizado real de la
+ * página vía PyMuPDF confirmó una estructura distinta de la primera pasada: cuando hay
+ * archivos, se ve una lista con header "ADJUNTAR ARCHIVOS" — filas simples para
+ * documentos (nombre + tipo/tamaño + botón quitar) y tarjetas con thumbnail para
+ * imágenes — y el estado vacío/drop-zone ("ADJUNTAR") es una tarjeta separada con ícono,
+ * texto en negrita y un botón "SUBIR ARCHIVO" real, no solo un placeholder de texto.
+ * Sin archivos, la drop-zone es el contenido principal; con archivos, se superpone sobre
+ * la lista solo mientras se arrastra un archivo nuevo por encima (PDF: "al estar activo,
+ * el empty se superpone al input"). Drag&drop es intencionalmente básico (sin preview de
+ * progreso): el PDF no especifica esa interacción, ver DECISIONS.md.
  * @param {FormFileUploadProps} props - Propiedades del uploader
  * @returns {JSX.Element} Upload de archivos del Design System (familia Form)
  */
@@ -70,14 +94,26 @@ export function FormFileUpload({
   const [dragActive, setDragActive] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const previews = useMemo(
+    () => files.map((file) => (isImageFile(file) ? URL.createObjectURL(file) : null)),
+    [files]
+  );
+
   function commitFiles(nextFiles: File[]) {
     const merged = multiple ? [...files, ...nextFiles] : nextFiles;
     setFiles(merged);
     onFilesChange?.(merged);
   }
 
+  function removeFile(index: number) {
+    const next = files.filter((_, i) => i !== index);
+    setFiles(next);
+    onFilesChange?.(next);
+  }
+
   function onInputChange(event: ChangeEvent<HTMLInputElement>) {
     if (event.target.files) commitFiles(Array.from(event.target.files));
+    event.target.value = "";
   }
 
   function onDrop(event: DragEvent<HTMLDivElement>) {
@@ -92,60 +128,108 @@ export function FormFileUpload({
     if (!disabled) setDragActive(true);
   }
 
-  const showEmpty = files.length === 0 || dragActive;
+  const hasFiles = files.length > 0;
+  const showEmptyCard = !hasFiles || dragActive;
 
   return (
     <div
-      className={cn(
-        "ds-form-field",
-        "ds-form-file",
-        error && "ds-form-field--invalid",
-        disabled && "ds-form-field--disabled",
-        className
-      )}
+      className={cn("ds-form-file", error && "ds-form-field--invalid", disabled && "ds-form-field--disabled", className)}
+      onDragOver={onDragOver}
+      onDragLeave={() => setDragActive(false)}
+      onDrop={onDrop}
       {...props}
     >
-      <label className="ds-form-field__label ds-form-field__label--static" htmlFor={fieldId}>
-        {label}
-      </label>
-      <div
-        className={cn("ds-form-field__control", "ds-form-file__zone", dragActive && "ds-form-file__zone--drag")}
-        onDragOver={onDragOver}
-        onDragLeave={() => setDragActive(false)}
-        onDrop={onDrop}
-      >
-        {files.length > 0 ? (
-          <ul className="ds-form-file__list">
-            {files.map((file, index) => (
-              <li key={`${file.name}-${index}`} className="ds-form-file__item">
-                <span className="ds-form-file__name">{file.name}</span>
-                <span className="ds-form-file__meta">
-                  {formatLabel(file.name)} - {formatSizeMb(file.size)}
-                </span>
-              </li>
-            ))}
-          </ul>
-        ) : null}
-        {showEmpty ? (
-          <div className="ds-form-file__empty">
-            <p className="ds-form-file__empty-line">Arrastra un archivo</p>
-            <p className="ds-form-file__empty-line">o haz click para subir.</p>
-            <p className="ds-form-file__formats">Formatos admitidos: PDF, JPG, PNG, DOC</p>
+      {hasFiles ? (
+        <div className="ds-form-file__list-panel">
+          <div className="ds-form-file__list-header">
+            <span className="ds-form-file__list-label">{label}</span>
+            <button
+              type="button"
+              className="ds-form-file__add"
+              aria-label="Adjuntar más archivos"
+              disabled={disabled}
+              onClick={() => inputRef.current?.click()}
+            >
+              +
+            </button>
           </div>
-        ) : null}
-        <input
-          ref={inputRef}
-          id={fieldId}
-          className="ds-form-file__input"
-          type="file"
-          multiple={multiple}
-          accept={accept}
-          disabled={disabled}
-          onChange={onInputChange}
-          aria-invalid={error ? "true" : undefined}
-          aria-describedby={errorId}
-        />
-      </div>
+          <ul className="ds-form-file__list">
+            {files.map((file, index) =>
+              previews[index] ? (
+                <li key={`${file.name}-${index}`} className="ds-form-file__thumb">
+                  <button
+                    type="button"
+                    className="ds-form-file__remove ds-form-file__remove--thumb"
+                    aria-label={`Quitar ${file.name}`}
+                    onClick={() => removeFile(index)}
+                  >
+                    <RemoveIcon />
+                  </button>
+                  <img className="ds-form-file__thumb-image" src={previews[index] ?? undefined} alt="" />
+                  <span className="ds-form-file__name">{file.name}</span>
+                  <span className="ds-form-file__meta">
+                    {formatLabel(file.name)} - {formatSizeMb(file.size)}
+                  </span>
+                </li>
+              ) : (
+                <li key={`${file.name}-${index}`} className="ds-form-file__row">
+                  <span className="ds-form-file__row-copy">
+                    <span className="ds-form-file__name">{file.name}</span>
+                    <span className="ds-form-file__meta">
+                      {formatLabel(file.name)} - {formatSizeMb(file.size)}
+                    </span>
+                  </span>
+                  <button
+                    type="button"
+                    className="ds-form-file__remove"
+                    aria-label={`Quitar ${file.name}`}
+                    onClick={() => removeFile(index)}
+                  >
+                    <RemoveIcon />
+                  </button>
+                </li>
+              )
+            )}
+          </ul>
+        </div>
+      ) : null}
+      {showEmptyCard ? (
+        <div
+          className={cn(
+            "ds-form-file__empty",
+            dragActive && "ds-form-file__empty--drag",
+            hasFiles && "ds-form-file__empty--overlay"
+          )}
+        >
+          <span className="ds-form-file__empty-label">{label}</span>
+          <span className="ds-form-file__empty-icon">
+            <DocumentIcon />
+          </span>
+          <p className="ds-form-file__empty-line">Arrastra un archivo</p>
+          <p className="ds-form-file__empty-line">o haz click para subir.</p>
+          <p className="ds-form-file__formats">Formatos admitidos: PDF, JPG, PNG, DOC</p>
+          <button
+            type="button"
+            className="ds-form-file__upload-button"
+            disabled={disabled}
+            onClick={() => inputRef.current?.click()}
+          >
+            SUBIR ARCHIVO
+          </button>
+        </div>
+      ) : null}
+      <input
+        ref={inputRef}
+        id={fieldId}
+        className="ds-form-file__input"
+        type="file"
+        multiple={multiple}
+        accept={accept}
+        disabled={disabled}
+        onChange={onInputChange}
+        aria-invalid={error ? "true" : undefined}
+        aria-describedby={errorId}
+      />
       {error ? (
         <p className="ds-form-field__error" id={errorId}>
           {error}

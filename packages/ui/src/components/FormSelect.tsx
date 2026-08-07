@@ -167,7 +167,18 @@ export function FormSelect({
                     )}
                     onClick={() => selectOption(option.value)}
                   >
-                    {option.label}
+                    <span className="ds-form-select__option-label">{option.label}</span>
+                    {isSelected ? (
+                      <svg className="ds-form-select__option-check" viewBox="0 0 12 10" fill="none">
+                        <path
+                          d="M1 5.2L4.4 8.6L11 1.4"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    ) : null}
                   </button>
                 </li>
               );
