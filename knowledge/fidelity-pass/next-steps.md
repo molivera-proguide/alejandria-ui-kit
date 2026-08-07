@@ -1,6 +1,25 @@
 # Fidelity pass — next steps
 
-## 🔖 Session handoff — pick up here (last updated 2026-08-06, evening)
+## 🔖 Session handoff — pick up here (last updated 2026-08-07)
+
+**PDF updated to v3 same day (2026-08-07, 24 pages) — Form and Modal built.** Feature
+`001-form-modal` (see `specs/001-form-modal/`) built the 6 components v3 added real specs
+for: `FormTextInput`, `FormSelect`, `FormCheckable`, `FormFileUpload`, `FormDatePicker`
+(PDF p.17–21, replacing the old p.17 placeholder closed below as "not ready") and `Modal`
+(PDF p.22 "ALERT" § "Confirmación de acción", resolving the Modal/Dialog gap from the
+2026-07-22 eval baseline). See "New components built (PDF v3, 2026-08-07)" further down for
+the fidelity detail on each, and `specs/001-form-modal/plan.md` for the architecture
+decision (field primitives, not a compound `Form`).
+
+**Environment note, corrects the earlier "pdftoppm not installed" dead-end below:**
+`pdftoppm`/poppler is still not installed, but `page.get_pixmap()` (PyMuPDF, already
+available — same library this whole pass already used for `get_drawings()`/`get_text()`)
+renders a PDF page to a real image with zero extra dependencies. Use that, not `pdftoppm`,
+whenever a page needs to be *seen* rather than just measured — it's what resolved the
+FormDatePicker p.21 grid/hour-range ambiguity in this session (see below) after the text
+extract alone left it unresolved.
+
+## 🔖 Previous handoff (2026-08-06, evening)
 
 **Status: all *components* are now closed** — either fidelity-passed (`Skeleton`, `CalendarCard`,
 `Empty`, `TaskCard`/`InvestigationCard`/`ChartCard` family/`ModuleCard`/`MetricCard`/`Asistente`/
@@ -134,6 +153,95 @@ methodology, just building instead of fixing.
   - Added 2 new color tokens (`--ds-color-pdf-warning: #e3a500`, `--ds-color-pdf-success:
     #28a500`) and 3 new size tokens (`--ds-size-progress-pdf-sm/md/lg`).
   - Corrected `component-roadmap.md`'s gap table (see 2026-08-06 note above).
+
+## New components built (PDF v3, 2026-08-07)
+
+Feature `001-form-modal` — 6 components, all built against `knowledge/references/design-reference.pdf` **v3** (24 pages, replacing v2's 18). Full brief/spec/plan/tasks in `specs/001-form-modal/`; brief-level decisions (architecture, scope, out-of-scope items) live there, not repeated here — this section is the fidelity detail per component.
+
+- **FormTextInput** (PDF p.17 "FORM - LOGIN" + p.18 "FORM - INPUT") — one component, two variants
+  (`login`/`default`), not two components — p.17 and p.18 are the same input shape (label +
+  floating-active state) with different color specs for the login context vs. the generic one.
+  Floating label implemented CSS-only via `:not(:placeholder-shown)` (same technique already
+  used by `.ds-asistente__prompt`, see the 2026-08-06 Asistente entry above) — no JS state.
+  Colors reused existing tokens where the hex matched exactly (`--ds-color-pdf-surface-warm`
+  `#2a2927`, `--ds-color-pdf-border` `#606060`, `--ds-color-pdf-critical` `#ff0404`,
+  `--ds-color-white`); added 2 new tokens for values that were close-but-different from an
+  existing one (`--ds-color-pdf-form-muted` `#8d8d8d`, distinct from `--ds-color-pdf-ink-muted`
+  `#8a8b87`) or needed unconditionally (`--ds-color-pdf-ink-bright` `#f6f6f6`,
+  `--ds-color-pdf-surface-a50` for "fondo #060606 al 50%"). Verified in a live Storybook tab via
+  `javascript_exec`: computed `background`/`border-color`/`color`/`font-size` on both variants
+  match the PDF's hex/pt values exactly (see verification notes below on how transitions read in
+  a backgrounded tab — false negative, not a real bug).
+- **FormSelect** (PDF p.18 § "Para select") — custom listbox, not a native `<select>`: the PDF
+  spec ("el desplegable se superpone al input cuando está activo", "al seleccionar una opción el
+  desplegable se centra en esa opción") isn't stylable on a native select. Verified open/close
+  toggle, option list rendering, and selected-option centering (`scrollIntoView({block:
+  "center"})` on open) live in Storybook.
+- **FormCheckable** (+ `FormCheckableGroup`, PDF p.19) — one control covers checkbox/radio/switch
+  via a `type` prop (shared label/description slots), plus a small `FormCheckableGroup` wrapper
+  for the PDF's "Título grupo" (e.g. "ACCESO A MÓDULOS") — not a 7th top-level component, exported
+  from the same module as `FormCheckable`. Verified checkbox/radio "seleccionado" (fondo `#ffffff`,
+  selector `#060606`) and switch "seleccionado" (fondo `#ffffff`, selector `#060606`) — a real CSS
+  bug was caught and fixed before commit: the switch's `:checked` state was inheriting the
+  checkbox/radio `::after` dot rule (both used the same undifferentiated selector), painting a dark
+  dot inside the switch thumb track that the PDF doesn't show — fixed by scoping the dot rule to
+  `--checkbox`/`--radio` only.
+- **FormFileUpload** (PDF p.20) — click-to-upload plus basic drag&drop (highlight on drag-over);
+  the PDF explicitly leaves the drag&drop interaction unspecified ("escucho sugerencias... mientras
+  busco referencias"), so the highlight treatment is a reasonable placeholder, not a measured spec —
+  flagged in code comments and `DECISIONS.md`. The "empty superpone al input" behavior (PDF's own
+  words) is implemented as an absolutely-positioned overlay that shows whenever there are no files
+  OR the zone is being dragged over (so it still surfaces during drag even with files already
+  attached) — verified in Storybook.
+- **FormDatePicker** (PDF p.21) — **the one component this session's text-only extract couldn't
+  resolve** (`pdf-text-extract.md` flagged the day-grid layout and hour range as unreadable from
+  `get_text()` alone — two jumbled number blocks with no position data). Resolved by rendering the
+  actual page with PyMuPDF's `get_pixmap()` (see handoff note above) plus `get_drawings()` for exact
+  geometry. **This changed the implementation meaningfully from a first pass built on the text
+  extract alone**, which had (wrongly) assumed one combined trigger and a flat 30-min-step time
+  list:
+  - Real structure is **2 independent trigger+panel pairs**, "FECHA" and "HORA" — not one combined
+    popover. Measured: FECHA trigger 300×30pt @2× → 150×15px, panel 300×202.68pt → 150×101px; HORA
+    trigger 200×30pt → 100×15px, panel 200×202.68pt → 100×101px (`get_drawings()` rects, both panels
+    bordered `0.75pt` white when active, matching "Borde activo: #ffffff").
+  - HORA is a **2-column spinner** (hour / minutes-by-5, e.g. `11 12 13 14 15 16 17` next to
+    `55 00 05 10 15 20 25`, separated by `:`), each with up/down chevrons — not a flat `HH:MM` list.
+    This is exactly what the text extract's jumbled "14 10 13 05 16 20 17 25 15 15 11 12 55 00"
+    block was: two side-by-side text columns with no positional order in the extraction.
+  - Selected day gets a literal **border box** (measured 20.28×16.38pt @2× → ~10×8px), not just a
+    color change — confirmed via `get_drawings()` (a small white-stroked rect sitting exactly on the
+    "20" glyph in the reference render) and matched in code with
+    `.ds-form-date__day--selected { border-color: white }`.
+  - Month/year each have their own dropdown affordance in the PDF (chevron next to "Julio" and
+    "2026" individually) — implemented as native `<select>` elements for month and a ±4-year window
+    for year, styled to match rather than built as two more custom listboxes (reasonable
+    simplification, not a measured spec point).
+  Verified live in Storybook via `javascript_exec`: both triggers render "20/07/2026"/"14:10" for
+  the `DiaHoraSeleccionada` story (matches the PDF's own "Julio 2026" / "14:10" example), FECHA
+  panel opens at 150px with the "20" cell showing a white border, HORA panel opens at 100px with
+  "14" highlighted selected among 36 total spinner values (24 hours + 12 five-minute steps).
+- **Modal** (PDF p.22 "ALERT" § "Confirmación de acción") — confirm/cancel dialog only; the same
+  page's other two boxes ("Alert Sigcat", "Tarea realizada") are notifications, not dialogs, and
+  don't resolve the Modal/Dialog gap this was built for (see `component-roadmap.md`'s post-baseline
+  table). Distinct from `AlertBanner` (inline, non-blocking) by design — different component, not a
+  variant. Verified in Storybook: fondo `#060606`, borde `#606060`, título `#ffffff` 18pt→9px, texto
+  `#c1c1c1` 18pt→9px, línea `#8a8b87`, primary action `#494949` — all exact matches via
+  `getComputedStyle`.
+
+**Verification technique note — CSS transitions read as frozen in a backgrounded/non-visible
+browser pane.** While spot-checking `FormTextInput`'s floating-label transition via
+`javascript_exec`, `getComputedStyle` kept returning the *pre-transition* `font-size`/`top` even
+after the triggering `:not(:placeholder-shown)` condition became true (confirmed via `.matches()`)
+and after a real `setTimeout` delay. Root cause: the pane wasn't visibly composited
+("not compositing frames" — same condition that also breaks `computer` screenshots in this
+environment), and a CSS *transition*'s interpolation clock is driven by the compositor, which
+never advanced. Non-transitioned properties (`color`, no `transition` declared) updated instantly
+and correctly in the same test — confirmed the cascade itself was right by temporarily setting
+`element.style.transition = 'none'` and re-reading: target values were exactly as specced. Lesson
+for next session: if a state-driven style looks stuck mid-value in this harness, check whether the
+property has a `transition` before assuming the CSS selector/cascade is wrong. Separately, a
+same-session `FormSelect` open/close check that looked broken was actually two real toggle clicks
+cancelling out (`onClick` is a plain toggle) — not a bug either.
 
 ## Done
 
@@ -382,10 +490,11 @@ the real component.
 
 ## Backlog — components (empty — all closed, see below)
 
-- ~~**Form**~~ — PDF p.17. **Closed 2026-08-06**, confirmed not a build target yet, no code
-  change. User confirmed directly: the designer is still actively working on this spec — the
-  placeholder-looking p.17 block (near-identical to Empty's, no field list/layout/validation) is
-  genuinely unfinished upstream, not a doc gap on our side. Re-open when a real Form spec lands.
+- ~~**Form**~~ — PDF p.17 (v2 placeholder). **Closed 2026-08-06 as "not ready" (v2), then
+  superseded 2026-08-07**: the PDF was updated to v3 with 5 real Form pages (p.17–21) the same
+  day, and built as field primitives — see "New components built (PDF v3, 2026-08-07)" above.
+  The 2026-08-06 reasoning was correct for what existed *then* (a genuine unfinished placeholder,
+  not a doc gap) — it just got overtaken by a same-week design update, not disproven.
 - ~~**AlertBanner**~~ — PDF p.18 ("Alert"). **Closed 2026-08-06**, confirmed out of scope, no code
   change — see the handoff block above for the full reasoning and the real p.18 bar measurements
   kept on file in case this resurfaces as a *new*-component question later.

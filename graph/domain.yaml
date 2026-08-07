@@ -5,6 +5,7 @@ meta:
   generated_by: sdd-scan
   commit: 11c9a51
   updated: 2026-08-07
+  last_touched_by: sdd-generate (001-form-modal)
 
 domains:
   design-tokens:
@@ -28,9 +29,10 @@ domains:
        SegmentedControl, MetricCard, TaskCard, ProgressRing, DataTable,
        ModuleCard, ChartCard, BarChartCard, LineChartCard, DonutChartCard,
        LinearBarChartCard, CalendarCard, SideBar, Skeleton, Empty,
-       InvestigationCard, Asistente]
+       InvestigationCard, Asistente, FormTextInput, FormSelect,
+       FormCheckable, FormFileUpload, FormDatePicker, Modal]
     storage: n/a
-    features: []
+    features: [001-form-modal]
     depends_on: [design-tokens]
     files:
       components: [packages/ui/src/components/]
@@ -66,14 +68,14 @@ domains:
     services: []
     components: []
     storage: n/a
-    features: []
+    features: [001-form-modal]
     depends_on: []
     files:
       governance: [knowledge/index.md, knowledge/reasoning/decision-order.md,
                    knowledge/design-system-manifest.json, knowledge/design-principles.md,
                    knowledge/design-system-rules.md, knowledge/anti-patterns.md]
       roadmap: [knowledge/component-roadmap.md, knowledge/roadmap.md]
-      audit_eval: [knowledge/audit/, knowledge/eval/]
+      audit_eval: [knowledge/audit/, knowledge/eval/, knowledge/fidelity-pass/]
 
   distribution:
     description: "Empaquetado y consumo externo del kit (tarball, entrypoint para agentes consumidores)"

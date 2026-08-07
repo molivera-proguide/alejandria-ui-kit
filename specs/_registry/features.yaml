@@ -1,0 +1,31 @@
+# Registro maestro de features — mantenido por los comandos SDD
+# /sdd-generate agrega entradas · /sdd-review cierra · /sdd-health audita
+# `pnpm audit:sdd` verifica la consistencia de este archivo contra specs/, graph/ y metrics/
+
+features:
+  - id: 001-form-modal
+    type: feature
+    status: OPEN
+    domain: component-catalog
+    owner: lvgonzalezprg
+    sprint: null
+    created: 2026-08-07
+    closed: null
+    touches:
+      - packages/ui/src/components/FormTextInput.tsx
+      - packages/ui/src/components/FormTextInput.stories.tsx
+      - packages/ui/src/components/FormSelect.tsx
+      - packages/ui/src/components/FormSelect.stories.tsx
+      - packages/ui/src/components/FormCheckable.tsx
+      - packages/ui/src/components/FormCheckable.stories.tsx
+      - packages/ui/src/components/FormFileUpload.tsx
+      - packages/ui/src/components/FormFileUpload.stories.tsx
+      - packages/ui/src/components/FormDatePicker.tsx
+      - packages/ui/src/components/FormDatePicker.stories.tsx
+      - packages/ui/src/components/Modal.tsx
+      - packages/ui/src/components/Modal.stories.tsx
+      - packages/ui/src/index.ts
+      - packages/ui/src/styles.css
+      - knowledge/component-roadmap.md
+      - knowledge/fidelity-pass/next-steps.md
+    decisions: []

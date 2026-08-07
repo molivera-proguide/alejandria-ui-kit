@@ -55,6 +55,11 @@
     --ds-color-pdf-notification: #e30000;
     --ds-color-white: #ffffff;
     --ds-color-on-primary: #04110f;
+    /* FORM (PDF v3 p.17–21) — #8d8d8d is close to but distinct from --ds-color-pdf-ink-muted
+       (#8a8b87, used by Alert/InvestigationCard/etc.); kept as its own token rather than reused,
+       same "measured, not merged" rule as every other near-duplicate hex in this file. */
+    --ds-color-pdf-form-muted: #8d8d8d;
+    --ds-color-pdf-ink-bright: #f6f6f6; /* Form-Login label (p.17) */
 
     /* --- Opacity / wash primitives --- */
     --ds-color-white-a04: rgb(255 255 255 / 0.04);
@@ -68,6 +73,7 @@
     --ds-color-black-a34: rgb(0 0 0 / 0.34);
     --ds-color-black-a70: rgb(0 0 0 / 0.7);
     --ds-color-pdf-surface-a20: rgb(6 6 6 / 0.2);
+    --ds-color-pdf-surface-a50: rgb(6 6 6 / 0.5); /* Form-Input/Adjuntos/Datepicker: "Fondo: #060606 - 50%" (p.18/20/21) */
     --ds-color-pdf-surface-warm-a70: rgb(42 41 39 / 0.7);
     --ds-color-ink-soft-a50: rgb(169 179 176 / 0.5);
     --ds-color-teal-a12: rgb(108 224 199 / 0.12);
@@ -2511,6 +2517,661 @@
   .ds-scroll-area--y {
     overflow-x: hidden;
     overflow-y: auto;
+  }
+
+  /* ============================================================
+     FORM (PDF v3 p.17–21) — FormTextInput, FormSelect, FormCheckable,
+     FormFileUpload, FormDatePicker. `.ds-form-field` is the shared base
+     (fondo/borde/label) reused by every field-style member of the family,
+     same reuse-before-new-token approach as `.ds-field` for TextField/
+     SelectField. See DECISIONS.md for the values the PDF didn't specify
+     (floating-label vertical rhythm, drag&drop highlight, hour range).
+     ============================================================ */
+
+  .ds-form-field {
+    color: var(--ds-color-white);
+    display: grid;
+    gap: var(--ds-space-2);
+    min-width: 0;
+  }
+
+  .ds-form-field__control {
+    background: var(--ds-color-pdf-surface-a50); /* "Fondo: #060606 - 50%" p.18/20/21 */
+    border: var(--ds-border-width-hair) solid var(--ds-color-pdf-border); /* "Borde: 0,75pt - #606060" */
+    min-height: 44px; /* not PDF-measured — room for the floating label + input row, see DECISIONS.md */
+    position: relative;
+    transition: border-color var(--ds-duration-md) var(--ds-ease-standard); /* "sumarle animación al pase entre estático y activo" — timing/easing not specified, see DECISIONS.md */
+  }
+
+  .ds-form-field__control:focus-within {
+    border-color: var(--ds-color-white); /* "Input activo: borde #ffffff" */
+  }
+
+  .ds-form-field__input,
+  .ds-form-field__textarea {
+    background: transparent;
+    border: 0;
+    color: var(--ds-color-white); /* "Texto: Montserrat Regular - 16pt - #ffffff" */
+    cursor: inherit;
+    font-family: var(--ds-font-body);
+    font-size: 8px; /* calibrated ÷2 — PDF 16pt */
+    min-height: 44px;
+    padding: 15px 11px 0;
+    text-align: left;
+    width: 100%;
+  }
+
+  .ds-form-field__textarea {
+    min-height: 68px;
+    padding-top: 18px;
+    resize: vertical;
+  }
+
+  .ds-form-field__input:focus-visible,
+  .ds-form-field__textarea:focus-visible {
+    outline: none;
+  }
+
+  .ds-form-field__label {
+    color: var(--ds-color-pdf-form-muted); /* "Label: ... #8d8d8d" */
+    font-family: var(--ds-font-mono); /* Source Code (Light) */
+    font-size: 8px; /* calibrated ÷2 — PDF 16pt static label */
+    font-weight: var(--ds-font-weight-light);
+    left: 11px;
+    pointer-events: none;
+    position: absolute;
+    text-transform: uppercase;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: top var(--ds-duration-md) var(--ds-ease-standard), font-size var(--ds-duration-md) var(--ds-ease-standard);
+  }
+
+  .ds-form-field__input:focus ~ .ds-form-field__label,
+  .ds-form-field__input:not(:placeholder-shown) ~ .ds-form-field__label,
+  .ds-form-field__textarea:focus ~ .ds-form-field__label,
+  .ds-form-field__textarea:not(:placeholder-shown) ~ .ds-form-field__label,
+  .ds-form-field__label--active {
+    font-size: 5px; /* calibrated ÷2 — PDF 10pt "Input Activo - Label Activo" */
+    top: 8px;
+    transform: none;
+  }
+
+  .ds-form-field--login .ds-form-field__control {
+    background: var(--ds-color-pdf-surface-warm); /* "Fondo: #2a2927" p.17 */
+  }
+
+  .ds-form-field--login .ds-form-field__label {
+    color: var(--ds-color-pdf-ink-bright); /* "Label: ... #f6f6f6" */
+    font-size: 10px; /* calibrated ÷2 — PDF 20pt */
+  }
+
+  .ds-form-field--login .ds-form-field__input:focus ~ .ds-form-field__label,
+  .ds-form-field--login .ds-form-field__input:not(:placeholder-shown) ~ .ds-form-field__label {
+    color: var(--ds-color-pdf-form-muted); /* login's own "activo" label is #8d8d8d, same as default variant */
+    font-size: 5px;
+  }
+
+  .ds-form-field--invalid .ds-form-field__control {
+    border-color: var(--ds-color-pdf-critical); /* "Borde con error: #ff0404" */
+  }
+
+  .ds-form-field__error {
+    color: var(--ds-color-pdf-critical);
+    font-family: var(--ds-font-body);
+    font-size: 0.72rem;
+    margin: 0;
+  }
+
+  .ds-form-field--disabled {
+    opacity: 0.58; /* same disabled treatment as .ds-button:disabled — not PDF-specified, see DECISIONS.md */
+  }
+
+  .ds-form-field--disabled .ds-form-field__control,
+  .ds-form-field--disabled .ds-form-field__input,
+  .ds-form-field--disabled .ds-form-field__textarea {
+    cursor: not-allowed;
+  }
+
+  /* Static label — for members of the family whose PDF spec has no floating
+     "Input Activo - Label Activo" line (FormFileUpload p.20): sits above the
+     control as a normal block label instead of absolutely over it. */
+  .ds-form-field__label--static {
+    font-size: 8px; /* calibrated ÷2 — PDF 16pt, this family has no separate "activo" size */
+    left: auto;
+    pointer-events: auto;
+    position: static;
+    top: auto;
+    transform: none;
+  }
+
+  .ds-form-field__chevron {
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid var(--ds-color-pdf-form-muted);
+    pointer-events: none;
+    position: absolute;
+    right: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  /* --- FormSelect --- */
+
+  .ds-form-select__trigger {
+    cursor: pointer;
+    padding-right: 26px;
+    text-align: left;
+  }
+
+  .ds-form-select__menu {
+    background: var(--ds-color-pdf-surface);
+    border: var(--ds-border-width-hair) solid var(--ds-color-white); /* "el desplegable del select se superpone al input cuando está activo" */
+    left: -1px;
+    list-style: none;
+    margin: 0;
+    max-height: 160px;
+    overflow-y: auto;
+    padding: 0;
+    position: absolute;
+    right: -1px;
+    top: calc(100% + 2px);
+    z-index: 20;
+  }
+
+  .ds-form-select__option {
+    background: transparent;
+    border: 0;
+    color: var(--ds-color-white);
+    cursor: pointer;
+    display: block;
+    font-family: var(--ds-font-body);
+    font-size: 8px;
+    padding: 10px 11px;
+    text-align: left;
+    width: 100%;
+  }
+
+  .ds-form-select__option:hover:not(:disabled) {
+    background: var(--ds-color-white-a06);
+  }
+
+  .ds-form-select__option--selected {
+    color: var(--ds-color-pdf-form-muted);
+  }
+
+  .ds-form-select__option:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  /* --- FormCheckable --- */
+
+  .ds-form-checkable {
+    align-items: flex-start;
+    cursor: pointer;
+    display: inline-flex;
+    gap: var(--ds-space-3);
+  }
+
+  .ds-form-checkable__input {
+    height: var(--ds-border-width-1);
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    width: var(--ds-border-width-1);
+  }
+
+  .ds-form-checkable__copy {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+  }
+
+  .ds-form-checkable__label {
+    color: var(--ds-color-white); /* "Label: Montserrat Regular - 16pt - #ffffff" */
+    font-family: var(--ds-font-body);
+    font-size: 8px; /* calibrated ÷2 — PDF 16pt */
+  }
+
+  .ds-form-checkable__description {
+    color: var(--ds-color-pdf-form-muted); /* "Descripción: Montserrat Regular - 12pt - #8d8d8d" */
+    font-family: var(--ds-font-body);
+    font-size: 6px; /* calibrated ÷2 — PDF 12pt */
+    line-height: var(--ds-leading-body);
+  }
+
+  .ds-form-checkable--checkbox .ds-form-checkable__control,
+  .ds-form-checkable--radio .ds-form-checkable__control {
+    background: transparent;
+    border: var(--ds-border-width-hair) solid var(--ds-color-pdf-border);
+    display: inline-block;
+    flex: 0 0 auto;
+    height: var(--ds-size-icon-md);
+    margin-top: 1px;
+    width: var(--ds-size-icon-md);
+  }
+
+  .ds-form-checkable--radio .ds-form-checkable__control {
+    border-radius: var(--ds-radius-pill);
+  }
+
+  .ds-form-checkable--checkbox .ds-form-checkable__input:checked + .ds-form-checkable__control,
+  .ds-form-checkable--radio .ds-form-checkable__input:checked + .ds-form-checkable__control {
+    background: var(--ds-color-white); /* "Seleccionado: Fondo #ffffff - Selector #060606" */
+    position: relative;
+  }
+
+  .ds-form-checkable--checkbox .ds-form-checkable__input:checked + .ds-form-checkable__control::after,
+  .ds-form-checkable--radio .ds-form-checkable__input:checked + .ds-form-checkable__control::after {
+    background: var(--ds-color-pdf-surface);
+    content: "";
+    height: 8px;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+  }
+
+  .ds-form-checkable--radio .ds-form-checkable__input:checked + .ds-form-checkable__control::after {
+    border-radius: var(--ds-radius-pill);
+  }
+
+  .ds-form-checkable__input:focus-visible + .ds-form-checkable__control {
+    box-shadow: var(--ds-focus-ring);
+  }
+
+  .ds-form-checkable--switch .ds-form-checkable__control {
+    background: var(--ds-color-pdf-border); /* "Switch: Fondo #606060 - Selector #ffffff" */
+    border-radius: var(--ds-radius-pill);
+    display: inline-flex;
+    flex: 0 0 auto;
+    height: var(--ds-size-switch-track-h);
+    padding: 3px;
+    transition: background-color var(--ds-duration-fast) var(--ds-ease-standard);
+    width: var(--ds-size-switch-track-w);
+  }
+
+  .ds-form-checkable__thumb {
+    background: var(--ds-color-white);
+    border-radius: var(--ds-radius-pill);
+    height: var(--ds-size-icon-xl);
+    transition: transform var(--ds-duration-fast) var(--ds-ease-standard);
+    width: var(--ds-size-icon-xl);
+  }
+
+  .ds-form-checkable--switch .ds-form-checkable__input:checked + .ds-form-checkable__control {
+    background: var(--ds-color-white); /* "Switch - Seleccionado: Fondo #ffffff - Selector #060606" */
+  }
+
+  .ds-form-checkable--switch .ds-form-checkable__input:checked + .ds-form-checkable__control .ds-form-checkable__thumb {
+    background: var(--ds-color-pdf-surface);
+    transform: translateX(var(--ds-space-6));
+  }
+
+  .ds-form-checkable--switch .ds-form-checkable__input:focus-visible + .ds-form-checkable__control {
+    box-shadow: var(--ds-focus-ring);
+  }
+
+  .ds-form-checkable-group {
+    border: 0;
+    display: grid;
+    gap: var(--ds-space-3);
+    margin: 0;
+    padding: 0;
+  }
+
+  .ds-form-checkable-group__title {
+    color: var(--ds-color-pdf-form-muted); /* "Título grupo: Source Code Light - 16pt - #8d8d8d" */
+    font-family: var(--ds-font-mono);
+    font-size: 8px; /* calibrated ÷2 — PDF 16pt */
+    font-weight: var(--ds-font-weight-light);
+    padding: 0;
+    text-transform: uppercase;
+  }
+
+  .ds-form-checkable-group__items {
+    display: grid;
+    gap: var(--ds-space-3);
+  }
+
+  /* --- FormFileUpload --- */
+
+  .ds-form-file__zone {
+    cursor: pointer;
+    min-height: 96px;
+    padding: var(--ds-space-3);
+    position: relative;
+  }
+
+  .ds-form-file__zone--drag {
+    /* "Opción de Drag and drop" has no interaction spec from the designer beyond intent
+       ("escucho sugerencias... mientras busco referencias") — a highlighted border/background
+       on drag-over is a reasonable placeholder, see DECISIONS.md */
+    border-color: var(--ds-color-white);
+  }
+
+  .ds-form-file__input {
+    cursor: pointer;
+    height: 100%;
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+
+  .ds-form-file__input:disabled {
+    cursor: not-allowed;
+  }
+
+  .ds-form-file__list {
+    display: grid;
+    gap: var(--ds-space-2);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .ds-form-file__item {
+    display: grid;
+    gap: 2px;
+  }
+
+  .ds-form-file__name {
+    color: var(--ds-color-white); /* "Nombre archivo: Montserrat Regular - 16pt - #ffffff" */
+    font-family: var(--ds-font-body);
+    font-size: 8px; /* calibrated ÷2 — PDF 16pt */
+  }
+
+  .ds-form-file__meta {
+    color: var(--ds-color-pdf-form-muted); /* "Descripción archivo: Montserrat Regular - 10pt - #8d8d8d" */
+    font-family: var(--ds-font-body);
+    font-size: 5px; /* calibrated ÷2 — PDF 10pt */
+    text-transform: uppercase;
+  }
+
+  .ds-form-file__empty {
+    align-items: center;
+    background: var(--ds-color-pdf-surface-a50);
+    display: grid;
+    height: 100%;
+    inset: 0;
+    justify-items: center;
+    position: absolute; /* "al estar activo, el empty se superpone al input" */
+    text-align: center;
+    width: 100%;
+  }
+
+  .ds-form-file__empty-line {
+    color: var(--ds-color-white);
+    font-family: var(--ds-font-body);
+    font-size: 8px;
+    margin: 0;
+  }
+
+  .ds-form-file__formats {
+    color: var(--ds-color-pdf-form-muted);
+    font-family: var(--ds-font-body);
+    font-size: 6px;
+    margin: var(--ds-space-2) 0 0;
+    text-transform: uppercase;
+  }
+
+  /* --- FormDatePicker ---
+     Measured directly from PDF v3 p.21 via PyMuPDF get_drawings()/get_text() (rendered
+     get_pixmap() to confirm visually — pdftoppm/poppler unavailable, PyMuPDF is). Real
+     structure: 2 independent trigger+panel pairs (FECHA/HORA), not one combined popover.
+     FECHA trigger 300×30pt @2× → 150×15px; FECHA panel 300×202.68pt → 150×101px.
+     HORA trigger 200×30pt → 100×15px; HORA panel 200×202.68pt → 100×101px. Selected-day
+     box 20.28×16.38pt → ~10×8px. Row pitch inside both the day grid and the HORA spinner
+     ≈19.8pt @2× → ~10px — reused as --spinner-row below. */
+
+  .ds-form-date {
+    display: flex;
+    gap: var(--ds-space-1);
+  }
+
+  .ds-form-date__field {
+    position: relative;
+  }
+
+  .ds-form-date__field--fecha .ds-form-field__control {
+    width: 150px;
+  }
+
+  .ds-form-date__field--hora .ds-form-field__control {
+    width: 100px;
+  }
+
+  .ds-form-date__trigger {
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .ds-form-date__panel {
+    background: var(--ds-color-pdf-surface);
+    border: var(--ds-border-width-hair) solid var(--ds-color-white); /* "Borde activo: #ffffff" */
+    display: grid;
+    gap: var(--ds-space-2);
+    left: -1px;
+    padding: var(--ds-space-2);
+    position: absolute;
+    top: calc(100% + 2px);
+    z-index: 20;
+  }
+
+  .ds-form-date__panel--fecha {
+    width: 150px;
+  }
+
+  .ds-form-date__panel--hora {
+    width: 100px;
+  }
+
+  .ds-form-date__panel-label {
+    color: var(--ds-color-pdf-form-muted); /* "Input activo - Label: ... 12pt - #8d8d8d" */
+    font-family: var(--ds-font-mono);
+    font-size: 6px; /* calibrated ÷2 — PDF 12pt */
+    font-weight: var(--ds-font-weight-light);
+    text-transform: uppercase;
+  }
+
+  .ds-form-date__month-nav {
+    align-items: center;
+    display: flex;
+    gap: 2px;
+    justify-content: space-between;
+  }
+
+  .ds-form-date__month-nav button {
+    background: transparent;
+    border: 0;
+    color: var(--ds-color-white);
+    cursor: pointer;
+    flex: 0 0 auto;
+    font-size: 8px;
+    line-height: 1;
+    padding: 0 2px;
+  }
+
+  .ds-form-date__month-select {
+    background: transparent;
+    border: 0;
+    color: var(--ds-color-white); /* "Mes - año: Montserrat Bold - 12pt - #ffffff" */
+    font-family: var(--ds-font-body);
+    font-size: 6px; /* calibrated ÷2 — PDF 12pt */
+    font-weight: var(--ds-font-weight-bold);
+    min-width: 0;
+    text-transform: uppercase;
+  }
+
+  .ds-form-date__weekdays,
+  .ds-form-date__days {
+    display: grid;
+    gap: 1px;
+    grid-template-columns: repeat(7, 1fr);
+  }
+
+  .ds-form-date__weekdays span {
+    color: var(--ds-color-pdf-form-muted); /* "Números y días: Montserrat Regular - 12pt - #8d8d8d" */
+    font-family: var(--ds-font-body);
+    font-size: 6px;
+    text-align: center;
+  }
+
+  .ds-form-date__day {
+    background: transparent;
+    border: var(--ds-border-width-hair) solid transparent;
+    color: var(--ds-color-pdf-form-muted);
+    cursor: pointer;
+    font-family: var(--ds-font-body);
+    font-size: 6px;
+    line-height: 10px; /* calibrated ÷2 — PDF row pitch ~19.8pt @2× */
+    padding: 0;
+    text-align: center;
+  }
+
+  .ds-form-date__day--selected {
+    border-color: var(--ds-color-white); /* PDF draws a literal box around the selected day */
+    color: var(--ds-color-white); /* "Día - Hora - Seleccionada: #ffffff" */
+    font-weight: var(--ds-font-weight-bold);
+  }
+
+  .ds-form-date__spinner {
+    align-items: center;
+    display: flex;
+    gap: var(--ds-space-1);
+    justify-content: center;
+  }
+
+  .ds-form-date__spinner-column {
+    display: grid;
+    gap: 2px;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .ds-form-date__spinner-column button {
+    background: transparent;
+    border: 0;
+    color: var(--ds-color-pdf-form-muted);
+    cursor: pointer;
+    font-size: 6px;
+    line-height: 1;
+    padding: 2px;
+  }
+
+  .ds-form-date__spinner-list {
+    display: grid;
+    gap: 0;
+    list-style: none;
+    margin: 0;
+    max-height: 70px; /* 7 visible rows × 10px */
+    overflow-y: auto;
+    padding: 0;
+    scroll-snap-type: y mandatory;
+  }
+
+  .ds-form-date__spinner-value {
+    background: transparent;
+    border: 0;
+    color: var(--ds-color-pdf-form-muted); /* "Horas: Montserrat Regular - 14pt - #8d8d8d" */
+    cursor: pointer;
+    font-family: var(--ds-font-body);
+    font-size: 7px; /* calibrated ÷2 — PDF 14pt */
+    height: 10px; /* calibrated ÷2 — PDF row pitch ~19.8pt @2× */
+    padding: 0 4px;
+    scroll-snap-align: center;
+    text-align: center;
+    width: 100%;
+  }
+
+  .ds-form-date__spinner-value--selected {
+    color: var(--ds-color-white); /* "Día - Hora - Seleccionada: #ffffff" */
+    font-weight: var(--ds-font-weight-bold);
+  }
+
+  .ds-form-date__spinner-separator {
+    color: var(--ds-color-pdf-form-muted);
+    font-family: var(--ds-font-body);
+    font-size: 7px;
+  }
+
+  /* ============================================================
+     MODAL (PDF v3 p.22 "ALERT" § "Confirmación de acción") — confirm/cancel
+     dialog only; distinct from `.ds-alert` (inline banner, not blocking).
+     ============================================================ */
+
+  .ds-modal-backdrop {
+    align-items: center;
+    background: var(--ds-color-black-a70);
+    display: flex;
+    inset: 0;
+    justify-content: center;
+    padding: var(--ds-space-4);
+    position: fixed;
+    z-index: 100;
+  }
+
+  .ds-modal {
+    background: var(--ds-color-pdf-surface); /* "Fondo: #060606" */
+    border: var(--ds-border-width-hair) solid var(--ds-color-pdf-border); /* "Borde: 0,75pt - #606060" */
+    display: grid;
+    gap: var(--ds-space-4);
+    max-width: 420px;
+    padding: var(--ds-space-6);
+    width: 100%;
+  }
+
+  .ds-modal__title {
+    color: var(--ds-color-white); /* "Título: Source Code Bold - 18pt - #ffffff" */
+    font-family: var(--ds-font-display);
+    font-size: 9px; /* calibrated ÷2 — PDF 18pt */
+    font-weight: var(--ds-font-weight-bold);
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .ds-modal__text {
+    color: var(--ds-color-pdf-line); /* "Texto: Montserrat Light - 18pt - #c1c1c1" */
+    font-family: var(--ds-font-body);
+    font-size: 9px; /* calibrated ÷2 — PDF 18pt */
+    font-weight: var(--ds-font-weight-light);
+    line-height: var(--ds-leading-body);
+    margin: 0;
+  }
+
+  .ds-modal__divider {
+    border: 0;
+    border-top: var(--ds-border-width-hair) solid var(--ds-color-pdf-ink-muted); /* "Línea: 0,75pt - #8a8b87" */
+    margin: 0;
+  }
+
+  .ds-modal__actions {
+    display: flex;
+    gap: var(--ds-space-3);
+    justify-content: flex-end;
+  }
+
+  .ds-modal__action {
+    background: transparent;
+    border: var(--ds-border-width-1) solid var(--ds-color-line-strong);
+    color: var(--ds-color-white);
+    cursor: pointer;
+    font-family: var(--ds-font-body);
+    font-weight: var(--ds-font-weight-bold);
+    padding: var(--ds-space-2) var(--ds-space-4);
+    text-transform: uppercase;
+  }
+
+  .ds-modal__action--primary {
+    background: var(--ds-color-pdf-action);
+    border-color: transparent;
+  }
+
+  .ds-modal__action--primary:hover {
+    background: var(--ds-color-pdf-action-hover);
   }
 
   @keyframes ds-spin {

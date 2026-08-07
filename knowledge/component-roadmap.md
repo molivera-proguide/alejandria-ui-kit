@@ -50,20 +50,28 @@ already.
 | **Skeleton** | p.14 | ✅ | ✅ | `Skeleton.tsx` — built 2026-07-21 |
 | **Calendar card** | p.15 | ✅ | ✅ | `CalendarCard.tsx` — built 2026-07-21 |
 | **Empty** | p.16 | ✅ | ✅ | `Empty.tsx` — built 2026-07-21 |
-| Form | p.17 | not on timeline | not on timeline | no dedicated `Form`; scattered field primitives exist (`TextField`, `SelectField`, `SegmentedControl`, `Switch`, `DataTable`) |
-| Alert | p.18 | not on timeline | not on timeline | `AlertBanner.tsx` — already built as the "teal/console" notification card, out of scope for PDF `@2×÷2` fidelity (confirmed 2026-08-06, `specs/README.md`). Visually unlike the PDF's p.18 bar (full-width flat dark strip, centered uppercase text, no card/icon) — closed as a naming coincidence, not pursued as a fidelity target. |
+| Form | p.17–21 (v3) | ✅ | ✅ | **Built 2026-08-07** (feature `001-form-modal`) — `FormTextInput.tsx`, `FormSelect.tsx`, `FormCheckable.tsx`, `FormFileUpload.tsx`, `FormDatePicker.tsx`. Field primitives, not a compound `Form` — see `specs/001-form-modal/plan.md`. |
+| Alert | p.18 (v2) / p.22 (v3) | not on timeline | not on timeline | `AlertBanner.tsx` — already built as the "teal/console" notification card, out of scope for PDF `@2×÷2` fidelity (confirmed 2026-08-06, `specs/README.md`). Visually unlike the PDF's p.18 bar (full-width flat dark strip, centered uppercase text, no card/icon) — closed as a naming coincidence, not pursued as a fidelity target. v3 p.22 added a distinct confirm/cancel dialog under the same "ALERT" title — see `Modal` row in the post-baseline table below, built separately from this `AlertBanner` row. |
 
 **Note on Form, Alert, and the p.7 Login page:** none of these appear as their own row on
-the p.2 timeline, so they sit outside the design team's own tracked scope (p.7 rides along
-under the "Módulos" timeline dot instead, since it shares that section title with p.6).
+the p.2 (v2) timeline, so they sit outside the design team's own tracked scope (p.7 rides
+along under the "Módulos" timeline dot instead, since it shares that section title with p.6).
 Alert and the p.7 Login page are non-issues for *coverage* — `AlertBanner`/`Login` already
-ship, just under different names/groupings than a literal PDF page title. Form is confirmed
-**not ready** (2026-08-06, user-confirmed):
-its p.17 spec block reads as an unfinished placeholder (near-identical to p.16 Empty's —
-same icon/title/text/button spec, no field list/layout/validation) because it genuinely
-is one — the designer is still actively working on the real Form spec. No dedicated
-`Form` component exists and none should be built from the current placeholder page;
-revisit once design ships a real spec.
+ship, just under different names/groupings than a literal PDF page title.
+
+**Form — resolved 2026-08-07 (superseded the 2026-08-06 "not ready" note below).** The PDF
+was updated to **v3** (24 pages, 2026-08-07): p.17's old placeholder (near-identical to p.16
+Empty's — same icon/title/text/button spec, no field list/layout/validation) was replaced by
+**5 dedicated pages** (Login-input, Input+Select, Checkables, Adjuntos, Datepicker), each with
+a real visual spec. Built as field primitives in feature `001-form-modal` — see
+`specs/001-form-modal/` and `knowledge/references/pdf-text-extract.md` p.17–21 for the
+verbatim spec this was built against. The note that follows is kept for history (it described
+the v2 placeholder, now gone):
+
+> *(2026-08-06, superseded)* Form is confirmed not ready: its p.17 spec block reads as an
+> unfinished placeholder because it genuinely is one — the designer is still actively working
+> on the real Form spec. No dedicated `Form` component exists and none should be built from
+> the current placeholder page; revisit once design ships a real spec.
 
 ## Build order (timeline gaps closed)
 
@@ -115,7 +123,7 @@ observed consumer need, not by the PDF.
 | **@2× → fluid sizing** | Component hardening | **Done (partial) + 1 new gap found** | G1, G4, G5 (3/5 prompts) | See "2026-07-28 sizing pass" below — `ChartCard`/`MetricCard` ficha fixed and confirmed in a real re-run; kanban `TaskCard`'s empty-space finding wasn't actually fixed (the re-run agent overrode the card's own cap via a local `style` prop instead — a new, worse gap, see below); `Asistente` 774px deferred. |
 | **Pagination** | New component | **High** | G3 | No export; consumer had to hand-build a page bar with `Button`. Needed by any list/table. |
 | **DataTable: sort / filter / paginate** | Component feature | **High** | G3 | Display-only today; realistic tables need at least sort + paginate. |
-| **Modal / Dialog** | New component | **High** | G6 | No real overlay primitive; `Asistente` is a `role="dialog"` shell, not a confirm/cancel dialog. Needs focus trap + Esc + `aria-modal`. |
+| **Modal / Dialog** | New component | ✅ Done (2026-08-07) | G6 | Resolved by feature `001-form-modal` — PDF v3 p.22 ("ALERT" § "Confirmación de acción") gave this gap a real spec. `Modal.tsx` ships the confirm/cancel variant only (title + text + 2 actions), with Esc + backdrop-click to close + `aria-modal`/`role="alertdialog"`. No full focus trap yet (not required by the PDF spec) — revisit if a future consumer need surfaces it. |
 | **Ficha label contrast** | a11y / fidelity | Medium | G4 | Ficha `MetricCard` label (extralight + `--ds-color-pdf-ink-muted`) is spec-faithful but low-contrast on dark. Fidelity-vs-a11y tension to resolve with design. |
 | **Export `DetailSheet`** | Barrel fix | ✅ Done (2026-07-28) | G4 | See "Quick win" above — a detail/login composer would reuse it. |
 
