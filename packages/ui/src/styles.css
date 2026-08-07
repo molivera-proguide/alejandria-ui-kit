@@ -2670,7 +2670,9 @@
     list-style: none;
     margin: 0;
     max-height: 160px;
-    overflow-y: auto;
+    /* overflow-y comes from .ds-scroll-area--y (applied in FormSelect.tsx) — themed
+       scrollbar instead of the browser's default light one, same fix as the spinner
+       below */
     padding: 0;
     position: absolute;
     right: -1px;
@@ -3068,7 +3070,8 @@
     list-style: none;
     margin: 0;
     max-height: 70px; /* 7 visible rows × 10px */
-    overflow-y: auto;
+    /* overflow-y comes from .ds-scroll-area--y (applied in FormDatePicker.tsx) — themed
+       scrollbar (--ds-color-pdf-action thumb) instead of the browser's default light one */
     padding: 0;
     scroll-snap-type: y mandatory;
   }

@@ -146,7 +146,12 @@ export function FormSelect({
         </label>
         <span className="ds-form-field__chevron" aria-hidden="true" />
         {open ? (
-          <ul className="ds-form-select__menu" role="listbox" aria-multiselectable={multiple} ref={listRef}>
+          <ul
+            className="ds-form-select__menu ds-scroll-area ds-scroll-area--y"
+            role="listbox"
+            aria-multiselectable={multiple}
+            ref={listRef}
+          >
             {options.map((option) => {
               const isSelected = selectedValues.includes(option.value);
               return (

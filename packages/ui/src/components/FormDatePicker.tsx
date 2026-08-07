@@ -243,7 +243,7 @@ export function FormDatePicker({ disabled, value, defaultValue, onChange, classN
                 <button type="button" aria-label="Hora anterior" onClick={() => scrollList(hourListRef, -1)}>
                   ⌃
                 </button>
-                <ul ref={hourListRef} className="ds-form-date__spinner-list">
+                <ul ref={hourListRef} className="ds-form-date__spinner-list ds-scroll-area ds-scroll-area--y">
                   {HOURS.map((hour) => (
                     <li key={hour} data-value={hour}>
                       <button
@@ -265,7 +265,7 @@ export function FormDatePicker({ disabled, value, defaultValue, onChange, classN
                 <button type="button" aria-label="Minuto anterior" onClick={() => scrollList(minuteListRef, -1)}>
                   ⌃
                 </button>
-                <ul ref={minuteListRef} className="ds-form-date__spinner-list">
+                <ul ref={minuteListRef} className="ds-form-date__spinner-list ds-scroll-area ds-scroll-area--y">
                   {MINUTES.map((minute) => (
                     <li key={minute} data-value={minute}>
                       <button
