@@ -45,7 +45,19 @@ export const FormCheckable = forwardRef<HTMLInputElement, FormCheckableProps>(
           {...props}
         />
         <span className="ds-form-checkable__control" aria-hidden="true">
-          {type === "switch" ? <span className="ds-form-checkable__thumb" /> : null}
+          {type === "switch" ? (
+            <span className="ds-form-checkable__thumb" />
+          ) : type === "checkbox" ? (
+            <svg className="ds-form-checkable__check" viewBox="0 0 12 10" fill="none">
+              <path
+                d="M1 5.2L4.4 8.6L11 1.4"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          ) : null}
         </span>
         <span className="ds-form-checkable__copy">
           <span className="ds-form-checkable__label">{label}</span>

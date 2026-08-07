@@ -2744,12 +2744,15 @@
 
   .ds-form-checkable--checkbox .ds-form-checkable__control,
   .ds-form-checkable--radio .ds-form-checkable__control {
+    align-items: center;
     background: transparent;
     border: var(--ds-border-width-hair) solid var(--ds-color-pdf-border);
-    display: inline-block;
+    display: inline-flex;
     flex: 0 0 auto;
     height: var(--ds-size-icon-md);
+    justify-content: center;
     margin-top: 1px;
+    position: relative;
     width: var(--ds-size-icon-md);
   }
 
@@ -2760,12 +2763,28 @@
   .ds-form-checkable--checkbox .ds-form-checkable__input:checked + .ds-form-checkable__control,
   .ds-form-checkable--radio .ds-form-checkable__input:checked + .ds-form-checkable__control {
     background: var(--ds-color-white); /* "Seleccionado: Fondo #ffffff - Selector #060606" */
-    position: relative;
   }
 
-  .ds-form-checkable--checkbox .ds-form-checkable__input:checked + .ds-form-checkable__control::after,
+  /* Checkbox "selector" is a check glyph, not a filled square — the ::after dot below
+     is radio-only. Icon painted with `color`, not `fill`, so it inherits
+     --ds-color-pdf-surface via `currentColor` on the control (see .ds-form-checkable__check). */
+  .ds-form-checkable--checkbox .ds-form-checkable__control {
+    color: var(--ds-color-pdf-surface);
+  }
+
+  .ds-form-checkable__check {
+    height: 8px;
+    opacity: 0;
+    width: 10px;
+  }
+
+  .ds-form-checkable__input:checked + .ds-form-checkable__control .ds-form-checkable__check {
+    opacity: 1;
+  }
+
   .ds-form-checkable--radio .ds-form-checkable__input:checked + .ds-form-checkable__control::after {
     background: var(--ds-color-pdf-surface);
+    border-radius: var(--ds-radius-pill);
     content: "";
     height: 8px;
     left: 50%;
@@ -2773,10 +2792,6 @@
     top: 50%;
     transform: translate(-50%, -50%);
     width: 8px;
-  }
-
-  .ds-form-checkable--radio .ds-form-checkable__input:checked + .ds-form-checkable__control::after {
-    border-radius: var(--ds-radius-pill);
   }
 
   .ds-form-checkable__input:focus-visible + .ds-form-checkable__control {
