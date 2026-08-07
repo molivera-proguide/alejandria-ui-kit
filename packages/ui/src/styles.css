@@ -3133,37 +3133,48 @@
   }
 
   .ds-modal {
-    background: var(--ds-color-pdf-surface); /* "Fondo: #060606" */
-    border: var(--ds-border-width-hair) solid var(--ds-color-pdf-border); /* "Borde: 0,75pt - #606060" */
+    /* Fondo: legend text says "#060606" but that's wrong against the actual page —
+       sampled 128 points across doc[21]'s "Confirmación de acción" box via PyMuPDF
+       get_pixmap(): 127/128 are rgb(73,73,73) = #494949, matching the *other* two
+       boxes on the same page ("Alert Sigcat"/"Tarea realizada") pixel-for-pixel —
+       same "geometry/render wins over legend" rule as elsewhere in this pass, just
+       extended to "final composited pixel wins over a shape's own raw fill metadata"
+       (get_drawings() on this rect does report (0.024,0.024,0.024)=#060606 as the
+       path's own paint — some page-level dimming/overlay evidently lightens it in
+       the actual render, and #494949 is what a viewer — and Luna, reviewing in
+       Storybook — actually sees). */
+    background: var(--ds-color-pdf-action);
+    border: var(--ds-border-width-hair) solid var(--ds-color-pdf-border); /* "Borde: 0,75pt - #606060" — confirmed via get_drawings() stroke, no discrepancy here */
     display: grid;
-    gap: var(--ds-space-4);
-    max-width: 420px;
-    padding: var(--ds-space-6);
-    width: 100%;
+    padding: var(--ds-space-4); /* calibrated ÷2 — PDF box-edge→content inset ~28-31pt @2×, was --ds-space-6 (24px, too generous) */
+    width: 325px; /* calibrated ÷2 — PDF vector rect 650×310pt @2×, was max-width: 420px (invented, no fixed proportion) */
   }
 
   .ds-modal__title {
-    color: var(--ds-color-white); /* "Título: Source Code Bold - 18pt - #ffffff" */
+    color: var(--ds-color-white); /* "Título: Source Code Bold - 18pt - #ffffff" — confirmed, span's own color matches */
     font-family: var(--ds-font-display);
     font-size: 9px; /* calibrated ÷2 — PDF 18pt */
     font-weight: var(--ds-font-weight-bold);
-    margin: 0;
+    margin: 0 0 20px; /* calibrated ÷2 — título→texto gap ~38.5pt @2×, was a uniform 16px grid gap shared with every other element (Empty-component lesson: per-element margins, not one shared gap, once the real gaps differ this much) */
     text-transform: uppercase;
   }
 
   .ds-modal__text {
-    color: var(--ds-color-pdf-line); /* "Texto: Montserrat Light - 18pt - #c1c1c1" */
+    /* Texto: legend says "#c1c1c1" but the span's own fill color (get_text("dict") ›
+       span.color) is #f6f6f6 — same discrepancy class as the box background above,
+       trusting the measured/rendered value over the legend's stated one. */
+    color: var(--ds-color-pdf-ink-bright);
     font-family: var(--ds-font-body);
     font-size: 9px; /* calibrated ÷2 — PDF 18pt */
     font-weight: var(--ds-font-weight-light);
     line-height: var(--ds-leading-body);
-    margin: 0;
+    margin: 0 0 44px; /* calibrated ÷2 — texto→línea gap ~89.5pt @2×, real gap, not invented */
   }
 
   .ds-modal__divider {
     border: 0;
     border-top: var(--ds-border-width-hair) solid var(--ds-color-pdf-ink-muted); /* "Línea: 0,75pt - #8a8b87" */
-    margin: 0;
+    margin: 0 0 12px; /* calibrated ÷2 — línea→acciones gap ~25.3pt @2× */
   }
 
   .ds-modal__actions {
@@ -3172,24 +3183,28 @@
     justify-content: flex-end;
   }
 
+  /* Both actions: PDF's own 2-button example (get_drawings() on doc[21]) shows one
+     fill matching the modal's own background exactly (#494949 — effectively no
+     visible box at rest) and the other filled #8a8b87 — same "one button is a hover
+     capture, not two permanent colors" reading already confirmed for
+     InvestigationCard's action pair on a different page. Text stays white either
+     way (get_text() gives both #8d8d8d and #ffffff duplicated at each button's
+     position — the same overlapping-text-runs artifact seen elsewhere on this PDF;
+     #ffffff read as the resting value, matching every other white label on this box). */
   .ds-modal__action {
     background: transparent;
-    border: var(--ds-border-width-1) solid var(--ds-color-line-strong);
+    border: 0;
     color: var(--ds-color-white);
     cursor: pointer;
     font-family: var(--ds-font-body);
     font-weight: var(--ds-font-weight-bold);
     padding: var(--ds-space-2) var(--ds-space-4);
     text-transform: uppercase;
+    transition: background-color var(--ds-duration-fast) var(--ds-ease-standard);
   }
 
-  .ds-modal__action--primary {
-    background: var(--ds-color-pdf-action);
-    border-color: transparent;
-  }
-
-  .ds-modal__action--primary:hover {
-    background: var(--ds-color-pdf-action-hover);
+  .ds-modal__action:hover {
+    background: var(--ds-color-pdf-ink-muted); /* #8a8b87 */
   }
 
   @keyframes ds-spin {
