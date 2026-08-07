@@ -11,10 +11,16 @@
     "build:ui": "pnpm --filter @alejandria/ui-kit build",
     "build:web": "pnpm --filter @alejandria/web build",
     "build-storybook": "pnpm --filter @alejandria/ui-kit build-storybook",
-    "pack:ui": "pnpm --filter @alejandria/ui-kit pack && node scripts/copy-knowledge.mjs --clean"
+    "pack:ui": "pnpm --filter @alejandria/ui-kit pack && node scripts/copy-knowledge.mjs --clean",
+    "audit:sdd": "node scripts/sdd-audit.mjs",
+    "kanban": "node scripts/gen-kanban.mjs",
+    "kanban:serve": "node scripts/kanban-server.mjs",
+    "skills:sync": "node scripts/sync-skills.mjs",
+    "skills:sync:dry": "node scripts/sync-skills.mjs --dry-run"
   },
   "devDependencies": {
     "@types/node": "^25.9.3",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "yaml": "^2.4.0"
   }
 }
