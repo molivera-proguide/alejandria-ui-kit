@@ -42,7 +42,7 @@ Out of scope for ÷2: `border-width` / hairlines (`0.75px` / `1px`), `border-rad
 
 ## Exports covered
 
-`packages/ui/src/index.ts` exports **25** components. Each has a spec:
+`packages/ui/src/index.ts` exports **32** components. Each has a spec:
 
 - [AlertBanner.spec.md](./components/AlertBanner.spec.md)
 - [Asistente.spec.md](./components/Asistente.spec.md)
@@ -53,12 +53,19 @@ Out of scope for ÷2: `border-width` / hairlines (`0.75px` / `1px`), `border-rad
 - [Card.spec.md](./components/Card.spec.md)
 - [ChartCard.spec.md](./components/ChartCard.spec.md)
 - [DataTable.spec.md](./components/DataTable.spec.md)
+- [DetailSheet.spec.md](./components/DetailSheet.spec.md)
 - [DonutChartCard.spec.md](./components/DonutChartCard.spec.md)
 - [Empty.spec.md](./components/Empty.spec.md)
+- [FormCheckable.spec.md](./components/FormCheckable.spec.md)
+- [FormDatePicker.spec.md](./components/FormDatePicker.spec.md)
+- [FormFileUpload.spec.md](./components/FormFileUpload.spec.md)
+- [FormSelect.spec.md](./components/FormSelect.spec.md)
+- [FormTextInput.spec.md](./components/FormTextInput.spec.md)
 - [InvestigationCard.spec.md](./components/InvestigationCard.spec.md)
 - [LinearBarChartCard.spec.md](./components/LinearBarChartCard.spec.md)
 - [LineChartCard.spec.md](./components/LineChartCard.spec.md)
 - [MetricCard.spec.md](./components/MetricCard.spec.md)
+- [Modal.spec.md](./components/Modal.spec.md)
 - [ModuleCard.spec.md](./components/ModuleCard.spec.md)
 - [ProgressRing.spec.md](./components/ProgressRing.spec.md)
 - [Scrollbar.spec.md](./components/Scrollbar.spec.md)

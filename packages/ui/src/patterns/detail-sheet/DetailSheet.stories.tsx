@@ -3,7 +3,10 @@ import { DetailSheet } from "./DetailSheet";
 import type { DetailSheetContent } from "./DetailSheet";
 
 /**
- * @description Datos estáticos de la ficha según la referencia PDF — página 4 (Fichas)
+ * @description Datos estáticos de la ficha según la referencia PDF — página 5 (Fichas).
+ * Corregido 2026-08-07: citaba "página 4" (esa es INVESTIGATION CARD); el contenido de
+ * este mock ("#1232142342 - 3408473", "DESCRIPCIÓN", "MÉTRICAS DE RENDIMIENTO DE LA
+ * TAREA") aparece verbatim en el extract de texto de p.5, confirmado vía PyMuPDF.
  * @type {DetailSheetContent}
  */
 const fichaContent: DetailSheetContent = {
@@ -73,7 +76,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * @description Ficha completa según la referencia PDF — página 4
+ * @description Ficha completa según la referencia PDF — página 5
  */
 export const Fichas: Story = {
   args: {

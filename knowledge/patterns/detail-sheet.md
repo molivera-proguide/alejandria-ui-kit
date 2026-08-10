@@ -1,3 +1,19 @@
+> ⚠️ **Superseded (2026-08-07).** Este brief se escribió como una composición de demo,
+> **no** exportada desde el kit ("It is not a component", "Avoid introducing any new
+> Design System exports", implementación target en `apps/web/src/patterns/detail-sheet/`).
+> El 2026-07-28 se tomó la decisión de mover `DetailSheet` a
+> `packages/ui/src/patterns/detail-sheet/` y exportarlo desde `packages/ui/src/index.ts`
+> (`knowledge/component-roadmap.md`, fila "Export `DetailSheet`") — contradiciendo
+> explícitamente las reglas de este documento. Ese cambio quedó sin su propia
+> documentación de componente hasta ahora. La referencia vigente es
+> [`knowledge/components/DetailSheet.md`](../components/DetailSheet.md) +
+> [`knowledge/specs/components/DetailSheet.spec.md`](../specs/components/DetailSheet.spec.md).
+> Este archivo queda como registro histórico de la intención original (reglas de
+> composición, regiones, restricciones de "no crear componentes nuevos") — sigue siendo
+> válido como guía de *qué componentes reusar y cómo*, pero su afirmación de que
+> `DetailSheet` "no es un componente" y "nunca se exporta" ya no es cierta. Ver
+> `DECISIONS.md` (2026-08-07).
+
 ## Intent
 
 The Detail Sheet pattern defines the canonical layout for presenting a single operational entity in focus.

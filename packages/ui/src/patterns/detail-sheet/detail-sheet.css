@@ -1,8 +1,8 @@
 .detail-sheet {
-  background: #2a2927;
-  border: 0.75px solid #c1c1c1;
+  background: var(--ds-color-pdf-surface-warm); /* tokenized 2026-08-07 — was literal #2a2927 */
+  border: var(--ds-border-width-hair) solid var(--ds-color-pdf-line); /* was literal 0.75px #c1c1c1 */
   box-sizing: border-box;
-  color: #ffffff;
+  color: var(--ds-color-white); /* was literal #ffffff */
   display: grid;
   gap: 14px;
   max-width: 590px;
@@ -38,12 +38,12 @@
 }
 
 .detail-sheet__status--neutral {
-  color: #ffffff;
+  color: var(--ds-color-white); /* tokenized 2026-08-07 — was literal #ffffff */
 }
 
 .detail-sheet__status--critical {
-  background: #7f0000;
-  color: #ff0404;
+  background: #7f0000; /* no matching --ds-* token exists — left literal, see DetailSheet.spec.md */
+  color: var(--ds-color-pdf-critical); /* tokenized 2026-08-07 — was literal #ff0404 */
   padding: 1px 3px;
 }
 
@@ -72,7 +72,7 @@
   align-items: center;
   background: transparent;
   border: 0;
-  color: #ffffff;
+  color: var(--ds-color-white); /* tokenized 2026-08-07 — was literal #ffffff */
   cursor: pointer;
   display: inline-flex;
   height: 12px;
@@ -102,12 +102,12 @@
 }
 
 .detail-sheet__filters .ds-field__control {
-  border: 0.75px solid #e6e6e6;
+  border: var(--ds-border-width-hair) solid var(--ds-color-pdf-line-light); /* tokenized 2026-08-07 — was literal 0.75px #e6e6e6 */
   min-height: 22px;
 }
 
 .detail-sheet__filters .ds-field__select {
-  color: #8a8b87;
+  color: var(--ds-color-pdf-ink-muted); /* tokenized 2026-08-07 — was literal #8a8b87 */
   font-family: var(--ds-font-body);
   font-size: 12px;
   font-weight: 200;
@@ -128,15 +128,15 @@
 }
 
 .detail-sheet__narrative {
-  background: #060606;
-  border: 0.75px solid #e6e6e6;
+  background: var(--ds-color-pdf-surface); /* tokenized 2026-08-07 — was literal #060606 */
+  border: var(--ds-border-width-hair) solid var(--ds-color-pdf-line-light); /* was literal 0.75px #e6e6e6 */
   display: grid;
   gap: 8px;
   padding: 10px;
 }
 
 .detail-sheet__narrative-title {
-  color: #8a8b87;
+  color: var(--ds-color-pdf-ink-muted); /* tokenized 2026-08-07 — was literal #8a8b87 */
   font-family: var(--ds-font-body);
   font-size: 8px;
   font-weight: 200;
@@ -160,7 +160,7 @@
 }
 
 .detail-sheet__media-title {
-  color: #8a8b87;
+  color: var(--ds-color-pdf-ink-muted); /* tokenized 2026-08-07 — was literal #8a8b87 */
   font-family: var(--ds-font-body);
   font-size: 8px;
   font-weight: 200;
@@ -177,8 +177,8 @@
 }
 
 .detail-sheet__media-preview {
-  background: #060606;
-  border: 0.75px solid #e6e6e6;
+  background: var(--ds-color-pdf-surface); /* tokenized 2026-08-07 — was literal #060606 */
+  border: var(--ds-border-width-hair) solid var(--ds-color-pdf-line-light); /* was literal 0.75px #e6e6e6 */
   display: grid;
   gap: 0;
   overflow: hidden;
@@ -197,10 +197,10 @@
 
 .detail-sheet__media-preview-play {
   align-items: center;
-  background: rgb(0 0 0 / 0.35);
-  border: 0.75px solid #e6e6e6;
+  background: rgb(0 0 0 / 0.35); /* no matching --ds-* alpha token (0.35) exists — left literal */
+  border: var(--ds-border-width-hair) solid var(--ds-color-pdf-line-light); /* tokenized 2026-08-07 — was literal 0.75px #e6e6e6 */
   border-radius: 50%;
-  color: #ffffff;
+  color: var(--ds-color-white); /* tokenized 2026-08-07 — was literal #ffffff */
   display: inline-flex;
   height: 22px;
   justify-content: center;
@@ -214,14 +214,14 @@
 }
 
 .detail-sheet__media-preview-progress {
-  background: #494949;
+  background: var(--ds-color-pdf-action); /* tokenized 2026-08-07 — was literal #494949 */
   height: 3px;
   position: relative;
   width: 100%;
 }
 
 .detail-sheet__media-preview-progress span {
-  background: #ff0404;
+  background: var(--ds-color-pdf-critical); /* tokenized 2026-08-07 — was literal #ff0404 */
   display: block;
   height: 100%;
   width: 68%;
@@ -238,15 +238,15 @@
 }
 
 .detail-sheet .ds-chart-card {
-  background: rgb(6 6 6 / 0.2);
-  border: 0.75px solid #e6e6e6;
+  background: rgb(6 6 6 / 0.2); /* no matching --ds-* alpha token (0.2 on #060606) exists — left literal */
+  border: var(--ds-border-width-hair) solid var(--ds-color-pdf-line-light); /* tokenized 2026-08-07 — was literal 0.75px #e6e6e6 */
   gap: 6px;
   min-height: 140px;
   padding: 5px;
 }
 
 .detail-sheet .ds-chart-card__title {
-  color: #8a8b87;
+  color: var(--ds-color-pdf-ink-muted); /* tokenized 2026-08-07 — was literal #8a8b87 */
   font-family: var(--ds-font-body);
   font-size: 8px;
   font-weight: 200;
@@ -258,7 +258,7 @@
 }
 
 .detail-sheet .ds-chart-card__footer {
-  color: #ffffff;
+  color: var(--ds-color-white); /* tokenized 2026-08-07 — was literal #ffffff */
   font-size: 8px;
   font-weight: 200;
 }
@@ -275,7 +275,7 @@
 }
 
 .detail-sheet__actions-label {
-  color: #8a8b87;
+  color: var(--ds-color-pdf-ink-muted); /* tokenized 2026-08-07 — was literal #8a8b87 */
   font-family: var(--ds-font-body);
   font-size: 8px;
   font-weight: 200;
@@ -311,12 +311,12 @@
 
 .detail-sheet__action-button--a.ds-button,
 .detail-sheet__action-button--a.ds-button:hover:not(:disabled) {
-  background: #c1c1c1;
-  color: #ffffff;
+  background: var(--ds-color-pdf-line); /* tokenized 2026-08-07 — was literal #c1c1c1 */
+  color: var(--ds-color-white); /* was literal #ffffff */
 }
 
 .detail-sheet__action-button--b.ds-button,
 .detail-sheet__action-button--b.ds-button:hover:not(:disabled) {
-  background: #8a8b87;
-  color: #ffffff;
+  background: var(--ds-color-pdf-ink-muted); /* tokenized 2026-08-07 — was literal #8a8b87 */
+  color: var(--ds-color-white); /* was literal #ffffff */
 }

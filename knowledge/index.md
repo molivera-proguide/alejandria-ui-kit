@@ -78,7 +78,7 @@ knowledge/
 
 ## Components
 
-The public exports of `@alejandria/ui-kit` have dedicated docs under `knowledge/components/` (24 exports).
+The public exports of `@alejandria/ui-kit` have dedicated docs under `knowledge/components/` (32 exports).
 
 | Component | Doc | Storybook |
 |-----------|-----|-----------|
@@ -91,11 +91,19 @@ The public exports of `@alejandria/ui-kit` have dedicated docs under `knowledge/
 | Card | [Card.md](./components/Card.md) | `Alejandria/Card` |
 | ChartCard | [ChartCard.md](./components/ChartCard.md) | `Alejandria/ChartCard` |
 | DataTable | [DataTable.md](./components/DataTable.md) | `Alejandria/DataTable` |
+| DetailSheet | [DetailSheet.md](./components/DetailSheet.md) | `Alejandria/Patterns/DetailSheet` |
 | DonutChartCard | [DonutChartCard.md](./components/DonutChartCard.md) | `Alejandria/ChartCard` (nested) |
 | Empty | [Empty.md](./components/Empty.md) | `Alejandria/Empty` |
+| FormCheckable | [FormCheckable.md](./components/FormCheckable.md) | `Alejandria/FormCheckable` |
+| FormDatePicker | [FormDatePicker.md](./components/FormDatePicker.md) | `Alejandria/FormDatePicker` |
+| FormFileUpload | [FormFileUpload.md](./components/FormFileUpload.md) | `Alejandria/FormFileUpload` |
+| FormSelect | [FormSelect.md](./components/FormSelect.md) | `Alejandria/FormSelect` |
+| FormTextInput | [FormTextInput.md](./components/FormTextInput.md) | `Alejandria/FormTextInput` |
 | InvestigationCard | [InvestigationCard.md](./components/InvestigationCard.md) | `Alejandria/InvestigationCard` |
+| LinearBarChartCard | [LinearBarChartCard.md](./components/LinearBarChartCard.md) | `Alejandria/LinearBarChartCard` |
 | LineChartCard | [LineChartCard.md](./components/LineChartCard.md) | `Alejandria/ChartCard` (nested) |
 | MetricCard | [MetricCard.md](./components/MetricCard.md) | `Alejandria/MetricCard` |
+| Modal | [Modal.md](./components/Modal.md) | `Alejandria/Modal` |
 | ModuleCard | [ModuleCard.md](./components/ModuleCard.md) | `Alejandria/ModuleCard` |
 | ProgressRing | [ProgressRing.md](./components/ProgressRing.md) | `Alejandria/ProgressRing` |
 | Scrollbar | [Scrollbar.md](./components/Scrollbar.md) | `Alejandria/Scrollbar` |

@@ -39,7 +39,7 @@ already.
 |---|---|:---:|:---:|---|
 | Tarjetas | p.3 | ✅ | ✅ | `Card.tsx`, `TaskCard.tsx` |
 | Investigation card | p.4 | ✅ | ✅ | `InvestigationCard.tsx` |
-| Ficha | p.5 | ✅ | ✅ | `patterns/detail-sheet/DetailSheet.tsx` — **built but not exported from the main `index.ts` barrel** |
+| Ficha | p.5 | ✅ | ✅ | `patterns/detail-sheet/DetailSheet.tsx` — exported from the main `index.ts` barrel since 2026-07-28 (see "Export `DetailSheet`" row in the post-baseline table below); documented in `knowledge/components/DetailSheet.md` + `DetailSheet.spec.md` since 2026-08-07 (**stale note removed** — this row previously said "built but not exported", which stopped being true 2026-07-28) |
 | Módulos (p.6 — "Icono, título y preview de información") | p.6 | ✅ | ✅ | `ModuleCard.tsx` |
 | Módulos (p.7 — "De loguin") | p.7 (`doc[6]`) | not on timeline | not on timeline | `patterns/login/Login.tsx`. **Row added/corrected 2026-08-06**: same class of miss as the p.9/p.10 GRAFICOS pair — p.6 and p.7 share the section title "MÓDULOS" but are distinct pages; p.7's own subtitle is "De loguin", not a separate "Ingresar" page title (an earlier pass of this correction mis-cited it that way from an out-of-order text read — the button label "INGRESAR" on the mockup isn't the page title). Real spec: fondo `#060606`, borde `0,75pt #c1c1c1`, padding `20px` (legend value — real vector geometry measures ~23.07pt @2×, see `login-card` CSS comment), input `#2a2927`, círculos patrón `45×45px`, botón `#494949`. Fidelity-checked against `Login.tsx` 2026-08-06 — see `fidelity-pass/next-steps.md`. |
 | Gráficos (p.10 — Barra tradicional/Torta comparativa/Líneas) | p.10 (`doc[9]`) | ✅ | ✅ | `ChartCard.tsx`, `BarChartCard.tsx`, `DonutChartCard.tsx`, `LineChartCard.tsx` |
@@ -105,11 +105,13 @@ plus a `ComposedOnFondo` story that demos `--ds-color-pdf-surface-warm-a70` insi
 **Asistente** ships opaque shell `#060606` and mirrors the former Modal story
 (`layout: "fullscreen"` + page-padding decorator; harmless `parameters.backgrounds`).
 
-## Quick win (not a new build)
+## Quick win (not a new build) — ✅ done 2026-07-28
 
-`DetailSheet` (Ficha) exists in `packages/ui/src/patterns/detail-sheet/` but is
-not exported from `packages/ui/src/index.ts`. Exporting it is a docs/barrel fix,
-not a component build — do it independently of the (now closed) timeline gaps above.
+`DetailSheet` (Ficha) existed in `packages/ui/src/patterns/detail-sheet/` but was
+not exported from `packages/ui/src/index.ts`. Exported 2026-07-28 (see "Export
+`DetailSheet`" row in the post-baseline table below) — kept here as history, this
+is no longer an open item. Its own `knowledge/components/DetailSheet.md` +
+`DetailSheet.spec.md` were added 2026-08-07 (see the "Ficha" Gap table row above).
 
 ## Post-baseline: coverage & hardening (from eval 2026-07-22)
 
@@ -120,7 +122,7 @@ observed consumer need, not by the PDF.
 
 | Item | Type | Priority | Evidence | Notes |
 |---|---|:---:|---|---|
-| **@2× → fluid sizing** | Component hardening | **Done (partial) + 1 new gap found** | G1, G4, G5 (3/5 prompts) | See "2026-07-28 sizing pass" below — `ChartCard`/`MetricCard` ficha fixed and confirmed in a real re-run; kanban `TaskCard`'s empty-space finding wasn't actually fixed (the re-run agent overrode the card's own cap via a local `style` prop instead — a new, worse gap, see below); `Asistente` 774px deferred. |
+| **@2× → fluid sizing** | Component hardening | **Done (partial) + 1 new gap found** | G1, G4, G5 (3/5 prompts) | See "2026-07-28 sizing pass" below — `ChartCard`/`MetricCard` ficha fixed and confirmed in a real re-run; kanban `TaskCard`'s empty-space finding wasn't actually fixed (the re-run agent overrode the card's own cap via a local `style` prop instead — a new, worse gap, see below); `Asistente` 774px **done 2026-08-06** (**stale note removed** — this row said "deferred", superseded by the fidelity-pass entry that halved every raw-@2× value in `.ds-asistente*` and verified it in Storybook, see `fidelity-pass/next-steps.md`). |
 | **Pagination** | New component | **High** | G3 | No export; consumer had to hand-build a page bar with `Button`. Needed by any list/table. |
 | **DataTable: sort / filter / paginate** | Component feature | **High** | G3 | Display-only today; realistic tables need at least sort + paginate. |
 | **Modal / Dialog** | New component | ✅ Done (2026-08-07) | G6 | Resolved by feature `001-form-modal` — PDF v3 p.22 ("ALERT" § "Confirmación de acción") gave this gap a real spec. `Modal.tsx` ships the confirm/cancel variant only (title + text + 2 actions), with Esc + backdrop-click to close + `aria-modal`/`role="alertdialog"`. No full focus trap yet (not required by the PDF spec) — revisit if a future consumer need surfaces it. |
@@ -166,8 +168,10 @@ derive a cap from:
   defeating a shipped component's calibrated cap — distinct from §7, which assumes no cap exists)
   or a harder guard in `TaskCard` itself (e.g. not merging `width`/`maxWidth` from an incoming
   `style` prop).
-- **`Asistente` 774px** — deferred, per `next-steps.md`, to a second pass (biggest, most
-  design-risky of the four).
+- **`Asistente` 774px** — **done 2026-08-06** (**stale note removed** — previously said
+  "deferred to a second pass"). Every raw-@2× value in `.ds-asistente*` (shell, mic, attach-
+  plus, execute button + offsets, all 5 font-sizes, suggestions spacing) was halved and
+  verified in Storybook before commit — see `fidelity-pass/next-steps.md`, "Asistente" entry.
 
 Verified in Storybook (`ChartCard` Gallery/Line Chart stories, `MetricCard` Reporting-vs-Ficha
 story) at a 1600px viewport: charts cap at native resolution instead of growing with the

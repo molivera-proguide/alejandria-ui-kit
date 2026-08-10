@@ -68,6 +68,13 @@
       "storybook": "Alejandria/DataTable"
     },
     {
+      "id": "detail-sheet",
+      "name": "DetailSheet",
+      "path": "knowledge/components/DetailSheet.md",
+      "export": "packages/ui/src/patterns/detail-sheet/DetailSheet.tsx",
+      "storybook": "Alejandria/Patterns/DetailSheet"
+    },
+    {
       "id": "donut-chart-card",
       "name": "DonutChartCard",
       "path": "knowledge/components/DonutChartCard.md",
@@ -82,11 +89,53 @@
       "storybook": "Alejandria/Empty"
     },
     {
+      "id": "form-checkable",
+      "name": "FormCheckable",
+      "path": "knowledge/components/FormCheckable.md",
+      "export": "packages/ui/src/components/FormCheckable.tsx",
+      "storybook": "Alejandria/FormCheckable"
+    },
+    {
+      "id": "form-date-picker",
+      "name": "FormDatePicker",
+      "path": "knowledge/components/FormDatePicker.md",
+      "export": "packages/ui/src/components/FormDatePicker.tsx",
+      "storybook": "Alejandria/FormDatePicker"
+    },
+    {
+      "id": "form-file-upload",
+      "name": "FormFileUpload",
+      "path": "knowledge/components/FormFileUpload.md",
+      "export": "packages/ui/src/components/FormFileUpload.tsx",
+      "storybook": "Alejandria/FormFileUpload"
+    },
+    {
+      "id": "form-select",
+      "name": "FormSelect",
+      "path": "knowledge/components/FormSelect.md",
+      "export": "packages/ui/src/components/FormSelect.tsx",
+      "storybook": "Alejandria/FormSelect"
+    },
+    {
+      "id": "form-text-input",
+      "name": "FormTextInput",
+      "path": "knowledge/components/FormTextInput.md",
+      "export": "packages/ui/src/components/FormTextInput.tsx",
+      "storybook": "Alejandria/FormTextInput"
+    },
+    {
       "id": "investigation-card",
       "name": "InvestigationCard",
       "path": "knowledge/components/InvestigationCard.md",
       "export": "packages/ui/src/components/InvestigationCard.tsx",
       "storybook": "Alejandria/InvestigationCard"
+    },
+    {
+      "id": "linear-bar-chart-card",
+      "name": "LinearBarChartCard",
+      "path": "knowledge/components/LinearBarChartCard.md",
+      "export": "packages/ui/src/components/LinearBarChartCard.tsx",
+      "storybook": "Alejandria/LinearBarChartCard"
     },
     {
       "id": "line-chart-card",
@@ -101,6 +150,13 @@
       "path": "knowledge/components/MetricCard.md",
       "export": "packages/ui/src/components/MetricCard.tsx",
       "storybook": "Alejandria/MetricCard"
+    },
+    {
+      "id": "modal",
+      "name": "Modal",
+      "path": "knowledge/components/Modal.md",
+      "export": "packages/ui/src/components/Modal.tsx",
+      "storybook": "Alejandria/Modal"
     },
     {
       "id": "module-card",
@@ -366,6 +422,12 @@
       "source": "packages/ui/src/styles.css (.ds-table-wrap / .ds-table)"
     },
     {
+      "id": "detail-sheet-spec",
+      "name": "DetailSheet",
+      "path": "knowledge/specs/components/DetailSheet.spec.md",
+      "source": "packages/ui/src/patterns/detail-sheet/detail-sheet.css"
+    },
+    {
       "id": "donut-chart-card-spec",
       "name": "DonutChartCard",
       "path": "knowledge/specs/components/DonutChartCard.spec.md",
@@ -378,10 +440,46 @@
       "source": "packages/ui/src/styles.css (.ds-empty)"
     },
     {
+      "id": "form-checkable-spec",
+      "name": "FormCheckable",
+      "path": "knowledge/specs/components/FormCheckable.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-form-checkable)"
+    },
+    {
+      "id": "form-date-picker-spec",
+      "name": "FormDatePicker",
+      "path": "knowledge/specs/components/FormDatePicker.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-form-date)"
+    },
+    {
+      "id": "form-file-upload-spec",
+      "name": "FormFileUpload",
+      "path": "knowledge/specs/components/FormFileUpload.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-form-file)"
+    },
+    {
+      "id": "form-select-spec",
+      "name": "FormSelect",
+      "path": "knowledge/specs/components/FormSelect.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-form-select)"
+    },
+    {
+      "id": "form-text-input-spec",
+      "name": "FormTextInput",
+      "path": "knowledge/specs/components/FormTextInput.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-form-field)"
+    },
+    {
       "id": "investigation-card-spec",
       "name": "InvestigationCard",
       "path": "knowledge/specs/components/InvestigationCard.spec.md",
       "source": "packages/ui/src/styles.css (.ds-investigation-card)"
+    },
+    {
+      "id": "linear-bar-chart-card-spec",
+      "name": "LinearBarChartCard",
+      "path": "knowledge/specs/components/LinearBarChartCard.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-linear-bar-chart)"
     },
     {
       "id": "line-chart-card-spec",
@@ -394,6 +492,12 @@
       "name": "MetricCard",
       "path": "knowledge/specs/components/MetricCard.spec.md",
       "source": "packages/ui/src/styles.css (.ds-metric)"
+    },
+    {
+      "id": "modal-spec",
+      "name": "Modal",
+      "path": "knowledge/specs/components/Modal.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-modal)"
     },
     {
       "id": "module-card-spec",
