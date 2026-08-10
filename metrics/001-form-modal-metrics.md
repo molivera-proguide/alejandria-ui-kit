@@ -60,3 +60,12 @@
 - **Rework Ratio estimado**: (4 + 3) ÷ 9 = **0.78**
 
 🔴 Rework Ratio > 0.3 — señal esperada para esta feature en particular: gran parte del "retrabajo" no fue código mal escrito sino resolver gates de fidelidad visual contra un PDF que la propia sesión de `/sdd-refine` ya había marcado como parcialmente ambiguo (p.21) y una decisión de proceso (TDD sin framework de test) explícitamente fuera del control de la spec. No headers de contrato roto ni tests fallando — sin framework de test instalado, este ratio pesa más los ajustes de fidelidad/documentación que retrabajo de lógica.
+
+## Review — 2026-08-07
+- command_origin: sdd-review
+- resultado: APROBADO
+- criterios_sin_test: 6
+- criterios_sin_implementar: 0
+- gaps_ui: 0
+- hallazgos_e2e: 0
+- structural_issues: 3
