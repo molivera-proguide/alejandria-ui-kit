@@ -74,11 +74,16 @@ Exclude:
 - Renderiza un `<label>` que envuelve un `<input type="checkbox"|"radio">` nativo
   (visualmente oculto, `opacity: 0`) + un control visual (`.ds-form-checkable__control`) +
   el label y descripción opcional.
-- `type="checkbox"` (default): control cuadrado; seleccionado → fondo `#ffffff`, check-glyph
-  `#060606`.
-- `type="radio"`: control circular; seleccionado → fondo `#ffffff`, punto sólido `#060606`.
+- `type="checkbox"` (default): control cuadrado `7×7px`, check-glyph `5×4px`; seleccionado
+  → fondo `#ffffff`, check-glyph `#060606` (medido contra `design-reference.pdf` p.19,
+  corregido 2026-08-07 — era `17×17px`, ver Changelog).
+- `type="radio"`: control circular `⌀7px`, punto interior `⌀3.5px`; seleccionado → fondo
+  `#ffffff`, punto `#060606` (mismo fix y misma fecha que checkbox).
 - `type="switch"`: control tipo track/thumb; no seleccionado fondo `#606060` thumb
-  `#ffffff`; seleccionado fondo `#ffffff` thumb `#060606`.
+  `#ffffff`; seleccionado fondo `#ffffff` thumb `#060606`. **Único sub-tipo donde el
+  control se renderiza DESPUÉS del label**, pegado al borde derecho de la fila — checkbox
+  y radio van con el control ANTES del label. Track `16×8px`, thumb `⌀6px` (medido contra
+  `design-reference.pdf` p.19 vía `get_drawings()`, corregido 2026-08-07 — ver Changelog).
 - `description` (opcional) renderiza un `<span>` bajo el label — cubre "versión ... con
   bajada" del PDF.
 - Es un `<input>` nativo — foco, activación por teclado (`Espacio`) y toggling son
@@ -122,6 +127,9 @@ Exclude:
   un rol: "Este usuario solo podrá editar el contenido pero no aprobarlo").
 - Usar `FormCheckableGroup` con `title` en mayúsculas explícito (el CSS lo mayusculiza, pero
   mantener la fuente en Title/Sentence case en la prop mejora la legibilidad del código).
+- Usar `layout="horizontal"` cuando ninguna opción tenga `description` (PDF p.19: la
+  versión sin bajada va en fila); dejar el default `"vertical"` en cuanto alguna opción
+  tenga `description` — una bajada larga no entra en una fila junto a las demás.
 
 ---
 
@@ -144,7 +152,8 @@ import {
   type FormCheckableProps,
   type FormCheckableType,
   FormCheckableGroup,
-  type FormCheckableGroupProps
+  type FormCheckableGroupProps,
+  type FormCheckableGroupLayout
 } from "@alejandria/ui-kit";
 ```
 
@@ -155,6 +164,7 @@ Tipos exportados:
 - `FormCheckableType` — unión `"checkbox" | "radio" | "switch"`.
 - `FormCheckableGroup` — wrapper de agrupamiento visual.
 - `FormCheckableGroupProps` — props del wrapper.
+- `FormCheckableGroupLayout` — unión `"vertical" | "horizontal"` (agregado 2026-08-07).
 
 ---
 
@@ -171,11 +181,12 @@ Tipos exportados:
 
 ## FormCheckableGroup
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `title` | `string` | sí | Título del grupo (PDF: "Título grupo", ej. "ACCESO A MÓDULOS"). |
-| `children` | `ReactNode` | sí | Instancias de `FormCheckable`. |
-| `...props` | `HTMLAttributes<HTMLFieldSetElement>` | no | Atributos nativos del `<fieldset>`. |
+| Prop | Type | Default | Required | Description |
+|------|------|---------|----------|-------------|
+| `title` | `string` | — | sí | Título del grupo (PDF: "Título grupo", ej. "ACCESO A MÓDULOS"). |
+| `layout` | `FormCheckableGroupLayout` | `"vertical"` | no | `"horizontal"` pone las opciones en una sola fila (PDF p.19, grupo "TIPO DE USUARIO" sin bajada) — agregado 2026-08-07, ver Changelog. |
+| `children` | `ReactNode` | — | sí | Instancias de `FormCheckable`. |
+| `...props` | `HTMLAttributes<HTMLFieldSetElement>` | — | no | Atributos nativos del `<fieldset>`. |
 
 ---
 
@@ -345,6 +356,16 @@ contenedor padre.
 </FormCheckableGroup>
 ```
 
+## Radio simple, agrupado en fila horizontal
+
+```tsx
+<FormCheckableGroup title="TIPO DE USUARIO" layout="horizontal">
+  <FormCheckable type="radio" name="tipo-usuario" label="Admin" defaultChecked />
+  <FormCheckable type="radio" name="tipo-usuario" label="Editor" />
+  <FormCheckable type="radio" name="tipo-usuario" label="General" />
+</FormCheckableGroup>
+```
+
 ## Switch
 
 ```tsx
@@ -380,8 +401,10 @@ PDF p.19 "ACCESO A MÓDULOS" — radios agrupados con bajada, título de grupo.
 | `--ds-color-pdf-form-muted` (`#8d8d8d`) | color | Título de grupo |
 | `--ds-font-body` | typography | Label y descripción (Montserrat) |
 | `--ds-font-mono` | typography | Título de grupo (Source Code Light) |
-| `--ds-size-icon-md` | size | Dimensión del control checkbox/radio |
-| `--ds-size-switch-track-w` / `-h` | size | Dimensiones del track del switch |
+| `7px` (literal, calibrado ÷2) | size | Control checkbox/radio — **no** usa `--ds-size-icon-md` (17px, token de `.ds-button__icon`/`.ds-field__icon`, otra familia) desde el fix del 2026-08-07 |
+| `--ds-space-6` (`24px`) | size | Gap entre opciones en `layout="horizontal"` |
+| `16px × 8px` (literal, calibrado ÷2) | size | Track del switch — **no** usa `--ds-size-switch-track-w/-h` (52×28px, token del componente `Switch` de otra familia/escala) desde el fix del 2026-08-07 |
+| `6px` (literal, calibrado ÷2) | size | Diámetro del thumb del switch — **no** usa `--ds-size-icon-xl` (20px) desde el mismo fix |
 
 ---
 
@@ -453,3 +476,6 @@ fieldset.ds-form-checkable-group
 |----------|--------|
 | 0.1.0 | Implementación inicial (`checkbox`/`radio`/`switch`, `description` opcional, `FormCheckableGroup`), feature `001-form-modal`. |
 | 0.1.0 | Bug de CSS encontrado y corregido antes de commit (2026-08-07): el estado `:checked` del switch heredaba la regla `::after` (punto oscuro) de checkbox/radio, pintando un punto dentro del thumb que el PDF no muestra — corregido acotando esa regla a `--checkbox`/`--radio` únicamente. Confirmado sin bugs adicionales en el sweep PyMuPDF post-review de p.19 (checkbox/radio/switch verificados pixel-a-pixel). |
+| 0.1.0 | **Bug real de posición y tamaño del switch, encontrado 2026-08-07 (misma fecha, sesión posterior) al revisar la screen `Carga de Formulario`.** El sweep anterior verificó colores checked/unchecked pixel-a-pixel pero no la geometría (posición del control, tamaño del track/thumb) — el switch renderizaba con el control ANTES del label (heredado del mismo orden que checkbox/radio) y con el tamaño del componente `Switch` no relacionado (track 52×28px, thumb 20px). Medido con `get_drawings()` contra `design-reference.pdf` p.19: el control real va DESPUÉS del label (pegado al borde derecho de la fila), track `32.58×15.89pt @2×` → `16×8px`, thumb `⌀11.33pt` → `⌀6px`. Corregido: reordenado el JSX (copy antes de control solo para `type="switch"`), selectores `:checked`/`:focus-visible` migrados de `+` a `~` (ya no son hermanos adyacentes), tamaños recalibrados con valores propios (no tokens compartidos con `Switch`). |
+| 0.1.0 | **`FormCheckableGroup` ganó `layout="vertical" \| "horizontal"` (2026-08-07, mismo repaso de la screen).** El PDF p.19 muestra el grupo "TIPO DE USUARIO" sin bajada en una sola fila — `FormCheckableGroup` no tenía forma de expresar eso, solo apilaba vertical siempre. Agregada la prop (default `"vertical"`, no rompe usos existentes) + clase `.ds-form-checkable-group__items--horizontal` (`display: flex; flex-wrap: wrap; gap: var(--ds-space-6)`, gap medido vía `get_drawings()`/`get_text()` — pitch glyph-a-glyph ~56.5pt @2× entre opciones, dentro del rango de `--ds-space-6`). Story nueva `GrupoHorizontal` en `FormCheckable.stories.tsx`. |
+| 0.1.0 | **Bug real de tamaño en checkbox/radio, encontrado 2026-08-07 (mismo repaso, a pedido de Luna).** El control checkbox/radio usaba `--ds-size-icon-md` (17px) — nunca se había remedido su geometría contra el PDF, solo los colores. Medido con `get_drawings()` en 4 filas distintas de p.19 (radio horizontal, radio vertical, 2 grupos de checkbox): las 4 dieron el mismo rect `13.58×13.58pt @2×` → `⌀7px` — ~2.4× más chico que lo que había. Como el token es compartido con `.ds-button__icon`/`.ds-field__icon` (familias no relacionadas), no se tocó el token — se usa un literal local solo en `FormCheckable`. Recalibrados en la misma pasada, por escalar junto al control: el check-glyph del checkbox (`10×8px` → `5×4px`) y el punto interior del radio (`8×8px` → `3.5×3.5px`). |

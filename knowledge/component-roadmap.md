@@ -2,8 +2,8 @@
 id: component-roadmap
 name: Component Build Roadmap (from design timeline v2)
 status: active
-last_reviewed: 2026-07-22
-source: knowledge/references/design-reference.pdf (v2, p.2 LÍNEA DE TIEMPO)
+last_reviewed: 2026-08-07
+source: "knowledge/references/design-reference.pdf (v2, p.2 LÍNEA DE TIEMPO) — screens triage section additionally sourced from Alejandria - Agosto 2026.pdf (kept external by decision, not committed to the repo — see Screens triage section)"
 supersedes_note: >
   This tracks WHICH PDF-defined components still need to be built in code. It is
   distinct from knowledge/roadmap.md (the knowledge-architecture roadmap, M1-M6)
@@ -177,3 +177,95 @@ Verified in Storybook (`ChartCard` Gallery/Line Chart stories, `MetricCard` Repo
 story) at a 1600px viewport: charts cap at native resolution instead of growing with the
 viewport; the ficha tile is visibly narrower than the reporting tile now. Real-browser
 re-check still recommended before re-scoring the golden set (see eval loop discipline).
+
+## Screens triage (from "Alejandría - Agosto 2026.pdf", 2026-08-07)
+
+**New source, distinct from `design-reference.pdf`.** Luna shared
+`Alejandria - Agosto 2026.pdf` (her Downloads). Same @2× `1920×1080` canvas convention
+as `design-reference.pdf`. PyMuPDF reports 30 pages, but **only 24 are real screens** —
+p.25–30 are empty Illustrator artboards (0 images, 0 drawings, 0 text each), not screens.
+
+**Decided 2026-08-07: this PDF stays out of the repo, by design, not "not yet".** It's
+107.7MB, almost entirely embedded raster/3D-illustration assets (e.g. p.1's decorative
+splash) with near-zero information density relevant to component specs — and it exceeds
+GitHub's 100MB hard per-file push limit (this repo has no Git LFS configured). Rather
+than add LFS infra for a single large internal-only reference, the source PDF is treated
+like a Figma file: an external reference Luna keeps locally, cited by name/page in this
+doc. What's committed instead is exactly what matters — this triage table, the gaps it
+found, and (when a specific screen gets built) its own `knowledge/screens/*.md` +
+fidelity-checked component. See `DECISIONS.md` (2026-08-07) for the reasoning and the
+general rule this sets for future large reference PDFs.
+
+Unlike `design-reference.pdf` (isolated component specs), this PDF shows **composed,
+full-page screens** — the layer above individual components: how they combine into
+real product surfaces. This is the first look at that layer for this project (today
+only `knowledge/screens/operations-console.md` exists).
+
+### Triage table (24 real screens, p.1–24)
+
+Grupo **A** = ensamblable hoy con componentes ya construidos y fidelity-checked.
+Grupo **B** = el componente principal ya existe, pero falta una pieza chica (nueva).
+Grupo **C** = necesita algo que un design system no debería poseer (mapa real,
+canvas de grafo interactivo) — ingeniería de aplicación, no un componente.
+
+| p. | Pantalla | Grupo | Nota |
+|---|---|:---:|---|
+| 1 | Welcome / splash | A | Ilustración 3D decorativa suelta — asset estático de una sola vez, no requiere componente |
+| 2 | Login | A | `patterns/login/Login.tsx` ya construido y fidelity-checked (p.7 de `design-reference.pdf`) — el grid de puntos es el fondo decorativo del propio patrón, no un teclado numérico |
+| 3 | Asistente IA (estado vacío) | A | Coincide con el shell estático de `Asistente.tsx` ya construido |
+| 4 | Dashboard módulos | A | Grid de `ModuleCard` ×8 + topbar |
+| 5 | Home (eventos + KPIs) | A | `Asistente` input + `ProgressRing` gauges; la tarjeta de "próximo evento" es nueva pero trivial |
+| 6 | Tareas pendientes (grid) | A | Tarjeta resumen simple, cercana a `Card`/`InvestigationCard` |
+| 7 | Tareas — master-detail | A | El panel de detalle es casi 1:1 `DetailSheet` |
+| 8 | Tareas — kanban | A* | `TaskCard` ya tiene variante kanban, pero tiene la regresión de sizing sin cerrar de la "2026-07-28 sizing pass" arriba — cerrar antes de mostrar esta pantalla como lista |
+| 9 | Tareas finalizadas (grid) | A | Mismo componente que p.6, otro filtro |
+| 10 | Investigación Motochorros — grafo (parcial) | C | Canvas de nodos/conectores con fotos de sospechosos, link-analysis |
+| 11 | Investigación Motochorros — grafo (completo) | C | Mismo que p.10, otro estado |
+| 12 | Reportes | A | Casi 100% componentes de charts existentes (`BarChartCard`, `LineChartCard`, `ProgressRing`, tiles KPI) |
+| 13 | Nuevo workflow agentes | C | Editor de grafo de nodos (drag, conectores bezier) — mismo paradigma visual que p.10/11, propósito distinto |
+| 14 | Predicción / Pronóstico | C (shell) | Mapa real de fondo + panel flotante reusable (viento, barras estacionales, log de decisiones) |
+| 15 | Mapa — recursos "Instalación de acogida" | C (shell) | El panel flotante es prácticamente `DetailSheet` de nuevo |
+| 16 | Mapa — alerta crítica | C (shell) | Mismo patrón que p.15 |
+| 17 | Mapa — evacuación en vivo (completa) | C (shell) | Panel con `ProgressRing` ×4, carrusel de video, log de decisiones — todo reusable salvo el mapa |
+| 18 | Mapa — evacuación (variante overlay) | C | Mismo que p.17, otro estado |
+| 19 | Carga de formulario | **A** ⭐ ✅ | **Construida 2026-08-07** — `knowledge/screens/carga-de-formulario.md` + `packages/ui/src/screens/carga-de-formulario/`, prueba de concepto de la capa `knowledge/screens/*`. Reencuadrada como field gallery (ver el doc) en vez de forzar múltiples desplegables abiertos a la vez. |
+| 20 | Modal + toast + acordeón | B | `Modal` listo; toast ("se creó una tarea con éxito") y acordeón ("desplegable") son gaps nuevos y chicos |
+| 21 | Asistente IA — thread de chat | B | Shell existe; el thread scrolleable está fuera de scope desde que se promovió `Asistente` (ver "Build order" arriba) |
+| 22 | Misión con tabs + Asistente embebido | B/C | Gaps: `Tabs` (no existe) + thread de chat; el contenido de métricas es reusable |
+| 23 | Usuarios creados (tabla) | A | `DataTable` existe; sort/filter ya está trackeado como gap High priority en la tabla post-baseline arriba |
+| 24 | Mapa full-bleed + log expandido | C (shell) | El panel de log es una lista simple reusable; el mapa no |
+
+### Gaps nuevos encontrados (no estaban en ninguna tabla de arriba)
+
+Componentes chicos, sin dependencia de mapa/canvas — candidatos baratos si se decide ampliar el kit:
+
+- **Toast / Snackbar** — p.20 ("Se creó una tarea con éxito"). No existe hoy; `AlertBanner` es una tarjeta inline no descartable, no un toast.
+- **Acordeón / Collapsible** — p.20 ("DESPLEGABLE" ×4). No existe hoy.
+- **Tabs / TabNav** — p.22 ("Misión | Asistente IA | Métricas | Resumen ejecutivo | Resumen completo"). No existe hoy.
+- **Carrusel de thumbnails de video/imagen** — p.17/18/22 ("IMÁGENES EN VIVO"). No existe hoy, esfuerzo bajo-medio.
+
+Gaps grandes, fuera del scope típico de un design system:
+
+- **Mapa real** — 7 de 24 pantallas (14–18, 22, 24) lo necesitan. Requiere una librería de mapas (Mapbox/Leaflet/etc.) + estado en vivo — es una integración de aplicación, no un componente presentacional.
+- **Canvas de grafo de nodos** — aparece 2 veces con propósitos distintos (link-analysis en p.10/11, workflow builder en p.13) pero el mismo paradigma visual (nodos + conectores + popup). Si algún día se justifica construirlo, evaluarlo como una sola pieza base compartida, no dos — pero es un desarrollo grande (drag, conectores bezier, zoom/pan), no "ensamblar átomos existentes".
+
+Gaps ya trackeados en otra tabla de este mismo archivo, solo confirmados (no nuevos) por esta pantalla:
+
+- **`DataTable` sort/filter/paginate** (p.23) — ya en la tabla "Post-baseline" arriba, High priority.
+- **`TaskCard` kanban — regresión de sizing sin cerrar** (p.8) — ya en la "2026-07-28 sizing pass" arriba.
+
+### Recomendación (sin accionar todavía — a la espera de decisión)
+
+No es "adentro del kit" *o* "en un repo consumidor" para las 24 por igual — depende del grupo:
+
+- **Grupo A y B** → construir como `knowledge/screens/*` + composición en Storybook, mismo
+  workflow de fidelidad ya establecido en este repo (PyMuPDF, `/sdd-refine`→`/sdd-implement`).
+  **p.19 ya se construyó** (2026-08-07, ver fila arriba) como prueba de concepto — cero gaps,
+  usa exactamente los 6 componentes que se construyeron y fidelity-pasaron esta semana. El
+  resto del Grupo A/B queda pendiente de un draft + `/sdd-refine` propio (hay ambigüedades
+  reales por resolver por pantalla, no son todas tan directas como la #19).
+- **Grupo C** → no intentar fidelidad completa adentro del kit. Extraer primero cualquier
+  pieza presentacional reusable del panel flotante (la mayoría ya existe, como se ve en la
+  tabla) vía el pipeline normal de este archivo; la pantalla completa (con mapa/grafo reales
+  y estado en vivo) va en una app consumidora (`apps/web` o un repo de prueba), no en
+  Storybook con datos mockeados.

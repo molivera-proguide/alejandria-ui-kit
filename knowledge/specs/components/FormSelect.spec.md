@@ -9,15 +9,24 @@
 
 Measured 2026-08-07. Post-review PyMuPDF sweep on p.18 (`get_text()` span colors) found and
 fixed 1 real delta (selected-option text color) — see Deltas below; base field styles
-(shared with `FormTextInput`) had no deltas.
+(shared with `FormTextInput`) had no deltas **(that pass only checked color, not geometry —
+see 2026-08-10 below and `FormTextInput.spec.md`, which this component inherits every base
+`.ds-form-field__control`/`__label` fix from — control height, label inset, active-label
+position, divisor).**
+
+**2026-08-10 — geometry-only re-pass, own (non-shared) elements:**
 
 ## Dimensions
 | Property | Value | Unit | Source | Delta vs PDF/doc |
 |----------|------:|------|--------|------------------|
 | border-width | 0.75 | px | styles.css | hairline — not scaled |
 | menu max-height | 160 | px | styles.css | not PDF-measured — scroll container cap |
-| option padding | 10px 11px | px | styles.css | not independently PDF-measured |
-| option check icon | 10×8 | px | styles.css | measured check-glyph stroke bbox via `get_drawings()` |
+| option padding | 10px 5px | px | styles.css | horizontal calibrated ÷2 — same ~4.5px inset as the shared `.ds-form-field__control` (ver `FormTextInput.spec.md`), era `11px` |
+| option check icon | 7×5 | px | styles.css | calibrated ÷2 — 2 paths superpuestos junto a "Admin" en p.18, bbox ~13.76×10.03pt @2× ≈ 6.9×5px. Era `10×8px`, medido contra la página equivocada (nunca se había vuelto a medir específicamente en esta página). |
+| chevron | 8×4.67 (border-trick: `border-left/right: 4px`, `border-top: 5px`) | px | styles.css (`.ds-form-field__chevron`, shared) | calibrated ÷2 — 3 instancias medidas (2 triggers de p.18/p.21 + 1 dropdown), todas 14.95×9.56pt @2× ≈ 7.5×4.8px. Era ~10×6px sin medir. |
+| chevron inset (right) | 6 | px | styles.css | calibrated ÷2 — inset borde-a-chevron ~11.58pt @2× ≈ 5.79px. Era `11px` sin medir. |
+| menu offset (top) | 0 (`top: 100%`) | px | styles.css | calibrated — el panel de FormDatePicker (misma familia de dropdown) mide un gap de ~0.14pt @2× entre trigger y panel en p.21, es decir contiguos. Era `calc(100% + 2px)` sin medir. |
+| menu offset (left/right) | 0 | px | styles.css | calibrated — panel y trigger comparten exactamente el mismo x0/x1 en p.21. Era `-1px`/`-1px` sin medir. |
 
 ## Color
 | Role | Value | Matching --ds-* token? | Source | Delta |
@@ -54,3 +63,12 @@ Trigger/label typography is identical to `FormTextInput`'s `default` variant (sh
 - Auto-centering on open (`scrollIntoView({ block: "center" })`) is implemented but its
   exact PDF-measured scroll offset was not independently re-verified beyond the qualitative
   "se centra en esa opción" wording — no numeric PDF value exists to compare against.
+- **The open-menu's own separate illustration on p.18 sits ~9.5px below the closed-trigger
+  illustration** (two distinct static mockups stacked for documentation, same pattern as the
+  input's own static/active example pairs) — NOT used as evidence for the menu's real offset.
+  The cleaner, unambiguous 0-gap/0-offset measurement came from FormDatePicker's p.21 (trigger
+  and panel drawn as one seamless box), which this component's dropdown shares the same
+  "flyout panel" convention with. Left the interaction interpretation from the 2026-08-07 pass
+  untouched (`"el desplegable se superpone al input"` → panel appended directly below/flush
+  with the trigger, not literally covering it from the same top) — only the numeric offset was
+  wrong, not that interpretation.

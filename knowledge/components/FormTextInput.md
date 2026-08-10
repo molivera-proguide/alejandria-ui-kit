@@ -199,10 +199,11 @@ formularios genéricos (DNI, NOMBRE, DESCRIPCIÓN).
 | State | Description |
 |--------|-------------|
 | Default (estático) | Sin foco, sin valor. Label a tamaño completo, centrado verticalmente. |
-| Activo | Con foco o con valor (`:not(:placeholder-shown)`). Label achicado, arriba (`top: 8px`, `font-size: 5px`). Borde `#ffffff`. |
+| Activo (una línea) | Con foco o con valor (`:not(:placeholder-shown)`). Label achicado (`font-size: 5px`) y **en línea con el valor** — sigue centrado verticalmente, no sube arriba — seguido de un divisor vertical (`border-right`) antes del texto. Borde `#ffffff`. Corregido 2026-08-10: antes el label subía arriba (`top: 8px`), un bug de geometría real (ver Known Limitations / spec). |
+| Activo (multiline) | Igual mecanismo de achicado, pero el label queda **siempre arriba-izquierda** (nunca centrado, ni en estático ni en activo) — el párrafo necesita todo el ancho para wrappear, así que no hay divisor en línea. |
 | Error | `error` con contenido. Borde `#ff0404`, mensaje visible bajo el control. |
 | Disabled | `opacity: 0.58`, `cursor: not-allowed` en control e input/textarea. |
-| Multiline | `multiline: true`. `<textarea>` con `min-height: 68px`, `resize: vertical`. |
+| Multiline | `multiline: true`. `<textarea>` con `min-height: 100%` dentro de un control de `min-height: 72px`, `resize: vertical`. |
 
 ---
 
@@ -422,8 +423,12 @@ div.ds-form-field[.ds-form-field--login][.ds-form-field--invalid][.ds-form-field
 - Sin lógica de validación — `error` es 100% visual, controlado por el consumidor.
 - El label flotante depende de `placeholder=" "` no vacío; un consumidor que pase
   `placeholder=""` rompe la detección CSS.
-- `min-height: 44px` del control y `opacity: 0.58` de `disabled` no están medidos contra el
-  PDF (que no cubre esos casos) — ver `DECISIONS.md` 2026-08-07.
+- El divisor entre label activo y valor (una línea) usa un `gap` de layout fijo
+  (`--ds-space-2`, 8px) en vez de despejar exactamente el ancho real del label — el PDF solo
+  da un offset combinado por ejemplo, no permite despejar "ancho del label" + "ancho del
+  divisor" + "gap" por separado (ver `.spec.md` § Deltas).
+- `opacity: 0.58` de `disabled` no está medido contra el PDF (que no cubre ese caso) — ver
+  `DECISIONS.md` 2026-08-07.
 - Sin tests unitarios ni de integración (sin framework de test instalado en el repo).
 
 ---
@@ -440,4 +445,5 @@ div.ds-form-field[.ds-form-field--login][.ds-form-field--invalid][.ds-form-field
 
 | Version | Change |
 |----------|--------|
-| 0.1.0 | Implementación inicial (`variant="login"|"default"`, label flotante CSS-only, `error`/`disabled`), feature `001-form-modal`. Fidelity pass verificado contra PDF v3 p.17–18 vía PyMuPDF (`knowledge/fidelity-pass/next-steps.md`, 2026-08-07) — sin bugs encontrados. |
+| 0.1.0 | Implementación inicial (`variant="login"|"default"`, label flotante CSS-only, `error`/`disabled`), feature `001-form-modal`. Fidelity pass verificado contra PDF v3 p.17–18 vía PyMuPDF (`knowledge/fidelity-pass/next-steps.md`, 2026-08-07) — sin bugs encontrados **(solo color, esa pasada no midió geometría)**. |
+| 0.1.1 | **2026-08-10 — fidelity pass de geometría** (`knowledge/fidelity-pass/next-steps.md`): el label activo (una línea) subía arriba en vez de quedarse centrado en línea con el valor + divisor; el label del textarea se centraba en estático en vez de quedar siempre arriba; `control min-height` (44px) y el inset label/texto (11px) eran valores inventados, ~2-3× oversized contra lo medido. Reescrito `.ds-form-field__control` a `display:flex` (antes `position:relative` con hijos absolutos). |

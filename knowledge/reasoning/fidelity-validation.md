@@ -27,6 +27,24 @@ Related: [`visual-grammar.md`](../guidelines/visual-grammar.md) (how to build), 
 2. Extract from your implementation (or proposed CSS): `font-size`, `padding`, `gap`, `margin`, `min-width`/`min-height`/`width`/`height`, colors (hex / `var(--ds-*)`), `border-width`, `border-radius`, `letter-spacing`, `font-weight`, `font-family`.
 3. For each property present in the spec tables (Dimensions, Color, Typography, Spacing, Variants), compare to the **Value** column (those values are already at display scale for PDF-context blocks — see MetricCard/ModuleCard headers).
 4. Record **deltas** (see [report format](#how-to-report-deltas)). A delta is expected only if already listed under the spec’s “Deltas & open questions”; new silent deltas are failures.
+5. **Geometry is a separate axis from color — checking one does not check the other.**
+   `FormCheckable`'s switch (control before the label instead of after, track 3.4× oversized)
+   and every one of `FormTextInput`/`FormSelect`/`FormFileUpload`/`FormDatePicker`/`Modal`'s
+   2026-08-10 bugs shipped through a prior pass that had verified color/font-size only and
+   recorded it as "fidelity-passed" — geometry was never independently re-measured. A pass
+   that only diffed `getComputedStyle().color`/`font-size` has not verified position or size,
+   even if it says "pixel-for-pixel." Explicitly measure and diff:
+   - **Position of each element relative to its siblings** — which one is visually first,
+     is it inline or does it wrap to its own row, is it centered/top-anchored/right-aligned.
+     Do not infer this from color matching.
+   - **Absolute size of any control/track/thumb/icon reused from a different component
+     family's token** (`--ds-size-*` shared with `Button`/`Switch`/`TextField`, etc.) — these
+     are the highest-risk values, since a wrong-family token still "looks like a real
+     design-system value" while being 2-3× off for this context.
+   - **State-transition geometry** — if the element has more than one visual state, diff the
+     reference's own examples of each state directly (see
+     [visual-analysis-protocol.md — PASS 9](../visual-analysis-protocol.md#pass-9--interaction-analysis))
+     instead of assuming a familiar animation pattern (floating label, etc.) from one frame.
 
 **Exemplar targets (do not invent others):**
 
@@ -91,6 +109,7 @@ Date / agent:
 
 [ ] Spec file opened (or §4 path if none)
 [ ] Spec check: each authored font-size / padding / gap / color / dimension compared; deltas listed
+[ ] Geometry check run as its own pass, not inferred from the color check: sibling order/position verified; any control/icon/track sized from a shared cross-family token re-measured against this context; multi-state elements diffed across the reference's own state examples (§1.5)
 [ ] Scale check: PDF absolutes are display (÷2); no stacked ÷2; hairlines/rem untouched; correct Metric appearance
 [ ] Token check: no needless hardcodes duplicating --ds-*
 [ ] Reuse check: pdf/ficha/reporting variants used instead of local overrides

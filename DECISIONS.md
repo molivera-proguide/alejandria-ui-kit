@@ -263,3 +263,92 @@ proponer trabajo (regla de `CLAUDE.md`: "consultá PRIMERO `graph/domain.yaml`"/
 reciba información incorrecta sobre qué está realmente pendiente.
 **Artefactos modificados:** `knowledge/component-roadmap.md`
 **Decidido por:** Luna
+
+---
+
+## 2026-08-07 PDFs de referencia grandes: no se commitean al repo por defecto
+
+**feature_id:** — (decisión de infraestructura/proceso, sin feature asociada)
+**command_origin:** conversación directa — Luna preguntó si estamos empaquetando el PDF
+para consumidores, y de ahí surgió qué hacer con el PDF nuevo de pantallas
+("Alejandria - Agosto 2026.pdf", 107.7MB) antes de seguir con la triage.
+**status:** accepted
+**Gap o motivo:** verificando la pregunta de Luna, confirmé que el mecanismo de
+empaquetado ya excluye correctamente `knowledge/references/design-reference.pdf` del
+tarball publicado (`scripts/copy-knowledge.mjs`, `EXCLUDE = ["references/design-reference.pdf"]`)
+y que `knowledge/consumer/AGENTS.template.md` (el doc que sí viaja al consumidor) ya
+declara ese PDF como "internal/maintainer... not available or needed" del lado del
+consumidor — la arquitectura que Luna esperaba ya estaba implementada. Pero el PDF nuevo
+de pantallas (107.7MB) trajo un problema distinto: excede el límite duro de GitHub de
+100MB por archivo en pushes normales de git, y este repo no tiene Git LFS configurado
+(`.gitattributes` no tiene reglas para `*.pdf`).
+**Alternativas consideradas:** (1) configurar Git LFS para `*.pdf` (y migrar también
+`design-reference.pdf`, 65MB, a LFS por consistencia); (2) comprimir/rasterizar el PDF
+nuevo por debajo de 100MB, sacando las ilustraciones 3D decorativas pesadas (ej. el
+splash de p.1) que no aportan nada a las specs de componentes.
+**Por qué se descartaron:** Luna eligió explícitamente no commitear el PDF crudo en
+absoluto — (1) y (2) suman trabajo/infraestructura (LFS es una dependencia nueva que
+cualquiera que clone el repo necesita tener configurada; comprimir pierde fidelidad
+vectorial para passes futuros) para un archivo que, por su propia definición, es de uso
+interno único (extraer specs una vez, no consultarlo en vivo después).
+**Decisión tomada:** el PDF de pantallas queda fuera del repo, tratado como una
+referencia externa (como un archivo de Figma) que Luna mantiene en su Downloads/Drive,
+citado por nombre y página en `knowledge/component-roadmap.md`. Lo que se commitea es lo
+que efectivamente importa: la tabla de triage, los gaps que encontró, y — cuando se
+construya una pantalla puntual — su propio `knowledge/screens/*.md` + el componente ya
+fidelity-checked. **Regla general hacia adelante:** cualquier PDF de referencia grande
+futuro sigue el mismo criterio por defecto — no se commitea al repo salvo decisión
+explícita en contrario (ej. si se necesita reverificación pixel-a-pixel recurrente, ahí
+sí evaluar Git LFS).
+**Motivo:** consistencia con la arquitectura de empaquetado ya existente (el PDF nunca es
+parte de lo que un consumidor necesita) y con el límite técnico real de GitHub (100MB),
+sin sumar infraestructura (LFS) para un caso de uso de una sola vez.
+**Artefactos modificados:** `knowledge/component-roadmap.md` (nota de la sección "Screens
+triage" actualizada de "not yet copied" a la decisión final)
+**Decidido por:** Luna
+
+---
+
+## 2026-08-07 Primera screen (`Carga de Formulario`, p.19): reencuadrada como field
+gallery, no como port 1:1 del PDF
+
+**feature_id:** — (prueba de concepto de la capa `knowledge/screens/*`, sin feature SDD
+asociada — construida directo, sin `/sdd-refine`, porque no había ninguna ambigüedad que
+resolver: los 6 componentes que usa ya estaban spec'ados y fidelity-checked)
+**command_origin:** conversación directa
+**status:** accepted
+**Gap o motivo:** la página 19 del PDF de pantallas muestra el mismo campo semántico con
+más de una representación de UI a la vez (ej. "tipo de usuario" como `FormSelect` Y como
+grupo de radios, dos veces, con y sin bajada; "acceso a módulos" como checkbox Y como
+switch) más varios desplegables (`FormSelect` ×2, `FormDatePicker`) abiertos
+simultáneamente. Portarlo literal pixel-a-pixel habría significado forzar múltiples
+overlays `position: absolute` abiertos a la vez en una grilla de 3 columnas angostas —
+algo que ninguno de estos componentes hace en un estado de reposo real (todos abren por
+click, uno a la vez).
+**Alternativas consideradas:** (1) reproducir literalmente todos los desplegables abiertos
+a la vez, aceptando que se superpongan/rompan visualmente; (2) simplificar a un único
+formulario de producto hipotético ("crear usuario"), usando cada componente una sola vez y
+descartando la duplicación de campos.
+**Por qué se descartaron:** (1) no es un estado real de ningún componente — mostrarlo así
+no documentaría cómo se ve la pantalla en reposo, documentaría un bug de layout inventado.
+(2) habría perdido valor de referencia real: la duplicación intencional (select vs. radio,
+checkbox vs. switch, con/sin bajada) es exactamente lo que hace útil a esta pantalla como
+"catálogo en contexto" de las variantes de `FormCheckable`/`FormSelect` — inventar un
+formulario "más limpio" habría sido más una interpretación mía que una reproducción fiel
+del material fuente.
+**Decisión tomada:** se reprodujo la misma variedad de campos que muestra la página 19,
+pero cada uno en su estado de reposo (cerrado, con valor visible) en vez de forzar
+aperturas simultáneas — documentado explícitamente en
+`knowledge/screens/carga-de-formulario.md` § "Not a literal 1:1 port" para que quede claro
+que es una decisión de composición, no un error de fidelidad. De paso quedó establecida la
+convención de carpeta para esta capa nueva: `packages/ui/src/screens/<nombre>/` +
+`knowledge/screens/<nombre>.md`, ya que hasta hoy la única screen (`Operations Console`)
+vivía ad-hoc dentro de `components/Components.stories.tsx`.
+**Motivo:** coherencia con el principio general del proyecto ("prefer omission over
+invention", `design-principles.md`) aplicado a este caso puntual: no inventar un estado
+visual que el componente no tiene, y no inventar un formulario de producto que el material
+fuente no pedía.
+**Artefactos modificados:** `packages/ui/src/screens/carga-de-formulario/{CargaDeFormulario.stories.tsx,carga-de-formulario.css}` (nuevos);
+`knowledge/screens/carga-de-formulario.md` (nuevo); `knowledge/design-system-manifest.json`;
+`knowledge/index.md`; `knowledge/component-roadmap.md`
+**Decidido por:** Luna

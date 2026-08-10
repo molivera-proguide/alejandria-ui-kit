@@ -151,8 +151,9 @@ Screens are **fullscreen page compositions** in Storybook.
 | Screen | Doc | Storybook |
 |--------|-----|-----------|
 | Operations Console | [operations-console.md](./screens/operations-console.md) | `Alejandria/Overview/OperationsConsole` |
+| Carga de Formulario | [carga-de-formulario.md](./screens/carga-de-formulario.md) | `Alejandria/Screens/CargaDeFormulario` |
 
-No other Storybook screens exist today. The following are **not** documented because they have no Storybook screen:
+The following are **not** documented because they have no Storybook screen:
 
 - Login
 - Ficha (detail sheet)

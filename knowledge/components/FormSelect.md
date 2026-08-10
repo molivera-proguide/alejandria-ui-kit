@@ -302,8 +302,8 @@ Sin media queries propias. El desplegable usa `max-height: 160px` con scroll int
 
 ## Icons
 
-- Checkmark SVG interno (10×8px display) marca la opción seleccionada — no configurable
-  vía props.
+- Checkmark SVG interno (7×5px display, calibrado 2026-08-10 contra p.18) marca la opción
+  seleccionada — no configurable vía props.
 
 ## Localization
 
@@ -438,3 +438,4 @@ div.ds-form-field.ds-form-select[.ds-form-field--invalid][.ds-form-field--disabl
 |----------|--------|
 | 0.1.0 | Implementación inicial (listbox custom, overlay, single/multiselect, auto-centrado), feature `001-form-modal`. |
 | 0.1.0 | Fidelity pass 2026-08-07 (sweep post-review): corregido 1 bug real — el texto de la opción seleccionada se atenuaba a `--ds-color-pdf-form-muted`; el PDF (`get_text()`) muestra el texto siempre `#ffffff`, sin dimming, y la selección se marca solo con un checkmark SVG junto a la opción (`get_drawings()`). |
+| 0.1.1 | Fidelity pass de geometría 2026-08-10: chevron y checkmark ~1.4-1.6× oversized sin medir contra esta página específica, inset horizontal de las opciones (11px→5px) y offset del menú (`calc(100% + 2px)`/`-1px`→`top:100%`/`0`) invented/unmeasured. Hereda además los fixes de `.ds-form-field__control`/`__label` de `FormTextInput` (altura del trigger, inset del label, label activo ya no sube arriba). |

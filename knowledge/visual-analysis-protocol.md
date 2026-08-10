@@ -36,6 +36,9 @@ The design reference is the source of truth.
 - Never normalize spacing.
 - Never improve typography.
 - Never "clean up" the interface.
+- Never assume an element animates/transitions the way a familiar UI pattern would (floating
+  labels, accordions, etc.) just because a single static frame resembles that pattern — see
+  PASS 9.
 
 Every visible decision should be considered intentional.
 
@@ -237,6 +240,38 @@ Possible interaction cues:
 - Status indicators
 
 Never invent interactions.
+
+### Inferring animation/state transitions from static references
+
+A static PDF cannot show motion directly, but most pages that need one show the *same*
+element more than once — an "estático"/empty example next to an "activo"/focused/filled one,
+or a closed control next to an open one. That pair is the transition spec. Do not guess the
+transition from what a single frame reminds you of.
+
+Method:
+
+1. Find every example of the same element across the page (or across a matched
+   estático/activo pair of pages). Do not assume there is only one.
+2. Measure each example independently — exact position, size, font-size of every part
+   (`get_drawings()` rects, `get_text("dict")` span bboxes for a PDF reference).
+3. Diff the measurements between examples, part by part.
+4. Whatever differs between the examples is what transitions. Whatever is identical between
+   them must stay fixed — do not add motion to it because a common pattern would.
+
+Do not default to a well-known interaction pattern (a label that floats up and shrinks on
+focus, an accordion that pushes content down, a tab underline that slides) merely because
+one static frame looks similar to it. A resemblance is not evidence; the diffed measurement
+between the reference's own states is. Confirmed case: an input's label that shrinks and
+sits inline before the value with a divider line looks, in one frame, like a conventional
+floating label (which also shrinks) — but diffing the reference's own estático vs. activo
+frames showed the label's position never changes, only its size and a divider that appears;
+implementing the "familiar" floating-to-the-top behavior instead of the diffed one was a real
+fidelity bug, not a style choice.
+
+If the reference shows only one state for something that clearly has more than one (e.g. an
+input with no visible focus/filled example anywhere in the reference), that is missing
+information — report it (see "Missing Information" below), do not fill the gap with a
+familiar pattern.
 
 ---
 

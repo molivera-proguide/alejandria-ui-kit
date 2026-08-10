@@ -92,3 +92,18 @@ export const GrupoConTitulo: Story = {
     </FormCheckableGroup>
   )
 };
+
+/**
+ * Grupo horizontal, sin bajada — PDF p.19, ejemplo "TIPO DE USUARIO" (versión simple).
+ * Corregido 2026-08-07: por defecto `FormCheckableGroup` apila vertical; el PDF muestra
+ * la versión sin descripción en una sola fila.
+ */
+export const GrupoHorizontal: Story = {
+  render: () => (
+    <FormCheckableGroup title="TIPO DE USUARIO" layout="horizontal">
+      <FormCheckable type="radio" name="tipo-usuario-horizontal" label="Admin" defaultChecked />
+      <FormCheckable type="radio" name="tipo-usuario-horizontal" label="Editor" />
+      <FormCheckable type="radio" name="tipo-usuario-horizontal" label="General" />
+    </FormCheckableGroup>
+  )
+};

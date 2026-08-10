@@ -11,8 +11,11 @@ const meta = {
     title: "¿ESTÁS SEGURO DE ESTA ACCIÓN?",
     description:
       "Esta acción es irreversible; la elección realizada afectará el resultado definitivo y no podrá deshacerse.",
-    secondaryAction: { label: "ACCIÓN B", onClick: () => {} },
-    primaryAction: { label: "ACCIÓN A", onClick: () => {} }
+    // "ACCIÓN A" a la izquierda (secondaryAction), "ACCIÓN B" a la derecha (primaryAction)
+    // — mismo orden que el PDF p.22 (get_text(): "ACCIÓN A" x0=611.79, "ACCIÓN B" x0=772.58).
+    // Estaban invertidos: la demo mostraba "ACCIÓN B" a la izquierda.
+    secondaryAction: { label: "ACCIÓN A", onClick: () => {} },
+    primaryAction: { label: "ACCIÓN B", onClick: () => {} }
   }
 } satisfies Meta<typeof Modal>;
 

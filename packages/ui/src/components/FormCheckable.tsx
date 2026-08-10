@@ -32,6 +32,32 @@ export const FormCheckable = forwardRef<HTMLInputElement, FormCheckableProps>(
     const generatedId = useId();
     const controlId = id ?? generatedId;
 
+    const control = (
+      <span className="ds-form-checkable__control" aria-hidden="true">
+        {type === "switch" ? (
+          <span className="ds-form-checkable__thumb" />
+        ) : type === "checkbox" ? (
+          <svg className="ds-form-checkable__check" viewBox="0 0 12 10" fill="none">
+            <path
+              d="M1 5.2L4.4 8.6L11 1.4"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        ) : null}
+      </span>
+    );
+    const copy = (
+      <span className="ds-form-checkable__copy">
+        <span className="ds-form-checkable__label">{label}</span>
+        {description ? (
+          <span className="ds-form-checkable__description">{description}</span>
+        ) : null}
+      </span>
+    );
+
     return (
       <label
         className={cn("ds-form-checkable", `ds-form-checkable--${type}`, className)}
@@ -44,27 +70,22 @@ export const FormCheckable = forwardRef<HTMLInputElement, FormCheckableProps>(
           type={type === "switch" ? "checkbox" : type}
           {...props}
         />
-        <span className="ds-form-checkable__control" aria-hidden="true">
-          {type === "switch" ? (
-            <span className="ds-form-checkable__thumb" />
-          ) : type === "checkbox" ? (
-            <svg className="ds-form-checkable__check" viewBox="0 0 12 10" fill="none">
-              <path
-                d="M1 5.2L4.4 8.6L11 1.4"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          ) : null}
-        </span>
-        <span className="ds-form-checkable__copy">
-          <span className="ds-form-checkable__label">{label}</span>
-          {description ? (
-            <span className="ds-form-checkable__description">{description}</span>
-          ) : null}
-        </span>
+        {/* Orden visual medido contra el PDF (design-reference.pdf p.19, get_drawings()):
+            checkbox/radio muestran el glyph ANTES del label ("☑ Editor"); switch lo muestra
+            DESPUÉS, pegado al borde derecho de la fila ("Editor [switch]") — no es el mismo
+            orden para los 3 sub-tipos, corregido 2026-08-07 (antes switch también renderizaba
+            control-primero). */}
+        {type === "switch" ? (
+          <>
+            {copy}
+            {control}
+          </>
+        ) : (
+          <>
+            {control}
+            {copy}
+          </>
+        )}
       </label>
     );
   }
@@ -72,11 +93,23 @@ export const FormCheckable = forwardRef<HTMLInputElement, FormCheckableProps>(
 
 FormCheckable.displayName = "FormCheckable";
 
+/**
+ * @description Disposición de los `FormCheckable` dentro de un `FormCheckableGroup` — PDF
+ * p.19 muestra ambas: el grupo "simple" (sin bajada) va en fila horizontal, el grupo "con
+ * bajada" va en columna vertical (una descripción larga no entra en una fila).
+ */
+export type FormCheckableGroupLayout = "vertical" | "horizontal";
+
 export interface FormCheckableGroupProps extends HTMLAttributes<HTMLFieldSetElement> {
   /**
    * @description "Título grupo" del PDF p.19 (ej. "ACCESO A MÓDULOS")
    */
   title: string;
+  /**
+   * @description `"vertical"` (default, una opción por fila) o `"horizontal"` (todas las
+   * opciones en una sola fila — PDF p.19, ejemplo "TIPO DE USUARIO" sin bajada).
+   */
+  layout?: FormCheckableGroupLayout;
   children: ReactNode;
 }
 
@@ -85,11 +118,24 @@ export interface FormCheckableGroupProps extends HTMLAttributes<HTMLFieldSetElem
  * "Título grupo"). Envoltorio liviano — no reemplaza `FormCheckable`, solo agrupa
  * visualmente varias instancias bajo un título común.
  */
-export function FormCheckableGroup({ title, children, className, ...props }: FormCheckableGroupProps) {
+export function FormCheckableGroup({
+  title,
+  layout = "vertical",
+  children,
+  className,
+  ...props
+}: FormCheckableGroupProps) {
   return (
     <fieldset className={cn("ds-form-checkable-group", className)} {...props}>
       <legend className="ds-form-checkable-group__title">{title}</legend>
-      <div className="ds-form-checkable-group__items">{children}</div>
+      <div
+        className={cn(
+          "ds-form-checkable-group__items",
+          layout === "horizontal" && "ds-form-checkable-group__items--horizontal"
+        )}
+      >
+        {children}
+      </div>
     </fieldset>
   );
 }

@@ -15,10 +15,13 @@ T006's explicit gate.
 ## Dimensions
 | Property | Value | Unit | Source | Delta vs PDF/doc |
 |----------|------:|------|--------|------------------|
-| FECHA trigger | 150×15 | px | styles.css | calibrated ÷2 — PDF 300×30pt @2× |
+| FECHA trigger | 150×15 | px | styles.css | calibrated ÷2 — PDF 300×30pt @2×. Trigger height inherited from the shared `.ds-form-field__control` — recalibrated 2026-08-10 from an invented `44px` to a measured `15px`, see `FormTextInput.spec.md`. |
 | FECHA panel | 150×101 | px | styles.css | calibrated ÷2 — PDF 300×202.68pt @2× |
 | HORA trigger | 100×15 | px | styles.css | calibrated ÷2 — PDF 200×30pt @2× |
 | HORA panel | 100×101 | px | styles.css | calibrated ÷2 — PDF 200×202.68pt @2× |
+| panel offset (top) | 0 (`top: 100%`) | px | styles.css | calibrated 2026-08-10 — `get_drawings()` on p.21 measures the panel starting exactly where the trigger ends (gap ~0.14pt @2× ≈ 0), i.e. contiguous, no visible gap. Was `calc(100% + 2px)`, unmeasured/invented. This is the cleanest, most unambiguous "flyout offset" measurement in the whole `.ds-form-field` family — reused as the basis for the same fix on `FormSelect`'s menu. |
+| panel offset (left/right) | 0 | px | styles.css | calibrated 2026-08-10 — panel and trigger share the exact same x0/x1 on p.21. Was `-1px`/(implicit), unmeasured. |
+| panel padding | 5 | px | styles.css | calibrated ÷2 — panel-label inset ~8.95pt @2× ≈ 4.475px (same value as the rest of the `.ds-form-field` family). Was `var(--ds-space-2)` (8px), unmeasured. |
 | selected-day box | ~10×8 | px | styles.css (border only, no fixed box size — implemented as border on the existing day cell) | calibrated ÷2 — PDF 20.28×16.38pt @2× |
 | day/spinner row pitch | 10 | px | styles.css (`line-height`/`height`) | calibrated ÷2 — PDF row pitch ~19.8pt @2× |
 | spinner visible rows | 7 | rows (`max-height: 70px`) | styles.css | derived from row pitch × 7, not independently PDF-measured as a fixed visible count |
@@ -63,3 +66,11 @@ T006's explicit gate.
   `DECISIONS.md` (2026-08-07).
 - No arrow-key navigation inside the day grid or spinner beyond the ‹/›/⌃/⌄ buttons — same
   class of gap as `FormSelect`'s missing listbox arrow-key nav.
+- **2026-08-10 geometry re-pass:** the trigger reuses `.ds-form-field__control`/`__label` from
+  `FormTextInput` — inherits that fix wholesale (control height was a shared, invented `44px`
+  for both `FECHA`/`HORA`; label offset was `11px`, unmeasured). The panel's own top/left/right
+  offset (`calc(100% + 2px)`/`-1px`) was also invented; this page gave the cleanest possible
+  evidence for the real value (a literal 0-gap, 0-offset flyout) since FECHA/HORA's own panels
+  render directly touching their triggers with no ambiguity from overlapping mockups — unlike
+  `FormSelect`'s p.18 illustration, where the open-state example is a separate mockup box with
+  its own (non-representative) gap.

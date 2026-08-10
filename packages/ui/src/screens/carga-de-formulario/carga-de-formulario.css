@@ -1,0 +1,57 @@
+.screen-carga-formulario {
+  background: var(--ds-color-pdf-surface);
+  display: flex;
+  min-height: 100vh;
+}
+
+.screen-carga-formulario__main {
+  display: grid;
+  flex: 1;
+  gap: var(--ds-space-4);
+  min-width: 0;
+  padding: 24px 32px;
+}
+
+.screen-carga-formulario__title {
+  color: var(--ds-color-white);
+  font-family: var(--ds-font-display);
+  font-size: 10px; /* calibrated ÷2 — PDF header title ~20pt @2× */
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  margin: 0 0 8px;
+  text-transform: uppercase;
+}
+
+.screen-carga-formulario__grid {
+  display: grid;
+  gap: 32px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.screen-carga-formulario__column {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+
+.screen-carga-formulario__section-title {
+  color: var(--ds-color-pdf-form-muted);
+  font-family: var(--ds-font-mono);
+  font-size: 8px;
+  font-weight: 300;
+  margin: 0 0 4px;
+  text-transform: uppercase;
+}
+
+.screen-carga-formulario__section-copy {
+  color: var(--ds-color-pdf-line);
+  font-family: var(--ds-font-body);
+  font-size: 7px;
+  line-height: var(--ds-leading-body);
+  margin: 0 0 8px;
+}
+
+.screen-carga-formulario__checkbox-list {
+  display: grid;
+  gap: 10px;
+}

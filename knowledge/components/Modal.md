@@ -360,11 +360,11 @@ feedback inline que no necesita confirmación del usuario.
 
 | Token / value | Category | Usage |
 |---------------|----------|-------|
-| `--ds-color-pdf-action` (`#494949`) | color | Fondo del diálogo — **corregido**, la leyenda del PDF dice `#060606` pero el render compuesto de la página mide `#494949` (ver Changelog) |
+| `--ds-color-pdf-action` (`#494949`) | color | Fondo del diálogo — **corregido**, la leyenda del PDF dice `#060606` pero el render compuesto de la página mide `#494949` (ver Changelog). También fondo permanente de `primaryAction` (`--primary`), que por eso se funde con el diálogo. |
 | `--ds-color-pdf-border` (`#606060`) | color | Borde del diálogo |
 | `--ds-color-white` (`#ffffff`) | color | Título, texto de acciones |
 | `--ds-color-pdf-ink-bright` (`#f6f6f6`) | color | Texto de descripción — **corregido**, leyenda dice `#c1c1c1` pero el span medido es `#f6f6f6` |
-| `--ds-color-pdf-ink-muted` (`#8a8b87`) | color | Línea separadora; fondo `:hover` de ambas acciones |
+| `--ds-color-pdf-ink-muted` (`#8a8b87`) | color | Línea separadora; fondo permanente de `secondaryAction` (base, sin `--primary`) — **corregido 2026-08-10**, antes solo era el fondo `:hover` de ambas acciones (ninguna tenía fill en reposo) |
 | `--ds-font-display` | typography | Título (Source Code Bold) |
 | `--ds-font-body` | typography | Texto de descripción y acciones |
 
@@ -417,6 +417,14 @@ div.ds-modal-backdrop
   cambio visual, por diseño del componente controlado, no por un bug. Ver `DECISIONS.md`
   y `specs/001-form-modal/checklist.md` (CHK023).
 - Sin tests unitarios ni de integración (sin framework de test instalado).
+- **`primaryAction` (derecha) se funde visualmente con el fondo del modal en reposo** (fondo
+  `#494949`, igual al de `.ds-modal` — "invisible" hasta el hover). `secondaryAction`
+  (izquierda) tiene el fill permanente `#8a8b87`, más visible. Esto viene directo de lo medido
+  en PDF p.22 (`get_drawings()`: dos fills opacos simultáneos, no una lectura de hover) — no
+  es un bug, pero significa que si un consumidor usa `primaryAction` para "confirmar" (el
+  ejemplo recomendado en Constraints), ese botón queda menos visible en reposo que
+  `secondaryAction`/"cancelar". Corregido 2026-08-10 — antes ambos botones eran transparentes
+  en reposo (ninguno mostraba este contraste). Ver `.spec.md` § Deltas.
 
 ---
 
@@ -434,3 +442,4 @@ div.ds-modal-backdrop
 |----------|--------|
 | 0.1.0 | Implementación inicial (confirm/cancel, Escape + backdrop-click via `onClose`, `role="alertdialog"`), feature `001-form-modal`. Resuelve el gap Modal/Dialog de `knowledge/component-roadmap.md`. |
 | 0.1.0 | **Corrección de color tras render real (2026-08-07):** la leyenda de texto de la página p.22 decía fondo `#060606` y texto `#c1c1c1`, pero el sampling de píxeles compuestos (`get_pixmap()`, 128 puntos sobre la caja "Confirmación de acción") midió `#494949` y `#f6f6f6` respectivamente — coincidiendo exactamente con las otras 2 cajas de la misma página ("Alert Sigcat"/"Tarea realizada"). El path propio de la caja (`get_drawings()`) sí reporta `#060606` como su fill nativo, pero algún dimming/overlay a nivel de página lo aclara en el render final — se priorizó el píxel final compuesto (lo que Luna ve en Storybook) sobre el fill crudo de la forma. |
+| 0.1.1 | **Fidelity pass de geometría 2026-08-10:** `font-size` de las acciones estaba sin declarar (heredaba el default del browser, ~2× oversized) — ahora `7px` (medido). La lectura "un botón es hover, no dos colores permanentes" (2026-08-07) resultó incorrecta al medir `get_drawings()`: los 2 rects de "ACCIÓN A"/"ACCIÓN B" tienen fills opacos simultáneos (`#8a8b87` izquierda, `#494949` derecha) — dos colores permanentes reales, no una captura de estado hover (un PDF plano no puede renderizar hover y reposo a la vez). `.ds-modal__action--primary` ya existía en `Modal.tsx` sin regla CSS propia — se le agregó el fill `#494949`; la acción base (secundaria) pasó a `#8a8b87` permanente. También corregidas las labels invertidas de la demo en `Modal.stories.tsx` ("ACCIÓN B" aparecía a la izquierda; el PDF muestra "ACCIÓN A" a la izquierda). |

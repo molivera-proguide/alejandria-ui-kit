@@ -322,6 +322,13 @@
       "path": "knowledge/screens/operations-console.md",
       "storybook": "Alejandria/Overview/OperationsConsole",
       "source": "packages/ui/src/components/Components.stories.tsx"
+    },
+    {
+      "id": "carga-de-formulario-screen",
+      "name": "Carga de Formulario",
+      "path": "knowledge/screens/carga-de-formulario.md",
+      "storybook": "Alejandria/Screens/CargaDeFormulario",
+      "source": "packages/ui/src/screens/carga-de-formulario/CargaDeFormulario.stories.tsx"
     }
   ],
   "tokens": [

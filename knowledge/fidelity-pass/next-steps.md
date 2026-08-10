@@ -1,6 +1,26 @@
 # Fidelity pass — next steps
 
-## 🔖 Session handoff — pick up here (last updated 2026-08-07)
+## 🔖 Session handoff — pick up here (last updated 2026-08-10)
+
+**Parte 1 of `handoffs/20260807-fase5-checkables-geometry-screens-draft.md` closed:**
+geometry-only re-pass (position/size/order, not color — same method that found
+`FormCheckable`'s 3 bugs) of the other 5 `001-form-modal` components against
+`design-reference.pdf` p.17–22, via fresh `page.get_drawings()`/`get_text("dict")`/
+`get_pixmap()` measurements (not reused from the 2026-08-07 pass, which explicitly only
+checked color). Found real geometry bugs on **every one of the 5 components** — see "Full
+PyMuPDF geometry sweep of p.17–22 (2026-08-10)" below for the full detail per component.
+Highest-impact finding: `FormTextInput`'s "activo" label was floating to the top of the
+control (`top: 8px`) instead of staying vertically centered and becoming an inline prefix
++ divisor before the value — a real interaction-model bug, not just a wrong number, and it
+cascaded into `FormSelect`/`FormDatePicker` since both reuse the same shared
+`.ds-form-field__control`/`__label` CSS. Fixed by converting `.ds-form-field__control` to
+`display: flex` (label `order: -1`) instead of absolute positioning. All fixes verified live
+in Storybook via `getComputedStyle()`/`getBoundingClientRect()` (screenshots are unavailable
+in this environment's Browser pane — see the "not compositing frames" note further down);
+not yet reviewed by Luna in her own Storybook tab — **wait for her go-ahead before
+committing/pushing**, same process rule as every prior pass.
+
+## 🔖 Previous handoff (2026-08-07)
 
 **PDF updated to v3 same day (2026-08-07, 24 pages) — Form and Modal built.** Feature
 `001-form-modal` (see `specs/001-form-modal/`) built the 6 components v3 added real specs
@@ -265,7 +285,30 @@ only gone through the text-only extract. Rendered all 4 with `get_pixmap()` +
   this sweep): `get_drawings()` shows the checked checkbox as a white-filled square with a
   separate **stroke-only** path inside (`stroke=#060606, fill=none`) — a check glyph, not
   a filled dot — exactly what got shipped. Radio (white ring + solid dark dot) and switch
-  (track/thumb swap) both matched pixel-for-pixel too.
+  (track/thumb swap) both matched pixel-for-pixel too. **Correction, same day, later
+  session:** "matched pixel-for-pixel" above only checked *colors* (checked/unchecked
+  fills) — geometry (control position relative to the label, track/thumb absolute size)
+  was never actually measured for the switch sub-type. Luna caught it visually reviewing
+  the `Carga de Formulario` screen (`knowledge/screens/carga-de-formulario.md`): the
+  switch rendered with the control *before* the label (should be *after*, right-aligned)
+  and at the unrelated `Switch` component's scale (52×28px track — real is 16×8px, ~3.3×
+  oversized). Re-measured via `get_drawings()` and fixed both — see
+  `FormCheckable.spec.md` Dimensions/Deltas for the numbers. Lesson: "colors match" is not
+  the same claim as "geometry matches" — a pixel-color sweep doesn't substitute for
+  measuring position/size, even on a sub-type that already shipped.
+  **Same review, one more gap:** `FormCheckableGroup` had no horizontal layout option —
+  p.19's "TIPO DE USUARIO" simple example is a single row, shipped code always stacked
+  vertical. Added `layout="vertical"|"horizontal"` (default vertical, non-breaking) +
+  `--horizontal` modifier (`display:flex; flex-wrap:wrap; gap: var(--ds-space-6)`, gap
+  measured from glyph-to-glyph pitch on the same row). Also surfaced and **fixed the same
+  day, third pass** (Luna asked to check it too): the checkbox/radio control measured
+  ⌀6.79px on this row vs. the shipped ⌀17px (`--ds-size-icon-md`, a shared token, ~2.4×
+  oversized) — cross-checked against 3 more rows (vertical radio, 2 checkbox groups)
+  before fixing since the token is shared with `.ds-button__icon`/`.ds-field__icon`
+  (unrelated families); all 4 rows measured the identical 13.58×13.58pt @2× rect, high
+  confidence. Fixed with a local literal (`7px`), shared token left untouched. Recalibrated
+  in the same pass, since both scale off the control: checkbox check-glyph (10×8px→5×4px),
+  radio inner dot (8×8px→3.5×3.5px). See `FormCheckable.spec.md` Dimensions/Deltas.
 - **p.20 (FormFileUpload)** — **structural rebuild**, not a color tweak. The text extract
   undersold this page badly. Real structure, confirmed via `get_pixmap()` + `get_drawings()`:
   - A **list panel** (header "ADJUNTAR ARCHIVOS" + rows) is a *separate* element from the
@@ -296,6 +339,101 @@ p.20) that no amount of re-reading the text would have surfaced — those only s
 `get_drawings()` (shape geometry) or the rendered pixmap itself. Default to rendering
 every page a component is built from before calling it done, not just the ones that turn
 out ambiguous in text form.
+
+## Full PyMuPDF geometry sweep of p.17–22 (2026-08-10)
+
+Handoff (`handoffs/20260807-fase5-checkables-geometry-screens-draft.md`) Parte 1: the
+2026-08-07 sweep above (and the 001-form-modal build itself) verified colors/fonts against
+the PDF thoroughly but, per that handoff's own framing, **never independently measured
+position, size, or visual order** for `FormTextInput`/`FormSelect`/`FormFileUpload`/
+`FormDatePicker`/`Modal` — the same gap that let `FormCheckable`'s switch/checkbox sizing and
+ordering bugs ship unnoticed through a "colors match" sweep. Re-measured all 6 pages
+(`doc[16]`–`doc[21]`) with fresh `get_drawings()`/`get_text("dict")` calls, cross-checked with
+`get_pixmap()` renders zoomed on the ambiguous regions. Found real bugs on every component.
+
+- **FormTextInput (p.17/p.18) — the headline finding.** The "activo" (focused/filled) label
+  was implemented as floating from `top: 50%` (centered, static) to `top: 8px` (near the top),
+  i.e. a conventional Material-style floating label. Zoomed `get_pixmap()` renders of both
+  pages show this is wrong: the PDF's real "Input Activo - Label Activo" behavior keeps the
+  label **vertically centered** in both states — it only shrinks font-size (16/20pt→10pt) and
+  turns into an **inline prefix followed by a vertical divider**, with the value text
+  continuing on the same row after the divider (visible as "NOMBRE | Juan Cruz" on p.18 and
+  "CONTRASEÑA |" + cursor on p.17). There is no top-anchored floating behavior for the
+  single-line case at all — that behavior is real, but only for the **textarea** variant
+  (p.18 "DESCRIPCIÓN"), which the shared `.ds-form-field__label` rule had gotten backwards:
+  textarea's label was letting the default `top:50%` apply in the *static/empty* state
+  (wrongly centered — the PDF shows it top-anchored even when empty) while gaining the
+  single-line's inline-divisor treatment in the active state (wrongly — textarea's label stays
+  top-anchored in both states, with no divisor, since the paragraph needs the full width to
+  wrap). Fixed by rewriting `.ds-form-field__control` from `position: relative` (children
+  absolutely positioned) to `display: flex` (label `order: -1` so it renders visually before
+  the input despite following it in the DOM — required for the existing
+  `input:not(:placeholder-shown) ~ label` selector to keep working), with a
+  `:has(textarea)` override that pins the label top-left unconditionally for the multiline
+  case. This also fixes the *dynamic* input-value-position problem for free — flex reflow,
+  not a magic-number padding, is what makes the value text start exactly where a
+  variable-length label+divisor ends.
+  Also recalibrated, all invented/unmeasured before this pass: control `min-height` (was a
+  single shared `44px` for both variants — real is `15px` default / `22px` login, ~2.9×/2×
+  oversized, measured from 30pt/43.48pt @2× rects on p.18/p.17 respectively); label/text inset
+  (was `11px` — real is ~4.5px, measured across 7+ label instances); textarea `min-height`
+  (`68px`→`72px`, closer to the measured 71.86px).
+- **FormSelect (p.18/p.21) — inherits the FormTextInput fix wholesale** (shares
+  `.ds-form-field__control`/`__label`) plus 3 of its own: chevron was an unmeasured ~10×6px
+  border-triangle at `right: 11px` (real: 7.5×4.8px at `right: 6px`, measured identically on 3
+  separate chevron instances across p.18/p.21); the selected-option checkmark SVG was 10×8px
+  (real: 7×5px, measured from 2 overlapping paths next to "Admin" on p.18 — the 2026-08-07 pass
+  added this glyph but sized it without re-measuring this specific page); the open menu's
+  `top: calc(100% + 2px)` / `left: -1px` / `right: -1px` offset was unmeasured — recalibrated
+  to `top: 100%` / `left: 0` / `right: 0` using FormDatePicker's p.21 as the cleaner reference
+  (see below; p.18's own open-menu illustration is a separate mockup box with a non-
+  representative ~9.5px gap, same "don't trust a separate static example's spacing" caveat as
+  elsewhere in this file).
+- **FormDatePicker (p.21) — cleanest evidence in the whole sweep for the flyout-panel offset.**
+  FECHA and HORA's own triggers+panels render as one seamless, contiguous box in the PDF — the
+  panel starts at a measured ~0.14pt @2× gap (effectively 0) directly below the trigger, and
+  shares the trigger's exact x0/x1 (0 horizontal offset). The shipped `calc(100% + 2px)`/
+  `-1px` was invented. Fixed to `top: 100%` / `left: 0`, and reused the same fix on
+  `FormSelect`'s menu (same "flyout panel" convention, shared `.ds-form-field` family). Panel
+  padding (`var(--ds-space-2)`=8px) also recalibrated to `5px`, matching the family-wide ~4.5px
+  inset found on `FormTextInput`.
+- **FormFileUpload (p.20) — same family-wide inset bug, independently confirmed.** List-header/
+  row padding (`11px`) and the empty-card label's position (`left:8px; top:6px`) were the same
+  invented values already found wrong on `FormTextInput`/`FormSelect`/`FormDatePicker` —
+  `get_text("dict")` on "ADJUNTAR ARCHIVOS"/"Archivo_1.doc"/"ADJUNTAR" spans measures the same
+  ~4.5-6.5px inset. Recalibrated to `5px`/`3px`. This component's major element sizes (root
+  width, header/row/thumbnail/drop-zone/icon-badge dimensions) were already correctly measured
+  in the 2026-08-07 structural rebuild — only this specific inset value was never
+  independently re-checked.
+- **Modal (p.22) — a real interpretation correction, not just a number.** The 2026-08-07 pass
+  read the two action buttons ("ACCIÓN A"/"ACCIÓN B") as one hover-capture + one permanent rest
+  color, modeled on `InvestigationCard`'s action-pair precedent. Direct `get_drawings()`
+  measurement contradicts that: both button rects have their own **simultaneous, opaque**
+  fills in the same static page (`#8a8b87` left, `#494949` right) — a flat PDF page cannot
+  render a live `:hover` state next to its own rest state in one image, so two co-existing
+  opaque fills can only be two permanent colors. This lines up with a detail the 2026-08-07
+  pass had flagged but left unresolved: `.ds-modal__action--primary` already existed in
+  `Modal.tsx`, applied to the primary/right button, with **no matching CSS rule at all** —
+  exactly the gap this fill was missing. Fixed: base `.ds-modal__action` (left/secondary) gets
+  the permanent `#8a8b87` fill; `--primary` (right) gets `#494949` (blends into the modal's own
+  background). Separately, the action buttons had **no `font-size` declared at all** (inherited
+  the browser default, ~2× oversized against the measured 14.64pt @2× ≈ 7.32px) — added
+  `font-size: 7px` and recalibrated vertical padding (`var(--ds-space-2)`=8px → `3px`) since the
+  old padding alone already exceeded the button's real ~14.2px measured height before any
+  font-size was even applied. Also fixed `Modal.stories.tsx`'s demo args, which had
+  `secondaryAction`/`primaryAction` labels swapped relative to the PDF's own left-to-right
+  "ACCIÓN A" (left) / "ACCIÓN B" (right) order.
+
+**Verification note:** this session's Browser pane could not take screenshots ("not
+compositing frames" — the same known limitation documented in the 2026-08-07 entries above).
+Verified every fix instead via `javascript_tool` → `getComputedStyle()` +
+`getBoundingClientRect()` against live Storybook stories (including `play`-function stories
+for open-panel states, e.g. `FormDatePicker`'s `Activo` and `FormSelect`'s `Activo`) — e.g.
+confirmed `labelCenterY === controlCenterY === inputCenterY` exactly on `FormTextInput`'s
+`Activo` story (proving the label no longer floats to the top), and `gap ≈ 0` between trigger
+and panel on `FormDatePicker`'s `Activo` story (proving the flyout offset fix). Not yet looked
+at by Luna in her own tab — per the standing process note, wait for her go-ahead before
+committing.
 
 ## Done
 
@@ -614,6 +752,32 @@ it.
 
 ## Reusable technique notes for next session
 
+- **To infer how something should animate/transition, diff the PDF's own static state
+  examples against each other — don't reach for a familiar web pattern just because the
+  visual reminds you of one.** A flat PDF can't show motion directly, but most pages in this
+  kit *do* show the same field twice — once "estático" (empty/default) and once "activo"
+  (focused/filled/selected) — as two separate static illustrations. Treat that pair as the
+  animation spec: measure both illustrations' element positions with `get_drawings()`/
+  `get_text("dict")`, then diff the two measured layouts directly. What differs between the
+  two measurements is what should animate; what's identical between them should **not**
+  move, no matter how natural a different behavior would look. Concretely, this is what
+  caught `FormTextInput`'s worst 2026-08-10 bug: a "label + small helper text above a value"
+  visual reads, at a glance, exactly like a conventional Material-style floating label
+  (label shrinks *and* rises to the top edge) — a strong, familiar prior. But diffing p.17's
+  "CONTRASEÑA" (estático) against its own "CONTRASEÑA" (activo, empty+cursor) example showed
+  the label's vertical center coordinate was *identical* in both — only `font-size` differed,
+  plus a divisor line appeared that wasn't there before. The shipped code had implemented the
+  familiar pattern (label rises on activate) instead of the one the PDF's own two examples
+  actually prove (label stays put, gains a divisor, value continues inline after it). Same
+  root cause, inverted: the textarea case looked like it should get the *same* mechanism as
+  the single-line input (both are `.ds-form-field` siblings, same "Input Activo - Label
+  Activo" legend line) — but diffing textarea's own estático/activo pair showed its label sits
+  at the exact same top-left point in *both* states (only font-size changes, never position),
+  which the single-line input's pair does not do. **The general rule:** whenever a page shows
+  more than one state of the same element, that's not redundant documentation to skim past —
+  it's the actual before/after spec for what moves. Measure both, diff them, and let the
+  numbers say what animates; a component that merely "looks like" a known pattern from one
+  screenshot is not evidence that pattern is what's specified.
 - `pdftoppm`/poppler isn't installed on this machine — use PyMuPDF (`import fitz`) instead, it's
   already available and gives *exact* vector coordinates and text-spans, no screenshot estimation
   needed. `python -m pip --version` confirms Python 3.14 + pip are set up.

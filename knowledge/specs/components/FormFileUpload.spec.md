@@ -9,16 +9,22 @@
 
 Measured 2026-08-07 via PyMuPDF `get_pixmap()` + `get_drawings()` on p.20 — the text-only
 extract had undersold this page's structure (see Deltas). Rebuilt end-to-end same session,
-then re-verified.
+then re-verified. **That pass re-verified colors and the major element sizes but never
+re-measured the header/row/empty-label's own left/top insets** — a 2026-08-10 geometry-only
+re-pass (`get_text("dict")` on the "ADJUNTAR ARCHIVOS"/"Archivo_1.doc"/"ADJUNTAR" spans found
+those were the same invented `11px`/`8px`/`6px` insets already found wrong family-wide on
+`FormTextInput` (p.17/p.18) — see Dimensions below.
 
 ## Dimensions
 | Property | Value | Unit | Source | Delta vs PDF/doc |
 |----------|------:|------|--------|------------------|
 | root width | 253 | px | styles.css | calibrated ÷2 — PDF 505.5pt @2× |
 | list header height | 15 | px | styles.css | calibrated ÷2 — PDF header bar 30pt @2× |
+| list header/row inset | 5 | px | styles.css | calibrated ÷2 — "ADJUNTAR ARCHIVOS" inset ~8.98pt @2× ≈ 4.49px, "Archivo_1.doc"/"WORD - 2.4 Mb" inset ~5.4-6.5px (p.20). Era `11px`, mismo inset inventado que el resto de la familia (ver `FormTextInput.spec.md`). Medido 2026-08-10. |
 | row min-height | 24 | px | styles.css | calibrated ÷2 — PDF row 48.6pt @2× |
 | thumbnail card width | 83 | px | styles.css | calibrated ÷2 — PDF thumbnail card 165×153.1pt @2× |
 | empty/drop-zone height | 156 | px | styles.css | calibrated ÷2 — PDF drop-zone rect 311.4pt @2× |
+| empty-label inset (left/top) | 5/3 | px | styles.css | calibrated ÷2 — "ADJUNTAR" inset ~8.9pt/5.65pt @2× ≈ 4.45px/2.83px. Era `8px`/`6px` sin medir. Medido 2026-08-10. |
 | empty-icon badge | 31×33 | px | styles.css | calibrated ÷2 — PDF badge ~61.5×66.5pt @2× |
 | upload button padding | 10px 32px | px | styles.css | approximates measured button 224.3×37.9pt @2× ÷2 ≈ 112×19px — not an exact fixed-size match, content-sized button with this padding |
 
@@ -65,3 +71,8 @@ then re-verified.
   open ("escucho sugerencias... mientras busco referencias").
 - Upload button padding is an approximation of the measured PDF button, not an exact
   fixed-width match — the button stays content-sized.
+- **2026-08-10 geometry re-pass:** the list-header/row/empty-label insets (11px/8px/6px)
+  were never independently measured in the 2026-08-07 build — they reused the same guessed
+  value the rest of the `.ds-form-field` family had, which turned out ~1.8-2.4× oversized
+  once actually measured against p.20's own text spans. Same class of finding as
+  `FormTextInput`/`FormSelect` on p.17/p.18/p.21 (see `knowledge/fidelity-pass/next-steps.md`).

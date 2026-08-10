@@ -2535,10 +2535,21 @@
     min-width: 0;
   }
 
+  /* Control: medido 2026-08-10 vía get_drawings()/get_text() en p.17/18/20/21 (7+
+     instancias — USUARIO/CONTRASEÑA/DNI/NOMBRE/TIPO DE USUARIO/FECHA/HORA) contra
+     design-reference.pdf. `display:flex` (antes sin layout propio, solo position:
+     relative) es lo que permite que el label empuje el valor a la derecha una vez
+     activo (ver .ds-form-field__label abajo — `order:-1` lo visualiza primero pese a
+     ir después en el DOM) sin depender de un padding fijo que no escala con el largo
+     del label. */
   .ds-form-field__control {
+    align-items: center;
     background: var(--ds-color-pdf-surface-a50); /* "Fondo: #060606 - 50%" p.18/20/21 */
     border: var(--ds-border-width-hair) solid var(--ds-color-pdf-border); /* "Borde: 0,75pt - #606060" */
-    min-height: 44px; /* not PDF-measured — room for the floating label + input row, see DECISIONS.md */
+    display: flex;
+    gap: var(--ds-space-2); /* espacio entre label(+divisor activo) y valor */
+    min-height: 15px; /* calibrated ÷2 — PDF control (variante default) 30pt @2×, era 44px sin medir (~2.9× oversized) */
+    padding: 0 5px; /* calibrated ÷2 — inset label/texto ~8.95pt @2× ≈ 4.5px (7+ instancias), era 11px sin medir */
     position: relative;
     transition: border-color var(--ds-duration-md) var(--ds-ease-standard); /* "sumarle animación al pase entre estático y activo" — timing/easing not specified, see DECISIONS.md */
   }
@@ -2547,24 +2558,37 @@
     border-color: var(--ds-color-white); /* "Input activo: borde #ffffff" */
   }
 
+  /* Textarea: layout de bloque, no fila — el label va SIEMPRE arriba-izquierda (ver
+     .ds-form-field__label abajo), nunca centrado ni en línea con el valor, porque el
+     párrafo necesita todo el ancho para wrappear. Confirmado en p.18 "DESCRIPCIÓN":
+     el label estático (sin valor, 16pt) ya está arriba, no centrado — a diferencia
+     del input de una línea. */
+  .ds-form-field__control:has(textarea) {
+    display: block;
+    min-height: 72px; /* calibrated ÷2 — PDF textarea 143.72pt @2× ≈ 71.86px, era 68px */
+    padding: 5px;
+  }
+
   .ds-form-field__input,
   .ds-form-field__textarea {
     background: transparent;
     border: 0;
     color: var(--ds-color-white); /* "Texto: Montserrat Regular - 16pt - #ffffff" */
     cursor: inherit;
+    flex: 1 1 auto;
     font-family: var(--ds-font-body);
     font-size: 8px; /* calibrated ÷2 — PDF 16pt */
-    min-height: 44px;
-    padding: 15px 11px 0;
+    min-width: 0;
+    padding: 0;
     text-align: left;
-    width: 100%;
   }
 
   .ds-form-field__textarea {
-    min-height: 68px;
-    padding-top: 18px;
+    display: block;
+    min-height: 100%;
+    padding-top: 18px; /* despeja la fila del label, siempre arriba en modo textarea */
     resize: vertical;
+    width: 100%;
   }
 
   .ds-form-field__input:focus-visible,
@@ -2572,18 +2596,29 @@
     outline: none;
   }
 
+  /* Label: SIEMPRE centrado verticalmente para el input de una línea — a diferencia
+     de lo que se había asumido, el PDF (p.17 "CONTRASEÑA" activo, p.18 "NOMBRE" con
+     valor) no mueve el label arriba al activarse, lo achica y lo deja en línea con el
+     valor (ver el divisor más abajo). `order:-1` lo ubica visualmente antes que el
+     input aunque en el DOM vaya después (necesario para que
+     `input:not(:placeholder-shown) ~ label` siga funcionando). Corregido 2026-08-10
+     — antes: `position:absolute; top:50%→8px` (el label sí se movía arriba), un bug
+     de geometría real, no solo de color (mismo tipo de error que el switch de
+     FormCheckable). */
   .ds-form-field__label {
     color: var(--ds-color-pdf-form-muted); /* "Label: ... #8d8d8d" */
+    flex: 0 1 auto;
     font-family: var(--ds-font-mono); /* Source Code (Light) */
     font-size: 8px; /* calibrated ÷2 — PDF 16pt static label */
     font-weight: var(--ds-font-weight-light);
-    left: 11px;
+    min-width: 0;
+    order: -1;
+    overflow: hidden;
     pointer-events: none;
-    position: absolute;
+    text-overflow: ellipsis;
     text-transform: uppercase;
-    top: 50%;
-    transform: translateY(-50%);
-    transition: top var(--ds-duration-md) var(--ds-ease-standard), font-size var(--ds-duration-md) var(--ds-ease-standard);
+    transition: font-size var(--ds-duration-md) var(--ds-ease-standard);
+    white-space: nowrap;
   }
 
   .ds-form-field__input:focus ~ .ds-form-field__label,
@@ -2592,12 +2627,33 @@
   .ds-form-field__textarea:not(:placeholder-shown) ~ .ds-form-field__label,
   .ds-form-field__label--active {
     font-size: 5px; /* calibrated ÷2 — PDF 10pt "Input Activo - Label Activo" */
-    top: 8px;
-    transform: none;
+  }
+
+  /* Divisor vertical entre el label activo y el valor — PDF dibuja una línea entre
+     "CONTRASEÑA"/"NOMBRE" y el valor una vez activo (p.17/p.18). No aplica al
+     textarea (label siempre arriba, sin línea al lado — ver arriba). Aplica también
+     a FormSelect/FormDatePicker vía `--active` (mismo patrón "Input Activo - Label
+     Activo" del PDF, no una convención distinta por componente). */
+  .ds-form-field__input:focus ~ .ds-form-field__label,
+  .ds-form-field__input:not(:placeholder-shown) ~ .ds-form-field__label,
+  .ds-form-field__label--active {
+    border-right: var(--ds-border-width-hair) solid var(--ds-color-pdf-border);
+    padding-right: var(--ds-space-2);
+  }
+
+  /* Textarea en modo activo: el label queda arriba-izquierda siempre (mismo lugar que
+     estático, ver .ds-form-field__control:has(textarea) arriba) — nunca se centra ni
+     gana el divisor de línea única. */
+  .ds-form-field__control:has(textarea) .ds-form-field__label {
+    left: 5px;
+    order: 0;
+    position: absolute;
+    top: 5px;
   }
 
   .ds-form-field--login .ds-form-field__control {
     background: var(--ds-color-pdf-surface-warm); /* "Fondo: #2a2927" p.17 */
+    min-height: 22px; /* calibrated ÷2 — PDF login-variant control 43.48pt @2× ≈ 21.74px, era el mismo 44px que la variante default */
   }
 
   .ds-form-field--login .ds-form-field__label {
@@ -2644,13 +2700,16 @@
     transform: none;
   }
 
+  /* calibrated ÷2 — medido en p.18/p.21 (2 chevrons de trigger + 1 de dropdown, mismo
+     resultado en las 3): rect 14.95×9.56pt @2× ≈ 7.5×4.8px, era ~10×6px (border-trick
+     sin medir) */
   .ds-form-field__chevron {
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 6px solid var(--ds-color-pdf-form-muted);
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid var(--ds-color-pdf-form-muted);
     pointer-events: none;
     position: absolute;
-    right: 11px;
+    right: 6px; /* calibrated ÷2 — inset borde-a-chevron ~11.58pt @2× ≈ 5.79px, era 11px */
     top: 50%;
     transform: translateY(-50%);
   }
@@ -2659,14 +2718,14 @@
 
   .ds-form-select__trigger {
     cursor: pointer;
-    padding-right: 26px;
+    padding-right: 15px;
     text-align: left;
   }
 
   .ds-form-select__menu {
     background: var(--ds-color-pdf-surface);
     border: var(--ds-border-width-hair) solid var(--ds-color-white); /* "el desplegable del select se superpone al input cuando está activo" */
-    left: -1px;
+    left: 0; /* calibrated — medido en p.21: panel y trigger comparten exactamente el mismo x0/x1, era -1px sin medir */
     list-style: none;
     margin: 0;
     max-height: 160px;
@@ -2675,8 +2734,8 @@
        below */
     padding: 0;
     position: absolute;
-    right: -1px;
-    top: calc(100% + 2px);
+    right: 0; /* calibrated — ver left arriba, mismo x0/x1 que el trigger, era -1px */
+    top: 100%; /* calibrated — medido en p.21: panel arranca exactamente donde termina el trigger (gap ~0.14pt @2×), era calc(100% + 2px) sin medir */
     z-index: 20;
   }
 
@@ -2690,7 +2749,7 @@
     font-family: var(--ds-font-body);
     font-size: 8px;
     justify-content: space-between;
-    padding: 10px 11px;
+    padding: 10px 5px; /* calibrated ÷2 — inset horizontal ~4.5px, era 11px, ver .ds-form-field__control */
     text-align: left;
     width: 100%;
   }
@@ -2700,12 +2759,14 @@
   }
 
   /* Selected option: text stays white (PDF get_text() shows "Admin"/"Editor"/"General"
-     all as #ffffff, no dimming) — only the check glyph marks the selection. */
+     all as #ffffff, no dimming) — only the check glyph marks the selection.
+     calibrated ÷2 — medido en p.18 (2 paths superpuestos junto a "Admin"): bbox
+     ~13.76×10.03pt @2× ≈ 6.9×5px, era 10×8px sin medir contra esta página. */
   .ds-form-select__option-check {
     color: var(--ds-color-pdf-ink-muted); /* #8a8b87, measured check-glyph stroke */
     flex: 0 0 auto;
-    height: 8px;
-    width: 10px;
+    height: 5px;
+    width: 7px;
   }
 
   .ds-form-select__option:disabled {
@@ -2749,18 +2810,24 @@
     line-height: var(--ds-leading-body);
   }
 
+  /* Control checkbox/radio: medido 2026-08-07 vía get_drawings() en 4 filas distintas de
+     p.19 (radio horizontal, radio vertical, 2 grupos de checkbox) — las 4 dieron el mismo
+     rect 13.58×13.58pt @2× → ÷2 = 6.79px, redondeado 7px. Era var(--ds-size-icon-md)=17px
+     (token compartido con .ds-button__icon/.ds-field__icon, familias no relacionadas) —
+     no se tocó el token, se usa un literal local, ~2.4× más chico que lo que había. */
   .ds-form-checkable--checkbox .ds-form-checkable__control,
   .ds-form-checkable--radio .ds-form-checkable__control {
     align-items: center;
     background: transparent;
     border: var(--ds-border-width-hair) solid var(--ds-color-pdf-border);
+    box-sizing: border-box; /* el borde debe quedar DENTRO de los 7×7px medidos, no sumarse */
     display: inline-flex;
     flex: 0 0 auto;
-    height: var(--ds-size-icon-md);
+    height: 7px; /* calibrated ÷2 — PDF control 13.58pt @2×, was var(--ds-size-icon-md) (17px) */
     justify-content: center;
     margin-top: 1px;
     position: relative;
-    width: var(--ds-size-icon-md);
+    width: 7px; /* calibrated ÷2 — PDF control 13.58pt @2×, was var(--ds-size-icon-md) (17px) */
   }
 
   .ds-form-checkable--radio .ds-form-checkable__control {
@@ -2780,9 +2847,9 @@
   }
 
   .ds-form-checkable__check {
-    height: 8px;
+    height: 4px; /* calibrated ÷2 — PDF checkmark stroke bbox 8.52pt @2×, was 8px */
     opacity: 0;
-    width: 10px;
+    width: 5px; /* calibrated ÷2 — PDF checkmark stroke bbox 10.19pt @2×, was 10px */
   }
 
   .ds-form-checkable__input:checked + .ds-form-checkable__control .ds-form-checkable__check {
@@ -2793,47 +2860,63 @@
     background: var(--ds-color-pdf-surface);
     border-radius: var(--ds-radius-pill);
     content: "";
-    height: 8px;
+    height: 3.5px; /* calibrated ÷2 — PDF inner dot 7.02pt @2×, was 8px */
     left: 50%;
     position: absolute;
     top: 50%;
     transform: translate(-50%, -50%);
-    width: 8px;
+    width: 3.5px; /* calibrated ÷2 — PDF inner dot 7.02pt @2×, was 8px */
   }
 
   .ds-form-checkable__input:focus-visible + .ds-form-checkable__control {
     box-shadow: var(--ds-focus-ring);
   }
 
+  /* Switch: única sub-variante donde el control va DESPUÉS del label, pegado al borde
+     derecho de la fila — medido contra design-reference.pdf p.19 (get_drawings(), no la
+     leyenda): track 32.58×15.89pt @2×, thumb ⌀11.33pt, thumb-inset ~2.3pt, thumb-travel
+     ~16.27pt. Corregido 2026-08-07 — el tamaño anterior (52×28px track, thumb 20px)
+     reusaba los tokens del componente `Switch` (familia console/teal, otra escala) sin
+     verificar que el valor absoluto encajara en la convención @2×÷2 de esta familia; salía
+     ~3.5× más grande de lo real. `justify-content: space-between` + `width: 100%` en el
+     `<label>` es lo que empuja el control al borde derecho ahora que el orden DOM cambió. */
+  .ds-form-checkable--switch {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
   .ds-form-checkable--switch .ds-form-checkable__control {
     background: var(--ds-color-pdf-border); /* "Switch: Fondo #606060 - Selector #ffffff" */
     border-radius: var(--ds-radius-pill);
+    box-sizing: border-box; /* padding debe quedar DENTRO de los 16×8px medidos, no sumarse */
     display: inline-flex;
     flex: 0 0 auto;
-    height: var(--ds-size-switch-track-h);
-    padding: 3px;
+    height: 8px; /* calibrated ÷2 — PDF track 15.89pt @2×, was --ds-size-switch-track-h (28px) */
+    margin-top: 1px;
+    padding: 1px; /* calibrated ÷2 — PDF thumb-inset ~2.3pt @2×, was 3px */
     transition: background-color var(--ds-duration-fast) var(--ds-ease-standard);
-    width: var(--ds-size-switch-track-w);
+    width: 16px; /* calibrated ÷2 — PDF track 32.58pt @2×, was --ds-size-switch-track-w (52px) */
   }
 
   .ds-form-checkable__thumb {
     background: var(--ds-color-white);
     border-radius: var(--ds-radius-pill);
-    height: var(--ds-size-icon-xl);
+    height: 6px; /* calibrated ÷2 — PDF thumb ⌀11.33pt @2×, was --ds-size-icon-xl (20px) */
     transition: transform var(--ds-duration-fast) var(--ds-ease-standard);
-    width: var(--ds-size-icon-xl);
+    width: 6px;
   }
 
-  .ds-form-checkable--switch .ds-form-checkable__input:checked + .ds-form-checkable__control {
+  .ds-form-checkable--switch .ds-form-checkable__input:checked ~ .ds-form-checkable__control {
     background: var(--ds-color-white); /* "Switch - Seleccionado: Fondo #ffffff - Selector #060606" */
   }
 
-  .ds-form-checkable--switch .ds-form-checkable__input:checked + .ds-form-checkable__control .ds-form-checkable__thumb {
+  .ds-form-checkable--switch .ds-form-checkable__input:checked ~ .ds-form-checkable__control .ds-form-checkable__thumb {
     background: var(--ds-color-pdf-surface);
-    transform: translateX(var(--ds-space-6));
+    transform: translateX(8px); /* calibrated ÷2 — PDF thumb-travel ~16.27pt @2× (track 16 − 2×padding 1 − thumb 6 = 8) */
   }
 
-  .ds-form-checkable--switch .ds-form-checkable__input:focus-visible + .ds-form-checkable__control {
+  .ds-form-checkable--switch .ds-form-checkable__input:focus-visible ~ .ds-form-checkable__control {
     box-shadow: var(--ds-focus-ring);
   }
 
@@ -2857,6 +2940,19 @@
   .ds-form-checkable-group__items {
     display: grid;
     gap: var(--ds-space-3);
+  }
+
+  /* Horizontal — PDF p.19 "TIPO DE USUARIO" (versión simple, sin bajada): las 3 opciones
+     van en una sola fila, no una por línea. Medido vía get_drawings()/get_text() contra
+     design-reference.pdf: pitch glyph-a-glyph entre opciones ~56.5pt @2× — dentro del
+     rango ya cubierto por --ds-space-6 (24px), reusado en vez de inventar un literal
+     nuevo. Solo el grupo "con bajada" (con `description`) se queda vertical — una
+     descripción larga no entra en una fila. Agregado 2026-08-07 tras revisión de Luna
+     sobre la screen `Carga de Formulario`. */
+  .ds-form-checkable-group__items--horizontal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ds-space-6);
   }
 
   /* --- FormFileUpload ---
@@ -2898,7 +2994,7 @@
     display: flex;
     height: 15px; /* calibrated ÷2 — PDF header bar 30pt @2× */
     justify-content: space-between;
-    padding: 0 11px;
+    padding: 0 5px; /* calibrated ÷2 — "ADJUNTAR ARCHIVOS" inset ~8.98pt @2× ≈ 4.49px, era 11px sin medir (mismo inset que el resto de la familia, ver .ds-form-field__control) */
   }
 
   .ds-form-file__list-label {
@@ -2939,7 +3035,7 @@
     display: flex;
     justify-content: space-between;
     min-height: 24px; /* calibrated ÷2 — PDF row 48.6pt @2× */
-    padding: 0 11px;
+    padding: 0 5px; /* calibrated ÷2 — "Archivo_1.doc"/"WORD - 2.4 Mb" inset ~5.4-6.5px, era 11px sin medir */
     width: 100%; /* full-width row, same as .ds-form-file__list-header — thumbnails (below) don't get this */
   }
 
@@ -3034,10 +3130,10 @@
     color: var(--ds-color-pdf-form-muted); /* "ADJUNTAR" own small label, measured #8d8d8d */
     font-family: var(--ds-font-mono);
     font-size: 5px; /* calibrated ÷2 — PDF 10pt */
-    left: 8px;
+    left: 5px; /* calibrated ÷2 — inset ~8.9pt @2× ≈ 4.45px, era 8px sin medir */
     position: absolute;
     text-transform: uppercase;
-    top: 6px;
+    top: 3px; /* calibrated ÷2 — inset ~5.65pt @2× ≈ 2.83px, era 6px sin medir */
   }
 
   .ds-form-file__empty-icon {
@@ -3139,10 +3235,10 @@
     border: var(--ds-border-width-hair) solid var(--ds-color-white); /* "Borde activo: #ffffff" */
     display: grid;
     gap: var(--ds-space-2);
-    left: -1px;
-    padding: var(--ds-space-2);
+    left: 0; /* calibrated — medido en p.21: panel y trigger comparten exactamente el mismo x0/x1, era -1px sin medir */
+    padding: 5px; /* calibrated ÷2 — inset del panel-label ~4.5px, era var(--ds-space-2)=8px sin medir */
     position: absolute;
-    top: calc(100% + 2px);
+    top: 100%; /* calibrated — medido en p.21: el panel arranca exactamente donde termina el trigger (gap ~0.14pt @2×), era calc(100% + 2px) sin medir */
     z-index: 20;
   }
 
@@ -3351,24 +3447,36 @@
     justify-content: flex-end;
   }
 
-  /* Both actions: PDF's own 2-button example (get_drawings() on doc[21]) shows one
-     fill matching the modal's own background exactly (#494949 — effectively no
-     visible box at rest) and the other filled #8a8b87 — same "one button is a hover
-     capture, not two permanent colors" reading already confirmed for
-     InvestigationCard's action pair on a different page. Text stays white either
-     way (get_text() gives both #8d8d8d and #ffffff duplicated at each button's
-     position — the same overlapping-text-runs artifact seen elsewhere on this PDF;
-     #ffffff read as the resting value, matching every other white label on this box). */
+  /* Corrected 2026-08-10 — the previous "one button is a hover capture, not two
+     permanent colors" reading (same class of call as InvestigationCard's action
+     pair) doesn't hold up once actually measured: get_drawings() on doc[21] shows
+     BOTH "ACCIÓN A"/"ACCIÓN B" rects with their own opaque, simultaneous, non-hover
+     fill (0.541,0.545,0.529)=#8a8b87 on the left/secondary button and
+     (0.286,0.286,0.286)=#494949 on the right/primary one — two permanent colors,
+     not a rest/hover pair (a flat PDF page can't render a live :hover state next to
+     its own rest state in the same static image). This also explains the unused
+     `.ds-modal__action--primary` class already in Modal.tsx (line 87) that never had
+     a matching CSS rule — it was meant for exactly this. Font-size was missing
+     entirely (inherited the browser default, ~2× oversized) — measured
+     "ACCIÓN A"/"ACCIÓN B" span size 14.64pt @2× ≈ 7.32px. Vertical padding recalibrated
+     from the button's own measured height (148.56×28.34pt @2× ≈ 74.3×14.2px) — the
+     old var(--ds-space-2)=8px top/bottom alone (before even adding line-height)
+     already exceeded the real 14.2px total. */
   .ds-modal__action {
-    background: transparent;
+    background: var(--ds-color-pdf-ink-muted); /* #8a8b87 — measured fill, left/secondary button */
     border: 0;
     color: var(--ds-color-white);
     cursor: pointer;
     font-family: var(--ds-font-body);
+    font-size: 7px; /* calibrated ÷2 — PDF 14.64pt, era unset (heredaba el default del browser) */
     font-weight: var(--ds-font-weight-bold);
-    padding: var(--ds-space-2) var(--ds-space-4);
+    padding: 3px var(--ds-space-4); /* calibrated ÷2 vertical — ver nota de altura arriba, era var(--ds-space-2)=8px */
     text-transform: uppercase;
     transition: background-color var(--ds-duration-fast) var(--ds-ease-standard);
+  }
+
+  .ds-modal__action--primary {
+    background: var(--ds-color-pdf-action); /* #494949 — measured fill, right/primary button; igual al fondo del modal, se "funde" con él en reposo */
   }
 
   .ds-modal__action:hover {
