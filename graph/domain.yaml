@@ -2,10 +2,10 @@
 # ante una tarea, identificá el dominio afectado acá y leé SOLO sus `files`.
 
 meta:
-  generated_by: sdd-scan
+  generated_by: sdd-generate
   commit: 11c9a51
-  updated: 2026-08-07
-  last_touched_by: sdd-generate (001-form-modal)
+  updated: 2026-08-10
+  last_touched_by: sdd-review (002-bg-texture) — completó cobertura de composed-patterns/knowledge-base
 
 domains:
   design-tokens:
@@ -14,10 +14,11 @@ domains:
     services: []
     components: []
     storage: n/a
-    features: []
+    features: [002-bg-texture]
     depends_on: []
     files:
       styles: [packages/ui/src/styles.css]
+      utils: [packages/ui/src/utils/backgroundTexture.tsx]
       docs: [knowledge/tokens/, knowledge/guidelines/design-language.md]
 
   component-catalog:
@@ -40,15 +41,16 @@ domains:
       docs: [knowledge/components/, knowledge/specs/components/]
 
   composed-patterns:
-    description: "Composiciones de varios componentes (no exportadas como layout) — login, ficha, mission"
+    description: "Composiciones de varios componentes (no exportadas como layout) — login, ficha, mission, screens completas"
     entities: []
     services: []
-    components: [Login, DetailSheet, Mission]
+    components: [Login, DetailSheet, Mission, CargaDeFormulario]
     storage: n/a
-    features: []
+    features: [002-bg-texture]
     depends_on: [component-catalog, design-tokens]
     files:
       patterns: [packages/ui/src/patterns/]
+      screens: [packages/ui/src/screens/]
       docs: [knowledge/patterns/, knowledge/screens/]
 
   icon-set:
@@ -68,7 +70,7 @@ domains:
     services: []
     components: []
     storage: n/a
-    features: [001-form-modal]
+    features: [001-form-modal, 002-bg-texture]
     depends_on: []
     files:
       governance: [knowledge/index.md, knowledge/reasoning/decision-order.md,

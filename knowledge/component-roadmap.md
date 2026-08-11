@@ -243,6 +243,20 @@ Componentes chicos, sin dependencia de mapa/canvas — candidatos baratos si se 
 - **Acordeón / Collapsible** — p.20 ("DESPLEGABLE" ×4). No existe hoy.
 - **Tabs / TabNav** — p.22 ("Misión | Asistente IA | Métricas | Resumen ejecutivo | Resumen completo"). No existe hoy.
 - **Carrusel de thumbnails de video/imagen** — p.17/18/22 ("IMÁGENES EN VIVO"). No existe hoy, esfuerzo bajo-medio.
+- **Textura de fondo compartida** — p.1,2,3,4,5,6,8,9,20 comparten un fondo de puntos
+  que vivía implícito en cada mockup, sin token ni clase propia. **✅ Resuelta
+  2026-08-10 (`002-bg-texture`)**, **animada desde el mismo día** tras una nota del
+  diseñador post-implementación (ver `DECISIONS.md`): `BackgroundTextureDots`
+  (`utils/backgroundTexture.tsx`, helper interno **no exportado** en `index.ts`) —
+  32 puntos reales extraídos de `Textura fondo.svg` como SVG inline, `mix-blend-mode:
+  screen; opacity: .05` fijo en el grupo, cada punto animando su propia opacidad
+  (`ease-in-out`, ciclo base ~6s con jitter, sin sincronía, respeta
+  `prefers-reduced-motion`) + token `--ds-color-pattern-dot: #ebf2fe` en `styles.css`.
+  Reemplazó la primera versión estática (clase `.ds-bg-texture-dots` con
+  `background-image` de data URI, ya removida de `styles.css`). Aplicada por ahora
+  solo a `Login` (`patterns/login/Login.tsx`) y `Carga de Formulario`
+  (`screens/carga-de-formulario/CargaDeFormulario.stories.tsx`) — el resto de las
+  pantallas listadas queda pendiente de sus propias features.
 
 Gaps grandes, fuera del scope típico de un design system:
 

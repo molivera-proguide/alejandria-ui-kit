@@ -5,12 +5,12 @@
 features:
   - id: 001-form-modal
     type: feature
-    status: OPEN
+    status: CLOSED
     domain: component-catalog
     owner: lvgonzalezprg
     sprint: null
     created: 2026-08-07
-    closed: null
+    closed: 2026-08-07
     touches:
       - packages/ui/src/components/FormTextInput.tsx
       - packages/ui/src/components/FormTextInput.stories.tsx
@@ -29,3 +29,22 @@ features:
       - knowledge/component-roadmap.md
       - knowledge/fidelity-pass/next-steps.md
     decisions: []
+
+  - id: 002-bg-texture
+    type: feature
+    status: CLOSED
+    domain: design-tokens
+    owner: lvgonzalezprg
+    sprint: null
+    created: 2026-08-10
+    closed: 2026-08-10
+    touches:
+      - packages/ui/src/styles.css
+      - packages/ui/src/utils/backgroundTexture.tsx
+      - packages/ui/src/patterns/login/Login.tsx
+      - packages/ui/src/screens/carga-de-formulario/CargaDeFormulario.stories.tsx
+      - knowledge/component-roadmap.md
+    decisions:
+      - "2026-08-10: Corrección de la opacidad de grupo de la textura de fondo (.63 → screen .05)"
+      - "2026-08-10: Adaptar el loop TDD a verificación visual (sin framework de test)"
+      - "2026-08-10: Destino real de la documentación de tokens — no knowledge/tokens/"

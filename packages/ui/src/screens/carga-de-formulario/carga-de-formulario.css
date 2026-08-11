@@ -1,7 +1,9 @@
 .screen-carga-formulario {
-  background: var(--ds-color-pdf-surface);
+  background-color: var(--ds-color-pdf-surface);
   display: flex;
   min-height: 100vh;
+  position: relative; /* recorta el overlay absoluto de BackgroundTextureDots
+     (002-bg-texture) — reemplazó el enfoque de className + background-image */
 }
 
 .screen-carga-formulario__main {

@@ -352,3 +352,98 @@ fuente no pedía.
 `knowledge/screens/carga-de-formulario.md` (nuevo); `knowledge/design-system-manifest.json`;
 `knowledge/index.md`; `knowledge/component-roadmap.md`
 **Decidido por:** Luna
+
+---
+
+## 2026-08-10 Corrección de la opacidad de grupo de la textura de fondo (.63 → screen .05)
+
+**feature_id:** 002-bg-texture
+**command_origin:** sdd-implement
+**status:** accepted
+**Gap o motivo:** `input.md` (y por herencia `constitution.md` MUST-3,
+`spec.md` US-1) documentaba "opacidad de grupo `.63`" para la textura de
+puntos, medida durante `/sdd-refine`. Al ejecutar el gate de fidelidad
+obligatorio de T002 (constitution.md MUST-10: `visual-analysis-protocol.md`
+PASS 9 + `fidelity-validation.md`) antes de fijar la geometría del tile,
+parseé `Textura fondo.svg` completo y encontré que el `<g>` real que envuelve
+los ~17.920 puntos (`class="st2236"`) tiene `mix-blend-mode: screen;
+opacity: .05` — no `opacity: .63`. `.63` es solo uno de los 2.239 valores de
+opacidad *individual* por punto que sí varían (rango 0.5–0.99, eso sí
+coincide con lo medido), pero no es el valor del grupo contenedor.
+**Alternativas consideradas:** (1) implementar fiel al archivo real (`screen`
++ `.05`); (2) mantener `.63` flat tal como quedó documentado; (3) un valor
+intermedio a mano sin blend mode.
+**Por qué se descartaron:** (2) prioriza lo ya escrito sobre lo verificado en
+la fuente real que esta misma feature eligió como fuente de verdad — exactamente
+el error que el gate de fidelidad (MUST-10) existe para atrapar. (3) inventa
+un número no medido, contra el principio de "nunca inventar valores no
+medidos" de `reasoning/decision-order.md` §2.
+**Decisión tomada:** se implementa fiel al archivo real: `mix-blend-mode:
+screen; opacity: .05` sobre el grupo de puntos en `.ds-bg-texture-dots`. Antes
+de decidir, se generó un comparativo visual lado a lado (mismos 32 elementos
+reales extraídos del SVG, mismo fill/opacidad por punto) para que el humano
+viera la diferencia real antes de elegir.
+**Motivo:** fidelidad al archivo fuente real por sobre una medición previa
+incorrecta; decisión tomada con evidencia visual, no a ciegas.
+**Artefactos modificados:** `specs/002-bg-texture/constitution.md` (MUST-3),
+`specs/002-bg-texture/spec.md` (US-1)
+**Decidido por:** Luna
+
+---
+
+## 2026-08-10 Adaptar el loop TDD a verificación visual (sin framework de test) — 002-bg-texture
+
+**feature_id:** 002-bg-texture
+**command_origin:** sdd-implement
+**status:** accepted
+**Gap o motivo:** mismo conflicto ya resuelto para `001-form-modal`
+(ver entrada 2026-08-07 "Saltar el loop TDD formal"): `/sdd-implement` exige
+loop Red-Green-Refactor por tarea, pero `existing-arch.md` registra que no
+hay framework de test instalado (decisión consciente) y `constitution.md`
+de esta feature (PROHIBITED-6) prohíbe instalarlo como efecto colateral.
+`tasks.md` tampoco incluye tareas de test.
+**Alternativas consideradas:** instalar Vitest para esta feature de 3 archivos
+CSS.
+**Por qué se descartaron:** instalaría una dependencia nueva solo para
+cumplir el formato del comando, sobre una feature de CSS puro sin lógica de
+negocio que testear — mismo criterio que la decisión precedente de
+`001-form-modal`.
+**Decisión tomada:** se adapta el loop a verificación visual en Storybook por
+tarea (T002 fideliza contra el SVG real antes de fijar geometría — ver
+decisión anterior —, T003/T004 confirman en Storybook que el fondo cambia y
+que `.login-card__pattern-dot` no se ve afectado), sin asserts automatizados.
+**Motivo:** coherente con la decisión ya vigente del proyecto y con el
+precedente de `001-form-modal`.
+**Artefactos modificados:** ninguno (decisión de proceso)
+**Decidido por:** Luna
+
+---
+
+## 2026-08-10 Destino real de la documentación de tokens — no `knowledge/tokens/`
+
+**feature_id:** 002-bg-texture
+**command_origin:** sdd-implement
+**status:** accepted
+**Gap o motivo:** `constitution.md` (MUST-7), `plan.md` y `tasks.md` (T005)
+indicaban documentar el token/clase nuevo en `knowledge/tokens/`. Al llegar a
+T005 y leer `knowledge/tokens/README.md`/`token-plan.md`, resultó ser una
+propuesta congelada de milestone M2 ("Documentation only — nothing applied
+to CSS here"), escrita cuando `styles.css` tenía 41 líneas — ni siquiera los
+tokens `--ds-text-*`/Form* ya aplicados (incluyendo los de `001-form-modal`)
+están ahí. No es el changelog vivo que los artefactos de esta feature
+asumían.
+**Alternativas consideradas:** (1) agregar la fila igual en `token-plan.md`
+para "no dejarlo sin documentar"; (2) redirigir a `knowledge/component-roadmap.md`,
+que sí es el doc vivo que otras features (`001-form-modal`) usan para cerrar
+gaps.
+**Por qué se descartaron:** (1) mezclaría un token ya aplicado con una lista
+de propuestas *sin aplicar todavía*, dando una lectura falsa del estado real
+de `styles.css` a quien lea ese doc después.
+**Decisión tomada:** T005 documenta el cierre del gap "Textura de fondo
+compartida" en `knowledge/component-roadmap.md` § "Gaps nuevos encontrados"
+(mismo patrón que otros gaps cerrados en ese archivo), no en `knowledge/tokens/`.
+**Motivo:** consistencia con el destino de documentación que el repo usa
+realmente para cerrar gaps por feature.
+**Artefactos modificados:** `specs/002-bg-texture/{constitution.md,plan.md,tasks.md}`,
+`specs/_registry/features.yaml`
+**Decidido por:** Luna

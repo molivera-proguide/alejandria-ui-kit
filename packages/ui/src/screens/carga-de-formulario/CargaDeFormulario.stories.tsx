@@ -6,6 +6,7 @@ import { FormSelect, type FormSelectOption } from "../../components/FormSelect";
 import { FormCheckable, FormCheckableGroup } from "../../components/FormCheckable";
 import { FormFileUpload } from "../../components/FormFileUpload";
 import { FormDatePicker } from "../../components/FormDatePicker";
+import { BackgroundTextureDots } from "../../utils/backgroundTexture";
 import "./carga-de-formulario.css";
 
 /**
@@ -63,6 +64,7 @@ function fakeFile(name: string, sizeMb: number, type = "") {
 function CargaDeFormularioScreen() {
   return (
     <div className="screen-carga-formulario">
+      <BackgroundTextureDots />
       <SideBar
         logo={sidebarLogo}
         menuIcon={<img src={Icons.HamburguesaIcon} alt="" />}

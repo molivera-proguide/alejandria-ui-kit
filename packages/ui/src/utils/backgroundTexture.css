@@ -1,0 +1,39 @@
+.ds-bg-texture-dots {
+  height: 100%;
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+}
+
+.ds-bg-texture-dots__group {
+  fill: var(--ds-color-pattern-dot);
+  mix-blend-mode: screen;
+  opacity: 0.05;
+}
+
+/* base opacity (per-dot, medida del SVG real) vive en el <g> padre inline de cada
+   punto — este selector solo agrega la oscilación relativa (1 → .25 → 1) encima,
+   así el resultado final multiplica ambas sin necesitar custom properties CSS. */
+.ds-bg-texture-dots__dot {
+  animation-iteration-count: infinite;
+  animation-name: ds-bg-texture-breathe;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes ds-bg-texture-breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-bg-texture-dots__dot {
+    animation: none;
+  }
+}

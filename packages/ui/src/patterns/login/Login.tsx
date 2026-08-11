@@ -1,5 +1,6 @@
 import { Button } from "../../components/Button";
 import { TextField } from "../../components/TextField";
+import { BackgroundTextureDots } from "../../utils/backgroundTexture";
 import "./login.css";
 
 /**
@@ -31,6 +32,7 @@ const PATTERN_DOT_COUNT = 9;
 export function Login({ variants = ["pattern", "credentials"] }: LoginProps) {
   return (
     <div className="login-screen" aria-label="Módulo de login">
+      <BackgroundTextureDots />
       <div className="login-screen__variants">
         {variants.includes("pattern") ? <LoginPatternCard /> : null}
         {variants.includes("credentials") ? <LoginCredentialsCard /> : null}

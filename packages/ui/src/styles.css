@@ -60,6 +60,11 @@
        same "measured, not merged" rule as every other near-duplicate hex in this file. */
     --ds-color-pdf-form-muted: #8d8d8d;
     --ds-color-pdf-ink-bright: #f6f6f6; /* Form-Login label (p.17) */
+    --ds-color-pattern-dot: #ebf2fe; /* Textura fondo.svg (Downloads de Luna, no
+       committeada — 002-bg-texture) — fill real de los ~17.920 puntos de la textura
+       de fondo compartida. Consumido vía var() en utils/backgroundTexture.css (SVG
+       inline real desde 2026-08-10, no una data URI — el token se referencia en
+       vivo, no se duplica como literal). */
 
     /* --- Opacity / wash primitives --- */
     --ds-color-white-a04: rgb(255 255 255 / 0.04);
@@ -3482,6 +3487,12 @@
   .ds-modal__action:hover {
     background: var(--ds-color-pdf-ink-muted); /* #8a8b87 */
   }
+
+  /* BACKGROUND TEXTURE (002-bg-texture) — movida a utils/backgroundTexture.{tsx,css}
+     el 2026-08-10: la textura pasó de background-image estática a SVG inline
+     animado (32 puntos reales respirando su opacidad), no puede seguir siendo
+     una sola clase en styles.css. Ver DECISIONS.md 2026-08-10 y ese archivo para
+     el detalle completo (mix-blend-mode/opacidad medidos, timing, fuente real). */
 
   @keyframes ds-spin {
     to {
