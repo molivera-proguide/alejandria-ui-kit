@@ -212,10 +212,10 @@ canvas de grafo interactivo) — ingeniería de aplicación, no un componente.
 |---|---|:---:|---|
 | 1 | Welcome / splash | A | Ilustración 3D decorativa suelta — asset estático de una sola vez, no requiere componente |
 | 2 | Login | A | `patterns/login/Login.tsx` ya construido y fidelity-checked (p.7 de `design-reference.pdf`) — el grid de puntos es el fondo decorativo del propio patrón, no un teclado numérico |
-| 3 | Asistente IA (estado vacío) | A | Coincide con el shell estático de `Asistente.tsx` ya construido |
+| 3 | Home (eventos + KPIs) | A | **Corregido 2026-08-11** (era "Asistente IA, estado vacío" — error de mapeo de páginas, ver `drafts/pantallas-grupo-a-b.md` § hallazgo p.3/p.5/p.6, re-verificado con `get_pixmap()`). Contenido real: `SideBar` expandido + saludo/input de `Asistente` completo + "PRÓXIMOS EVENTOS" (`CalendarCard` ×6) + "RESUMEN DE PRODUCTIVIDAD" (`MetricCard` ×2 + `ProgressRing`) + columna "TAREAS EN FECHA" (`TaskCard`). No hay una página separada de "Asistente vacío" en este PDF — era la misma pantalla contada dos veces. |
 | 4 | Dashboard módulos | A | Grid de `ModuleCard` ×8 + topbar |
-| 5 | Home (eventos + KPIs) | A | `Asistente` input + `ProgressRing` gauges; la tarjeta de "próximo evento" es nueva pero trivial |
-| 6 | Tareas pendientes (grid) | A | Tarjeta resumen simple, cercana a `Card`/`InvestigationCard` |
+| 5 | Tareas Pendientes (grid, variante A) | A | **Nota 2026-08-11**: esta fila decía "Home (eventos+KPIs)" con la descripción de `Asistente`+gauges — ese contenido es en realidad el de p.3 (ver fila arriba). Contenido real de p.5: toggle "EN FECHA/VENCIDAS" + buscador + grilla de `TaskCard` con triángulo de acento (tone). **Pendiente de Sprint 2**: confirmar si p.5/p.6 son pantallas reales distintas o field gallery del mismo patrón (ver `drafts/pantallas-grupo-a-b.md`) — no resuelto todavía, esta fila no se corrige más allá del contenido hasta esa decisión. |
+| 6 | Tareas Pendientes (grid, variante B) | A | Tabs con barra de progreso ("EN FECHA 45%"/"RETRASADAS 75%") + `TaskCard` con botón "VER MÁS" (sin triángulo de acento). Ver nota de p.5 — misma pregunta pendiente de Sprint 2. |
 | 7 | Tareas — master-detail | A | El panel de detalle es casi 1:1 `DetailSheet` |
 | 8 | Tareas — kanban | A* | `TaskCard` ya tiene variante kanban, pero tiene la regresión de sizing sin cerrar de la "2026-07-28 sizing pass" arriba — cerrar antes de mostrar esta pantalla como lista |
 | 9 | Tareas finalizadas (grid) | A | Mismo componente que p.6, otro filtro |

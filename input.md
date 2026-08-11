@@ -1,242 +1,170 @@
-# Brief — Form field primitives + Modal (PDF UI Toolkit v3, p.17–22)
+# Brief — Sprint 1: Home & Dashboard (p.1, 2, 3, 4)
 
-> Generado por `/sdd-refine` el 2026-08-07, a partir de `drafts/formularios-pdf-v3.md`,
-> `drafts/README.md` y `existing-arch.md`. Fuente completa y verbatim del PDF:
-> `knowledge/references/pdf-text-extract.md` (p.17–22).
+> Generado por `/sdd-refine` el 2026-08-11, a partir de `drafts/pantallas-grupo-a-b.md`
+> § Grupo A (p.1-4) y `existing-arch.md`. Alcance: **Sprint 1** de la recomendación de
+> agrupamiento del draft (ver `handoffs/20260810-fase1-sprint1-home-dashboard.md`).
+> Excluye explícitamente el resto del draft: Sprint 2 (Familia Tareas, p.5-9), Sprint 3
+> (Reportes & Usuarios, p.12, 23), Sprint 4 (Toast + Acordeón, p.20), Sprint 5 (Tabs +
+> Chat, p.21-22). También excluye `drafts/fondo-animado-nota-diseno.md` y
+> `drafts/tipografia-legibilidad.md` — iniciativas separadas, no relacionadas con estas
+> 4 páginas (la primera es una corrección ya resuelta sobre `002-bg-texture`, CLOSED).
 
 ## 1. PROBLEMA
 
-El PDF v2 (18 páginas) tenía una sola página "FORM" (p.17), un placeholder casi
-idéntico al de "EMPTY" — sin campos, sin layout, sin estados reales.
-`knowledge/component-roadmap.md` la marcó como "no lista, diseño la sigue
-trabajando" (nota del 2026-08-06). La v3 (24 páginas, actualizada 2026-08-07)
-reemplaza eso por **5 páginas dedicadas** de Form, cada una con spec visual real
-(colores, tipografía, bordes, estados).
+El PDF "Alejandria - Agosto 2026.pdf" muestra pantallas **compuestas** (la capa arriba
+de los componentes individuales: cómo se combinan en superficies de producto reales),
+pero el kit hoy solo tiene un precedente de esa capa (`screens/carga-de-formulario/`).
+De las 14 páginas pendientes de triage, 4 (p.1, 2, 3, 4) están confirmadas por el draft
+como "cero gaps de componente nuevo" — todo lo que necesitan ya existe y está
+fidelity-checked — pero **no existen como composición documentada/reproducible**
+todavía. Sin esa capa, un agente de IA (el consumidor principal del kit, según
+`existing-arch.md`) tiene los átomos pero no el criterio de cómo ensamblarlos en estas
+pantallas específicas.
 
-En la misma actualización del PDF, la página ALERT (p.22) — que antes no tenía
-spec dedicada — ganó un patrón real de diálogo confirm/cancel
-("Confirmación de acción"). Esto resuelve el gap **Modal/Dialog** que
-`knowledge/component-roadmap.md` ya marcaba como **High priority** (hallazgo del
-eval baseline, previo a esta sesión). Por comodidad de sesión de PDF y porque
-ambos hallazgos llegaron juntos, esta feature cubre **ambos**: los field
-primitives de Form y el componente Modal de confirmación.
+**Hallazgo que esta feature también resuelve:** el triage original en
+`knowledge/component-roadmap.md` (2026-08-07) tiene un error real en la fila de p.3 —
+dice "Asistente IA (estado vacío)" cuando el contenido real (re-verificado con
+`get_pixmap()` el 2026-08-10, ver `drafts/pantallas-grupo-a-b.md`) es el Home completo:
+SideBar + input de Asistente + próximos eventos + KPIs + tareas en fecha. No existe una
+página separada de "Asistente vacío" en este PDF — Home y "Asistente vacío" eran la
+misma pantalla contada dos veces con dos nombres.
 
 ## 2. USUARIO
 
-No hay una persona/contexto de producto específico para esta feature. Los field
-primitives (y el Modal) son de propósito general: cualquier app que consuma
-`@alejandria/ui-kit` los usa para el formulario o diálogo de confirmación que
-necesite. Los ejemplos concretos del PDF (USUARIO/CONTRASEÑA, DNI, TIPO DE
-USUARIO: Admin/Editor/General, ACCESO A MÓDULOS, "¿ESTÁS SEGURO DE ESTA
-ACCIÓN?") son **ilustrativos** — sirven para ver los componentes en contexto en
-Storybook, no definen un caso de uso real que la feature deba resolver.
+Sin persona/contexto de producto específico (mismo criterio que `001-form-modal` y
+`002-bg-texture`) — el consumidor es cualquier developer o agente de IA que use
+`@alejandria/ui-kit` y necesite reproducir Welcome/Login/Home/Dashboard tal como las
+define el PDF, con el criterio de composición ya resuelto en vez de tener que
+redescubrirlo desde los componentes sueltos.
 
 ## 3. DONE CRITERIA
 
-- [ ] 6 componentes nuevos implementados, cada uno con `.tsx` + `.stories.tsx`
-      plano en `packages/ui/src/components/` y exportado en `src/index.ts`:
-  - `FormTextInput` (cubre Login-input p.17 e Input p.18, ver nota de
-    unificación en sección 6)
-  - `FormSelect` (dropdown/select de p.18)
-  - `FormCheckable` (checkbox/radio/switch, p.19)
-  - `FormFileUpload` (adjuntos, p.20)
-  - `FormDatePicker` (calendario + hora, p.21)
-  - `Modal` (confirm/cancel, p.22 — variante "Confirmación de acción" únicamente)
-- [ ] Cada componente tiene story(s) en Storybook mostrando sus estados
-      relevantes (default, activo, error, disabled, según aplique).
-- [ ] `knowledge/component-roadmap.md` actualizado: se retira la nota de Form
-      "no listo, diseño lo sigue trabajando" (2026-08-06) y se marca el gap
-      Modal/Dialog como resuelto.
-- [ ] Fidelity pass de cada componente contra el PDF v3 (p.17–22) — mismo
-      proceso que el tracker existente en `knowledge/fidelity-pass/next-steps.md`,
-      citando página y valores exactos igual que hacen los componentes ya
-      cerrados (ej. `Login.tsx`).
-- [ ] Antes de implementar `FormDatePicker`, se revisó la página 21 del PDF
-      directamente (no solo el extract de texto) para resolver el layout del
-      grid de calendario y el rango de horas visible — ver sección 6.
+**p.1 — Welcome / splash**
+- Confirmado sin gap: ilustración 3D decorativa + wordmark, asset estático de una sola
+  vez. **No se crea ningún artefacto nuevo** (ni `.tsx`, ni `knowledge/screens/*.md`) —
+  la confirmación queda documentada en `spec.md`/`tasks.md` de esta feature, no como
+  una task de construcción.
 
-## 4. OUT OF SCOPE (explícito, esta versión)
+**p.2 — Login**
+- Confirmado sin gap a nivel *screen*: coincide 1:1 con `patterns/login/Login.tsx`, que
+  ya usa `BackgroundTextureDots` (resuelto en Sprint 0 / `002-bg-texture`, CLOSED). La
+  pregunta chica del draft (¿el fondo full-screen es el mismo token que el de la card?)
+  queda resuelta por ese mismo cierre. **No se crea ningún artefacto nuevo** — solo
+  confirmación documentada.
 
-- **FILTER (p.23)**: el propio diseñador anota que la spec está incompleta
-  ("Me falta desarrollar el desplegable del funnel"). No entra sin confirmar
-  con diseño primero.
-- **Fix de comentario en `Scrollbar.tsx`**: el comentario cita "PDF p.13
-  MISCELÁNEAS", título que ya no existe desde v2. Es cosmético, no bloqueante,
-  y no es un gap de implementación (los valores del PDF v3 p.24 ya coinciden
-  con el código). Candidato a `/sdd-fix` aparte, fuera de esta feature.
-- **Validación con lógica de negocio**: esta feature NO implementa reglas de
-  validación (client-side ni server-side), ni dispara nada por su cuenta al
-  submit/blur/typing. Los componentes son visuales/controlados — ver sección 6.
-- **Autoguardado / manejo de abandono del formulario**: fuera de scope. El kit
-  no tiene persistencia ni estado global propio (`existing-arch.md`); el ciclo
-  de vida del formulario es responsabilidad de quien consuma los primitives.
-- **Estados `readonly` y `loading`**: no entran en esta versión (solo
-  `disabled`, ver sección 6). Si un consumidor los necesita, se pide como
-  feature aparte.
-- **Alert Sigcat y Tarea realizada** (otras dos variantes de p.22 ALERT): no
-  entran en esta feature — solo la variante "Confirmación de acción" (patrón
-  confirm/cancel). Las otras dos son alertas/notificaciones, no diálogos
-  modales, y no resuelven el gap Modal/Dialog que motiva incluir esta página.
-- **Drag&drop avanzado**: se incluye soporte básico (ver sección 6), no
-  comportamiento avanzado (previsualización de archivo, progreso de carga,
-  reordenamiento). El propio PDF deja la interacción sin spec ("escucho
-  sugerencias, mientras busco referencias").
+**p.3 — Home (eventos + KPIs)**
+- Se crea `packages/ui/src/screens/home/Home.stories.tsx` + `home.css`, siguiendo
+  exactamente el precedente de `screens/carga-de-formulario/` (composición vive en el
+  `.stories.tsx`, no hay `.tsx` de componente separado ni export en `index.ts` — los
+  screens son Storybook-only).
+- Regiones de la composición: `SideBar` expandido (mismo item set que
+  `SideBar.stories.tsx`, con `badge` en el ítem de notificaciones — prop ya soportada,
+  confirmado en `SideBar.tsx:27`) · `Asistente` **reusado completo, tal cual** (shell
+  entero, no se extrae el input+chips por separado — decisión confirmada) · "PRÓXIMOS
+  EVENTOS" con 6× `CalendarCard` · "RESUMEN DE PRODUCTIVIDAD" con 2× `MetricCard` ficha
+  + 1× `ProgressRing` "ASISTENCIAS" 75% · columna derecha fija "TAREAS EN FECHA" con
+  lista scrolleable de `TaskCard`.
+- Se crea `knowledge/screens/home.md` (mismo formato que
+  `knowledge/screens/carga-de-formulario.md`).
 
-## 5. RESTRICCIONES TÉCNICAS (no negociables, de `existing-arch.md`)
+**p.4 — Dashboard módulos**
+- Se crea `packages/ui/src/screens/dashboard/Dashboard.stories.tsx` + `dashboard.css`,
+  mismo precedente que Home.
+- Grilla 2×4 de `ModuleCard` ×8, `SideBar` colapsado. Varias cards usan 2 filas de
+  `ModuleMetric[]` (ej. "INVESTIGACIONES ABIERTAS: 30" + "CASOS PENDIENTES: 6") — ya
+  soportado por la API actual de `ModuleCard.tsx`, sin cambios al componente.
+- Se crea `knowledge/screens/dashboard.md`.
 
-- Stack: TypeScript `strict: true`, React 19.2, Storybook 10, Vite 8, pnpm.
-- Cada uno de los 6 componentes va como field primitive / componente suelto en
-  `packages/ui/src/components/`: un `.tsx` + un `.stories.tsx` plano, **sin**
-  carpeta propia (a diferencia de `patterns/`, que sí usa subcarpeta). Esto
-  aplica también a `Modal` — no es una composición de página, es un componente
-  reutilizable de propósito general.
-- `src/index.ts` es la única fuente de verdad de exports públicos — el build
-  deriva el `.d.ts` del barrel a partir de esas líneas `export`, nunca a mano.
-- Tokens de color/tipografía vía `--ds-*` en `packages/ui/src/styles.css`. Los
-  valores hex de este brief son del PDF (@2×); por convención del repo se
-  dividen entre 2 al implementar (ver comentarios existentes tipo
-  `/* PDF 15.09 → ÷2 */` en `styles.css`).
-- Sin framework de test instalado (decisión consciente, confirmada por el
-  equipo). Cualquier task de test en `/sdd-implement` requiere elegir
-  framework explícitamente (candidato: Vitest, ya usan Vite) — no asumirlo.
-- Sin linter instalado (decisión consciente) — no agregar como parte de esta
-  feature.
-- `knowledge/` es la autoridad de diseño para tokens, radios, tipografía y
-  decisiones visuales — si algo de este brief contradice
-  `knowledge/design-system-rules.md`, se resuelve a favor de `knowledge/` y se
-  registra en `DECISIONS.md`.
+**Corrección de gobernanza (aplicada como parte de esta feature, no como `/sdd-fix`
+aparte — es documentación, no código):**
+- `knowledge/component-roadmap.md` § "Screens triage": la fila `p.3` pasa de
+  "Asistente IA (estado vacío)" a "Home (eventos + KPIs)", con nota explicando el
+  hallazgo. Las filas `p.5`/`p.6` **no se tocan** en esta corrección — la pregunta de si
+  son pantallas reales distintas o alternativas de diseño del mismo patrón queda para
+  el grilling de Sprint 2 (Familia Tareas), como ya decidió el handoff previo.
+
+## 4. OUT OF SCOPE
+
+- p.5, 6, 7, 8, 9 (Sprint 2 — Familia Tareas), p.12, 23 (Sprint 3), p.20 (Sprint 4),
+  p.21, 22 (Sprint 5) — quedan para sus propios `/sdd-refine` según la recomendación de
+  agrupamiento del draft.
+- Resolver si p.5/p.6 son pantallas reales distintas o una field gallery del mismo
+  patrón (precedente: p.19) — pregunta explícita de Sprint 2, no de este sprint.
+- Cualquier cambio a `Asistente.tsx` — se reusa completo, tal cual está, sin modificar
+  su shell ni extraer piezas.
+- Cualquier cambio a `SideBar.tsx`, `CalendarCard.tsx`, `MetricCard.tsx`,
+  `ProgressRing.tsx`, `TaskCard.tsx` o `ModuleCard.tsx` — todos se consumen tal cual
+  están, cero gaps de componente confirmados por el draft.
+- `drafts/fondo-animado-nota-diseno.md` (animación de `002-bg-texture`, feature
+  separada ya CLOSED) y `drafts/tipografia-legibilidad.md` (escala tipográfica global,
+  feature separada, aún sin refinar) — no forman parte de este sprint.
+
+## 5. RESTRICCIONES TÉCNICAS
+
+- Convención de screens (`existing-arch.md` + precedente real en
+  `screens/carga-de-formulario/`): composición completa vive en un único
+  `<Slug>.stories.tsx` + `<slug>.css` dentro de `packages/ui/src/screens/<slug>/` — sin
+  `.tsx` de componente separado, sin export en `index.ts` (los screens son
+  Storybook-only, no parte de la API pública del paquete).
+- `knowledge/screens/<slug>.md` como screen doc — mismo formato que
+  `knowledge/screens/carga-de-formulario.md`.
+- Tokens de color/tipografía vía `--ds-*` en `styles.css`; convención `@2× ÷ 2` para
+  toda geometría que no sea hairline/radius/em/rem — `knowledge/` sigue siendo la
+  autoridad de estilos (regla de `CLAUDE.md`).
+- Antes de fijar cualquier geometría nueva en las screens: aplicar el método de
+  `knowledge/visual-analysis-protocol.md` (PASS 9) y el gate de
+  `knowledge/reasoning/fidelity-validation.md` — no repetir el patrón "verifiqué
+  colores y lo llamé fidelity-passed".
+- Sin framework de test instalado — verificación manual en Storybook (mismo criterio
+  que `carga-de-formulario` y `002-bg-texture`).
+- `src/index.ts` es la única fuente de verdad de exports públicos — esta feature no le
+  agrega nada (los screens no se exportan).
+- No se toca `Asistente.tsx`, `SideBar.tsx`, `CalendarCard.tsx`, `MetricCard.tsx`,
+  `ProgressRing.tsx`, `TaskCard.tsx` ni `ModuleCard.tsx` — se consumen vía import
+  directo desde `components/`, sin modificar su código fuente.
 
 ## 6. UI / FLUJO
 
-### Arquitectura general
-Field primitives sueltos (no un `Form` compuesto único). Cada sub-tipo del PDF
-es su propio componente exportado, mismo patrón que hoy `TextField`/
-`SelectField`/`Switch` en el kit. Nadie orquesta un "formulario completo" —
-el PDF tampoco muestra esa composición (no hay página con varios campos juntos
-en un form real), así que no se inventa ese layout en esta feature.
+**p.3 — Home**
+- Layout de 3 columnas: `SideBar` expandido (fija, izquierda) · columna central con
+  saludo "HOLA SEBASTIÁN, ¿QUÉ QUERÉS HACER HOY?" + `Asistente` completo (input con
+  mic, "Adjuntar archivos", botón EJECUTAR, 4 chips de sugerencia) arriba, seguido de
+  "PRÓXIMOS EVENTOS" (grid de 6× `CalendarCard`, fecha+descripción) y "RESUMEN DE
+  PRODUCTIVIDAD" (2× `MetricCard` ficha con ícono editar/borrar, en fila, + 1×
+  `ProgressRing` "ASISTENCIAS" al 75%) · columna derecha fija y angosta "TAREAS EN
+  FECHA" con lista scrolleable de `TaskCard`.
+- El ícono de campana en `SideBar` lleva badge de notificación tipo pill (prop `badge`
+  del `SideBarItem`, ya soportada).
 
-**Nota de unificación**: p.17 (Login-input) y p.18 (Input general) son ambos
-inputs de texto con specs de color distintas (contexto login vs. contexto
-genérico). Se implementan como un solo `FormTextInput` con variante/prop que
-selecciona el set de estilos (ej. `variant="login" | "default"`), no como dos
-componentes separados — evita duplicar lógica de label-flotante/estado
-activo que es idéntica en ambos.
+**p.4 — Dashboard**
+- `SideBar` colapsado (icon-only, izquierda) + grilla 2×4 de `ModuleCard` (8 cards
+  totales) ocupando el resto del viewport. Cada card muestra ícono + título + 1 o 2
+  filas de métrica (`ModuleMetric[]`) según el módulo (ej. "INVESTIGACIONES ABIERTAS:
+  30" + "CASOS PENDIENTES: 6" en la misma card).
 
-### 1. FormTextInput — variante `login` (p.17)
-- Fondo del contenedor: `#2a2927`
-- Label: Source Code Light, 20pt, `#f6f6f6`, uppercase
-- Input activo + label activo: Source Code Light, 10pt, `#8d8d8d`, padding 10px
-- Línea bajo input activo: 0,75pt, `#606060`
-- Borde del input cuando está activo: `#ffffff`
-- Ejemplo en story: USUARIO, CONTRASEÑA
+**p.1 — Welcome**
+- Sin composición nueva: ilustración 3D decorativa (poliedro facetado + wireframe de
+  puntos) + wordmark "ALEJANDRIA FUSION PLATFORM / WELCOME" abajo a la izquierda. Se
+  documenta como confirmado, no se reproduce como screen.
 
-### 1. FormTextInput — variante `default` (p.18)
-- Fondo: `#060606` al 50% de opacidad
-- Borde: 0,75pt `#606060`; borde con error: `#ff0404` (+ transición CSS simple,
-  ver "Animación" abajo)
-- Label: Source Code Light, 16pt, `#8d8d8d`, uppercase
-- Input activo + label activo: Source Code Light, 10pt, `#8d8d8d`, padding 10px
-- Línea bajo input activo: 0,75pt `#606060`; borde activo: `#ffffff`
-- Texto del valor: Montserrat Regular, 16pt, `#ffffff`
-- Ejemplo en story: DNI, NOMBRE, DESCRIPCIÓN (textarea)
-- Prop `error?: string | boolean` — puramente visual (ver "Validación" abajo)
-- Prop `disabled?: boolean` — estilo a definir en `/sdd-implement` dentro de
-  las convenciones de `knowledge/` (el PDF no lo especifica)
-
-### 2. FormSelect (p.18)
-- Mismos estilos base que `FormTextInput` variante `default` (fondo, borde,
-  label, línea activa)
-- El desplegable se **superpone** al input cuando está activo (no empuja
-  layout — mismo patrón de overlay que usa `FormFileUpload`)
-- Soporta selección única o multiselect (prop, ej. `multiple?: boolean`)
-- Al seleccionar una opción, el desplegable se centra en esa opción
-- Ejemplo en story: TIPO DE USUARIO (Admin/Editor/General)
-- Prop `error` y `disabled` — mismo criterio que `FormTextInput`
-
-### 3. FormCheckable (p.19)
-- Cubre checkbox, radio y switch con una API común
-- Versión simple y versión con bajada (descripción) para todos los casos —
-  prop `description?: string`
-- Título de grupo: Source Code Light, 16pt, `#8d8d8d`, uppercase
-- Label: Montserrat Regular, 16pt, `#ffffff`
-- Descripción (bajada): Montserrat Regular, 12pt, `#8d8d8d`
-- Checkbox seleccionado: fondo `#ffffff`, selector `#060606`
-- Switch: fondo `#606060`, selector `#ffffff`
-- Switch seleccionado: fondo `#ffffff`, selector `#060606`
-- Prop `disabled` — mismo criterio que arriba
-
-### 4. FormFileUpload (p.20)
-- Fondo: `#060606` al 50%; borde 0,75pt `#606060`; borde con error `#ff0404`
-  (+ transición CSS simple)
-- Label: Source Code Light, 16pt, `#8d8d8d`, uppercase
-- Nombre de archivo: Montserrat Regular, 16pt, `#ffffff`
-- Descripción de archivo (tipo/tamaño): Montserrat Regular, 10pt, `#8d8d8d`
-- Formatos admitidos: PDF, JPG, PNG, DOC
-- Permite más de un archivo adjunto a la vez (multi-file)
-- Cuando el input está activo, el estado "empty" se superpone al input (mismo
-  patrón de overlay que el select)
-- **Drag & drop básico incluido**: highlight visual de la zona al arrastrar un
-  archivo encima, además del click-to-upload estándar (`input type="file"`).
-  Sin previsualización ni progreso de carga (fuera de scope, ver sección 4) —
-  el PDF no especifica esta interacción más allá de la intención del
-  diseñador, así que el comportamiento exacto de highlight/estilos se
-  documenta como interpretación razonable en `DECISIONS.md` durante
-  `/sdd-implement`.
-- Prop `disabled` — mismo criterio que arriba
-
-### 5. FormDatePicker (p.21)
-- Fondo: `#060606` al 50%; borde 0,75pt `#606060`; borde activo `#ffffff`
-- Label: Source Code Light, 16pt, `#8d8d8d`, uppercase
-- Input activo + label: Source Code Light, 12pt, `#8d8d8d`
-- Mes/año: Montserrat Bold, 12pt, `#ffffff`
-- Números y días: Montserrat Regular, 12pt, `#8d8d8d`
-- Horas: Montserrat Regular, 14pt, `#8d8d8d`
-- Día/hora seleccionada: `#ffffff`
-- Grid de calendario (L M M J V S D + 1-31) + selector de hora separado (HORA)
-- **Gate explícito**: el extract de texto (`pdf-text-extract.md`) NO resuelve
-  el layout exacto del grid (cuántas filas, alineación) ni el rango de horas
-  visible en el selector. `/sdd-implement` debe abrir la página 21 del PDF
-  directamente (no solo el extract) antes de definir el layout — no se
-  inventa un grid genérico sin esa referencia visual.
-- Prop `disabled` — mismo criterio que arriba
-
-### 6. Modal — variante "Confirmación de acción" (p.22)
-- Fondo: `#060606`
-- Borde: 0,75pt `#606060`
-- Título: Source Code Bold, 18pt, `#ffffff`
-- Texto: Montserrat Light, 18pt, `#c1c1c1`
-- Línea separadora: 0,75pt `#8a8b87`
-- Copy de ejemplo en story: "¿ESTÁS SEGURO DE ESTA ACCIÓN?" + "Esta acción es
-  irreversible; la elección realizada afectará el resultado definitivo y no
-  podrá deshacerse."
-- 2 botones de acción (ej. props `primaryAction`/`secondaryAction` o
-  `onConfirm`/`onCancel` + labels configurables — el PDF muestra "ACCIÓN A" /
-  "ACCIÓN B" como placeholders genéricos, no literal)
-- Distinto de `AlertBanner.tsx` (ya existente, patrón de notificación/banner)
-  — nombre `Modal` elegido deliberadamente para no confundir con Alert
-- Fuera de esta variante: "Alert Sigcat" y "Tarea realizada" (otras dos cajas
-  de la misma página p.22) — son notificaciones, no diálogos, y no forman
-  parte de esta feature (ver sección 4)
-
-### Validación (visual únicamente, sin lógica)
-Todos los componentes con estado de error (`FormTextInput`, `FormSelect`,
-`FormFileUpload`) exponen una prop `error?: string | boolean` que el
-**consumidor controla externamente**. El kit no implementa reglas de
-validación, no decide cuándo mostrar el error (submit/blur/typing es decisión
-de quien lo consume), y no dispara nada por su cuenta. Esto es coherente con
-"librería de componentes puros, sin persistencia" (`existing-arch.md`).
-
-### Animación
-Transición CSS simple (ej. 150–200ms `ease`) sobre las propiedades que
-cambian en la transición estático↔activo (`border-color`, `font-size` del
-label). El PDF pide animación pero no da valores de timing/easing — se
-documenta en `DECISIONS.md` como interpretación razonable durante
-`/sdd-implement`.
+**p.2 — Login**
+- Sin composición nueva: coincide 1:1 con `Login.tsx` ya construido (fondo full-viewport
+  con `BackgroundTextureDots`, wordmark centrado arriba, card de login con grid 3×3 de
+  puntos decorativos + campo CONTRASEÑA + botón INGRESAR).
 
 ## Referencias
-- `knowledge/references/pdf-text-extract.md` — texto verbatim completo, p.17–24
-- `knowledge/component-roadmap.md` — nota desactualizada sobre Form "no listo"
-  (2026-08-06) y gap Modal/Dialog (High priority, eval baseline)
-- `existing-arch.md` — restricciones de codebase (commit base `11c9a51`)
-- `drafts/formularios-pdf-v3.md` — draft original de esta feature
-- `handoffs/20260807-fase1-drafts-formularios.md` — handoff que originó el draft
+
+- `drafts/pantallas-grupo-a-b.md` § "Grupo A — páginas releídas y confirmadas" (p.1-4) —
+  fuente principal de este brief, incluida la sección de hallazgo p.3/p.5/p.6.
+- `handoffs/20260810-fase1-sprint1-home-dashboard.md` — handoff que definió el alcance
+  de este sprint y los puntos a confirmar en el grilling.
+- `knowledge/screens/carga-de-formulario.md` y
+  `packages/ui/src/screens/carga-de-formulario/` — precedente estructural para Home y
+  Dashboard (convención `.stories.tsx` + `.css`, sin `.tsx` separado).
+- `packages/ui/src/components/SideBar.tsx`, `Asistente.tsx`, `CalendarCard.tsx`,
+  `MetricCard.tsx`, `ProgressRing.tsx`, `TaskCard.tsx`, `ModuleCard.tsx` — componentes
+  reusados tal cual, cero gaps.
+- `knowledge/component-roadmap.md` § "Screens triage" — tabla a corregir (fila p.3).
+- `existing-arch.md` — restricciones de codebase y convención de screens.
+- `specs/002-bg-texture/` — feature previa (CLOSED), de donde viene
+  `BackgroundTextureDots` ya aplicado a Login.
