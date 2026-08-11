@@ -48,3 +48,26 @@ features:
       - "2026-08-10: Corrección de la opacidad de grupo de la textura de fondo (.63 → screen .05)"
       - "2026-08-10: Adaptar el loop TDD a verificación visual (sin framework de test)"
       - "2026-08-10: Destino real de la documentación de tokens — no knowledge/tokens/"
+
+  - id: 003-home-dashboard
+    type: feature
+    status: CLOSED
+    domain: composed-patterns
+    owner: lvgonzalezprg
+    sprint: null
+    created: 2026-08-11
+    closed: 2026-08-11
+    touches:
+      - packages/ui/src/screens/home/Home.stories.tsx
+      - packages/ui/src/screens/home/home.css
+      - packages/ui/src/screens/dashboard/Dashboard.stories.tsx
+      - packages/ui/src/screens/dashboard/dashboard.css
+      - knowledge/screens/home.md
+      - knowledge/screens/dashboard.md
+      - knowledge/index.md
+      - knowledge/design-system-manifest.json
+      - knowledge/component-roadmap.md
+      - input.md
+    decisions:
+      - "2026-08-11: Adaptar el loop TDD a verificación visual (sin framework de test)"
+      - "2026-08-11: Corrección de componente — Asistencias en Home es DonutChartCard, no ProgressRing"

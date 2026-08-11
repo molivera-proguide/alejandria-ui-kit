@@ -329,6 +329,20 @@
       "path": "knowledge/screens/carga-de-formulario.md",
       "storybook": "Alejandria/Screens/CargaDeFormulario",
       "source": "packages/ui/src/screens/carga-de-formulario/CargaDeFormulario.stories.tsx"
+    },
+    {
+      "id": "home-screen",
+      "name": "Home",
+      "path": "knowledge/screens/home.md",
+      "storybook": "Alejandria/Screens/Home",
+      "source": "packages/ui/src/screens/home/Home.stories.tsx"
+    },
+    {
+      "id": "dashboard-screen",
+      "name": "Dashboard",
+      "path": "knowledge/screens/dashboard.md",
+      "storybook": "Alejandria/Screens/Dashboard",
+      "source": "packages/ui/src/screens/dashboard/Dashboard.stories.tsx"
     }
   ],
   "tokens": [

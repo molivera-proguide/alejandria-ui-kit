@@ -447,3 +447,63 @@ realmente para cerrar gaps por feature.
 **Artefactos modificados:** `specs/002-bg-texture/{constitution.md,plan.md,tasks.md}`,
 `specs/_registry/features.yaml`
 **Decidido por:** Luna
+
+---
+
+## 2026-08-11 Adaptar el loop TDD a verificación visual (sin framework de test) — 003-home-dashboard
+
+**feature_id:** 003-home-dashboard
+**command_origin:** sdd-implement
+**status:** accepted
+**Gap o motivo:** mismo conflicto ya resuelto para `001-form-modal` (2026-08-07) y
+`002-bg-texture` (2026-08-10): `/sdd-implement` exige loop Red-Green-Refactor por
+tarea, pero `existing-arch.md` registra que no hay framework de test instalado
+(decisión consciente) y `constitution.md` de esta feature (MUST-8) ya fija
+verificación manual en Storybook. `tasks.md` tampoco incluye tareas de test.
+**Alternativas consideradas:** instalar Vitest para 2 screens de composición pura
+(sin lógica de negocio propia).
+**Por qué se descartaron:** instalaría una dependencia nueva solo para cumplir el
+formato del comando, sobre una feature que solo compone componentes ya
+fidelity-checked — mismo criterio que las dos decisiones precedentes.
+**Decisión tomada:** se adapta el loop a verificación visual en Storybook por
+tarea (T002 Home, T003 Dashboard), sin asserts automatizados.
+**Motivo:** coherente con la decisión ya vigente del proyecto y el precedente de
+`001-form-modal`/`002-bg-texture`.
+**Artefactos modificados:** ninguno (decisión de proceso)
+**Decidido por:** Luna
+
+---
+
+## 2026-08-11 Corrección de componente: "Asistencias" en Home es DonutChartCard, no ProgressRing
+
+**feature_id:** 003-home-dashboard
+**command_origin:** sdd-implement (feedback post-entrega, antes de /sdd-checklist)
+**status:** accepted
+**Gap o motivo:** `input.md`/`constitution.md`/`spec.md`/`plan.md`/`tasks.md` fijaban
+`ProgressRing` para el gauge "ASISTENCIAS" de Home (p.3), heredado del `/sdd-refine`
+original. Luna revisó el resultado en Storybook contra el PDF real y señaló que el
+componente correcto es `DonutChartCard` — en el PDF, "ASISTENCIAS" queda cortado
+(como si la página necesitara scroll para mostrarlo completo), lo que hizo pasar
+desapercibido durante el refine que no era el gauge de anillo simple de
+`ProgressRing` sino el mismo `DonutChartCard` que ya se usa para el donut "Tareas"
+45%/30% de p.12 Reportes. Luna adjuntó captura del Storybook de `DonutChartCard`
+(`ChartCard.stories.tsx` § `DonutChart`) y captura del PDF como evidencia.
+**Alternativas consideradas:** mantener `ProgressRing` (ya implementado y
+verificado sin errores) vs. corregir a `DonutChartCard` antes de `/sdd-checklist`.
+**Por qué se descartaron:** mantener `ProgressRing` prioriza lo ya implementado
+por sobre la fuente real (el PDF), exactamente el error que el protocolo de
+fidelidad de este proyecto existe para atrapar — la sesión de implementación no
+tuvo acceso a la vista completa del PDF (componente cortado), así que no era un
+gap detectable sin la evidencia visual que aportó Luna.
+**Decisión tomada:** se reemplaza `ProgressRing` por `DonutChartCard` en
+`Home.stories.tsx` — single-segment (75%, sin inventar un segundo dato que el PDF
+no muestra para esta card puntual), con footer placeholder ("Registro de
+asistencia") documentado como copy invented en `knowledge/screens/home.md`.
+Actualizados `constitution.md`, `spec.md`, `plan.md`, `tasks.md` y la fila p.3 de
+`knowledge/component-roadmap.md` para reflejar el componente correcto.
+**Motivo:** fidelidad al PDF real por sobre una asunción de refine sin evidencia
+suficiente — mismo criterio que la corrección de opacidad de `002-bg-texture`.
+**Artefactos modificados:** `packages/ui/src/screens/home/Home.stories.tsx`,
+`specs/003-home-dashboard/{constitution.md,spec.md,plan.md,tasks.md}`,
+`knowledge/screens/home.md`, `knowledge/component-roadmap.md`, `input.md`
+**Decidido por:** Luna

@@ -152,13 +152,15 @@ Screens are **fullscreen page compositions** in Storybook.
 |--------|-----|-----------|
 | Operations Console | [operations-console.md](./screens/operations-console.md) | `Alejandria/Overview/OperationsConsole` |
 | Carga de Formulario | [carga-de-formulario.md](./screens/carga-de-formulario.md) | `Alejandria/Screens/CargaDeFormulario` |
+| Home | [home.md](./screens/home.md) | `Alejandria/Screens/Home` |
+| Dashboard | [dashboard.md](./screens/dashboard.md) | `Alejandria/Screens/Dashboard` |
 
 The following are **not** documented because they have no Storybook screen:
 
 - Login
 - Ficha (detail sheet)
-- Asistente fullscreen screen (component `Asistente` ships; no Storybook screen composition yet)
-- Módulos hub (only Module Grid pattern)
+- Asistente fullscreen screen (component `Asistente` ships and is now also reused whole
+  inside the `Home` screen; no standalone Storybook screen composition of its own yet)
 - Reporting dashboard (only Chart Gallery pattern)
 - Full Operations Center from `apps/web` (demo app only)
 

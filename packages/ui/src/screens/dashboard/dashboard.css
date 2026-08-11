@@ -1,0 +1,24 @@
+.screen-dashboard {
+  background-color: var(--ds-color-pdf-surface);
+  display: flex;
+  min-height: 100vh;
+  position: relative; /* recorta el overlay absoluto de BackgroundTextureDots
+     (002-bg-texture), mismo patrón que screen-carga-formulario / screen-home */
+}
+
+.screen-dashboard__main {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  padding: 24px 32px;
+}
+
+.screen-dashboard__grid {
+  align-content: start;
+  display: grid;
+  gap: 20px;
+  /* ModuleCard tiene ancho/alto fijo (194×194px, calibrado ÷2 en styles.css) — la grilla
+     2×4 del PDF se arma con columnas de ese mismo ancho fijo, no con `1fr` (que
+     estiraría celdas que la card no puede ocupar). */
+  grid-template-columns: repeat(4, 194px);
+}

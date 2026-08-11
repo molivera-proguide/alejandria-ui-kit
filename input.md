@@ -8,6 +8,14 @@
 > Chat, p.21-22). También excluye `drafts/fondo-animado-nota-diseno.md` y
 > `drafts/tipografia-legibilidad.md` — iniciativas separadas, no relacionadas con estas
 > 4 páginas (la primera es una corrección ya resuelta sobre `002-bg-texture`, CLOSED).
+>
+> **Corrección 2026-08-11 (post-implementación, feedback visual de Luna contra el PDF
+> real):** el gauge "ASISTENCIAS" de Home (p.3) es `DonutChartCard`, no `ProgressRing`.
+> El PDF real tiene ese componente cortado (como si hubiera que scrollear para verlo
+> completo), lo que llevó a asumir `ProgressRing` durante el refine sin evidencia
+> suficiente — mismo patrón de "verificar contra la fuente real" que ya dejó precedente
+> en `002-bg-texture`. Las menciones de `ProgressRing` para "ASISTENCIAS" en las
+> secciones de abajo quedan reemplazadas por `DonutChartCard`; ver `DECISIONS.md`.
 
 ## 1. PROBLEMA
 
