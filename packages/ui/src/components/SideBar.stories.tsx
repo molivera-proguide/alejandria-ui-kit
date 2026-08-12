@@ -94,6 +94,11 @@ export const Collapsed: Story = {
   }
 };
 
+/**
+ * 006-sidebar-ancho-toggle: el edge-toggle propio (`.ds-sidebar__edge-toggle`) se
+ * eliminó — el heading "Menú" es ahora el único control interno de colapso. Click en
+ * "Menú" alterna `collapsed` vía `onToggleCollapsed`, igual que antes.
+ */
 export const Playground: Story = {
   args: {
     ...sharedArgs,

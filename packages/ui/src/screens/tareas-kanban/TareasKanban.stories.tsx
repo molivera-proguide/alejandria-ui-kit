@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { MoreHorizontal } from "lucide-react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as Icons from "../../Icons";
@@ -87,7 +88,19 @@ const KANBAN_COLUMNS: KanbanColumn[] = [
   }
 ];
 
+/**
+ * Interactividad real de esta screen (`useState` local, sin estado global, sin fetch,
+ * sin routing — ver constitution.md de 006-sidebar-ancho-toggle, MUST-6/MUST-7 enmienda
+ * a 004-familia-tareas MUST-3): colapso/expansión real del `SideBar`, disparado tanto
+ * por el heading "Menú" (control interno) como por el ícono `OpenCloseSidebarIcon` del
+ * topbar (control externo) — ambos alternan el mismo estado, independiente de las otras
+ * 2 screens de Tareas. Arranca colapsado (`true`), igual que el mockup real de esta
+ * screen (PDF "Alejandria - Agosto 2026" p.8 muestra el SideBar colapsado).
+ */
 function TareasKanbanScreen() {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+  const toggleSidebar = () => setSidebarCollapsed((collapsed) => !collapsed);
+
   return (
     <div className="screen-tareas-kanban">
       <BackgroundTextureDots />
@@ -97,8 +110,8 @@ function TareasKanbanScreen() {
         menuLabel="Menú"
         items={primaryItems}
         secondaryItems={secondaryItems}
-        collapsed
-        onToggleCollapsed={() => undefined}
+        collapsed={sidebarCollapsed}
+        onToggleCollapsed={toggleSidebar}
       />
 
       <div className="screen-tareas-kanban__content">
@@ -106,8 +119,9 @@ function TareasKanbanScreen() {
           <button
             type="button"
             className="screen-tareas-kanban__topbar-icon"
-            aria-label="Colapsar menú"
-            onClick={() => undefined}
+            aria-label={sidebarCollapsed ? "Expandir menú" : "Colapsar menú"}
+            aria-expanded={!sidebarCollapsed}
+            onClick={toggleSidebar}
           >
             <img src={Icons.OpenCloseSidebarIcon} alt="" />
           </button>

@@ -286,6 +286,65 @@ Gaps ya trackeados en otra tabla de este mismo archivo, solo confirmados (no nue
   `Carga de Formulario`) además de las 2 `OPEN` — cambiar el ancho las afecta a las 5.
   Decisión de Luna: terminar el checklist/review de `004`/`005` primero, `SideBar`
   después como su propio fix/feature.
+  **Alcance ampliado (2026-08-12, Luna, para la próxima sesión) — ya no es solo el
+  ancho:**
+  1. Ancho expandido — medir y corregir contra el PDF (ver arriba).
+  2. **Sacar el edge-toggle propio de `SideBar`** (`.ds-sidebar__edge-toggle`, el botón
+     con el chevron `>`/`<` que ya existe hardcodeado dentro de `SideBar.tsx` — ver
+     `SideBarChevron`) — hoy es una *tercera* forma de colapsar, redundante con las
+     otras dos (ver punto 3). Esto es un cambio de comportamiento del componente en sí,
+     no solo de una screen — afecta a los mismos 5 consumidores del punto 1.
+  3. **Cablear colapso/expansión real** en las screens de Tareas (hoy `collapsed`/
+     `onToggleCollapsed={() => undefined}` son estáticos, sin estado): clickear "Menú"
+     (heading de `SideBar`, ya invoca `onToggleCollapsed` internamente — no hace falta
+     tocar el componente para esto) o el ícono nuevo del topbar
+     (`OpenCloseSidebarIcon`, agregado en `005-alert-toast-filter`, hoy
+     `onClick={() => undefined}`) debe togglear un `useState` real por screen. Esto
+     **contradice la constitution de `004-familia-tareas`** (MUST-3: "Tareas Pendientes
+     es la única excepción de interactividad real... Kanban y Finalizadas son
+     composiciones estáticas") — ambas features ya están `CLOSED`, así que esto es
+     scope nuevo, no un fix sobre lo ya cerrado. Dado el tamaño combinado (componente
+     compartido + 3 screens + posible contradicción de constitution ya cerrada), evaluar
+     si esto entra por `/sdd-refine` (feature nueva) en vez de `/sdd-fix`.
+
+  **✅ Resuelto 2026-08-12 — `006-sidebar-ancho-toggle`:** entró por `/sdd-refine`
+  (feature nueva), no `/sdd-fix`, exactamente por lo señalado arriba. Sweep PyMuPDF
+  final contra **dos** fuentes: `design-reference.pdf` p.13 (205.14pt expandido / 71.0pt
+  colapsado, rects `#282828` "Desplegada"/"Colapsada") y `Alejandria - Agosto 2026.pdf`
+  p.5/8/9 (las 3 screens reales muestran el SideBar colapsado — el rect de 71pt coincide
+  exacto en ambos PDFs, confirmando el valor colapsado de forma independiente). Ancho
+  expandido final `103px` (`--ds-size-sidebar-expanded-w`), colapsado `36px`
+  (`--ds-size-sidebar-collapsed-w`) — tokens dedicados, ya no reutilizados. Edge-toggle
+  eliminado de `SideBar.tsx` (heading «Menú» queda como único control interno). Las 3
+  screens de Tareas ganan `useState` real de colapso, independiente por screen,
+  disparado por el heading y por el ícono `OpenCloseSidebarIcon` del topbar. Enmienda
+  puntual a `004-familia-tareas/constitution.md` MUST-3 registrada en `DECISIONS.md`
+  (no se reabre el resto de esa feature). Ver `specs/006-sidebar-ancho-toggle/` y
+  `knowledge/components/SideBar.md` Changelog `0.2.0`.
+
+- **Grilla de `TaskCard` en Tareas Pendientes no responsiva (4 columnas fijas)** —
+  hallazgo de Luna (2026-08-12, `/sdd-checklist` CHK009 de `006-sidebar-ancho-toggle`).
+  `.screen-tareas-pendientes__grid { grid-template-columns: 170px 170px 170px 170px }`
+  en `tareas-pendientes.css` — 4 columnas de ancho fijo, sin `auto-fit`/`minmax` ni
+  wrap. Exige `4×170px + 3×16px gap = 728px` siempre, sin importar el viewport.
+  Confirmado con `SideBar` ya en su ancho medido (103px expandido): el desborde
+  horizontal en viewports angostos **no lo causa la sidebar** — es preexistente a
+  `006`, se reproduce igual en cualquier ancho de sidebar. Probablemente el mismo
+  patrón en `tareas-kanban.css`/`tareas-finalizadas.css` (no confirmado, no revisado
+  todavía). **No se resuelve en `006`** — fuera de su `plan.md` (solo toca los
+  `.stories.tsx` de las 3 screens, no sus `.css`); decisión de Luna de tratarlo como
+  `fix-XXX` aparte.
+- **Fondo del screen no cubre el ancho completo cuando hay overflow horizontal** —
+  mismo hallazgo (CHK009). `.screen-tareas-pendientes` (fondo `#060606`) es un
+  `display: flex` sin `width` propio; cuando un hijo desborda (la grilla del punto
+  anterior, en este caso), la caja del contenedor —y por lo tanto su fondo— se queda
+  en el ancho del viewport (`480px` medido) mientras el contenido desbordado llega
+  más lejos (`863px` medido) — la franja de más queda sin el fondo oscuro, sobre el
+  blanco por defecto del navegador. Bug genérico: pasaría con cualquier causa de
+  overflow horizontal, en cualquiera de las screens (`Home`, `Dashboard`,
+  `CargaDeFormulario` también usan el mismo patrón de root `display:flex` sin
+  `width`, no confirmado si ya les pasa). **No se resuelve en `006`** — mismo motivo
+  que el punto anterior, `fix-XXX` aparte.
 
 ### Recomendación (sin accionar todavía — a la espera de decisión)
 

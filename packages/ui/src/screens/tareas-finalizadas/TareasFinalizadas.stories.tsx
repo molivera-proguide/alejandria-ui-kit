@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as Icons from "../../Icons";
 import { SideBar, type SideBarItem } from "../../components/SideBar";
@@ -62,7 +63,19 @@ const TAREAS_FINALIZADAS = [
   { code: "#1232142349 - 3408480", title: "Notificación a dependencia", status: "Cerrada", meta: ["Subactividad", "Causa Rioplat"], creator: "Dependencia 1", startDate: "Inicio 30/05/2022", endDate: "Vencimiento 09/09/2022" }
 ];
 
+/**
+ * Interactividad real de esta screen (`useState` local, sin estado global, sin fetch,
+ * sin routing — ver constitution.md de 006-sidebar-ancho-toggle, MUST-6/MUST-7 enmienda
+ * a 004-familia-tareas MUST-3): colapso/expansión real del `SideBar`, disparado tanto
+ * por el heading "Menú" (control interno) como por el ícono `OpenCloseSidebarIcon` del
+ * topbar (control externo) — ambos alternan el mismo estado, independiente de las otras
+ * 2 screens de Tareas. Arranca colapsado (`true`), igual que el mockup real de esta
+ * screen (PDF "Alejandria - Agosto 2026" p.9 muestra el SideBar colapsado).
+ */
 function TareasFinalizadasScreen() {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+  const toggleSidebar = () => setSidebarCollapsed((collapsed) => !collapsed);
+
   return (
     <div className="screen-tareas-finalizadas">
       <BackgroundTextureDots />
@@ -72,8 +85,8 @@ function TareasFinalizadasScreen() {
         menuLabel="Menú"
         items={primaryItems}
         secondaryItems={secondaryItems}
-        collapsed
-        onToggleCollapsed={() => undefined}
+        collapsed={sidebarCollapsed}
+        onToggleCollapsed={toggleSidebar}
       />
 
       <div className="screen-tareas-finalizadas__content">
@@ -81,8 +94,9 @@ function TareasFinalizadasScreen() {
           <button
             type="button"
             className="screen-tareas-finalizadas__topbar-icon"
-            aria-label="Colapsar menú"
-            onClick={() => undefined}
+            aria-label={sidebarCollapsed ? "Expandir menú" : "Colapsar menú"}
+            aria-expanded={!sidebarCollapsed}
+            onClick={toggleSidebar}
           >
             <img src={Icons.OpenCloseSidebarIcon} alt="" />
           </button>

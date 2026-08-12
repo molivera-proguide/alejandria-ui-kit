@@ -135,11 +135,15 @@ function buildDetailContent(task: TareaPendiente): DetailSheetContent {
 }
 
 /**
- * Única screen de esta feature con interactividad real (`useState` local, sin estado
- * global, sin fetch, sin routing — ver constitution.md MUST-3). Click en una `TaskCard`
- * abre `DetailSheet` como panel lateral superpuesto; "Cerrar" limpia la selección.
- * `initialSelectedTask` solo existe para que el story `ConDetalleAbierto` pueda montar
- * el panel ya abierto sin duplicar el layout — no es una prop pensada para un consumidor.
+ * Interactividad real de esta screen (`useState` local, sin estado global, sin fetch,
+ * sin routing — ver constitution.md de 006-sidebar-ancho-toggle, MUST-6/MUST-7 enmienda
+ * a 004-familia-tareas MUST-3): (1) click en una `TaskCard` abre `DetailSheet` como panel
+ * lateral superpuesto, "Cerrar" limpia la selección; (2) colapso/expansión real del
+ * `SideBar`, disparado tanto por el heading "Menú" (control interno) como por el ícono
+ * `OpenCloseSidebarIcon` del topbar (control externo) — ambos alternan el mismo estado,
+ * independiente de las otras 2 screens de Tareas. `initialSelectedTask` solo existe para
+ * que el story `ConDetalleAbierto` pueda montar el panel ya abierto sin duplicar el
+ * layout — no es una prop pensada para un consumidor.
  */
 function TareasPendientesScreen({
   initialSelectedTask = null
@@ -147,6 +151,8 @@ function TareasPendientesScreen({
   initialSelectedTask?: TareaPendiente | null;
 }) {
   const [selectedTask, setSelectedTask] = useState<TareaPendiente | null>(initialSelectedTask);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const toggleSidebar = () => setSidebarCollapsed((collapsed) => !collapsed);
 
   return (
     <div className="screen-tareas-pendientes">
@@ -157,8 +163,8 @@ function TareasPendientesScreen({
         menuLabel="Menú"
         items={primaryItems}
         secondaryItems={secondaryItems}
-        collapsed={false}
-        onToggleCollapsed={() => undefined}
+        collapsed={sidebarCollapsed}
+        onToggleCollapsed={toggleSidebar}
       />
 
       <div className="screen-tareas-pendientes__content">
@@ -166,8 +172,9 @@ function TareasPendientesScreen({
           <button
             type="button"
             className="screen-tareas-pendientes__topbar-icon"
-            aria-label="Colapsar menú"
-            onClick={() => undefined}
+            aria-label={sidebarCollapsed ? "Expandir menú" : "Colapsar menú"}
+            aria-expanded={!sidebarCollapsed}
+            onClick={toggleSidebar}
           >
             <img src={Icons.OpenCloseSidebarIcon} alt="" />
           </button>

@@ -902,3 +902,169 @@ sesión.
 `packages/ui/src/screens/tareas-kanban/tareas-kanban.css`,
 `packages/ui/src/screens/tareas-finalizadas/tareas-finalizadas.css`
 **Decidido por:** Luna
+
+---
+
+## 2026-08-12 T007 ampliada para cubrir MUST-9 completo (006-sidebar-ancho-toggle)
+
+**feature_id:** 006-sidebar-ancho-toggle
+**command_origin:** sdd-validate
+**status:** accepted
+**Gap o motivo:** `/sdd-validate` sobre `006-sidebar-ancho-toggle` encontró
+cobertura parcial (97%): `T007` en `tasks.md` solo verificaba Home/Dashboard/
+CargaDeFormulario, sin tarea explícita para las 3 stories propias de `SideBar`
+(Expanded/Collapsed/Playground) ni para confirmar con click real que el toggle
+funciona en las 3 screens de Tareas — pese a que `constitution.md` MUST-9 ya lo
+exigía.
+**Alternativas consideradas:** dejar `T007` como estaba, asumiendo que la
+verificación de `SideBar` y del toggle en Tareas queda implícita dentro de
+`T003`-`T006` ("cablear"/"ajustar") sin un paso explícito de confirmación.
+**Por qué se descartaron:** dejarlo implícito no es trazable 1:1 contra MUST-9 ni
+verificable objetivamente — el gate de `/sdd-implement` exige cobertura
+explícita, no inferida.
+**Decisión tomada:** se amplió `T007` para cubrir (a) las 3 stories de `SideBar`,
+(b) click-verificación del toggle en las 3 screens de Tareas, y (c) no-regresión
+en Home/Dashboard/CargaDeFormulario — sin agregar una tarea nueva ni tocar el
+resto del plan. Cobertura pasa de 97% a 100%.
+**Motivo:** ampliar `T007` cierra el gap sin agregar una tarea nueva ni tocar el
+resto del plan, y deja el mapeo 1:1 contra MUST-9 explícito y verificable.
+**Artefactos modificados:** `specs/006-sidebar-ancho-toggle/tasks.md` (T007)
+**Decidido por:** Luna
+
+---
+
+## 2026-08-12 006-sidebar-ancho-toggle: enmienda a 004-familia-tareas MUST-3 / PROHIBITED-1
+
+**feature_id:** 006-sidebar-ancho-toggle
+**command_origin:** sdd-implement (T009)
+**status:** accepted
+**Gap o motivo:** `006-sidebar-ancho-toggle` (ancho de `SideBar` medido con PyMuPDF,
+edge-toggle eliminado, colapso real cableado en las 3 screens de Tareas) requiere
+modificar `SideBar.tsx` y agregar interactividad real a Kanban/Finalizadas — ambas
+cosas explícitamente prohibidas/excluidas por `specs/004-familia-tareas/constitution.md`
+(PROHIBITED-1 y MUST-3 respectivamente), feature ya `CLOSED`.
+**Alternativas consideradas:** (1) reabrir `004-familia-tareas` completa y editar su
+constitution directamente; (2) tratar esto como un `fix-XXX` acotado en vez de una
+feature nueva con `/sdd-refine`.
+**Por qué se descartaron:** (1) reabrir `004` completa mezclaría el scope ya
+`APROBADO`/cerrado de esa feature con trabajo nuevo, y perdería la trazabilidad de qué
+se aprobó cuándo; (2) un `fix-XXX` no encaja — este cambio toca un componente
+compartido consumido por 5 features `CLOSED` (`Home`, `Dashboard`, `Carga de
+Formulario`, `004`, `005`) y contradice cláusulas `MUST`/`PROHIBITED` explícitas, no es
+un gap chico encontrado en checklist (ver decisión de Luna en
+`knowledge/component-roadmap.md` § "Gaps nuevos encontrados").
+**Decisión tomada:** `006-sidebar-ancho-toggle` se creó como feature propia vía
+`/sdd-refine`→`/sdd-generate`. En vez de reescribir `004-familia-tareas/constitution.md`
+sin dejar rastro, se le agregaron dos anotaciones puntuales (no se borra ni reescribe
+el texto original): una nota de "Enmienda puntual" bajo MUST-3 (Kanban/Finalizadas
+ganan `useState` real solo para el colapso del `SideBar`; el resto de la regla — sin
+`DetailSheet`, sin otra interactividad — sigue vigente) y una nota corta en
+PROHIBITED-1 señalando que `SideBar.tsx` fue "superado" por `006`, con puntero a esta
+entrada. El resto de `004-familia-tareas` no se reabre.
+**Motivo:** mantener `004-familia-tareas` legible como registro histórico de lo que se
+aprobó en su momento, mientras se documenta explícitamente el único punto en que una
+feature posterior la modifica — sin ambigüedad sobre qué sigue vigente y qué no.
+**Artefactos modificados:** `specs/004-familia-tareas/constitution.md` (MUST-3,
+PROHIBITED-1)
+**Decidido por:** Luna
+
+---
+
+## 2026-08-12 006-sidebar-ancho-toggle: 3 regresiones reales encontradas en revisión visual (Luna)
+
+**feature_id:** 006-sidebar-ancho-toggle
+**command_origin:** manual (revisión visual de Luna en Storybook, con capturas, antes de commitear)
+**status:** accepted
+**Gap o motivo:** Luna revisó Storybook antes del commit (siguiendo el criterio de
+"mirarlo ella misma antes de pushear") y encontró 3 problemas reales que la
+verificación automatizada (click real + `getComputedStyle` de ancho/clase/ARIA) no
+había cubierto, porque no eran sobre el toggle en sí sino sobre el layout resultante:
+(1) labels wrappeando a 2 líneas en expandido; (2) la sidebar no ocupaba el alto
+completo en las 6 screens consumidoras; (3) la animación de `BackgroundTextureDots` se
+veía por encima de la sidebar en vez de detrás.
+**Alternativas consideradas:** para (2)/(3), reintroducir `div.ds-sidebar-shell` (el
+wrapper eliminado en este mismo `006`) en vez de arreglar `.ds-sidebar` directamente.
+**Por qué se descartaron:** reintroducir el shell deshace parte del trabajo de este
+feature sin necesidad — la causa raíz no era "hace falta un wrapper", era que
+`.ds-sidebar` heredaba dos comportamientos del shell (`position: relative` para el
+orden de pintado, y ser un flex item con `height: auto` para el stretch) que se podían
+dar directamente al `<nav>` sin volver a anidar un `div` extra.
+**Decisión tomada:** (a) `padding: 4px 16px` → `4px 6px` en `.ds-sidebar__item` y
+`button.ds-sidebar__menu-heading` — medido en vivo (`scrollWidth`/`clientWidth` de
+cada label) contra las 10 labels reales de las stories, no a ojo. (b) `.ds-sidebar`
+pasa de `height: 100%` a `height: auto; min-height: 100%` — verificado en las 6
+screens que el alto ahora iguala al contenedor (antes ~408px de 615px reales en
+Finalizadas, por ejemplo). (c) `.ds-sidebar` gana `position: relative` — verificado
+que soluciona el orden de pintado frente a `BackgroundTextureDots` (`position:
+absolute`). Los 3 fixes viven en `packages/ui/src/styles.css`, con comentarios inline
+explicando la causa raíz para que no se reviertan por error en un futuro cleanup.
+**Motivo:** arreglar la causa raíz exacta que introdujo sacar el shell, sin deshacer
+el objetivo de esa parte del feature (un único `<nav>` sin wrapper).
+**Artefactos modificados:** `packages/ui/src/styles.css`,
+`knowledge/components/SideBar.md` (Changelog `0.2.0`)
+**Decidido por:** Luna
+
+---
+
+## 2026-08-12 006-sidebar-ancho-toggle: badge de notificación cortado en colapsado
+
+**feature_id:** 006-sidebar-ancho-toggle
+**command_origin:** manual (segunda ronda de revisión visual de Luna en Storybook, con captura)
+**status:** accepted
+**Gap o motivo:** el badge de notificación ("2") aparecía cortado a la mitad en el
+estado colapsado del `SideBar`. Medido en vivo: a los 36px de ancho medido, el ícono
+(25px) centrado deja solo ~4.5px de margen a su derecha; el badge, posicionado como
+acento de esquina (`right: 0` + `transform: translate(50%, -50%)` sobre el ícono),
+sobresalía 2.5px del borde de `.ds-sidebar`, y `overflow: hidden` lo cortaba.
+Expandido no tenía el problema (el ícono no queda pegado al borde ahí).
+**Alternativas consideradas:** agrandar el ancho colapsado medido (36px) unos px para
+darle aire al badge.
+**Por qué se descartaron:** el ancho colapsado es un valor medido (no invented) contra
+dos PDFs — agrandarlo para acomodar un detalle decorativo del badge violaría el
+objetivo central de esta feature (dejar de inventar anchos).
+**Decisión tomada:** `.ds-sidebar--collapsed .ds-sidebar__badge { right: 3px }` —
+corre el badge 3px hacia adentro solo en colapsado (medido hasta que quedó completo:
+termina a 35.5px de 36px). Expandido no se toca.
+**Motivo:** ajuste quirúrgico al elemento que realmente se corta, sin tocar la
+medición ya validada del ancho.
+**Artefactos modificados:** `packages/ui/src/styles.css`,
+`knowledge/components/SideBar.md` (Changelog `0.2.0`)
+**Decidido por:** Luna
+
+---
+
+## 2026-08-12 006-sidebar-ancho-toggle: CHK009 no bloquea el cierre — causa raíz fuera de alcance
+
+**feature_id:** 006-sidebar-ancho-toggle
+**command_origin:** sdd-checklist (CHK009)
+**status:** accepted
+**Gap o motivo:** al verificar CHK009 ("confirmo que ya no hay overlap en viewport
+angosto") con una captura real (480px de ancho), Luna encontró que sigue habiendo
+solapamiento y que el fondo del screen se corta dejando contenido sobre blanco
+durante el scroll horizontal. Diagnosticado en vivo: el `SideBar` mide 103px
+correctamente, sin overlap propio — el desborde lo causa
+`.screen-tareas-pendientes__grid` (4 columnas fijas de 170px, no responsivas,
+preexistentes a `006`) y el fondo cortado es un bug genérico de `display:flex` sin
+`width` propio en el root del screen, no relacionado al ancho del `SideBar`.
+**Alternativas consideradas:** (1) ampliar `006` ahora para tocar
+`tareas-pendientes.css`/`tareas-kanban.css`/`tareas-finalizadas.css` (grilla
+responsiva + fondo del root); (2) arreglar solo el fondo cortado ahora (fix chico y
+genérico) y dejar la grilla aparte; (3) cerrar `006` tal cual, registrar ambos como
+gaps nuevos para `fix-XXX` aparte.
+**Por qué se descartaron:** (1)/(2) — ninguno de los dos está en el `plan.md` de
+`006` (que solo toca los `.stories.tsx` de las 3 screens, no sus `.css`); la grilla
+responsiva en particular es una decisión de diseño más grande (cómo se ve la grilla
+de tareas en angosto, no solo "que no desborde") que no corresponde decidir sobre la
+marcha dentro de una feature de `SideBar`.
+**Decisión tomada:** se cierra `006-sidebar-ancho-toggle` con CHK009 marcado ❌,
+causa raíz documentada en `checklist.md`, y ambos hallazgos registrados en
+`knowledge/component-roadmap.md` § "Gaps nuevos encontrados" para tratarse como
+`fix-XXX` aparte (mismo patrón que `fix-001`/`fix-002` en `004`/`005`), sin bloquear
+el cierre de esta feature.
+**Motivo:** la causa raíz de ambos hallazgos no tiene relación con el ancho del
+`SideBar` (que es lo que `006` se propuso medir y corregir) — forzarlos dentro de esta
+feature mezclaría un scope de "grilla responsiva" no definido con uno ya cerrado y
+verificado.
+**Artefactos modificados:** `specs/006-sidebar-ancho-toggle/checklist.md`,
+`knowledge/component-roadmap.md`
+**Decidido por:** Luna

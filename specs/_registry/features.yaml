@@ -156,6 +156,40 @@ features:
       de equipo. Decisión de Luna (2026-08-11): el retrofit va dentro de esta
       feature, no como paso aparte sobre 004.
 
+  - id: 006-sidebar-ancho-toggle
+    type: feature
+    status: CLOSED
+    domain: component-catalog
+    owner: lvgonzalezprg
+    sprint: null
+    created: 2026-08-12
+    closed: 2026-08-12
+    touches:
+      - packages/ui/src/components/SideBar.tsx
+      - packages/ui/src/components/SideBar.stories.tsx
+      - packages/ui/src/styles.css
+      - packages/ui/src/screens/tareas-pendientes/TareasPendientes.stories.tsx
+      - packages/ui/src/screens/tareas-kanban/TareasKanban.stories.tsx
+      - packages/ui/src/screens/tareas-finalizadas/TareasFinalizadas.stories.tsx
+      - knowledge/components/SideBar.md
+      - knowledge/component-roadmap.md
+      - specs/004-familia-tareas/constitution.md
+      - DECISIONS.md
+      - input.md
+    decisions:
+      - "2026-08-12: T007 ampliada para cubrir MUST-9 completo (gap de /sdd-validate)"
+      - "2026-08-12: Enmienda a 004-familia-tareas MUST-3/PROHIBITED-1 (SideBar.tsx superado por esta feature)"
+      - "2026-08-12: 3 regresiones reales encontradas en revisión visual — padding de labels, altura de .ds-sidebar, orden de stacking del fondo animado"
+      - "2026-08-12: Badge de notificación cortado en colapsado — overflow: hidden recortando el acento de esquina"
+      - "2026-08-12: CHK009 no bloquea el cierre — causa raíz (grilla no responsiva + fondo cortado en overflow) fuera de alcance, diferida a fix-XXX"
+    note: >
+      Hallazgo de Luna (2026-08-12) durante /sdd-checklist de
+      004-familia-tareas/005-alert-toast-filter, deliberadamente separado en su
+      propia feature porque ambas constitutions (ya CLOSED) prohíben tocar
+      SideBar.tsx y esto además enmienda MUST-3 de 004 (ver constitution.md de
+      esta feature, MUST-7). Sin colisión de equipo: no hay otras features OPEN
+      en este registro al momento de crear ésta.
+
   - id: fix-001-taskcard-keyboard-hover
     type: fix
     status: CLOSED

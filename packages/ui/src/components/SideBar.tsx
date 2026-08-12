@@ -94,26 +94,6 @@ export interface SideBarProps extends Omit<ComponentPropsWithoutRef<"nav">, "chi
 }
 
 /**
- * @description Chevron direccional hand-drawn para el edge-toggle (chrome de UI, no icono compartido).
- * @param {{ direction: "left" | "right" }} props - Dirección del chevron.
- * @returns {ReactElement} SVG decorativo.
- */
-function SideBarChevron({ direction }: { direction: "left" | "right" }): ReactElement {
-  return (
-    <svg viewBox="0 0 24 24" width="10" height="10" aria-hidden="true" focusable="false">
-      <path
-        d={direction === "left" ? "M15 4l-8 8 8 8" : "M9 4l8 8-8 8"}
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2.5"
-      />
-    </svg>
-  );
-}
-
-/**
  * @description Renderiza un ítem de navegación del sidebar.
  * @param {SideBarItem} item - Datos del ítem.
  * @returns {ReactElement} Elemento `<li>` con botón.
@@ -148,7 +128,7 @@ function SideBarListItem({ item }: { item: SideBarItem }): ReactElement {
 /**
  * @description Menú central colapsable de la plataforma según SIDE BAR (PDF p.13).
  * @param {SideBarProps} props - Propiedades del sidebar.
- * @returns {ReactElement} Shell de posicionamiento con `<nav>` y edge-toggle.
+ * @returns {ReactElement} `<nav>` único — el heading "Menú" es el único control interno de colapso.
  */
 export function SideBar({
   logo,
@@ -168,73 +148,61 @@ export function SideBar({
   const hasSecondaryHeading = Boolean(secondaryIcon || secondaryLabel);
 
   return (
-    <div className="ds-sidebar-shell">
-      <nav
-        className={cn("ds-sidebar", collapsed && "ds-sidebar--collapsed", className)}
-        {...props}
-      >
-        {logo ? (
-          <div className="ds-sidebar__header">
-            <span className="ds-sidebar__logo">{logo}</span>
-          </div>
-        ) : null}
+    <nav
+      className={cn("ds-sidebar", collapsed && "ds-sidebar--collapsed", className)}
+      {...props}
+    >
+      {logo ? (
+        <div className="ds-sidebar__header">
+          <span className="ds-sidebar__logo">{logo}</span>
+        </div>
+      ) : null}
 
-        <div className="ds-sidebar__menu">
-          {hasMenuHeading ? (
-            <button
-              type="button"
-              className="ds-sidebar__menu-heading"
-              onClick={onToggleCollapsed}
-              aria-expanded={!collapsed}
-              aria-label={collapsed ? "Expandir menú" : "Contraer menú"}
-            >
-              {menuIcon ? (
+      <div className="ds-sidebar__menu">
+        {hasMenuHeading ? (
+          <button
+            type="button"
+            className="ds-sidebar__menu-heading"
+            onClick={onToggleCollapsed}
+            aria-expanded={!collapsed}
+            aria-label={collapsed ? "Expandir menú" : "Contraer menú"}
+          >
+            {menuIcon ? (
+              <span className="ds-sidebar__menu-heading-icon" aria-hidden="true">
+                {menuIcon}
+              </span>
+            ) : null}
+            {menuLabel ? <span className="ds-sidebar__menu-label">{menuLabel}</span> : null}
+          </button>
+        ) : null}
+        <ul className="ds-sidebar__list">
+          {items.map((item) => (
+            <SideBarListItem key={item.label} item={item} />
+          ))}
+        </ul>
+      </div>
+
+      {hasSecondary ? (
+        <div className="ds-sidebar__secondary">
+          {hasSecondaryHeading ? (
+            <div className="ds-sidebar__menu-heading">
+              {secondaryIcon ? (
                 <span className="ds-sidebar__menu-heading-icon" aria-hidden="true">
-                  {menuIcon}
+                  {secondaryIcon}
                 </span>
               ) : null}
-              {menuLabel ? <span className="ds-sidebar__menu-label">{menuLabel}</span> : null}
-            </button>
+              {secondaryLabel ? (
+                <span className="ds-sidebar__menu-label">{secondaryLabel}</span>
+              ) : null}
+            </div>
           ) : null}
           <ul className="ds-sidebar__list">
-            {items.map((item) => (
+            {secondaryItems!.map((item) => (
               <SideBarListItem key={item.label} item={item} />
             ))}
           </ul>
         </div>
-
-        {hasSecondary ? (
-          <div className="ds-sidebar__secondary">
-            {hasSecondaryHeading ? (
-              <div className="ds-sidebar__menu-heading">
-                {secondaryIcon ? (
-                  <span className="ds-sidebar__menu-heading-icon" aria-hidden="true">
-                    {secondaryIcon}
-                  </span>
-                ) : null}
-                {secondaryLabel ? (
-                  <span className="ds-sidebar__menu-label">{secondaryLabel}</span>
-                ) : null}
-              </div>
-            ) : null}
-            <ul className="ds-sidebar__list">
-              {secondaryItems!.map((item) => (
-                <SideBarListItem key={item.label} item={item} />
-              ))}
-            </ul>
-          </div>
-        ) : null}
-      </nav>
-
-      <button
-        type="button"
-        className="ds-sidebar__edge-toggle"
-        aria-expanded={!collapsed}
-        aria-label={collapsed ? "Expandir menú" : "Contraer menú"}
-        onClick={onToggleCollapsed}
-      >
-        <SideBarChevron direction={collapsed ? "right" : "left"} />
-      </button>
-    </div>
+      ) : null}
+    </nav>
   );
 }

@@ -141,6 +141,8 @@
     --ds-size-task-max-w: 240px;
     --ds-size-module-min: 260px;
     --ds-size-tile-max-w: 280px;
+    --ds-size-sidebar-collapsed-w: 36px; /* measured 006-sidebar-ancho-toggle — design-reference.pdf p.13 "Colapsada" rect, 71pt @2×÷2 (35.5→36), cross-confirmed by the identical 71pt rect in "Alejandria - Agosto 2026.pdf" p.5/8/9 (real Tareas screens render SideBar collapsed) */
+    --ds-size-sidebar-expanded-w: 103px; /* measured 006-sidebar-ancho-toggle — design-reference.pdf p.13 "Desplegada" rect, 205.14pt @2×÷2 */
 
     /* --- Radius --- */
     --ds-radius-pill: 999px;
@@ -1830,11 +1832,6 @@
     display: inline-flex;
   }
 
-  .ds-sidebar-shell {
-    display: inline-flex;
-    position: relative;
-  }
-
   .ds-sidebar {
     background: var(--ds-color-pdf-shell);
     box-sizing: border-box;
@@ -1842,16 +1839,31 @@
     color: var(--ds-color-pdf-ink-muted);
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: auto; /* 006-sidebar-ancho-toggle regression fix: was height:100%, which only
+      resolves against a parent with a *definite* height. Every real consumer (the 6
+      screens + this component's own Storybook decorator) is a flex row — with
+      height:auto the default align-items:stretch fills the parent's actual cross size
+      regardless of whether that size came from `height` or `min-height` (all 6 screens
+      use `min-height: 100vh`, which never gave height:100% anything definite to resolve
+      against once .ds-sidebar-shell — a flex item with height:auto, always stretched —
+      stopped being the direct flex child). min-height:100% below covers the one non-flex
+      case (a plain block parent with a definite height) that align-items:stretch can't. */
+    min-height: 100%;
     overflow: hidden;
     padding: 10px 0; /* calibrated ÷2 — PDF 20px; horizontal inset moved onto each row (item/menu-heading)
       so the selected-item accent line and hover highlight can span flush to the sidebar's own edge */
+    position: relative; /* 006-sidebar-ancho-toggle regression fix: restores the stacking
+      behavior .ds-sidebar-shell used to provide. Positioned elements always paint above
+      unpositioned ones regardless of DOM order — BackgroundTextureDots (position: absolute)
+      relies on exactly that to paint *behind* whatever comes after it. Without this,
+      .ds-sidebar (now unpositioned) fell into the "paints before positioned siblings"
+      bucket and the animated dots showed through on top of it. */
     transition: width var(--ds-duration-md) var(--ds-ease-standard);
-    width: var(--ds-size-card-min-w); /* provisional/reused — PDF does not annotate expanded width */
+    width: var(--ds-size-sidebar-expanded-w); /* measured — see token comment */
   }
 
   .ds-sidebar--collapsed {
-    width: var(--ds-size-control-lg); /* provisional/reused — PDF does not annotate collapsed width */
+    width: var(--ds-size-sidebar-collapsed-w); /* measured — see token comment */
   }
 
   .ds-sidebar__header {
@@ -1869,24 +1881,6 @@
   .ds-sidebar__logo {
     display: inline-flex;
     min-width: 0;
-  }
-
-  .ds-sidebar__edge-toggle {
-    align-items: center;
-    background: var(--ds-color-pdf-shell);
-    border: var(--ds-border-width-hair) solid var(--ds-color-pdf-line);
-    border-radius: var(--ds-radius-xs);
-    color: var(--ds-color-pdf-ink-muted);
-    cursor: pointer;
-    display: inline-flex;
-    height: 20px; /* PDF shows a small square glyph with no measurement given — provisional */
-    justify-content: center;
-    padding: 0;
-    position: absolute;
-    right: 0;
-    top: 12px; /* provisional — roughly aligned to header/logo row, not PDF-measured */
-    transform: translateX(50%); /* half outside the sidebar's own right border, per PDF */
-    width: 20px; /* same as height — provisional */
   }
 
   .ds-sidebar__menu,
@@ -1915,7 +1909,12 @@
     cursor: pointer;
     font: inherit;
     margin: 0;
-    padding: 4px 16px; /* absorbs .ds-sidebar's removed 10px horizontal inset, same total as before */
+    padding: 4px 6px; /* 006-sidebar-ancho-toggle: was 4px 16px, sized for the old 220px
+      width. At the measured 103px expanded width that left ~36px for the label —
+      several real labels ("Notificaciones", "Configuración", "Catástrofes") need more
+      and wrapped to 2 lines. 6px (close to the ~5.5px centered inset the icon already
+      has in collapsed mode, per Luna's fidelity note) fits every current label on one
+      line (measured via scrollWidth in Storybook, all ≤56px available). */
     text-align: left;
     width: 100%;
   }
@@ -1971,8 +1970,9 @@
     gap: 8px;
     margin: 0;
     min-height: 32px;
-    padding: 4px 16px; /* absorbs .ds-sidebar's removed 10px horizontal inset, same total as before —
-      lets the selected border-left / hover background span flush to the sidebar's own edge */
+    padding: 4px 6px; /* 006-sidebar-ancho-toggle: was 4px 16px — see button.ds-sidebar__menu-heading
+      comment above, same fix, same reasoning. Row background still spans flush to the
+      sidebar's own edge (width: 100%, padding only affects inner content position). */
     text-align: left;
     width: 100%;
   }
@@ -2086,6 +2086,16 @@
   .ds-sidebar--collapsed .ds-sidebar__menu-label,
   .ds-sidebar--collapsed .ds-sidebar__status {
     display: none;
+  }
+
+  .ds-sidebar--collapsed .ds-sidebar__badge {
+    /* 006-sidebar-ancho-toggle, revisión visual de Luna: a los 36px medidos, el ícono
+      centrado deja solo ~4.5px de margen a su derecha — el badge (right: 0 +
+      translate(50%, -50%) del .ds-sidebar__badge base) sobresalía ~2.5px del borde de
+      `.ds-sidebar` y `overflow: hidden` lo cortaba a la mitad. `right: 3px` lo corre lo
+      justo para que quede adentro (medido: termina a 35.5px de 36px). Expandido no se
+      toca — ahí el ícono no está pegado al borde y nunca se cortó. */
+    right: 3px;
   }
 
   .ds-skeleton {

@@ -1,186 +1,202 @@
-# Brief — Alert Bar, Toast y Filter Field (+ retrofit de Familia Tareas)
+# input.md — SideBar: ancho medido, sacar edge-toggle, colapso real en Tareas
 
-> Generado por `/sdd-refine` el 2026-08-11, a partir de `drafts/alert-toast-filter.md`.
-> Surge en medio de `004-familia-tareas` (Familia Tareas, `OPEN`): al fidelity-check
-> las 3 screens nuevas contra `Alejandria - Agosto 2026.pdf`, se encontró que el
-> ícono de filtro usado en sus toolbars era un hack inventado (`Button` + `TextField`
-> con label), no el componente real de `knowledge/references/design-reference.pdf`
-> p.23 ("FILTER") — y que faltan 2 piezas más de esa misma hoja de spec (p.22,
-> "ALERT"): la barra "Alert Sigcat" y el Toast "Tarea realizada". Excluye
-> explícitamente el resto del draft original (`pantallas-grupo-a-b.md`): Sprint 3
-> (Reportes & Usuarios, p.12, 23), Sprint 4 resto (Acordeón, p.20), Sprint 5 (Tabs +
-> Chat, p.21-22). También excluye `drafts/tipografia-legibilidad.md`.
->
-> **Nota de proceso:** durante el grilling, Luna señaló que `TextField`, `SelectField`
-> y `AlertBanner` (ya existentes en el kit) son en sí mismos componentes inventados,
-> no basados en el PDF real — tiene pendiente una limpieza de esos tres. **No forma
-> parte de esta feature** — se registra acá solo como contexto para cuando esa
-> limpieza se priorice.
+Consolidado a partir de `drafts/sidebar-ancho-toggle-real.md` + grilling de
+`/sdd-refine` (2026-08-12). Brownfield — ver `existing-arch.md` en la raíz del repo
+para restricciones de stack no negociables.
+
+**Contexto de origen:** hallazgo de Luna el 2026-08-12 durante `/sdd-checklist` de
+`004-familia-tareas`/`005-alert-toast-filter` (ver `knowledge/component-roadmap.md` §
+"Gaps nuevos encontrados", entrada "SideBar ancho expandido, probablemente invented").
+Deliberadamente separado de esas dos features (ya `CLOSED`) porque ambas prohíben
+tocar `SideBar.tsx` y esto contradice además `004-familia-tareas/constitution.md`
+MUST-3. Se trata acá como su propia feature.
+
+---
 
 ## 1. PROBLEMA
 
-`004-familia-tareas` necesita 3 piezas de UI que hoy no existen en el kit (o existen
-mal): una barra de alerta full-width ("Alert Sigcat", usada como topbar con la
-leyenda "N TAREAS PENDIENTES" en p.4-9 del PDF de screens), un Toast de confirmación
-("Tarea realizada"), y un campo de filtro compuesto (ícono+chevron+input con lupa,
-PDF "FILTER" p.23). Sin estas 3 piezas, las screens de Familia Tareas no pueden
-alcanzar fidelidad real contra el PDF — hoy tienen un topbar ausente, un buscador+
-filtro inventado sin base en el PDF, y (en Kanban) les falta directamente la fila de
-buscador/filtro y la barra de progreso por columna.
+`SideBar.tsx` tiene tres deudas de fidelidad no resueltas, encontradas juntas en la
+misma revisión:
+
+1. El ancho expandido (`--ds-size-card-min-w`, 220px) es un token **reutilizado de
+   otro componente, nunca medido** contra `design-reference.pdf` p.13. Medición
+   preliminar (`get_drawings()` sobre el rect de fondo `#282828`) da ~102px — bien por
+   debajo de los 220px actuales. El ancho colapsado (`--ds-size-control-lg`, 48px)
+   tiene la misma deuda ("provisional/reutilizado", nunca medido).
+2. El componente tiene un edge-toggle propio (`.ds-sidebar__edge-toggle`, chevron
+   hand-drawn interno) que es una **tercera forma redundante** de colapsar el menú,
+   además del heading "Menú" (ya wireado a `onToggleCollapsed`) y el ícono nuevo del
+   topbar (`OpenCloseSidebarIcon`) en las screens de Tareas. El edge-toggle nunca fue
+   una pieza firme: su propio changelog lo documenta como "simplificado" y su
+   tamaño/posición como "provisionales, no medidos".
+3. Las 3 screens de Tareas (`tareas-pendientes`, `tareas-kanban`, `tareas-finalizadas`)
+   pasan `collapsed`/`onToggleCollapsed={() => undefined}` estáticos a `SideBar`, y el
+   ícono del topbar tiene `onClick={() => undefined}` — el colapso no funciona pese a
+   tener los controles visuales.
+
+**Driver:** fidelidad con el PDF fuente (equipo de diseño/QA), no un reclamo de
+usuario final sobre el solapamiento en viewports angostos — aunque ese solapamiento
+es el síntoma que hizo visible el problema.
+
+---
 
 ## 2. USUARIO
 
-Sin persona/contexto de producto específico (mismo criterio que el resto del kit) —
-el consumidor es cualquier developer o agente de IA que use `@alejandria/ui-kit` y
-necesite reproducir estos 3 componentes y las screens que los usan, tal como los
-define `knowledge/references/design-reference.pdf`.
+Equipo de diseño/QA del kit (Luna). Necesita que `SideBar` calce con el artwork real
+de `design-reference.pdf` p.13 (ancho medido, no adivinado) y que el componente no
+tenga controles inventados/no confirmados por el PDF (el edge-toggle).
+
+---
 
 ## 3. DONE CRITERIA
 
-**Componentes nuevos** (`packages/ui/src/components/`, un `.tsx` + un `.stories.tsx`
-plano cada uno, exportados desde `index.ts`):
+- [ ] Ancho **expandido** de `.ds-sidebar` medido contra `design-reference.pdf` p.13
+      con PyMuPDF (`get_drawings()`/`get_pixmap()` — la página mezcla capturas
+      rasterizadas con vectores, no es una hoja de spec limpia).
+- [ ] Ancho **colapsado** de `.ds-sidebar--collapsed` medido en el mismo sweep.
+- [ ] Si el valor medido difiere de los tokens reutilizados actuales
+      (`--ds-size-card-min-w` / `--ds-size-control-lg`), se crean tokens **dedicados**
+      del SideBar (`--ds-size-sidebar-expanded-w`, `--ds-size-sidebar-collapsed-w`) en
+      `styles.css`, dejando de reutilizar los de otros componentes.
+- [ ] `SideBarChevron` y `.ds-sidebar__edge-toggle` eliminados de `SideBar.tsx`
+      (componente, DOM, CSS asociado).
+- [ ] El heading `.ds-sidebar__menu-heading` (con `menuLabel="Menú"`) queda como
+      **único control interno** de colapso, ya wireado a `onToggleCollapsed`.
+      Migra la semántica ARIA que tenía el edge-toggle: `role="button"` (o envuelto en
+      un `<button>` real), `aria-expanded={!collapsed}`, `aria-label` contextual
+      ("Contraer menú" / "Expandir menú").
+- [ ] El ícono `OpenCloseSidebarIcon` del topbar en las 3 screens de Tareas queda como
+      **control externo adicional**, wireado al mismo `onToggleCollapsed` del
+      consumidor — no reemplaza al heading, coexisten sin redundancia visual (el
+      edge-toggle desaparece).
+- [ ] Las 3 screens (`TareasPendientes`, `TareasKanban`, `TareasFinalizadas`) ganan
+      `useState` local real de colapso, **independiente por screen** (sin estado
+      compartido ni persistencia entre navegaciones — no hay routing).
+- [ ] `specs/004-familia-tareas/constitution.md` MUST-3 enmendada explícitamente para
+      reflejar que Kanban y Finalizadas dejan de ser "composiciones estáticas" en este
+      punto específico (colapso de SideBar), documentando el motivo y la fecha.
+- [ ] `knowledge/components/SideBar.md` actualizado: Behavioral Contract, DOM
+      Structure, Props (si cambia algo del contrato público), Accessibility, Design
+      Tokens, Known Limitations (sacar las entradas ya resueltas del edge-toggle/
+      anchos no medidos), Changelog → nueva entrada `0.2.0` (breaking change de DOM:
+      desaparece `button.ds-sidebar__edge-toggle` del árbol).
+- [ ] Verificación manual en Storybook (sin framework de test):
+      `SideBar` (`Expanded`, `Collapsed`, `Playground`) + las 6 screens consumidoras
+      (`Home`, `Dashboard`, `CargaDeFormulario`, `TareasPendientes`, `TareasKanban`,
+      `TareasFinalizadas`) — confirmar que el nuevo ancho no rompe ningún layout y que
+      el toggle real funciona desde ambos controles (heading + ícono topbar) en las 3
+      screens de Tareas.
+- [ ] `DECISIONS.md` registra por qué esto se separó de `004`/`005` y qué
+      constitution quedó enmendada.
 
-- **`AlertBar`** (PDF p.22 "ALERT" § "Alert Sigcat") — franja full-width, label
-  centrado. Fondo `#494949`, borde `0,75pt - #606060`, label Source Code Bold 20pt
-  `#ffffff`; tono `alerta` con label en `#ff0404`. 2 tonos (`default`/`alerta`), sin
-  slots de ícono/descripción/acción (a diferencia de `AlertBanner`, que es un
-  componente distinto, no se toca).
-- **`Toast`** (PDF p.22 § "Tarea realizada") — notificación centrada, un solo texto.
-  Fondo `#060606`, borde `0,75pt - #606060`, texto Source Code Bold 18pt `#ffffff`.
-  Auto-dismiss a los 4000ms, sin botón de cierre. Un solo tono (`success`) por ahora
-  — sin slots para error/warning/info todavía. Mensaje configurable vía prop (el
-  texto del mock, "Se creó una tarea con éxito", es un ejemplo, no un valor fijo del
-  componente).
-- **`FilterField`** (PDF p.23 "FILTER") — compuesto: ícono de filtro (reusa
-  `FiltroIcon`, ya existe en `Icons/Menu/`) + chevron, afuera del campo a la
-  izquierda, seguido de un input oscuro con lupa adentro a la derecha, sin label
-  flotante visible. Fondo `#060606`, borde `0,75pt - #606060`, medida **400×50px
-  final** (única excepción de esta feature a la convención `@2×÷2` — confirmado
-  explícitamente con Luna, no una medida a dividir), texto Montserrat Regular 20pt
-  `@2×` → 10px `#ffffff`. El ícono de filtro es decorativo por ahora (sin
-  desplegable funcional — el propio PDF deja esto sin definir: "me falta desarrollar
-  el desplegable del funnel").
-
-**Assets nuevos** (`packages/ui/src/Icons/Menu/`, exportados como URL strings desde
-`Icons/index.ts`, mismo patrón que el resto del set):
-
-- Flecha "adelante" (archivo fuente: `Adelante-50x50.svg`, ya provisto por Luna).
-- Flecha "atrás" (archivo fuente: `Atras-50x50.svg`, ya provisto por Luna).
-- Ícono de colapsar/expandir sidebar (archivo fuente: `OpenClose sidebar-50x50.svg`,
-  ya provisto por Luna — normalizar el nombre de archivo sin espacios al copiarlo,
-  siguiendo la convención del resto del set, ej. `OpenCloseSidebar-50x50.svg`).
-
-**Retrofit de `004-familia-tareas`** (mismo feature — toca los 3 screens ya
-implementados, `OPEN`, mismo owner, sin colisión de equipo):
-
-- **Las 3 screens** (`tareas-pendientes`, `tareas-kanban`, `tareas-finalizadas`)
-  agregan el topbar completo: `AlertBar` con la leyenda "N TAREAS PENDIENTES" +
-  ícono de colapsar sidebar + flechas atrás/adelante (estos 3 íconos se componen
-  aparte en la screen, no son parte de `AlertBar` como componente).
-- **Las 3 screens** reemplazan el hack `Button`+`TextField` por `FilterField` real
-  donde corresponde.
-- **`tareas-kanban`** agrega la fila de buscador (`FilterField`) que le faltaba, más
-  una barra de progreso + ícono "..." por columna (hallazgo nuevo del fidelity-check,
-  no estaba en `input.md` original de `004-familia-tareas`).
-- **`tareas-finalizadas`** cambia el dataset de sus 8 `TaskCard` a contenido
-  completo (status + creador + fechas), igual que `tareas-pendientes` — hoy tienen
-  una versión recortada sin esos datos, que no coincide con el PDF real (p.9).
-- `knowledge/screens/{tareas-pendientes,tareas-kanban,tareas-finalizadas}.md` se
-  actualizan para reflejar el retrofit.
-
-**Documentación** (convención ya establecida en el kit):
-
-- `knowledge/components/{AlertBar,Toast,FilterField}.md` +
-  `knowledge/specs/components/{AlertBar,Toast,FilterField}.spec.md`.
-- Registro en `knowledge/design-system-manifest.json` y fila en `knowledge/index.md`.
+---
 
 ## 4. OUT OF SCOPE
 
-- **Limpieza de `TextField`/`SelectField`/`AlertBanner`** — Luna los identificó como
-  inventados durante el grilling, pero es trabajo pendiente aparte, no de esta
-  feature.
-- **Tonos adicionales de `Toast`** (error/warning/info) — solo `success` por ahora.
-- **Desplegable funcional del ícono de filtro en `FilterField`** — decorativo, el
-  PDF no lo especifica.
-- **Dashboard (p.4, `003-home-dashboard`, ya `CLOSED`)** — tiene el mismo gap de
-  topbar (el draft original ya señalaba que "Alert Sigcat" aparece de p.4 a p.9),
-  pero queda **fuera de esta feature** — decisión explícita de Luna, se revisita
-  aparte si se prioriza.
-- **Resto del draft original** (`pantallas-grupo-a-b.md`): p.12/23 (Sprint 3), p.20
-  resto/Acordeón (Sprint 4), p.21/22 (Sprint 5).
-- `drafts/tipografia-legibilidad.md` — iniciativa separada, sin refinar.
+- No se toca layout ni contenido de `Home`, `Dashboard`, `CargaDeFormulario` más allá
+  de que sigan funcionando correctamente con el nuevo ancho (una regresión visual ahí
+  sería un bug de esta feature, pero no se les agrega/cambia nada más).
+- La variante p.6 (tabs + barra de progreso) de Tareas Pendientes sigue descartada —
+  decisión previa de `004-familia-tareas`, no se reabre acá.
+- El glifo exacto del edge-toggle ("panel de dos rectángulos" vs. chevron, pendiente
+  en Known Limitations) queda **moot**: se elimina el control, no se corrige su
+  glifo.
+- No se agrega estado global, fetch, ni routing real — mismo criterio que
+  `004-familia-tareas` PROHIBITED-3.
+- Las 3 screens de Tareas siguen sin exportarse en `packages/ui/src/index.ts`
+  (`004-familia-tareas` PROHIBITED-4, no se toca).
+
+---
 
 ## 5. RESTRICCIONES TÉCNICAS
 
-- Convención de componentes: un `.tsx` + un `.stories.tsx` plano en
-  `packages/ui/src/components/`, exportados desde `index.ts` (única fuente de
-  verdad de exports públicos).
-- Íconos nuevos van a `Icons/Menu/` como assets estáticos, exportados como URL
-  strings desde `Icons/index.ts` — mismo patrón que `FiltroIcon`/`BuscarIcon`/etc.
-- **`FilterField` es la única excepción de esta feature a la convención `@2×÷2`**
-  — su medida (400×50px) ya es final, confirmado explícitamente. `AlertBar` y
-  `Toast` sí siguen `@2×÷2` normalmente (20pt→10px, 18pt→9px).
-- Sin framework de test instalado — verificación manual en Storybook, mismo
-  criterio que el resto del kit.
-- `Toast` necesita un `useState`/`useEffect` local (timer de 4s) dentro de su propio
-  componente — no es estado global, no viola la restricción de `existing-arch.md`
-  (mismo criterio ya aplicado a la interactividad de `screens/tareas-pendientes/`
-  en `004-familia-tareas`).
-- El retrofit de `004-familia-tareas` toca archivos ya existentes de esa feature
-  (`OPEN`, mismo owner) — actualizar `specs/_registry/features.yaml` y
-  `graph/domain.yaml` para reflejar los archivos tocados por esta nueva feature
-  también, sin que cuente como colisión de equipo (mismo owner).
-- No modificar `TextField.tsx`, `SelectField.tsx` ni `AlertBanner.tsx` — quedan
-  igual, la limpieza es aparte.
+- Medir con PyMuPDF (`get_drawings()`/`get_pixmap()`/`get_text()`), nunca a ojo —
+  gate de `knowledge/visual-analysis-protocol.md` (PASS 9) +
+  `knowledge/reasoning/fidelity-validation.md` antes de fijar cualquier geometría
+  nueva.
+- **Dos fuentes de medición, no una:**
+  - `knowledge/references/design-reference.pdf` p.13 ("SIDE BAR") — hoja de
+    componente aislado, ya en el repo (== `Alejandria - UI Toolkit (3).pdf`, v3,
+    mismo tamaño en bytes).
+  - `C:\Users\LunaVioletaGonzalez\Downloads\Alejandria - Agosto 2026.pdf` (112.9MB,
+    **no commiteado** — `DECISIONS.md` D008) — mockups de las screens reales, p.5
+    (Tareas Pendientes), p.8 (Kanban), p.9 (Finalizadas), para ver el SideBar *en
+    contexto* y confirmar el hallazgo de solapamiento en viewports angostos. No
+    asumir que "no está en el repo" significa "no se puede consultar" — ya hay un
+    precedente documentado en `DECISIONS.md` de ese error.
+- `SideBar` debe seguir siendo **controlado-only**: sin estado interno de colapso
+  (`collapsed` + `onToggleCollapsed` siguen siendo requeridos, sin default
+  uncontrolled). Este draft no cambia esa garantía.
+- Sin framework de test instalado — verificación manual en Storybook.
+- `knowledge/design-system-rules.md` es la autoridad de estilos.
+- Convención de tokens: `--ds-*` en `styles.css`.
+- No instalar framework de test ni linter como efecto colateral.
+
+---
 
 ## 6. UI / FLUJO
 
-**`AlertBar`** — franja full-width, fondo `#494949`, borde `0,75pt #606060`, label
-centrado Source Code Bold 20pt`@2×`→10px, blanco (`default`) o rojo `#ff0404`
-(`alerta`). Ejemplos del PDF: "3 ALERTAS NUEVAS" (default), "INCENDIO TIPO A - FASE
-1" (alerta). En las screens de Tareas se usa como topbar con "N TAREAS PENDIENTES".
+**Antes:**
+```
+div.ds-sidebar-shell
+├── nav.ds-sidebar[.ds-sidebar--collapsed]
+│   ├── div.ds-sidebar__header (logo)
+│   ├── div.ds-sidebar__menu
+│   │   ├── div.ds-sidebar__menu-heading (¡ya wireado a onToggleCollapsed!)
+│   │   └── ul.ds-sidebar__list ...
+│   └── div.ds-sidebar__secondary ...
+└── button.ds-sidebar__edge-toggle   ← SACAR
+    └── svg (SideBarChevron left|right)
+```
 
-**Topbar de las 3 screens de Familia Tareas** — fila completa arriba de todo:
-ícono colapsar/expandir sidebar + flecha atrás + flecha adelante (los 3 a la
-izquierda, elementos sueltos, no parte de `AlertBar`) + `AlertBar` ocupando el
-resto del ancho con el label centrado.
+**Después:**
+```
+nav.ds-sidebar[.ds-sidebar--collapsed]   ← sin wrapper .ds-sidebar-shell si ya no
+│                                          hace falta straddlear el borde (confirmar
+│                                          en /sdd-implement si el shell sigue
+│                                          necesario por otro motivo de layout)
+├── div.ds-sidebar__header (logo)
+├── div.ds-sidebar__menu
+│   ├── div.ds-sidebar__menu-heading   ← único control interno, ahora con
+│   │                                    role="button" + aria-expanded + aria-label
+│   └── ul.ds-sidebar__list ...
+└── div.ds-sidebar__secondary ...
+```
 
-**`Toast`** — pill/box centrado (posición exacta arriba de la pantalla, mismo
-criterio que el mock), fondo `#060606`, borde `0,75pt #606060`, texto Source Code
-Bold 18pt`@2×`→9px blanco. Aparece, espera 4000ms, desaparece — sin botón de cierre.
+- **Control interno:** click en el heading "Menú" → `onToggleCollapsed()` (ya
+  funcionaba; ahora además lleva la semántica ARIA migrada del edge-toggle).
+- **Control externo (por consumidor):** click en `OpenCloseSidebarIcon` del topbar,
+  en las 3 screens de Tareas → mismo `onToggleCollapsed` vía `useState` local de cada
+  screen. Ambos controles disparan el mismo estado controlado — no hay dos fuentes de
+  verdad.
+- **Anchos:** valores finales pendientes del sweep PyMuPDF (Done Criteria #1/#2) —
+  este documento no fija un número, eso es trabajo de `/sdd-implement` con evidencia
+  medida, no una decisión de producto a asumir acá.
+- **Independencia entre screens:** cada una de las 3 screens de Tareas mantiene su
+  propio `useState` de colapso — no se sincroniza entre `TareasPendientes`,
+  `TareasKanban`, `TareasFinalizadas` (no hay routing que las conecte).
 
-**`FilterField`** — ícono de filtro (`FiltroIcon`) + chevron, afuera del campo a la
-izquierda; input oscuro 400×50px (fondo `#060606`, borde `0,75pt #606060`) con lupa
-adentro a la derecha, texto Montserrat Regular 20pt`@2×`→10px blanco, sin label
-flotante. Ejemplo del mock: "Investigación" (valor o placeholder, indistinguible en
-el PDF estático).
-
-**Retrofit — `tareas-pendientes`**: agrega el topbar arriba de todo; el
-`TextField`+`Button` actual del toolbar se reemplaza por `FilterField`.
-
-**Retrofit — `tareas-kanban`**: agrega el topbar arriba de todo; agrega una fila con
-`FilterField` (no existía ninguna fila de búsqueda/filtro ahí); cada columna
-(EN FECHA/RETRASADAS/FINALIZADAS) agrega una barra de progreso fina debajo del
-título + un ícono "..." a la derecha del título (hallazgo nuevo, sin spec exacta
-del PDF más allá de "está ahí" — color/relleno a definir en `plan.md` con la misma
-prioridad de verificación contra el PDF que el resto de esta feature).
-
-**Retrofit — `tareas-finalizadas`**: agrega el topbar arriba de todo; el
-`TextField` actual del toolbar se reemplaza por `FilterField`; las 8 `TaskCard`
-pasan a mostrar `creator`/`startDate`/`endDate` además de `status`/`title`/`meta`
-(contenido completo, igual que `tareas-pendientes`), manteniendo `tone="neutral"` +
-`viewMore` (sin triángulo, con "VER MÁS").
+---
 
 ## Referencias
 
-- `drafts/alert-toast-filter.md` — fuente principal de este brief.
-- `knowledge/references/design-reference.pdf` p.22 ("ALERT") y p.23 ("FILTER") —
-  hojas de spec exactas, ya en el repo.
-- `specs/004-familia-tareas/` — feature `OPEN` que este retrofit modifica.
-- `packages/ui/src/components/AlertBanner.tsx` — componente existente, distinto de
-  `AlertBar`, no se toca.
-- `packages/ui/src/Icons/Menu/Filtro-50x50.svg` — ícono ya existente, reusado por
-  `FilterField` (confirmado idéntico al archivo que Luna adjuntó).
-- `DECISIONS.md` — pendiente registrar por qué este trabajo se separó de
-  `004-familia-tareas` como feature propia en vez de sumarse ahí directamente, y la
-  nota de `TextField`/`SelectField`/`AlertBanner` como limpieza pendiente aparte.
+- `knowledge/component-roadmap.md` § "Gaps nuevos encontrados" — hallazgo original.
+- `knowledge/components/SideBar.md` — contrato actual a actualizar.
+- `specs/004-familia-tareas/constitution.md` MUST-3 / PROHIBITED-1 — a enmendar
+  (MUST-3) y a razonar explícitamente por qué esta feature nueva sí puede tocar
+  `SideBar.tsx` pese al PROHIBITED-1 de esa constitution ya `CLOSED` (constitutions
+  distintas, features distintas — no se edita el PROHIBITED-1 de 004, solo se explica
+  la relación en `DECISIONS.md`).
+- `specs/005-alert-toast-filter/constitution.md` — mismo tipo de PROHIBITED sobre
+  `SideBar`, misma relación que con `004`.
+- `specs/003-home-dashboard/`, `specs/002-bg-texture/` — consumidores `CLOSED` que no
+  se modifican pero deben seguir funcionando.
+- `packages/ui/src/components/SideBar.tsx` — a modificar.
+- `packages/ui/src/screens/tareas-pendientes|tareas-kanban|tareas-finalizadas/` — a
+  cablear.
+- `knowledge/references/design-reference.pdf` p.13 — fuente de medición del
+  componente aislado.
+- `C:\Users\LunaVioletaGonzalez\Downloads\Alejandria - Agosto 2026.pdf` p.5/8/9 —
+  fuente de medición de las screens en contexto.
+- `DECISIONS.md` D008 — por qué el segundo PDF no está commiteado, y el precedente
+  del error de no consultarlo por asumir que no estaba disponible.
