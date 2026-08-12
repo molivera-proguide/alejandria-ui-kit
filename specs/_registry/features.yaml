@@ -71,3 +71,127 @@ features:
     decisions:
       - "2026-08-11: Adaptar el loop TDD a verificación visual (sin framework de test)"
       - "2026-08-11: Corrección de componente — Asistencias en Home es DonutChartCard, no ProgressRing"
+
+  - id: 004-familia-tareas
+    type: feature
+    status: CLOSED
+    domain: composed-patterns
+    owner: lvgonzalezprg
+    sprint: null
+    created: 2026-08-11
+    closed: 2026-08-12
+    touches:
+      - packages/ui/src/screens/tareas-pendientes/TareasPendientes.stories.tsx
+      - packages/ui/src/screens/tareas-pendientes/tareas-pendientes.css
+      - packages/ui/src/screens/tareas-kanban/TareasKanban.stories.tsx
+      - packages/ui/src/screens/tareas-kanban/tareas-kanban.css
+      - packages/ui/src/screens/tareas-finalizadas/TareasFinalizadas.stories.tsx
+      - packages/ui/src/screens/tareas-finalizadas/tareas-finalizadas.css
+      - packages/ui/src/components/TaskCard.tsx
+      - packages/ui/src/components/TaskCard.stories.tsx
+      - packages/ui/src/patterns/detail-sheet/DetailSheet.tsx
+      - packages/ui/src/patterns/detail-sheet/detail-sheet.css
+      - packages/ui/src/patterns/detail-sheet/DetailSheet.stories.tsx
+      - knowledge/screens/tareas-pendientes.md
+      - knowledge/screens/tareas-kanban.md
+      - knowledge/screens/tareas-finalizadas.md
+      - knowledge/component-roadmap.md
+      - knowledge/index.md
+      - input.md
+    decisions:
+      - "2026-08-11: Duplicación de config de SideBar — se mantiene por ahora"
+      - "2026-08-11: Adaptar el loop TDD a verificación visual (sin framework de test) — 004-familia-tareas"
+      - "2026-08-11: Correcciones tempranas sin loggear: z-index del overlay y primer ajuste de ancho del panel (retroactivo)"
+      - "2026-08-11: Primera medición real contra el PDF de screens (panel a 656px, \"VER MÁS\" como chip, overlay)"
+
+  - id: 005-alert-toast-filter
+    type: feature
+    status: CLOSED
+    domain: component-catalog
+    owner: lvgonzalezprg
+    sprint: null
+    created: 2026-08-11
+    closed: 2026-08-12
+    touches:
+      - packages/ui/src/components/AlertBar.tsx
+      - packages/ui/src/components/AlertBar.stories.tsx
+      - packages/ui/src/components/Toast.tsx
+      - packages/ui/src/components/Toast.stories.tsx
+      - packages/ui/src/components/FilterField.tsx
+      - packages/ui/src/components/FilterField.stories.tsx
+      - packages/ui/src/index.ts
+      - packages/ui/src/styles.css
+      - packages/ui/src/Icons/Menu/Adelante-50x50.svg
+      - packages/ui/src/Icons/Menu/Atras-50x50.svg
+      - packages/ui/src/Icons/Menu/OpenCloseSidebar-50x50.svg
+      - packages/ui/src/Icons/index.ts
+      - packages/ui/src/screens/tareas-pendientes/TareasPendientes.stories.tsx
+      - packages/ui/src/screens/tareas-pendientes/tareas-pendientes.css
+      - packages/ui/src/screens/tareas-kanban/TareasKanban.stories.tsx
+      - packages/ui/src/screens/tareas-kanban/tareas-kanban.css
+      - packages/ui/src/screens/tareas-finalizadas/TareasFinalizadas.stories.tsx
+      - packages/ui/src/screens/tareas-finalizadas/tareas-finalizadas.css
+      - knowledge/components/AlertBar.md
+      - knowledge/components/Toast.md
+      - knowledge/components/FilterField.md
+      - knowledge/specs/components/AlertBar.spec.md
+      - knowledge/specs/components/Toast.spec.md
+      - knowledge/specs/components/FilterField.spec.md
+      - knowledge/design-system-manifest.json
+      - knowledge/index.md
+      - knowledge/screens/tareas-pendientes.md
+      - knowledge/screens/tareas-kanban.md
+      - knowledge/screens/tareas-finalizadas.md
+      - input.md
+    decisions:
+      - "2026-08-11: Adaptar el loop TDD a verificación visual (sin framework de test) — 005-alert-toast-filter"
+      - "2026-08-12: Corrección post-implementación: DetailSheet (ancho/overlap/tipografía) y headings faltantes en Tareas"
+      - "2026-08-12: Bug real en TaskCard variant=\"default\": fondo invisible al combinarse con BackgroundTextureDots"
+      - "2026-08-12: Corrección: borde faltante en el chamfer de TaskCard variant=\"default\""
+      - "2026-08-12: TaskCard sin navegación por teclado ni hover cuando es interactiva"
+      - "2026-08-12: Topbar: AlertBar no ocupaba el ancho completo, íconos van superpuestos"
+    note: >
+      Overlap intencional con 004-familia-tareas en los 3 archivos de screens
+      (retrofit) y sus 3 knowledge/screens/*.md — mismo owner, no es colisión
+      de equipo. Decisión de Luna (2026-08-11): el retrofit va dentro de esta
+      feature, no como paso aparte sobre 004.
+
+  - id: fix-001-taskcard-keyboard-hover
+    type: fix
+    status: CLOSED
+    domain: component-catalog
+    owner: lvgonzalezprg
+    sprint: null
+    created: 2026-08-12
+    closed: 2026-08-12
+    touches:
+      - packages/ui/src/components/TaskCard.tsx
+      - packages/ui/src/styles.css
+    decisions:
+      - "2026-08-12: TaskCard sin navegación por teclado ni hover cuando es interactiva"
+    note: >
+      Encontrado en /sdd-checklist CHK001 (004-familia-tareas/005-alert-toast-filter):
+      TaskCard no es navegable por teclado ni tiene feedback de hover cuando recibe
+      onClick (caso real: Tareas Pendientes). Mismo owner que ambas features OPEN,
+      no colisión de equipo. Verificado con Enter/Espacio reales en Storybook.
+
+  - id: fix-002-topbar-alertbar-fullwidth
+    type: fix
+    status: CLOSED
+    domain: composed-patterns
+    owner: lvgonzalezprg
+    sprint: null
+    created: 2026-08-12
+    closed: 2026-08-12
+    touches:
+      - packages/ui/src/screens/tareas-pendientes/tareas-pendientes.css
+      - packages/ui/src/screens/tareas-kanban/tareas-kanban.css
+      - packages/ui/src/screens/tareas-finalizadas/tareas-finalizadas.css
+    decisions:
+      - "2026-08-12: Topbar: AlertBar no ocupaba el ancho completo, íconos van superpuestos"
+    note: >
+      Encontrado en /sdd-checklist CHK015 (005-alert-toast-filter): AlertBar del
+      topbar no ocupa el ancho completo, medido y confirmado contra
+      "Alejandria - Agosto 2026.pdf" p.5 (get_drawings() — el ícono real queda
+      superpuesto sobre la barra, no al costado). Mismo owner que ambas features
+      OPEN, no colisión de equipo. Verificado en las 3 screens en vivo.

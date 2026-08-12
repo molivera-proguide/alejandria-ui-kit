@@ -1,0 +1,141 @@
+.screen-tareas-pendientes {
+  background-color: var(--ds-color-pdf-surface);
+  display: flex;
+  min-height: 100vh;
+  position: relative; /* recorta el overlay absoluto de BackgroundTextureDots
+     (002-bg-texture), mismo patrón que screen-home/screen-dashboard */
+}
+
+/* Envuelve topbar + main — reemplaza a __main como hijo flex directo de la fila
+   SideBar+contenido (retrofit 005-alert-toast-filter, agrega el topbar arriba). */
+.screen-tareas-pendientes__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Topbar (PDF p.4-9: "Alert Sigcat" con leyenda "N TAREAS PENDIENTES" + íconos
+   colapsar/atrás/adelante, sueltos — no son parte de AlertBar como componente).
+   fix-002 (2026-08-12, CHK015): la barra ocupaba solo el espacio flex remanente
+   después de los 3 íconos (empezaba a la derecha de ellos). Medido contra
+   "Alejandria - Agosto 2026.pdf" p.5 con get_drawings(): la barra real ocupa
+   ~1862pt @2× (borde a borde de la página, ~5px de margen a cada lado) y el
+   ícono "colapsar" (x:117-163) cae completamente DENTRO del rango de la barra
+   (x:53-1915) — los íconos van superpuestos encima, no al costado. min-height
+   34px = alto de contenido real de .ds-alert-bar medido en vivo
+   (getBoundingClientRect) antes de este fix — box-sizing es content-box
+   (default), así que el padding de 12px arriba/abajo de este mismo selector se
+   suma aparte; total resultante 34+24=58px, igual a la altura del topbar
+   previa a este fix, preservada para no regresionar al sacar la barra del
+   flujo flex. */
+.screen-tareas-pendientes__topbar {
+  align-items: center;
+  display: flex;
+  gap: var(--ds-space-2);
+  min-height: 34px;
+  padding: 12px 16px;
+  position: relative;
+}
+
+.screen-tareas-pendientes__topbar-icon {
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  padding: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.screen-tareas-pendientes__topbar-icon img {
+  height: 20px;
+  width: 20px;
+}
+
+.screen-tareas-pendientes__topbar .ds-alert-bar {
+  /* width: auto explícito — .ds-alert-bar trae width: 100% de su propio componente,
+     que sobre-restringe junto con left+right (el navegador termina ignorando `right`
+     y desbordando). height: auto por el mismo motivo, ver comentario arriba. */
+  bottom: 12px;
+  height: auto;
+  left: 16px;
+  position: absolute;
+  right: 16px;
+  top: 12px;
+  width: auto;
+  z-index: 0;
+}
+
+.screen-tareas-pendientes__main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--ds-space-6);
+  min-width: 0;
+  /* ancla el panel de detalle absoluto — ver .screen-tareas-pendientes__detail-overlay */
+  position: relative;
+  padding: 24px 32px;
+}
+
+.screen-tareas-pendientes__toolbar {
+  align-items: center;
+  display: flex;
+  gap: var(--ds-space-4);
+}
+
+/* Agregado 2026-08-12 — faltaba, encontrado en el fidelity-check post-implementación
+   (Luna). El PDF real muestra este heading en la misma fila que el toggle/filtro,
+   a la izquierda; `margin-right: auto` empuja el resto de los controles a la derecha. */
+.screen-tareas-pendientes__heading {
+  color: var(--ds-color-pdf-form-muted);
+  font-family: var(--ds-font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  margin: 0 auto 0 0;
+  text-transform: uppercase;
+}
+
+.screen-tareas-pendientes__grid {
+  align-content: start;
+  display: grid;
+  gap: 16px;
+  /* TaskCard `default` tiene ancho fijo (170px, calibrado ÷2 en styles.css) — la grilla se
+     arma con columnas de ese mismo ancho, no con `1fr` (mismo criterio ya establecido en
+     screen-dashboard__grid para ModuleCard). */
+  grid-template-columns: repeat(4, 170px);
+}
+
+/* La screen agrega el cursor clickeable acá (no en TaskCard.tsx/styles.css): la
+   interactividad de abrir el detalle es específica de esta composición, no del
+   componente — el resto de las screens que consumen TaskCard (Home, Kanban,
+   Finalizadas) no la tienen. */
+.screen-tareas-pendientes__grid .ds-task {
+  cursor: pointer;
+}
+
+/* Panel lateral superpuesto (PDF p.7) — medido 2026-08-11 contra el PDF real
+   (Downloads de Luna, "Alejandria - Agosto 2026.pdf" p.7): el panel NO cubre toda la
+   grilla — get_drawings() muestra que la 1ra columna de `TaskCard` (x:131.7-471.7 @2×,
+   fuera del rect del panel x:509.65-1822.38 @2×) queda visible al costado, columnas
+   2-4 quedan cubiertas. `left` (no `right`) reproduce ese mismo corte: padding del
+   `__main` (32px) + 1 columna (170px) + gap (16px) = 218px, sin depender del ancho
+   variable del contenedor flex. Sin `box-shadow` — el PDF no muestra dimming, solo el
+   borde propio de `.detail-sheet` (ya existente, no agregado por esta feature). */
+.screen-tareas-pendientes__detail-overlay {
+  bottom: 0;
+  left: 218px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  overflow-y: auto;
+  /* `.ds-task::before` (el triángulo de acento) fija z-index: 1 explícito — sin un
+     z-index acá que lo supere, el overlay quedaba "por debajo" en el stacking order
+     aunque estuviera pintado después en el DOM, y el triángulo se veía flotando sobre
+     el panel (bug reportado por Luna, ver captura). 10 alcanza para superar cualquier
+     z-index:1 del kit sin acercarse al 100 que usa .ds-modal-backdrop. */
+  z-index: 10;
+}

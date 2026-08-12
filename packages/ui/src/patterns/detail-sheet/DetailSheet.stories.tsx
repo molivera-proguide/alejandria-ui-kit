@@ -83,3 +83,16 @@ export const Fichas: Story = {
     content: fichaContent
   }
 };
+
+/**
+ * @description Panel lateral ancho (PDF p.7 — 004-familia-tareas): mismo contenido, con
+ * `className="detail-sheet--wide"` y `onClose` cableado. Verifica visualmente el estilo del
+ * 3er botón "--c" (antes sin regla CSS) y el ancho ampliado.
+ */
+export const PanelLateral: Story = {
+  args: {
+    content: fichaContent,
+    className: "detail-sheet--wide",
+    onClose: () => undefined
+  }
+};

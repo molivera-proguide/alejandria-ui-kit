@@ -11,6 +11,8 @@ import driveUrl from "./Investigations/Drive-50x50.svg";
 import instagramUrl from "./Investigations/Instagram-50x50.svg";
 import personaUrl from "./Investigations/Persona-50x50.svg";
 import telefonoUrl from "./Investigations/Telefono-50x50.svg";
+import adelanteUrl from "./Menu/Adelante-50x50.svg";
+import atrasUrl from "./Menu/Atras-50x50.svg";
 import ayudaUrl from "./Menu/Ayuda-50x50.svg";
 import menuBandejaUrl from "./Menu/Bandeja-50x50.svg";
 import buscarUrl from "./Menu/Buscar-50x50.svg";
@@ -23,6 +25,7 @@ import historialUrl from "./Menu/Historial-50x50.svg";
 import notificacionesUrl from "./Menu/Notificaciones-50x50.svg";
 import nuevaEntidadUrl from "./Menu/Nueva-entidad-50x50.svg";
 import nuevaRelacionUrl from "./Menu/Nueva-relacion-50x50.svg";
+import openCloseSidebarUrl from "./Menu/OpenCloseSidebar-50x50.svg";
 import personalizarUrl from "./Menu/Personalizar-50x50.svg";
 import reportsUrl from "./Menu/Reports-50x50.svg";
 import relacionarEntidadesUrl from "./Menu/Relacionar-entidades-50x50.svg";
@@ -124,6 +127,18 @@ export const TelefonoIcon: string = telefonoUrl;
 // Menu
 
 /**
+ * @description Icono Alejandría: adelante (Menu, 50×50). URL string para `<img src>` u equivalente.
+ * @type {string}
+ */
+export const AdelanteIcon: string = adelanteUrl;
+
+/**
+ * @description Icono Alejandría: atrás (Menu, 50×50). URL string para `<img src>` u equivalente.
+ * @type {string}
+ */
+export const AtrasIcon: string = atrasUrl;
+
+/**
  * @description Icono Alejandría: ayuda (Menu, 50×50). URL string para `<img src>` u equivalente.
  * @type {string}
  */
@@ -194,6 +209,12 @@ export const NuevaEntidadIcon: string = nuevaEntidadUrl;
  * @type {string}
  */
 export const NuevaRelacionIcon: string = nuevaRelacionUrl;
+
+/**
+ * @description Icono Alejandría: colapsar/expandir sidebar (Menu, 50×50). URL string para `<img src>` u equivalente.
+ * @type {string}
+ */
+export const OpenCloseSidebarIcon: string = openCloseSidebarUrl;
 
 /**
  * @description Icono Alejandría: personalizar (Menu, 50×50). URL string para `<img src>` u equivalente.

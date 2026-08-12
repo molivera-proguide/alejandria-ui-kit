@@ -4,6 +4,7 @@ import type { LineChartDatum } from "../../components/LineChartCard";
 import { LineChartCard } from "../../components/LineChartCard";
 import { MetricCard } from "../../components/MetricCard";
 import { SelectField } from "../../components/SelectField";
+import { cn } from "../../utils/cn";
 import "./detail-sheet.css";
 
 /**
@@ -71,6 +72,19 @@ export interface DetailSheetContent {
  */
 export interface DetailSheetProps {
   content: DetailSheetContent;
+  /**
+   * @description Se dispara al hacer click en el ícono "Cerrar" del header. Opcional — sin
+   * ella, el ícono se renderiza igual pero sin acción (mismo criterio que el resto del kit
+   * para affordances decorativas). Agregado en `004-familia-tareas` para permitir que una
+   * screen consumidora lo use como panel lateral abrible/cerrable con estado local.
+   */
+  onClose?: () => void;
+  /**
+   * @description Clase adicional en el `<article>` raíz — permite que una screen consumidora
+   * ajuste el ancho (ej. panel lateral amplio) sin tocar el contrato de `content`. Ver
+   * `.detail-sheet--wide` en `detail-sheet.css`.
+   */
+  className?: string;
 }
 
 /**
@@ -78,9 +92,9 @@ export interface DetailSheetProps {
  * @param {DetailSheetProps} props - Contenido estático y estructura de la ficha
  * @returns {JSX.Element} Superficie de información de una entidad operativa
  */
-export function DetailSheet({ content }: DetailSheetProps) {
+export function DetailSheet({ content, onClose, className }: DetailSheetProps) {
   return (
-    <article className="detail-sheet" aria-label="Ficha de detalle">
+    <article className={cn("detail-sheet", className)} aria-label="Ficha de detalle">
       <header className="detail-sheet__header">
         <div className="detail-sheet__header-main">
           <div className="detail-sheet__status-row" aria-label="Estado">
@@ -101,7 +115,7 @@ export function DetailSheet({ content }: DetailSheetProps) {
             <button type="button" className="detail-sheet__icon-button" aria-label="Configuración">
               <Settings aria-hidden="true" />
             </button>
-            <button type="button" className="detail-sheet__icon-button" aria-label="Cerrar">
+            <button type="button" className="detail-sheet__icon-button" aria-label="Cerrar" onClick={onClose}>
               <X aria-hidden="true" />
             </button>
           </div>

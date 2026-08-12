@@ -78,11 +78,12 @@ knowledge/
 
 ## Components
 
-The public exports of `@alejandria/ui-kit` have dedicated docs under `knowledge/components/` (32 exports).
+The public exports of `@alejandria/ui-kit` have dedicated docs under `knowledge/components/` (35 exports).
 
 | Component | Doc | Storybook |
 |-----------|-----|-----------|
 | AlertBanner | [AlertBanner.md](./components/AlertBanner.md) | `Alejandria/AlertBanner` |
+| AlertBar | [AlertBar.md](./components/AlertBar.md) | `Alejandria/AlertBar` |
 | Asistente | [Asistente.md](./components/Asistente.md) | `Alejandria/Asistente` |
 | Badge | [Badge.md](./components/Badge.md) | `Alejandria/Badge Chip` |
 | BarChartCard | [BarChartCard.md](./components/BarChartCard.md) | `Alejandria/ChartCard` (nested) |
@@ -94,6 +95,7 @@ The public exports of `@alejandria/ui-kit` have dedicated docs under `knowledge/
 | DetailSheet | [DetailSheet.md](./components/DetailSheet.md) | `Alejandria/Patterns/DetailSheet` |
 | DonutChartCard | [DonutChartCard.md](./components/DonutChartCard.md) | `Alejandria/ChartCard` (nested) |
 | Empty | [Empty.md](./components/Empty.md) | `Alejandria/Empty` |
+| FilterField | [FilterField.md](./components/FilterField.md) | `Alejandria/FilterField` |
 | FormCheckable | [FormCheckable.md](./components/FormCheckable.md) | `Alejandria/FormCheckable` |
 | FormDatePicker | [FormDatePicker.md](./components/FormDatePicker.md) | `Alejandria/FormDatePicker` |
 | FormFileUpload | [FormFileUpload.md](./components/FormFileUpload.md) | `Alejandria/FormFileUpload` |
@@ -114,6 +116,7 @@ The public exports of `@alejandria/ui-kit` have dedicated docs under `knowledge/
 | Switch | [Switch.md](./components/Switch.md) | `Alejandria/Switch` |
 | TaskCard | [TaskCard.md](./components/TaskCard.md) | `Alejandria/TaskCard` |
 | TextField | [TextField.md](./components/TextField.md) | `Alejandria/TextField` |
+| Toast | [Toast.md](./components/Toast.md) | `Alejandria/Toast` |
 
 Component docs follow the structure in [`templates/component.md`](./templates/component.md). For which component to pick, see [`reasoning/component-selection.md`](./reasoning/component-selection.md).
 
@@ -154,11 +157,15 @@ Screens are **fullscreen page compositions** in Storybook.
 | Carga de Formulario | [carga-de-formulario.md](./screens/carga-de-formulario.md) | `Alejandria/Screens/CargaDeFormulario` |
 | Home | [home.md](./screens/home.md) | `Alejandria/Screens/Home` |
 | Dashboard | [dashboard.md](./screens/dashboard.md) | `Alejandria/Screens/Dashboard` |
+| Tareas Pendientes | [tareas-pendientes.md](./screens/tareas-pendientes.md) | `Alejandria/Screens/TareasPendientes` |
+| Tareas Kanban | [tareas-kanban.md](./screens/tareas-kanban.md) | `Alejandria/Screens/TareasKanban` |
+| Tareas Finalizadas | [tareas-finalizadas.md](./screens/tareas-finalizadas.md) | `Alejandria/Screens/TareasFinalizadas` |
 
 The following are **not** documented because they have no Storybook screen:
 
 - Login
-- Ficha (detail sheet)
+- Ficha (detail sheet, standalone — see `patterns/detail-sheet.md`; consumed inside
+  `Tareas Pendientes` as a wide side panel, not documented as its own screen)
 - Asistente fullscreen screen (component `Asistente` ships and is now also reused whole
   inside the `Home` screen; no standalone Storybook screen composition of its own yet)
 - Reporting dashboard (only Chart Gallery pattern)

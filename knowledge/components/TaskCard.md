@@ -36,7 +36,7 @@ tags:
   - presentational
   - molecule
 
-last_reviewed: 2026-08-04
+last_reviewed: 2026-08-12
 ---
 
 # TaskCard
@@ -83,14 +83,16 @@ Documenta los comportamientos públicos en los que el consumidor puede confiar.
 - **Sin visualización de progreso:** no se renderiza barra, porcentaje ni espacio reservado para avance.
 - Fusión de `className` externa y `style` externo en el `<article>` raíz.
 - Repaso de atributos nativos de `HTMLAttributes<HTMLElement>` al `<article>` vía `...props` (`id`, `data-*`, `aria-*`, etc.).
+- **Interactividad condicional (agregado 2026-08-12, `fix-001-taskcard-keyboard-hover`):** cuando el consumidor pasa `onClick` (vía `...props` — caso real: `screens/tareas-pendientes/`, abre `DetailSheet`), el `<article>` agrega `tabIndex={0}`, `role="button"`, la clase `ds-task--interactive` (`:hover`/`:focus-visible`) y un `onKeyDown` que dispara el mismo `onClick` con `Enter`/`Espacio` (vía `element.click()` real, no un evento simulado). Sin `onClick`, la card no cambia — sigue sin foco ni estilo interactivo, mismo comportamiento que antes de este fix.
+- `viewMore` (opcional): botón "VER MÁS" decorativo al final de la card, independiente de `variant` — ver tabla de Props y `TaskCardViewMoreAction`.
 
 ## This component never
 
 - Renderiza barra de progreso, porcentaje de avance ni indicadores de progreso de ningún tipo.
 - Obtiene, calcula ni actualiza el progreso de la tarea por sí mismo.
 - Compone internamente `ProgressRing`, `Button`, `Badge`, `Card` ni otros componentes del kit.
-- Define interactividad, manejadores de clic ni navegación.
-- Expone slots `children`, `actions` ni `footer` personalizables.
+- Inicia navegación, fetch de datos ni ningún efecto más allá de invocar el `onClick`/`viewMore.onClick` que el consumidor le pase.
+- Expone slots `children`, `actions` ni `footer` personalizables (`viewMore` es una prop tipada puntual, no un slot genérico).
 - Aplica media queries ni breakpoints propios.
 
 ---
@@ -149,7 +151,8 @@ import {
   TaskCard,
   type TaskCardProps,
   type TaskTone,
-  type TaskVariant
+  type TaskVariant,
+  type TaskCardViewMoreAction
 } from "@alejandria/ui-kit";
 ```
 
@@ -159,6 +162,7 @@ Tipos exportados:
 - `TaskCardProps` — props del componente.
 - `TaskTone` — unión de tonos semánticos para la prop `tone`.
 - `TaskVariant` — unión de variantes visuales (`"default"` | `"kanban"` | `"resumen"`).
+- `TaskCardViewMoreAction` — forma de la prop `viewMore` (`label` + `onClick`).
 
 ---
 
@@ -177,9 +181,17 @@ Tipos exportados:
 | `progress` | `number` | `0` | no | **Legacy — sin salida visual.** Conservada por compatibilidad de API; el componente no renderiza indicadores de avance. |
 | `tone` | `TaskTone` | `"neutral"` | no | Tono semántico. Aplica clase `ds-task--{tone}` y define `--task-accent` para el acento de esquina superior derecha. |
 | `variant` | `TaskVariant` | `"default"` | no | Variante visual. `"default"` = Full TaskCard canónica; `"kanban"` = presentación compacta PDF; `"resumen"` = presentación mínima PDF. |
-| `className` | `string` | — | no | Clases adicionales fusionadas con `ds-task`, el modificador de tono y el modificador de variante en el `<article>` raíz. |
+| `viewMore` | `TaskCardViewMoreAction` | — | no | Agregado en `004-familia-tareas` (T005). Configura el botón "VER MÁS" decorativo al final de la card (`.ds-task__view-more`), independiente de `variant`. Sin navegación ni lógica propia — el consumidor decide el `onClick` (mismo criterio que las utilities de `MetricCard`). Usado en `screens/tareas-finalizadas/` (PDF TARJETAS p.9). Ver `TaskCardViewMoreAction` abajo. |
+| `className` | `string` | — | no | Clases adicionales fusionadas con `ds-task`, el modificador de tono, el modificador de variante y (si aplica) `ds-task--interactive` en el `<article>` raíz. |
 | `style` | `CSSProperties` | — | no | Estilos inline en el `<article>` raíz. |
-| `...props` | `HTMLAttributes<HTMLElement>` | — | no | Atributos nativos del `<article>` (`id`, `data-*`, `aria-*`, etc.). |
+| `...props` | `HTMLAttributes<HTMLElement>` | — | no | Atributos nativos del `<article>` (`id`, `data-*`, `aria-*`, `onClick`, etc.). Pasar `onClick` activa la interactividad condicional — ver Behavioral Contract y Accessibility. |
+
+### TaskCardViewMoreAction
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `label` | `string` | sí | Texto del botón (ej. `"VER MÁS"`). |
+| `onClick` | `MouseEventHandler<HTMLButtonElement>` | sí | Handler de click del botón — el kit no asume navegación ni lógica de negocio propia. |
 
 ### TaskTone
 
@@ -317,20 +329,26 @@ Describe only accessibility behavior implemented by the component.
 
 - Usa semántica de `<article>` con `<header>` y `<h3>` para estructura de la tarjeta.
 - El código, estado, título, descripción y metadatos quedan expuestos como contenido textual.
-- No es interactivo; no recibe foco ni responde a teclado por diseño del componente.
+- **Interactivo solo cuando el consumidor pasa `onClick`** (agregado 2026-08-12,
+  `fix-001-taskcard-keyboard-hover`; caso real: `screens/tareas-pendientes/`, abre
+  `DetailSheet`) — en ese caso el `<article>` agrega `tabIndex={0}` y `role="button"`.
+  **Sin `onClick`, la card no es focusable** (comportamiento original, sin cambios —
+  `kanban`/`resumen` y `screens/tareas-kanban/`/`tareas-finalizadas/` nunca reciben `onClick` hoy).
 - El consumidor puede pasar atributos ARIA adicionales vía `...props` en el `<article>` raíz.
 
 ### ARIA
 
 | Attribute | Usage |
 |-----------|-------|
+| `role="button"` | Solo cuando la card recibe `onClick` (ver Requirements). Ausente si no es interactiva. |
 | Atributos vía `...props` | El consumidor puede pasar `aria-label`, `aria-describedby`, etc. en el `<article>` raíz. |
 
 ### Keyboard
 
 | Key | Action |
 |-----|--------|
-| — | Sin comportamiento de teclado implementado. El componente no es focusable salvo que el consumidor lo haga mediante `tabIndex` u otro atributo vía `...props`. |
+| Tab | Mueve el foco a la card — solo si es interactiva (`tabIndex={0}` presente únicamente cuando recibe `onClick`). Sin `onClick`, la card no forma parte del orden de tabulación. |
+| Enter / Espacio | Dispara el mismo `onClick` del consumidor (`event.currentTarget.click()`, un click real, no un evento simulado) — solo si la card es interactiva. Sin efecto en `kanban`/`resumen` o cualquier instancia sin `onClick`. |
 
 ---
 
@@ -628,10 +646,11 @@ article.ds-task.ds-task--{tone}.ds-task--default
 ├── p.ds-task__description (solo si description es truthy)
 ├── div.ds-task__meta (solo si meta.length > 0)
 │   └── span (× meta.length)
-└── div.ds-task__details (solo si creator/startDate/endDate — al menos una truthy)
-    ├── span (creator, solo si truthy)
-    ├── span (startDate, solo si truthy)
-    └── span (endDate, solo si truthy)
+├── div.ds-task__details (solo si creator/startDate/endDate — al menos una truthy)
+│   ├── span (creator, solo si truthy)
+│   ├── span (startDate, solo si truthy)
+│   └── span (endDate, solo si truthy)
+└── button.ds-task__view-more (solo si viewMore está presente — cualquier variant, no solo default)
 ```
 
 ### `variant="kanban"`
@@ -688,3 +707,4 @@ article.ds-task.ds-task--{tone}.ds-task--resumen
 | 0.1.0 | Pasada de fidelidad visual, corrección same-day: el `clip-path` del chaflán vivía en `.ds-task--default` junto con `::before`, y `clip-path` recorta todo el subárbol de un elemento — el acento nunca se veía. Movido el fondo/borde/chaflán a `.ds-task--default::after` (capa separada, `z-index:-1`) para que `::before` no quede recortado. Re-medidos chaflán/acento/anchos contra las coordenadas vectoriales exactas del PDF (PyMuPDF, no una captura): chaflán 31px, acento 24×24px, `default` `max-width` 120px→170px (nunca medido antes), `kanban`/`resumen` `max-width` →225px. La regla de calibración ÷2 (`specs/README.md`) sigue vigente; lo que cambió es la fuente del número en pt, no la regla. |
 | 0.1.0 | Pasada de fidelidad visual, tercera corrección same-day (feedback de usuario: card muy baja, `neutral` con punta gris incorrecta): extraídos los text-spans reales del PDF (fuente, tamaño, color exactos por PyMuPDF) en vez de asumir la taxonomía tipográfica. Corregido `.ds-task__code` (7px/400/line-height literal `0.2` → 10px/700/`--ds-leading-body`; el `0.2` era un valor atípico frente a todo el resto del archivo y aplastaba la caja de línea — causa principal de "necesita ser más alto"), `.ds-task__status` (mismo fix de line-height, 9px→10px), `.ds-task__title` (8px→9px, quitado `text-transform: uppercase` — el PDF no lo tiene en mayúsculas), `.ds-task__meta` (fuente mono→`--ds-font-body`, 7px→9px, quitado uppercase — mismo rol "Párrafo" que título). `tone="neutral"` deja de renderizar el triángulo de acento (antes gris `#c1c1c1`): la tercera card de ejemplo del PDF no tiene ningún triángulo dibujado, solo el chaflán vacío. Detectado (no resuelto en este paso): `description` no corresponde a ningún campo real de la card en el PDF; el agrupamiento visual del bloque `meta` (gap mayor entre Causa Corion→Dependencia) tampoco se reproducía. |
 | 0.1.0 | Pasada de fidelidad visual, cuarta corrección same-day (a pedido de usuario: mantener `description` y modelar los campos que señalan los callouts "Creador"/"Fecha" del PDF con props tipadas, no como strings sueltos en `meta`). Agregadas `creator`, `startDate`, `endDate` a `TaskCardProps`, renderizadas en un nuevo `div.ds-task__details` — solo en `variant="default"`, con `margin-top: 10px` que reproduce el gap de grupo medido en el PDF entre `meta` y este bloque (antes no reproducido, ver limitación cerrada arriba). Corregido un bug real detectado en el camino: `description` se filtraba a `variant="kanban"` si el consumidor la pasaba, contradiciendo el contrato documentado ("`kanban` no renderiza `description`") — ahora gateado a `variant === "default"` explícitamente. Actualizadas las stories: `canonicalTask` ya no incluye `description` (no es contenido real de la card canónica) ni los cinco `meta` originales (los tres últimos ahora son `creator`/`startDate`/`endDate`); nueva story `WithDescription` para no perder cobertura de ese campo. `description` queda confirmada como generalización deliberada de la API (ver Known Limitations), no como pendiente de eliminar. |
+| 0.1.0 | **Documentation backfill (2026-08-12, encontrado en `/sdd-review` de `004-familia-tareas`/`005-alert-toast-filter`).** Este doc nunca reflejó 2 cambios reales ya shippeados en `TaskCard.tsx`: (1) la prop `viewMore`/`TaskCardViewMoreAction` (agregada en `004-familia-tareas` T005, usada en `screens/tareas-finalizadas/`) — ahora en la tabla de Props, Public API y DOM Structure; (2) la interactividad condicional por teclado/hover de `fix-001-taskcard-keyboard-hover` (`tabIndex`/`role="button"`/`onKeyDown`/`.ds-task--interactive` cuando el consumidor pasa `onClick`) — Accessibility y Behavioral Contract decían literalmente lo contrario ("no es interactivo", "sin comportamiento de teclado"), corregido a la condición real (interactiva solo con `onClick`, estática sin él). Sin cambios de código en este pase, solo documentación. |

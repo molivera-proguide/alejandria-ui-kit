@@ -1,6 +1,7 @@
 import "./styles.css";
 
 export * from "./components/AlertBanner";
+export * from "./components/AlertBar";
 export * from "./components/Asistente";
 export * from "./components/Badge";
 export * from "./components/Button";
@@ -32,4 +33,6 @@ export * from "./components/TaskCard";
 export * from "./components/ModuleCard";
 export * from "./components/InvestigationCard";
 export * from "./components/TextField";
+export * from "./components/Toast";
+export * from "./components/FilterField";
 export * from "./Icons";

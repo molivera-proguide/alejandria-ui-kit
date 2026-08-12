@@ -1,37 +1,38 @@
 # DetailSheet — Numeric Specification
 
-- Status: measured (from implemented CSS only — not independently re-verified against the
-  PDF page in this pass, see Deltas)
+- Status: partially measured against PDF (2026-08-12) + measured from CSS (2026-08-07 backfill)
 - Source-of-truth order: PDF (page N) > component doc > implemented CSS
 - CSS block: `detail-sheet.css` (own stylesheet, `packages/ui/src/patterns/detail-sheet/`
   — not part of the shared `styles.css`)
 - Export: packages/ui/src/patterns/detail-sheet/DetailSheet.tsx
-- PDF reference: p.5 "FICHAS" — confirmed 2026-08-07 via `get_text()`: p.5 contains this
-  component's own mock content verbatim (`"#1232142342 - 3408473"`, `"DESCRIPCIÓN"`,
-  `"MÉTRICAS DE RENDIMIENTO DE LA TAREA"`); p.4 is "INVESTIGATION CARD" (a different,
-  already-built component). The stories/JSDoc's earlier "página 4" citation was wrong and
-  has been corrected in `DetailSheet.stories.tsx`. Per `knowledge/components/DetailSheet.md`.
-- Scale: values below are recorded as implemented (px literals in `detail-sheet.css`); no
-  independent ÷2 recalibration was performed in this pass — this spec transcribes what
-  ships today, it does not re-derive it from PDF vector geometry.
-
-Recorded 2026-08-07 by reading `detail-sheet.css` directly — this is a **documentation
-backfill**, not a fidelity pass. No PyMuPDF re-measurement against p.5 was done; values here
-are "measured from CSS", not "confirmed against PDF" like the other spec files in this
-folder use those words.
+- PDF reference: **dos fuentes, no confundir.** (1)
+  `knowledge/references/design-reference.pdf` p.5 "FICHAS" — hoja de spec limpia con
+  valores anotados por el diseñador (fondo/borde/tipografía por elemento), sin
+  contaminación de otros elementos superpuestos. (2) `Alejandria - Agosto 2026.pdf`
+  p.7 (Downloads de Luna, no en el repo) — mockup real de la screen con el panel
+  superpuesto sobre la grilla de `TaskCard`; útil para medir el ancho real del panel
+  en contexto, pero `get_drawings()` sobre esta página mezcla la geometría del panel
+  con la del grid oculto detrás — no confiar en medidas de ahí sin cruzarlas contra
+  (1) o contra el render (`get_pixmap()`) para descartar contaminación.
+- Scale: display values = PDF annotation ÷ 2, salvo que la propia hoja de spec use
+  `px` explícito para una medida (ver Deltas de `FilterField.spec.md` para el mismo
+  patrón en otro componente) — en este componente, `px` y `pt` aparecen mezclados en
+  la hoja de p.5 sin ser una regla confiable (ver Deltas).
 
 ## Dimensions
 | Property | Value | Unit | Source | Delta vs PDF/doc |
 |----------|------:|------|--------|------------------|
-| root max-width | 590 | px | detail-sheet.css | not independently PDF-measured in this pass |
-| root padding | 20 | px | detail-sheet.css | — |
+| root max-width | 656 | px | design-reference.pdf p.5 dice "Tamaño variable según pantalla" (sin valor fijo); 656px = única instancia real medida (Alejandria - Agosto 2026.pdf p.7, `get_drawings()`, Rect ancho 1312.7pt @2× ÷2) | **corregido 2026-08-12** — era 590px, invented desde el origen del componente, nunca medido. A 590px el título se envolvía en 2 líneas (bug reportado por Luna). |
+| root padding | 20 | px | detail-sheet.css | Spec de p.5 dice "Padding: 40px" (con unidad `px` explícita) pero la medida real del inset (DESCRIPCIÓN box vs. borde del panel, p.7 `get_drawings()`) da ~22.9px — mucho más cerca de 20px que de 40. Se mantiene 20px (geometría medida gana sobre el label de texto de la spec, mismo criterio que el resto del kit); "40px" queda como delta sin resolver, no aplicado. |
 | root gap | 14 | px | detail-sheet.css | — |
-| body grid columns | 0.95fr / 1.35fr | fr | detail-sheet.css | — |
+| body grid columns | 0.95fr / 1.35fr | fr | detail-sheet.css | Verificado 2026-08-12: la proporción real (DESCRIPCIÓN box 240.85px vs. borde del `.ds-chart-card` 357.2px en p.7) da ≈40.25%/59.75%, muy cerca de 0.95:1.35 (41.3%/58.7%) — no se cambia. |
+| media-metrics grid | `repeat(3, minmax(0, 1fr))` | — | detail-sheet.css | **corregido 2026-08-12** — pasó brevemente por `repeat(3, auto)` (fix de `005-alert-toast-filter` para el problema inverso en `.detail-sheet__metrics`), pero eso hacía que los 3 `MetricCard` ficha (83px c/u) se salieran de la columna izquierda (~222-249px) y se superpusieran con el gráfico — bug reportado por Luna. Revertido solo para esta grilla; `.detail-sheet__metrics` (columna derecha, con espacio de sobra) se queda en `auto`. |
 | icon button | 12×12 (svg 10×10) | px | detail-sheet.css | — |
 | media preview frame min-height | 90 | px | detail-sheet.css | — |
 | media preview play button | 22×22 | px | detail-sheet.css | — |
 | media preview progress bar | 3 | px height | detail-sheet.css | — |
-| action button padding | 2.5px 12.5px | px | detail-sheet.css | — |
+| action button padding | 2.5px 12.5px | px | detail-sheet.css | Spec de p.5 dice "padding top y bottom 5px - padding left y right 25px" (`px` explícito) — pero 5/25 literal no calza con el ancho medido del botón en p.7 (54.9px: un texto de 10 caracteres a 6.5px + 2×25px de padding excede eso ampliamente). 2.5/12.5 (= 5/25 ÷2) sí calza razonablemente — se mantiene, el label `px` de esta hoja no es una regla confiable en todo el documento (ver Deltas de `FilterField.spec.md`, mismo patrón). |
+| ficha metric value font-size | 25 | px | design-reference.pdf p.5 "Widgets Métrica: Montserrat Bold - 50pt - #FFFFFF" ÷2 | **corregido 2026-08-12** — era `26px` con comentario `/* TODO token */` en `styles.css` (`.ds-metric--ficha .ds-metric__value`), nunca verificado contra esta hoja hasta ahora. Cierra el TODO. |
 
 ## Color
 | Role | Value | Matching --ds-* token? | Source | Delta |
@@ -46,6 +47,7 @@ folder use those words.
 | secondary titles (narrative/media/actions label) | #8a8b87 | `--ds-color-pdf-ink-muted` | detail-sheet.css | tokenized 2026-08-07 |
 | action variant `a` background | #c1c1c1 | `--ds-color-pdf-line` | detail-sheet.css | tokenized 2026-08-07 |
 | action variant `b` background | #8a8b87 | `--ds-color-pdf-ink-muted` | detail-sheet.css | tokenized 2026-08-07 |
+| action variant `c` background | #494949 | `--ds-color-pdf-action` | detail-sheet.css | **agregado 2026-08-11** (`004-familia-tareas` — el tipo `DetailSheetAction["variant"]` ya admitía `"c"` desde 2026-07-28 pero faltaba su regla CSS). **Confirmado exacto 2026-08-12** contra `design-reference.pdf` p.5: "Botón: ... fondos #c1c1c1 #8a8b87 #494949" — los 3 colores, en ese orden, coinciden con `a`/`b`/`c` sin ninguna corrección necesaria. |
 | media preview progress fill | #ff0404 | `--ds-color-pdf-critical` | detail-sheet.css | tokenized 2026-08-07 |
 | media preview progress track | #494949 | `--ds-color-pdf-action` | detail-sheet.css | tokenized 2026-08-07 |
 | border-width (all hairlines) | 0.75px | `--ds-border-width-hair` | detail-sheet.css | tokenized 2026-08-07 |
@@ -66,6 +68,15 @@ folder use those words.
 | action button (nested `.ds-button` override) | inherited | 6.5px | 700 | detail-sheet.css |
 
 ## Deltas & open questions (facts only — DO NOT resolve)
+- **2026-08-12 — primera medición real contra el PDF, tras 2 rondas de bugs
+  reportados por Luna.** Hasta esta fecha, ningún valor de este spec había sido
+  re-derivado de geometría vectorial real — solo transcrito de `detail-sheet.css`
+  ("backfill", ver nota debajo) o medido contra `Alejandria - Agosto 2026.pdf` p.7
+  (contaminado por el grid oculto detrás del panel, ver header). La hoja de spec
+  limpia (`design-reference.pdf` p.5) resultó tener las medidas reales, sin
+  contaminación — de ahí salieron los 3 fixes de esta fecha (max-width, grid de
+  media-metrics, font-size de `ficha .ds-metric__value`) y la confirmación exacta
+  del color `--c` (ver Color).
 - **This spec is a documentation backfill, not a full fidelity pass.** Values were
   transcribed from `detail-sheet.css`, not independently re-measured against the PDF's
   vector geometry (no `get_drawings()` bbox citations exist for this component, unlike the

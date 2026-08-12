@@ -4,6 +4,35 @@ Este archivo registra cada vez que una decisión humana desvía o amplía
 lo establecido en el brief original (input.md).
 Sirve como trazabilidad entre lo que se pidió y lo que se implementó.
 
+## Índice
+
+| ID | Título | Status | Fecha | Feature |
+|---|---|---|---|---|
+| D001 | Enumerar estados por story y marcar nuevo/editar en tasks.md | accepted | 2026-08-07 | 001-form-modal |
+| D002 | Saltar el loop TDD formal — sin framework de test instalado | accepted | 2026-08-07 | 001-form-modal |
+| D003 | Valores de implementación no especificados por el PDF | accepted | 2026-08-07 | 001-form-modal |
+| D004 | Gap de proceso: input.md/spec.md/tasks.md no pidieron documentación de knowledge/ | accepted | 2026-08-07 | 001-form-modal |
+| D005 | LinearBarChartCard y DetailSheet — mismo gap de indexación, causas distintas | accepted | 2026-08-07 | — |
+| D006 | Cierre de los 2 pendientes de DetailSheet (cita de página + tokenización) | accepted | 2026-08-07 | — |
+| D007 | Limpieza de 2 notas obsoletas en component-roadmap.md | accepted | 2026-08-07 | — |
+| D008 | PDFs de referencia grandes: no se commitean al repo por defecto | accepted | 2026-08-07 | — |
+| D009 | Primera screen (Carga de Formulario, p.19): reencuadrada como field gallery | accepted | 2026-08-07 | — |
+| D010 | Corrección de la opacidad de grupo de la textura de fondo (.63 → screen .05) | accepted | 2026-08-10 | 002-bg-texture |
+| D011 | Adaptar el loop TDD a verificación visual (sin framework de test) | accepted | 2026-08-10 | 002-bg-texture |
+| D012 | Destino real de la documentación de tokens — no knowledge/tokens/ | accepted | 2026-08-10 | 002-bg-texture |
+| D013 | Adaptar el loop TDD a verificación visual (sin framework de test) | accepted | 2026-08-11 | 003-home-dashboard |
+| D014 | Corrección de componente: "Asistencias" en Home es DonutChartCard, no ProgressRing | accepted | 2026-08-11 | 003-home-dashboard |
+| D015 | Duplicación de config de SideBar — se mantiene por ahora | accepted | 2026-08-11 | 004-familia-tareas |
+| D016 | Adaptar el loop TDD a verificación visual (sin framework de test) | accepted | 2026-08-11 | 004-familia-tareas |
+| D017 | Adaptar el loop TDD a verificación visual (sin framework de test) | accepted | 2026-08-11 | 005-alert-toast-filter |
+| D018 | Corrección post-implementación: DetailSheet (ancho/overlap/tipografía) y headings faltantes | accepted | 2026-08-12 | 005-alert-toast-filter |
+| D019 | Bug real en TaskCard variant="default": fondo invisible con BackgroundTextureDots | accepted | 2026-08-12 | 005-alert-toast-filter |
+| D020 | Corrección: borde faltante en el chamfer de TaskCard variant="default" | accepted | 2026-08-12 | 005-alert-toast-filter |
+| D021 | Correcciones tempranas sin loggear: z-index del overlay y primer ajuste de ancho del panel (retroactivo) | accepted | 2026-08-11 | 004-familia-tareas |
+| D022 | Primera medición real contra el PDF de screens (panel a 656px, "VER MÁS" como chip, overlay) | accepted | 2026-08-11 | 004-familia-tareas |
+| D023 | TaskCard sin navegación por teclado ni hover cuando es interactiva | accepted | 2026-08-12 | fix-001-taskcard-keyboard-hover |
+| D024 | Topbar: AlertBar no ocupaba el ancho completo, íconos van superpuestos | accepted | 2026-08-12 | fix-002-topbar-alertbar-fullwidth |
+
 ---
 
 ## 2026-08-07 Enumerar estados por story y marcar nuevo/editar en tasks.md
@@ -506,4 +535,370 @@ suficiente — mismo criterio que la corrección de opacidad de `002-bg-texture`
 **Artefactos modificados:** `packages/ui/src/screens/home/Home.stories.tsx`,
 `specs/003-home-dashboard/{constitution.md,spec.md,plan.md,tasks.md}`,
 `knowledge/screens/home.md`, `knowledge/component-roadmap.md`, `input.md`
+**Decidido por:** Luna
+
+---
+
+## 2026-08-11 Duplicación de config de SideBar — se mantiene por ahora
+
+**feature_id:** 004-familia-tareas
+**command_origin:** sdd-validate
+**status:** accepted
+**Gap o motivo:** `/sdd-validate` sobre `004-familia-tareas` encontró que
+`input.md` delegaba explícitamente a `plan.md` la decisión de si extraer a un
+helper compartido la config default de `SideBar`
+(`primaryItems`/`secondaryItems`/`sidebarLogo`/`menuIcon`), ya duplicada idéntica
+en 3 screens (`carga-de-formulario`, `home`, `dashboard`) y a punto de copiarse
+una 4ta, 5ta y 6ta vez con esta feature. `plan.md` no abordaba la decisión.
+**Alternativas consideradas:** (A) extraer ahora un helper compartido (ej.
+`getDefaultSideBarConfig()` o constante exportada) y refactorizar las 3 screens
+existentes + las 3 nuevas para usarlo. (B) mantener la duplicación en esta
+feature y revisar la extracción en una iteración de refactor aparte más
+adelante.
+**Por qué se descartaron:** (A) tocaría las 3 screens ya cerradas de
+`003-home-dashboard` (CLOSED) además de las 3 nuevas de esta feature, ampliando
+el alcance de `004-familia-tareas` más allá de lo que pide `input.md`, y es un
+refactor transversal que merece su propia revisión en vez de colarse dentro de
+otra feature.
+**Decisión tomada:** se mantiene la duplicación de config de `SideBar` en las 3
+screens nuevas de esta feature (`tareas-pendientes`, `tareas-kanban`,
+`tareas-finalizadas`). Documentado en `plan.md` § "Decisión — duplicación de
+config de `SideBar`". No se extrae helper compartido en esta feature.
+**Motivo:** decisión pragmática de priorización — no era el momento de
+atenderlo. Se prefirió avanzar con `004-familia-tareas` sin sumarle este
+refactor transversal, y dejarlo para cuando el equipo tenga ganas/prioridad de
+ocuparse.
+**Artefactos modificados:** `specs/004-familia-tareas/plan.md`
+**Decidido por:** Luna
+
+---
+
+## 2026-08-11 Adaptar el loop TDD a verificación visual (sin framework de test) — 004-familia-tareas
+
+**feature_id:** 004-familia-tareas
+**command_origin:** sdd-implement
+**status:** accepted
+**Gap o motivo:** mismo conflicto ya resuelto para `001-form-modal` (2026-08-07),
+`002-bg-texture` y `003-home-dashboard` (2026-08-10/11): `/sdd-implement` exige
+loop Red-Green-Refactor por tarea, pero `existing-arch.md` registra que no hay
+framework de test instalado (decisión consciente) y `constitution.md` de esta
+feature (MUST-9) ya fija verificación manual en Storybook, incluida la
+interactividad de abrir/cerrar `DetailSheet` en Tareas Pendientes. `tasks.md`
+tampoco incluye tareas de test.
+**Alternativas consideradas:** instalar Vitest + React Testing Library para
+testear el `useState` de apertura/cierre del panel (única lógica real de esta
+feature, el resto es composición pura ya fidelity-checked).
+**Por qué se descartaron:** instalaría una dependencia nueva como efecto
+colateral de una sola interacción chica, contradiciendo `constitution.md`
+PROHIBITED-7 de esta misma feature y el criterio ya vigente en las 3 decisiones
+precedentes.
+**Decisión tomada:** se adapta el loop a verificación visual/funcional manual en
+Storybook por tarea (T002 grid Pendientes, T003 apertura/cierre real del panel,
+T004 Kanban, T005 Finalizadas + slot "VER MÁS"), sin asserts automatizados.
+**Motivo:** coherente con la decisión ya vigente del proyecto y el precedente de
+`001-form-modal`/`002-bg-texture`/`003-home-dashboard`.
+**Artefactos modificados:** ninguno (decisión de proceso)
+**Decidido por:** Luna
+
+---
+
+## 2026-08-11 Adaptar el loop TDD a verificación visual (sin framework de test) — 005-alert-toast-filter
+
+**feature_id:** 005-alert-toast-filter
+**command_origin:** sdd-implement
+**status:** accepted
+**Gap o motivo:** mismo conflicto ya resuelto para `001-form-modal` (2026-08-07),
+`002-bg-texture`, `003-home-dashboard` y `004-familia-tareas` (2026-08-11):
+`/sdd-implement` exige loop Red-Green-Refactor por tarea, pero `existing-arch.md`
+registra que no hay framework de test instalado (decisión consciente) y
+`constitution.md` de esta feature (MUST-8) ya fija verificación manual en Storybook.
+`Toast` introduce un timer real (`setTimeout` 4000ms) — más lógica que las features
+anteriores de puro CSS/composición, pero sigue sin justificar instalar un framework
+nuevo para una sola pieza de estado local.
+**Alternativas consideradas:** instalar Vitest + React Testing Library con
+`vi.useFakeTimers()` para testear el auto-dismiss de `Toast` (la única lógica real
+de esta feature).
+**Por qué se descartaron:** instalaría una dependencia nueva como efecto colateral
+de un solo timer, contradiciendo `constitution.md` PROHIBITED-6 de esta misma
+feature y el criterio ya vigente en las 4 decisiones precedentes.
+**Decisión tomada:** se adapta el loop a verificación visual/funcional manual en
+Storybook por tarea (T003-T005 los 3 componentes, T006-T008 el retrofit), incluido
+confirmar el timing real del auto-dismiss de `Toast` observando el render, sin
+asserts automatizados.
+**Motivo:** coherente con la decisión ya vigente del proyecto y el precedente de
+las 4 features anteriores.
+**Artefactos modificados:** ninguno (decisión de proceso)
+**Decidido por:** Luna
+
+---
+
+## 2026-08-12 Corrección post-implementación: DetailSheet (ancho/overlap/tipografía) y headings faltantes en Tareas
+
+**feature_id:** 005-alert-toast-filter
+**command_origin:** sdd-implement (feedback post-entrega, Luna comparando Storybook contra el PDF real)
+**status:** accepted
+**Gap o motivo:** Luna mostró una captura de `DetailSheet` § `Fichas` con 2 bugs
+visibles: el título se envolvía en 2 líneas, y la caja "ARCHIVOS MULTIMEDIA" se
+superponía con el gráfico de la derecha. Investigando la causa raíz con
+`design-reference.pdf` p.5 "FICHAS" (hoja de spec limpia, hasta ahora sin usar —
+todo el trabajo previo de esta feature midió contra `Alejandria - Agosto 2026.pdf`
+p.7, un mockup con el grid de tareas oculto detrás del panel, contaminando algunas
+mediciones de `get_drawings()`) se encontraron 4 causas reales: (1) `max-width:
+590px` del componente era invented desde su creación original — la hoja de spec
+limpia dice explícitamente "Tamaño variable según pantalla", nunca hubo un valor
+fijo correcto citable; (2) `.detail-sheet__media-metrics` con `grid-template-columns:
+repeat(3, auto)` (fix de esta misma feature, para el problema de "espacio de sobra"
+en la columna derecha) hacía que la fila de 3 `MetricCard` ficha (83px cada una,
+261px total) se saliera de su columna izquierda (~222-249px disponibles),
+superponiéndose con el gráfico; (3) `.ds-metric--ficha .ds-metric__value` tenía
+`font-size: 26px` con un comentario `/* TODO token */` sin resolver desde antes de
+esta feature — la spec limpia mide 50pt Montserrat Bold → ÷2 = 25px; (4) faltaba el
+heading "Tareas Pendientes"/"Tareas Finalizadas" que el PDF real muestra en la
+misma fila del toolbar — no estaba en ningún artefacto SDD de `004-familia-tareas`
+ni de esta feature, encontrado recién ahora al mirar con más cuidado.
+**Alternativas consideradas:** para (1), mantener `.detail-sheet--wide` como
+modificador separado en vez de subir el default — descartado porque la única
+instancia real medida del componente (p.7) necesita ese ancho, y no hay evidencia
+de un caso real que necesite 590px; para (2), aumentar el ancho del panel en vez de
+tocar el grid de métricas — descartado porque el ancho ya está en su valor máximo
+medido (656px) y seguiría sin alcanzar para 261px de contenido.
+**Por qué se descartaron:** ver arriba, en cada punto.
+**Decisión tomada:** (1) `.detail-sheet{max-width}` sube de 590px a 656px (la única
+medida real disponible); `.detail-sheet--wide` queda como alias del mismo valor,
+por claridad semántica en los call sites. (2)
+`.detail-sheet__media-metrics` vuelve a `repeat(3, minmax(0, 1fr))` (revierte el fix
+de esta feature solo para esta grilla específica — `.detail-sheet__metrics`, en la
+columna derecha con espacio de sobra, se queda en `auto`). (3)
+`.ds-metric--ficha .ds-metric__value` pasa a `font-size: 25px`, cierra el TODO. (4)
+se agrega `<h1>` heading a `screens/tareas-pendientes/` y
+`screens/tareas-finalizadas/`, mismo tratamiento tipográfico que
+`screen-home__section-title` (mono, muted, tracked, uppercase).
+**Motivo:** fidelidad al PDF real por sobre valores invented o parcialmente
+corregidos — mismo criterio que las correcciones anteriores de esta sesión
+(ancho del panel 960→720→656px, color/tamaño de "VER MÁS").
+**Artefactos modificados:** `packages/ui/src/patterns/detail-sheet/detail-sheet.css`,
+`packages/ui/src/styles.css`,
+`packages/ui/src/screens/tareas-pendientes/{TareasPendientes.stories.tsx,tareas-pendientes.css}`,
+`packages/ui/src/screens/tareas-finalizadas/{TareasFinalizadas.stories.tsx,tareas-finalizadas.css}`
+**Decidido por:** Luna
+
+---
+
+## 2026-08-12 Bug real en TaskCard variant="default": fondo invisible al combinarse con BackgroundTextureDots
+
+**feature_id:** 005-alert-toast-filter
+**command_origin:** sdd-implement (feedback post-entrega, Luna: "las taskcard no tienen fondo, se ven fusionadas con el fondo")
+**status:** accepted
+**Gap o motivo:** en `screens/tareas-pendientes/` y `screens/tareas-finalizadas/`
+(las 2 screens que combinan `TaskCard` `variant="default"` con `BackgroundTextureDots`
+por primera vez en el kit) las cards se veían sin fondo visible — solo texto y
+triángulo de acento flotando sobre la textura de fondo. Causa raíz: el fondo real de
+la variante `default` vive en `.ds-task--default::after` con `z-index: -1` (separado
+de `.ds-task` para no recortar el triángulo `::before` con el chamfer). `.ds-task`
+tiene `position: relative` pero nunca fijó su propio `z-index` — sin eso, no forma
+un stacking context propio, así que ese `::after` se escapaba hasta el stacking
+context raíz de toda la página y terminaba pintándose detrás de
+`BackgroundTextureDots` (`position: absolute` en el nivel de la screen), no solo
+detrás de su propia card. Bug latente desde el commit original de `TaskCard`
+(`e2ceaa6`) — nunca se notó porque ni las stories aisladas de `TaskCard.stories.tsx`
+ni `screens/home/` (usa solo `variant="resumen"`, que no tiene este `::after`)
+combinaban `variant="default"` con la textura de fondo antes de esta feature.
+**Alternativas consideradas:** mover el fondo de vuelta a `.ds-task` directamente
+(como ya hacen `kanban`/`resumen`) en vez de aislar el stacking context.
+**Por qué se descartaron:** el fondo de `default` necesita seguir en un elemento
+separado del que lleva el chamfer (`::after`) para no recortar el triángulo de
+acento (`::before`) — moverlo de vuelta reabriría el bug original que motivó esa
+separación (ver comentario histórico en `styles.css` sobre `::after`/chamfer).
+**Decisión tomada:** se agrega `isolation: isolate` a `.ds-task` (clase base, aplica
+a las 3 variantes) — crea un stacking context propio sin efecto de layout, confina
+cualquier `z-index` interno (presente o futuro) a la card. No pude verificar
+visualmente con captura de pantalla (no disponible en este entorno) — verificado
+que `isolation: isolate` computa correctamente vía `getComputedStyle` en ambas
+screens; el comportamiento de aislamiento de stacking context está garantizado por
+spec CSS, no es algo que dependa de heurística. Pendiente de confirmación visual de
+Luna en su propio Storybook.
+**Motivo:** fidelidad visual real — el bug hacía que las cards se leyeran literalmente
+sin fondo, no solo una diferencia de matiz.
+**Artefactos modificados:** `packages/ui/src/styles.css` (`.ds-task`)
+**Decidido por:** Luna
+
+---
+
+## 2026-08-12 Corrección: borde faltante en el chamfer de TaskCard variant="default"
+
+**feature_id:** 005-alert-toast-filter
+**command_origin:** sdd-implement (feedback post-entrega, Luna: "falta el borde blanco donde está el chanfle")
+**status:** accepted
+**Gap o motivo:** tras el fix de `isolation: isolate` (ver entrada anterior), las
+cards `variant="default"` ya mostraban su fondo correctamente, pero Luna notó que
+el borde no se veía en el corte diagonal del chamfer — solo en los otros 3 lados.
+Causa raíz: `border` (propiedad nativa CSS, siempre rectangular) se pinta sobre los
+4 bordes de la caja original ANTES de que `clip-path` la recorte a la forma con
+chamfer; el recorte solo borra píxeles, nunca dibuja un trazo nuevo sobre el borde
+diagonal que el propio `clip-path` crea — ese tramo queda sin línea por diseño de
+cómo funciona `clip-path` en CSS, no por un valor mal configurado.
+**Alternativas consideradas:** (a) `box-shadow: inset` en vez de `border` — descartada
+tras análisis: un box-shadow inset tampoco es consciente de la forma de
+`clip-path`, se calcula sobre la caja rectangular original y tendría el mismo
+problema. (b) Reproducir toda la card como una sola imagen SVG — descartada,
+demasiado invasivo para un detalle de borde, perdería la flexibilidad de contenido
+dinámico (título/meta/fechas variables).
+**Por qué se descartaron:** ver arriba, en cada punto.
+**Decisión tomada:** se agrega una capa de fondo adicional a
+`.ds-task--default::after` — un SVG inline de 31×31px (mismo tamaño exacto que el
+chamfer del `clip-path`, sin distorsión posible por usar el mismo valor absoluto)
+con una línea diagonal hairline (`#c1c1c1`, 0.75px), posicionado en la esquina
+superior derecha. `border` se mantiene sin cambios para los otros 3 lados.
+**Motivo:** fidelidad visual — el PDF muestra el borde completo alrededor de toda
+la card, incluido el chamfer.
+**Artefactos modificados:** `packages/ui/src/styles.css` (`.ds-task--default::after`)
+**Decidido por:** Luna
+
+---
+
+## 2026-08-11 Correcciones tempranas sin loggear en su momento: z-index del overlay y primer ajuste de ancho del panel (registradas retroactivamente)
+
+**feature_id:** 004-familia-tareas
+**command_origin:** sdd-implement (feedback post-entrega, Luna revisando Storybook)
+**status:** accepted
+**Gap o motivo:** durante la implementación de `004-familia-tareas`, Luna reportó 2
+bugs visuales seguidos, corregidos en el momento pero sin entrada en
+`DECISIONS.md` — encontrado recién ahora, al hacer el chequeo de trazabilidad
+previo a un `/sdd-handoff`. (1) El triángulo de acento de `TaskCard`
+(`.ds-task::before`, `z-index: 1`) se veía flotando por encima del panel
+`DetailSheet` al abrirse — `.screen-tareas-pendientes__detail-overlay` tenía
+`position: absolute` pero sin `z-index` propio. (2) El panel de `DetailSheet`
+(recién agregado como `className="detail-sheet--wide"`) medía 960px — invented,
+sin chequear el PDF — y a ese ancho las 3 cajas de métricas
+(TAREAS/RECURSOS/RECURSOS) quedaban muy separadas entre sí (`grid-template-columns:
+repeat(3, minmax(0, 1fr))` estiraba cada columna mucho más que el ancho fijo de
+`MetricCard`).
+**Alternativas consideradas:** ninguna evaluada — eran bugs visuales concretos con
+una causa raíz clara en el momento, no decisiones de producto con opciones a
+sopesar.
+**Por qué se descartaron:** no aplica.
+**Decisión tomada:** (1) se agregó `z-index: 10` al overlay. (2) se bajó el ancho a
+720px y se cambió `.detail-sheet__metrics`/`.detail-sheet__media-metrics` a
+`repeat(3, auto)` + `justify-content: start`. **Nota:** ambos valores (960px y
+720px) resultaron ser aproximaciones sin verificar contra el PDF real — corregidos
+después a 656px (medido) el 2026-08-11/12, ver las entradas de esa fecha sobre
+`DetailSheet`. Esta entrada documenta el paso intermedio que faltaba en el registro.
+**Motivo:** fidelidad visual — bugs concretos reportados por Luna comparando
+Storybook contra el resultado esperado.
+**Artefactos modificados:** `packages/ui/src/screens/tareas-pendientes/tareas-pendientes.css`,
+`packages/ui/src/patterns/detail-sheet/detail-sheet.css`
+**Decidido por:** Luna
+
+---
+
+## 2026-08-11 Primera medición real contra el PDF de screens (panel a 656px, "VER MÁS" como chip, reposicionamiento del overlay)
+
+**feature_id:** 004-familia-tareas
+**command_origin:** sdd-implement (Luna: "¿qué más hiciste sin chequear el PDF?" — encontró que el ancho de 720px y el estilo de "VER MÁS" eran inventados)
+**status:** accepted
+**Gap o motivo:** tras el ajuste rápido de 960px→720px (ver entrada retroactiva de
+arriba), Luna cuestionó directamente si había verificado esos valores contra el
+PDF real — no lo había hecho, asumí que "no estaba en el repo" significaba "no lo
+puedo consultar" sin intentar buscarlo en Descargas. Al abrir
+`Alejandria - Agosto 2026.pdf` (Downloads de Luna) con PyMuPDF y medir p.7
+directamente (`get_drawings()`/`get_text()`), se encontraron 3 valores invented
+reales: (1) el ancho del panel (720px no medía nada real); (2) el botón "VER MÁS"
+era un link subrayado sin fondo, inventado — el real es un chip sólido; (3) el
+overlay estaba anclado con `right: 0` (flotando contra el borde del contenedor),
+cuando el panel real NO cubre toda la grilla — deja visible la 1ra columna de
+`TaskCard`.
+**Alternativas consideradas:** ninguna — una vez medido, los 3 valores reales no
+dejan alternativa razonable (son mediciones, no decisiones de diseño).
+**Por qué se descartaron:** no aplica.
+**Decisión tomada:** (1) panel a `656px` (`Rect(509.65, 170.14, 1822.38, 1057.91)`
+@2× ÷2, medido con `get_drawings()`); (2) `.ds-task__view-more` pasa a chip sólido
+`#494949`, texto blanco, 55×12px (medido con `get_drawings()`+`get_text()` sobre el
+botón visible en la columna 1 de p.7); (3) el overlay pasa de `right: 0` a
+`left: 218px` (padding del `__main` + 1 columna + gap), reproduciendo que la 1ra
+columna de la grilla queda visible. De paso se confirmó que los 3 colores de
+`DECISIÓN A/B/C` (elegidos por razonamiento en `004`, no medición) coinciden
+exactos con la spec real.
+**Motivo:** fidelidad al PDF real por sobre aproximaciones razonadas — Luna señaló
+correctamente que "razonable" no es lo mismo que "verificado".
+**Artefactos modificados:** `packages/ui/src/patterns/detail-sheet/detail-sheet.css`,
+`packages/ui/src/styles.css` (`.ds-task__view-more`),
+`packages/ui/src/screens/tareas-pendientes/tareas-pendientes.css`
+**Decidido por:** Luna
+
+---
+
+## 2026-08-12 TaskCard sin navegación por teclado ni hover cuando es interactiva
+
+**feature_id:** fix-001-taskcard-keyboard-hover (encontrado en `/sdd-checklist` CHK001 de
+`004-familia-tareas`/`005-alert-toast-filter`)
+**command_origin:** sdd-fix
+**status:** accepted
+**Gap o motivo:** Luna reportó, chequeando CHK001 en su Storybook: "Las tarjetas no son
+navegables con tab. Tampoco tienen animación on hover." Causa raíz confirmada leyendo
+`TaskCard.tsx`: el componente renderiza un `<article>` plano que solo spreadea
+`{...props}` — cuando la screen de Tareas Pendientes le pasa `onClick={() =>
+setSelectedTask(task)}` (único caso real de interactividad del componente hoy), el click
+de mouse funciona pero no hay `tabIndex`/`role`/`onKeyDown` para teclado, y `.ds-task` no
+tenía ninguna regla `:hover`/`:focus-visible` en `styles.css`.
+**Alternativas consideradas:** ninguna real — es una corrección de accesibilidad
+concreta, no una decisión de producto con opciones a sopesar.
+**Por qué se descartaron:** no aplica.
+**Decisión tomada:** `TaskCard` ahora agrega `tabIndex={0}`, `role="button"` y un
+`onKeyDown` (Enter/Espacio → dispara un click real vía `element.click()`, no castea el
+evento) **solo cuando recibe `onClick`** — así las variantes/screens sin interactividad
+(`kanban`/`resumen`, Tareas Kanban/Finalizadas) no se ven afectadas. Se agregó la clase
+`ds-task--interactive` (condicional al mismo criterio) con `cursor:pointer` +
+`:hover`/`:focus-visible` (box-shadow, no border-color, porque `.ds-task--default` no
+tiene border propio — vive en su `::after`), mismo patrón que `.ds-module-card`.
+Verificado en Storybook vía `getBoundingClientRect`/dispatch de `KeyboardEvent`
+real (Enter y Espacio, ambos abren `DetailSheet`) y confirmando que Kanban/Finalizadas
+quedan con `tabIndex:-1`/sin clase — no puedo confirmar el hover visualmente en este
+entorno (capturas no disponibles), pendiente de que Luna lo mire en su Storybook.
+**Motivo:** accesibilidad real — un elemento clickeable sin equivalente de teclado ni
+feedback de hover es una barrera de uso, no solo un detalle visual.
+**Artefactos modificados:** `packages/ui/src/components/TaskCard.tsx`,
+`packages/ui/src/styles.css` (`.ds-task--interactive`)
+**Decidido por:** Luna
+
+---
+
+## 2026-08-12 Topbar: AlertBar no ocupaba el ancho completo, íconos van superpuestos
+
+**feature_id:** fix-002-topbar-alertbar-fullwidth (encontrado en `/sdd-checklist` CHK015
+de `005-alert-toast-filter`)
+**command_origin:** sdd-fix
+**status:** accepted
+**Gap o motivo:** Luna reportó, con captura de Storybook: "la alertbar no ocupa el total
+del ancho del viewport. En el diseño del PDF se muestra expandiéndose y quedando detrás
+de los 3 botones." Confirmado midiendo `Alejandria - Agosto 2026.pdf` p.5 con
+`get_drawings()`: la barra real mide 1862.19pt @2× (~931px, borde a borde de la página,
+~5px de margen a cada lado) y el ícono "colapsar" (`x:117-163`) cae completamente DENTRO
+del rango de la barra (`x:53-1915`) — los íconos van dibujados encima de la barra, no al
+costado. Implementación (`005-alert-toast-filter` T006-T008): fila `flex` normal, 3
+botones ocupan su propio espacio y `AlertBar{flex:1}` arranca después — composición
+distinta a la real, repetida igual en las 3 screens de Tareas.
+**Alternativas consideradas:** envolver los 3 íconos en un `<div>` nuevo + CSS Grid con
+ambos elementos superpuestos en la misma celda — descartada por agregar una capa de JSX
+nueva en las 3 screens sin necesidad; la superposición solo requiere sacar la barra
+(un solo elemento) del flujo, no a los íconos.
+**Por qué se descartaron:** la alternativa de grid+wrapper hubiera tocado 6 archivos
+(3 `.stories.tsx` + 3 `.css`) para un problema que se resuelve con CSS puro en 3 archivos.
+**Decisión tomada:** `.ds-alert-bar` dentro del topbar pasa a `position: absolute` con
+`top/left/right/bottom` explícitos (12px/16px, medidos del propio topbar antes del fix —
+no `inset` shorthand, porque `.ds-alert-bar` ya trae `width: 100%` de su propio componente
+y sobre-restringe junto con `left`+`right`; se agrega `width: auto`/`height: auto`
+explícitos para resolverlo), y los 3 botones de ícono pasan a `position: relative;
+z-index: 1` para pintarse encima. `min-height: 34px` en el topbar (alto de contenido real
+de la barra, antes de que su padding se sume aparte — `box-sizing` es `content-box`)
+preserva la altura total exacta que tenía antes del fix (58px), sin regresión. Mismo
+fix en las 3 screens (`tareas-pendientes.css`, `tareas-kanban.css`,
+`tareas-finalizadas.css`). Verificado en vivo con `getBoundingClientRect` en las 3:
+barra full-width (ancho topbar − 32px), los 3 íconos caen dentro del rango de la barra
+y siguen siendo el elemento clickeado en su posición (`elementFromPoint`), altura del
+topbar sin cambios.
+**Motivo:** fidelidad al PDF real — mismo criterio que el resto de correcciones de esta
+sesión.
+**Artefactos modificados:** `packages/ui/src/screens/tareas-pendientes/tareas-pendientes.css`,
+`packages/ui/src/screens/tareas-kanban/tareas-kanban.css`,
+`packages/ui/src/screens/tareas-finalizadas/tareas-finalizadas.css`
 **Decidido por:** Luna

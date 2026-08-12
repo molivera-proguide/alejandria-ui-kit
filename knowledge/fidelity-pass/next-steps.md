@@ -1,5 +1,25 @@
 # Fidelity pass — next steps
 
+## 💡 Idea a evaluar, no decidida (2026-08-11): pilotear el modelo Fable
+
+Luna sugirió probar el modelo Fable (Claude 5 family, `claude-fable-5`) para el
+fidelity-pass, recomendado por terceros como más fuerte en trabajo visual/UI. Sin
+datos propios sobre eso todavía — no adoptar a ciegas (mismo criterio que esta sesión
+ya aplicó al ancho de panel/color de botón: verificar antes de asumir).
+
+**Contexto real de esta sesión (004-familia-tareas):** los bugs de fidelidad que
+importaron hoy (ancho del panel de `DetailSheet`, color/tamaño del botón "VER MÁS",
+colores de `DECISIÓN A/B/C`) se resolvieron con `PyMuPDF` (`get_drawings()`/
+`get_text()`) comparado contra el CSS — scripting + disciplina de chequear la fuente,
+no percepción visual del modelo. Ese cuello de botella es agnóstico de qué modelo lo
+corre.
+
+**Recomendación, si se prueba:** pilotear en 2-3 componentes ya cerrados con
+correcciones conocidas (ej. `DonutChartCard`/`ProgressRing` de Home, ver
+`DECISIONS.md` 2026-08-11) — comparar qué encuentra Fable contra lo que ya se sabe que
+estaba mal, antes de comprometer un pase completo del kit a un modelo sin track record
+en este proyecto todavía.
+
 ## 🔖 Session handoff — pick up here (last updated 2026-08-10)
 
 **Parte 1 of `handoffs/20260807-fase5-checkables-geometry-screens-draft.md` closed:**

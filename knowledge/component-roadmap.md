@@ -155,19 +155,23 @@ derive a cap from:
   intrinsic width to defeat. G4 also used `Card`'s title/eyebrow slots instead of hand-rolling a
   heading, avoiding the §8 hardcoded-type trap G1 fell into (see below). G4 scores 24/24 with
   code-level confidence, not a screenshot-only estimate.
-- **`TaskCard` kanban** — **no code change**, reasoned as a consumer/composition
+- **`TaskCard` kanban** — **closed 2026-08-11** (before `004-familia-tareas`, exact date of the
+  component fix not tracked separately — found already applied when `/sdd-validate` checked
+  this feature). Originally: **no code change**, reasoned as a consumer/composition
   responsibility (it already self-caps via `width: fit-content` + `max-width: 140px` on
-  `.ds-task--kanban`). **The 2026-07-28 G1 re-run shows this reasoning wasn't enough on its
+  `.ds-task--kanban`). **The 2026-07-28 G1 re-run showed this reasoning wasn't enough on its
   own:** the agent didn't size the grid column to the card — it passed
   `style={{ maxWidth: "100%", width: "100%" }}` straight to `TaskCard`
-  (`alejandria-harness/src/App.tsx:290`), which overrides the component's own cap (inline
-  style beats any class rule) so the card stretches to fill the still-wide `1fr` column. Visually
-  this reads as "fixed" (no empty space) but it's a fidelity regression, not a fix — see
-  [eval/results/2026-07-28-sizing.md](./eval/results/2026-07-28-sizing.md) correction. **New gap,
-  not yet fixed:** need either a new anti-example pair (local `style`/`className` override
-  defeating a shipped component's calibrated cap — distinct from §7, which assumes no cap exists)
-  or a harder guard in `TaskCard` itself (e.g. not merging `width`/`maxWidth` from an incoming
-  `style` prop).
+  (`alejandria-harness/src/App.tsx:290`), which overrode the component's own cap (inline
+  style beats any class rule) so the card stretched to fill the still-wide `1fr` column. Visually
+  this read as "fixed" (no empty space) but was a fidelity regression, not a fix — see
+  [eval/results/2026-07-28-sizing.md](./eval/results/2026-07-28-sizing.md) correction.
+  **Resolved** via the harder guard this entry proposed as an option: `TaskCard.tsx:57-61` now
+  destructures `width`/`maxWidth` out of any incoming `style` prop before spreading the rest,
+  so an external consumer can no longer override the component's own calibrated width (fixed
+  `width` per variant, not `max-width`+`fit-content`, see `styles.css:927/949/955`). Verified
+  against current code during `/sdd-validate` (`004-familia-tareas`, 2026-08-11) — not reopened
+  by `screens/tareas-kanban/`.
 - **`Asistente` 774px** — **done 2026-08-06** (**stale note removed** — previously said
   "deferred to a second pass"). Every raw-@2× value in `.ds-asistente*` (shell, mic, attach-
   plus, execute button + offsets, all 5 font-sizes, suggestions spacing) was halved and
@@ -214,11 +218,11 @@ canvas de grafo interactivo) — ingeniería de aplicación, no un componente.
 | 2 | Login | A | `patterns/login/Login.tsx` ya construido y fidelity-checked (p.7 de `design-reference.pdf`) — el grid de puntos es el fondo decorativo del propio patrón, no un teclado numérico |
 | 3 | Home (eventos + KPIs) | A | **Corregido 2026-08-11** (era "Asistente IA, estado vacío" — error de mapeo de páginas, ver `drafts/pantallas-grupo-a-b.md` § hallazgo p.3/p.5/p.6, re-verificado con `get_pixmap()`). Contenido real: `SideBar` expandido + saludo/input de `Asistente` completo + "PRÓXIMOS EVENTOS" (`CalendarCard` ×6) + "RESUMEN DE PRODUCTIVIDAD" (`MetricCard` ×2 + `DonutChartCard`) + columna "TAREAS EN FECHA" (`TaskCard`). No hay una página separada de "Asistente vacío" en este PDF — era la misma pantalla contada dos veces. **Corrección 2026-08-11 (post-implementación):** el gauge "ASISTENCIAS" es `DonutChartCard`, no `ProgressRing` como se asumió inicialmente — el componente está cortado en el PDF (parece requerir scroll), confirmado contra el mock por Luna. Construido en `003-home-dashboard`. |
 | 4 | Dashboard módulos | A | Grid de `ModuleCard` ×8 + topbar |
-| 5 | Tareas Pendientes (grid, variante A) | A | **Nota 2026-08-11**: esta fila decía "Home (eventos+KPIs)" con la descripción de `Asistente`+gauges — ese contenido es en realidad el de p.3 (ver fila arriba). Contenido real de p.5: toggle "EN FECHA/VENCIDAS" + buscador + grilla de `TaskCard` con triángulo de acento (tone). **Pendiente de Sprint 2**: confirmar si p.5/p.6 son pantallas reales distintas o field gallery del mismo patrón (ver `drafts/pantallas-grupo-a-b.md`) — no resuelto todavía, esta fila no se corrige más allá del contenido hasta esa decisión. |
-| 6 | Tareas Pendientes (grid, variante B) | A | Tabs con barra de progreso ("EN FECHA 45%"/"RETRASADAS 75%") + `TaskCard` con botón "VER MÁS" (sin triángulo de acento). Ver nota de p.5 — misma pregunta pendiente de Sprint 2. |
-| 7 | Tareas — master-detail | A | El panel de detalle es casi 1:1 `DetailSheet` |
-| 8 | Tareas — kanban | A* | `TaskCard` ya tiene variante kanban, pero tiene la regresión de sizing sin cerrar de la "2026-07-28 sizing pass" arriba — cerrar antes de mostrar esta pantalla como lista |
-| 9 | Tareas finalizadas (grid) | A | Mismo componente que p.6, otro filtro |
+| 5 | Tareas Pendientes (grid) | A | **Corregido 2026-08-11** (`004-familia-tareas`, resuelto en `/sdd-refine`): p.5/p.6/p.7 **no son 3 pantallas distintas** — son la misma pantalla "Tareas Pendientes". p.5/p.6 son dos tratamientos de filtro (toggle "EN FECHA/VENCIDAS" vs. barra de progreso con porcentaje); p.7 es esta misma pantalla con una `TaskCard` seleccionada. Construido: toggle "EN FECHA/VENCIDAS" + buscador + ícono de filtro + grilla de `TaskCard` (triángulo de acento por `tone`) + interactividad real (click abre `DetailSheet` como panel lateral, único estado con lógica de esta feature) — `screens/tareas-pendientes/`. |
+| 6 | Tareas Pendientes — alternativa con barra de progreso | — | **Diferida en `004-familia-tareas`** (decisión de `/sdd-refine`, no bug): tabs con barra de progreso ("EN FECHA 45%"/"RETRASADAS 75%") + `TaskCard` con botón "VER MÁS" en vez del triángulo de acento. Necesita un componente nuevo (no es `SegmentedControl` ni `Tabs`/`TabNav`, ninguno de los dos existe hoy) — no se construyó, documentada como alternativa descartada en `knowledge/screens/tareas-pendientes.md`. |
+| 7 | Tareas — detalle abierto | A | **Corregido 2026-08-11**: no es una pantalla master-detail separada — es el estado "con detalle abierto" de la pantalla de p.5 (ver fila arriba), construido como parte de `screens/tareas-pendientes/` (`useState` local, sin routing). `DetailSheet` ahora soporta `onClose` + panel ancho (`className="detail-sheet--wide"`, 960px) + estilo del 3er botón de acción (`--c`, faltaba su regla CSS). |
+| 8 | Tareas — kanban | A | **Cerrado 2026-08-11** (`004-familia-tareas`): construido en `screens/tareas-kanban/`. La regresión de sizing de la "2026-07-28 sizing pass" (abajo) ya estaba cerrada a nivel de componente antes de esta feature — `TaskCard.tsx:57-61` descarta `width`/`maxWidth` de cualquier `style` entrante, no se reabrió. |
+| 9 | Tareas finalizadas (grid) | A | **Cerrado 2026-08-11** (`004-familia-tareas`): construido en `screens/tareas-finalizadas/`. Mismo componente que p.5, otro filtro + el slot "VER MÁS" nuevo de `TaskCard` (`TaskCardViewMoreAction`, decorativo). **Nota:** `knowledge/components/TaskCard.md` y su `.spec.md` todavía no reflejan esta prop nueva — pendiente, ver Known limitations de `knowledge/screens/tareas-finalizadas.md`. |
 | 10 | Investigación Motochorros — grafo (parcial) | C | Canvas de nodos/conectores con fotos de sospechosos, link-analysis |
 | 11 | Investigación Motochorros — grafo (completo) | C | Mismo que p.10, otro estado |
 | 12 | Reportes | A | Casi 100% componentes de charts existentes (`BarChartCard`, `LineChartCard`, `ProgressRing`, tiles KPI) |
@@ -267,6 +271,21 @@ Gaps ya trackeados en otra tabla de este mismo archivo, solo confirmados (no nue
 
 - **`DataTable` sort/filter/paginate** (p.23) — ya en la tabla "Post-baseline" arriba, High priority.
 - **`TaskCard` kanban — regresión de sizing sin cerrar** (p.8) — ya en la "2026-07-28 sizing pass" arriba.
+- **`SideBar` ancho expandido, probablemente invented** (p.13) — hallazgo de Luna
+  (2026-08-12, durante `/sdd-checklist` de `004-familia-tareas`/`005-alert-toast-filter`):
+  en viewports angostos las 3 screens de Tareas solapan componentes, y visualmente el
+  sidebar expandido se ve más ancho de lo necesario comparado al PDF. Confirmado: el
+  propio `knowledge/components/SideBar.md` § Known Limitations ya decía "Anchos
+  expandido/colapsado no medidos en PDF; se reutilizan tokens existentes" (220px =
+  `--ds-size-card-min-w`, token de otro componente, nunca medido). Medición preliminar
+  contra `design-reference.pdf` p.13 (`get_drawings()`, rect de fondo `#282828`
+  "Desplegada"): ~205pt @2× → ~102px, bastante menos que los 220px actuales — pero la
+  página mezcla capturas rasterizadas con vectores, así que esto es indicativo, no una
+  medición cerrada. **No se resuelve en `004`/`005`** — ambas constituciones prohíben
+  tocar `SideBar` explícitamente, y lo usan 3 features ya `CLOSED` (`Home`, `Dashboard`,
+  `Carga de Formulario`) además de las 2 `OPEN` — cambiar el ancho las afecta a las 5.
+  Decisión de Luna: terminar el checklist/review de `004`/`005` primero, `SideBar`
+  después como su propio fix/feature.
 
 ### Recomendación (sin accionar todavía — a la espera de decisión)
 

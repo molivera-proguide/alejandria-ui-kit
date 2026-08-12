@@ -780,7 +780,10 @@
   }
 
   .ds-metric--ficha .ds-metric__value {
-    font-size: 26px; /* TODO token */
+    /* medido 2026-08-12 contra design-reference.pdf p.5 "FICHAS" (hoja de spec limpia,
+       no el mockup de screens): "Widgets Métrica: Montserrat Bold - 50pt - #FFFFFF" →
+       ÷2 = 25px. Cierra el TODO — era 26px, invented, nunca verificado contra esta hoja. */
+    font-size: 25px;
   }
 
   .ds-module-card {
@@ -895,12 +898,48 @@
     box-sizing: border-box;
     color: var(--ds-color-white);
     display: grid;
+    /* corregido 2026-08-12 (Luna reportó las cards "default" viéndose fusionadas con el
+       fondo en screens/tareas-pendientes/ y tareas-finalizadas/): `.ds-task--default::after`
+       (el fondo real de esta variante, en un pseudo-elemento separado para no recortar
+       el triángulo de acento con el chamfer) usa `z-index: -1`. Sin esto, `.ds-task` no
+       fija su propio z-index (queda en `auto`), así que ningún ancestro forma un
+       stacking context propio para la card — ese `::after` se escapaba hasta el stacking
+       context raíz de la página entera y terminaba pintándose detrás de
+       `BackgroundTextureDots` (`position:absolute`, en `screens/`), no solo detrás de su
+       propia card. `isolation: isolate` confina cualquier z-index interno (presente o
+       futuro) a esta card, sin efecto de layout. Bug latente desde el commit original de
+       TaskCard (e2ceaa6) — nunca se notó porque ni las stories aisladas de
+       `TaskCard.stories.tsx` ni `screens/home/` (que solo usa `variant="resumen"`, sin
+       este `::after`) combinaban `variant="default"` con `BackgroundTextureDots` antes. */
+    isolation: isolate;
     position: relative;
     /* width is set per-variant below as a fixed px value, not here: the PDF card is a rigid
        rectangle regardless of content length (every example card is identically sized). Neither
        `fit-content` nor `100%` survives a `width:fit-content` ancestor (e.g. a Storybook decorator)
        without the same shrink-to-content circularity that made this go narrow twice already —
        a hardcoded width sidesteps that ancestor-dependent resolution entirely. */
+  }
+
+  /* fix-001 (2026-08-12, CHK001, checklist de 004-familia-tareas/005-alert-toast-filter):
+     TaskCard no tenía ningún affordance de que es clickeable cuando el consumidor le pasa
+     onClick (caso real: TareasPendientes) — ni foco/teclado, ni feedback visual. La clase
+     `--interactive` la agrega TaskCard.tsx solo cuando recibe onClick (ver componente), así
+     kanban/resumen (nunca interactivas hoy) no cambian. box-shadow, no border-color, para el
+     focus ring: `.ds-task--default` no tiene border propio (vive en su ::after, ver
+     comentario ahí), pero box-shadow se dibuja igual sobre las 3 variantes. Mismo patrón que
+     `.ds-module-card:hover`/`:focus-visible` (otro card clickeable del kit). */
+  .ds-task--interactive {
+    cursor: pointer;
+  }
+
+  .ds-task--interactive:hover {
+    box-shadow: 0 8px 24px var(--ds-color-black-a22);
+    transform: translateY(-2px);
+  }
+
+  .ds-task--interactive:focus-visible {
+    box-shadow: 0 0 0 3px var(--ds-color-pdf-line-a35);
+    outline: none;
   }
 
   /* corner indicator floats above the chamfer with a gap, it does not sit flush — PDF TARJETAS p.3.
@@ -930,7 +969,19 @@
   /* the card's own background/border/chamfer live here, not on .ds-task--default itself, so the
      chamfer's clip-path never clips ::before (see comment on .ds-task::before) */
   .ds-task--default::after {
-    background: var(--ds-color-pdf-surface-warm);
+    /* corregido 2026-08-12 (Luna: "falta el borde blanco donde está el chanfle") —
+       `border` (nativo, siempre rectangular) se pinta sobre los 4 bordes de la caja
+       ORIGINAL antes de que `clip-path` la recorte; el recorte solo borra píxeles, no
+       dibuja un trazo nuevo sobre el borde diagonal que crea el chamfer, así que ese
+       tramo quedaba sin línea. Se agrega un SVG inline de 31×31px (mismo tamaño exacto
+       que el chamfer del clip-path, sin distorsión posible) con una diagonal
+       hairline — capa de fondo extra, en la esquina superior derecha, encima del fill
+       sólido. `border` se mantiene para los otros 3 lados (esos sí funcionan bien con
+       clip-path, no se tocan). */
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 31 31'%3E%3Cline x1='0' y1='0' x2='31' y2='31' stroke='%23c1c1c1' stroke-width='0.75'/%3E%3C/svg%3E")
+        top right / 31px 31px no-repeat,
+      var(--ds-color-pdf-surface-warm);
     border: var(--ds-border-width-hair) solid var(--ds-color-pdf-line);
     border-radius: var(--ds-radius-xs);
     bottom: 0;
@@ -1059,6 +1110,35 @@
     letter-spacing: var(--ds-tracking-none);
     line-height: var(--ds-leading-relaxed);
     margin-top: 10px /* on top of .ds-task--default's own 8px grid gap ≈ measured 18px total */;
+  }
+
+  /* Botón "VER MÁS" (PDF TARJETAS PENDIENTES p.7/9) — decorativo por diseño de
+     004-familia-tareas (ver TaskCardViewMoreAction), sin `onClick` funcional en las
+     screens que lo consumen. Medido 2026-08-11 contra el PDF real (Downloads de Luna,
+     "Alejandria - Agosto 2026.pdf" p.7, vía get_drawings()+get_text()) — corrige un
+     primer valor invented (link subrayado sin fondo) que Luna señaló sin verificar:
+     es en realidad un chip sólido, rect 109.8×24.1pt @2× (÷2 = 55×12px), fill
+     rgb(73,73,73) = --ds-color-pdf-action (mismo tono que Modal/--c de DetailSheet —
+     no una coincidencia, es el mismo token real). Texto "VER MÁS" Montserrat-Bold
+     13pt @2× (÷2 = 6.5px), blanco. */
+  .ds-task__view-more {
+    align-items: center;
+    background: var(--ds-color-pdf-action);
+    border: none;
+    border-radius: var(--ds-radius-xs);
+    color: var(--ds-color-white);
+    cursor: pointer;
+    display: inline-flex;
+    font-family: var(--ds-font-body);
+    font-size: 6.5px;
+    font-weight: var(--ds-font-weight-bold);
+    height: 12px;
+    justify-content: center;
+    letter-spacing: var(--ds-tracking-label);
+    margin-top: 6px;
+    padding: 0 10px;
+    text-transform: uppercase;
+    width: fit-content;
   }
 
   .ds-task--kanban .ds-task__title {
@@ -3493,6 +3573,121 @@
      animado (32 puntos reales respirando su opacidad), no puede seguir siendo
      una sola clase en styles.css. Ver DECISIONS.md 2026-08-10 y ese archivo para
      el detalle completo (mix-blend-mode/opacidad medidos, timing, fuente real). */
+
+  /* ============================================================
+     ALERT BAR (005-alert-toast-filter) — PDF "ALERT" p.22 § "Alert Sigcat".
+     Franja full-width, un label centrado. Distinta de .ds-alert (AlertBanner,
+     otra tarjeta, otro caso de uso, no tocada por esta feature). Sin medida de
+     padding/altura anotada en la spec (solo colores + fuente) — valor
+     aproximado, no una medida ÷2 citable.
+     ============================================================ */
+
+  .ds-alert-bar {
+    background: var(--ds-color-pdf-action); /* #494949 */
+    border: var(--ds-border-width-hair) solid var(--ds-color-pdf-border); /* 0.75pt #606060 */
+    box-sizing: border-box;
+    color: var(--ds-color-white);
+    font-family: var(--ds-font-mono); /* Source Code */
+    font-size: 10px; /* PDF Source Code Bold 20pt @2× ÷2 */
+    font-weight: var(--ds-font-weight-bold);
+    letter-spacing: var(--ds-tracking-label);
+    padding: 10px 24px;
+    text-align: center;
+    text-transform: uppercase;
+    width: 100%;
+  }
+
+  .ds-alert-bar--alerta {
+    color: var(--ds-color-pdf-critical); /* #ff0404 */
+  }
+
+  /* ============================================================
+     TOAST (005-alert-toast-filter) — PDF "ALERT" p.22 § "Tarea realizada".
+     Notificación centrada, un solo texto, auto-dismiss (ver Toast.tsx). Sin
+     medida de padding/posición anotada en la spec — valor aproximado.
+     ============================================================ */
+
+  .ds-toast {
+    background: var(--ds-color-pdf-surface); /* #060606 */
+    border: var(--ds-border-width-hair) solid var(--ds-color-pdf-border); /* 0.75pt #606060 */
+    border-radius: var(--ds-radius-xs);
+    box-sizing: border-box;
+    color: var(--ds-color-white);
+    font-family: var(--ds-font-mono); /* Source Code */
+    font-size: 9px; /* PDF Source Code Bold 18pt @2× ÷2 */
+    font-weight: var(--ds-font-weight-bold);
+    left: 50%;
+    padding: 10px 20px;
+    position: fixed;
+    text-align: center;
+    top: 24px;
+    transform: translateX(-50%);
+    z-index: 100; /* mismo nivel que .ds-modal-backdrop, notificación por encima de todo */
+  }
+
+  /* ============================================================
+     FILTER FIELD (005-alert-toast-filter) — PDF "FILTER" p.23. Compuesto:
+     ícono de filtro+chevron afuera a la izquierda + input oscuro con lupa
+     adentro a la derecha, sin label flotante. Medida 400×50px final,
+     confirmada explícitamente con Luna — única excepción de esta feature a
+     la convención @2×÷2 (ver DECISIONS.md).
+     ============================================================ */
+
+  .ds-filter-field {
+    align-items: center;
+    display: inline-flex;
+    gap: 8px;
+  }
+
+  .ds-filter-field__toggle {
+    align-items: center;
+    background: none;
+    border: none;
+    color: var(--ds-color-pdf-ink-muted); /* #8a8b87, mismo color que FiltroIcon */
+    cursor: pointer;
+    display: inline-flex;
+    gap: 2px;
+    padding: 0;
+  }
+
+  .ds-filter-field__toggle img {
+    height: 20px;
+    width: 20px;
+  }
+
+  .ds-filter-field__input-wrap {
+    align-items: center;
+    background: var(--ds-color-pdf-surface); /* #060606 */
+    border: var(--ds-border-width-hair) solid var(--ds-color-pdf-border); /* 0.75pt #606060 */
+    box-sizing: border-box;
+    display: flex;
+    height: 50px; /* medida final, no ÷2 */
+    padding: 0 14px;
+    width: 400px; /* medida final, no ÷2 */
+  }
+
+  .ds-filter-field__input {
+    background: none;
+    border: none;
+    color: var(--ds-color-white);
+    flex: 1;
+    font-family: var(--ds-font-body); /* Montserrat */
+    font-size: 10px; /* PDF Montserrat Regular 20pt @2× ÷2 */
+    font-weight: var(--ds-font-weight-regular);
+    min-width: 0;
+    outline: none;
+  }
+
+  .ds-filter-field__input::placeholder {
+    color: var(--ds-color-pdf-ink-muted);
+  }
+
+  .ds-filter-field__search-icon {
+    color: var(--ds-color-pdf-ink-muted);
+    flex-shrink: 0;
+    height: 16px;
+    width: 16px;
+  }
 
   @keyframes ds-spin {
     to {

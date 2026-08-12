@@ -112,3 +112,16 @@ export const Resumen: Story = {
     tone: "neutral"
   }
 };
+
+/**
+ * @description Slot "VER MÁS" (PDF TARJETAS PENDIENTES p.6/9) — decorativo, sin `onClick`
+ * funcional (ver `004-familia-tareas`). `tone="neutral"` oculta el triángulo de acento,
+ * mismo tratamiento que las cards de "Finalizadas" en el PDF.
+ */
+export const ConVerMas: Story = {
+  args: {
+    ...canonicalTask,
+    tone: "neutral",
+    viewMore: { label: "VER MÁS", onClick: () => undefined }
+  }
+};

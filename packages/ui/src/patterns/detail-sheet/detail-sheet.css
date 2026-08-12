@@ -1,3 +1,12 @@
+/* Corregido 2026-08-12: `max-width: 590px` era un valor invented desde el origen del
+   componente — la hoja de spec real (`knowledge/references/design-reference.pdf` p.5
+   "FICHAS", limpia, no el mockup de screens con el grid oculto detrás) dice
+   explícitamente "Tamaño variable según pantalla": no hay un ancho fijo único
+   correcto. A falta de eso, se usa 656px — la única instancia real medida de este
+   componente en contexto (p.7 del PDF de screens, "Alejandria - Agosto 2026.pdf",
+   Downloads de Luna, vía get_drawings(): Rect(509.65, 170.14, 1822.38, 1057.91) @2× →
+   1312.7pt @2× ÷2 = 656px). A 590px el título ("#1232142342 - 3408473") se envolvía en
+   2 líneas — bug real reportado por Luna, no solo un desajuste de proporción. */
 .detail-sheet {
   background: var(--ds-color-pdf-surface-warm); /* tokenized 2026-08-07 — was literal #2a2927 */
   border: var(--ds-border-width-hair) solid var(--ds-color-pdf-line); /* was literal 0.75px #c1c1c1 */
@@ -5,9 +14,17 @@
   color: var(--ds-color-white); /* was literal #ffffff */
   display: grid;
   gap: 14px;
-  max-width: 590px;
+  max-width: 656px;
   padding: 20px;
   width: 100%;
+}
+
+/* Ahora es un alias del default (mismos 656px) — se mantiene por claridad semántica
+   en los call sites (`className="detail-sheet--wide"` en screens/tareas-pendientes/
+   sigue siendo válido, documenta la intención "panel lateral ancho" sin que el valor
+   numérico difiera del default). */
+.detail-sheet--wide {
+  max-width: 656px;
 }
 
 .detail-sheet__header {
@@ -173,6 +190,20 @@
 .detail-sheet__media-metrics {
   display: grid;
   gap: 6px;
+  /* Corregido 2026-08-12 (Luna reportó superposición visual con el gráfico de la
+     derecha, ver captura). `repeat(3, auto)` mide cada `MetricCard` ficha (83px fijo)
+     a su ancho completo y hace crecer la grilla a 261px (3×83 + 2×6 gap) — pero
+     `.detail-sheet__body-left` (esta columna) mide ~222-249px según el ancho del
+     panel, SIEMPRE menos que 261px. Con `auto`, la grilla entera se sale de su
+     columna y tapa `.detail-sheet__charts` a la derecha. `minmax(0, 1fr)` fuerza la
+     grilla a quedarse dentro de los ~222-249px disponibles (cada `MetricCard` puede
+     quedar apretado entre sí, pero no se sale de la columna) — distinto de
+     `.detail-sheet__metrics` (TAREAS/RECURSOS/RECURSOS, columna derecha, con espacio
+     de sobra) que sí necesita `auto` para no separarse. Ver Known Limitations en
+     `knowledge/screens/tareas-pendientes.md` — el tamaño real de estas 3 cajas en el
+     PDF no está confirmado con una medida limpia (contaminada por el grid oculto
+     detrás del panel en `get_drawings()`), este fix resuelve la superposición visible
+     sin asumir que 83px es el ancho correcto de estas cajas específicas. */
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
@@ -230,7 +261,10 @@
 .detail-sheet__metrics {
   display: grid;
   gap: 6px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* mismo criterio que .detail-sheet__media-metrics arriba — MetricCard es ancho fijo,
+     no estira. */
+  grid-template-columns: repeat(3, auto);
+  justify-content: start;
 }
 
 .detail-sheet__charts {
@@ -319,4 +353,15 @@
 .detail-sheet__action-button--b.ds-button:hover:not(:disabled) {
   background: var(--ds-color-pdf-ink-muted); /* tokenized 2026-08-07 — was literal #8a8b87 */
   color: var(--ds-color-white); /* was literal #ffffff */
+}
+
+/* Agregado en 004-familia-tareas — el tipo DetailSheetAction["variant"] ya admitía "c"
+   desde 2026-07-28, pero faltaba su regla CSS (gap encontrado en /sdd-validate). Reusa
+   --ds-color-pdf-action (#494949), el mismo tono oscuro que ya usa Modal.tsx/.ds-modal —
+   completa la progresión clara→media→oscura de --a/--b/--c en vez de inventar un color
+   nuevo. */
+.detail-sheet__action-button--c.ds-button,
+.detail-sheet__action-button--c.ds-button:hover:not(:disabled) {
+  background: var(--ds-color-pdf-action);
+  color: var(--ds-color-white);
 }

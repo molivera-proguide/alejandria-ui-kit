@@ -96,6 +96,19 @@ is uppercase in the PDF source text; the prior `text-transform: uppercase` on bo
 | selected state | PDF #060606 | knowledge/components/TaskCard.md | no |
 
 ## Deltas & open questions (facts only — DO NOT resolve)
+- **2026-08-12 — latent stacking-context bug found and fixed** (`005-alert-toast-filter`,
+  Luna reported "las taskcard no tienen fondo, se ven fusionadas con el fondo" in
+  `screens/tareas-pendientes/`/`screens/tareas-finalizadas/`). `.ds-task--default::after`
+  (see the 2026-08-04 entry below for why the background lives there) has `z-index: -1`;
+  `.ds-task` never set its own `z-index` (only `position: relative`), so it never formed
+  a stacking context of its own — the `::after` background escaped all the way to the
+  document's root stacking context and painted behind `BackgroundTextureDots`
+  (`position: absolute` at the screen level), not just behind its own card. Latent since
+  the original `e2ceaa6` commit — never surfaced because neither `TaskCard.stories.tsx`'s
+  isolated stories nor `screens/home/` (only uses `variant="resumen"`, no `::after`)
+  combined `variant="default"` with the background texture before. Fixed with
+  `isolation: isolate` on `.ds-task` (confines any z-indexed descendant to the card, no
+  layout effect) — see `DECISIONS.md` 2026-08-12.
 - Doc Variants historically cited pre-calibration @2× numbers (gap 12px / kanban 300px / etc.); CSS now at display scale — compare docs after documentation pass.
 - PDF selected state `#060606` not implemented (knowledge/components/TaskCard.md Known Limitations).
 - 2026-08-04, first pass: chamfer/accent/kanban-width were pixel-measured off a *screenshot* of the PDF page (26px chamfer, 19px accent, 159px kanban). That pass also shipped a real bug: putting the chamfer's `clip-path` directly on `.ds-task--default` clipped away `::before` too (clip-path clips an element's whole subtree, pseudo-elements included), so the accent never rendered. 2026-08-04, second pass same day: re-derived chamfer/accent/default-width/kanban-width/resumen-width directly from the PDF's vector path coordinates (PyMuPDF `get_drawings()`, exact pt values, no screenshot/zoom guessing) and fixed the clip-path bug by moving the card's background/border/chamfer to `.ds-task--default::after` (a separate, negatively-z-indexed layer) so `.ds-task::before` (the accent) is never inside the clipped subtree. The vector-derived numbers superseded the screenshot ones in the table above.

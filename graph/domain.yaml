@@ -5,7 +5,7 @@ meta:
   generated_by: sdd-generate
   commit: 11c9a51
   updated: 2026-08-11
-  last_touched_by: sdd-generate (003-home-dashboard)
+  last_touched_by: sdd-generate (005-alert-toast-filter)
 
 domains:
   design-tokens:
@@ -31,12 +31,13 @@ domains:
        ModuleCard, ChartCard, BarChartCard, LineChartCard, DonutChartCard,
        LinearBarChartCard, CalendarCard, SideBar, Skeleton, Empty,
        InvestigationCard, Asistente, FormTextInput, FormSelect,
-       FormCheckable, FormFileUpload, FormDatePicker, Modal]
+       FormCheckable, FormFileUpload, FormDatePicker, Modal,
+       AlertBar, Toast, FilterField]
     storage: n/a
-    features: [001-form-modal]
+    features: [001-form-modal, 004-familia-tareas, 005-alert-toast-filter]
     depends_on: [design-tokens]
     files:
-      components: [packages/ui/src/components/]
+      components: [packages/ui/src/components/, packages/ui/src/components/TaskCard.tsx]
       barrel: [packages/ui/src/index.ts]
       docs: [knowledge/components/, knowledge/specs/components/]
 
@@ -44,13 +45,16 @@ domains:
     description: "Composiciones de varios componentes (no exportadas como layout) — login, ficha, mission, screens completas"
     entities: []
     services: []
-    components: [Login, DetailSheet, Mission, CargaDeFormulario, Home, Dashboard]
+    components: [Login, DetailSheet, Mission, CargaDeFormulario, Home, Dashboard,
+       TareasPendientes, TareasKanban, TareasFinalizadas]
     storage: n/a
-    features: [002-bg-texture, 003-home-dashboard]
+    features: [002-bg-texture, 003-home-dashboard, 004-familia-tareas, 005-alert-toast-filter]
     depends_on: [component-catalog, design-tokens]
     files:
-      patterns: [packages/ui/src/patterns/]
-      screens: [packages/ui/src/screens/]
+      patterns: [packages/ui/src/patterns/, packages/ui/src/patterns/detail-sheet/DetailSheet.tsx,
+         packages/ui/src/patterns/detail-sheet/detail-sheet.css]
+      screens: [packages/ui/src/screens/, packages/ui/src/screens/tareas-pendientes/,
+         packages/ui/src/screens/tareas-kanban/, packages/ui/src/screens/tareas-finalizadas/]
       docs: [knowledge/patterns/, knowledge/screens/]
 
   icon-set:
@@ -59,7 +63,7 @@ domains:
     services: []
     components: []
     storage: n/a
-    features: []
+    features: [005-alert-toast-filter]
     depends_on: []
     files:
       icons: [packages/ui/src/Icons/]

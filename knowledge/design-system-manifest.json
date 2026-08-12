@@ -12,6 +12,13 @@
       "storybook": "Alejandria/AlertBanner"
     },
     {
+      "id": "alert-bar",
+      "name": "AlertBar",
+      "path": "knowledge/components/AlertBar.md",
+      "export": "packages/ui/src/components/AlertBar.tsx",
+      "storybook": "Alejandria/AlertBar"
+    },
+    {
       "id": "asistente",
       "name": "Asistente",
       "path": "knowledge/components/Asistente.md",
@@ -87,6 +94,13 @@
       "path": "knowledge/components/Empty.md",
       "export": "packages/ui/src/components/Empty.tsx",
       "storybook": "Alejandria/Empty"
+    },
+    {
+      "id": "filter-field",
+      "name": "FilterField",
+      "path": "knowledge/components/FilterField.md",
+      "export": "packages/ui/src/components/FilterField.tsx",
+      "storybook": "Alejandria/FilterField"
     },
     {
       "id": "form-checkable",
@@ -227,6 +241,13 @@
       "path": "knowledge/components/TextField.md",
       "export": "packages/ui/src/components/TextField.tsx",
       "storybook": "Alejandria/TextField"
+    },
+    {
+      "id": "toast",
+      "name": "Toast",
+      "path": "knowledge/components/Toast.md",
+      "export": "packages/ui/src/components/Toast.tsx",
+      "storybook": "Alejandria/Toast"
     }
   ],
   "patterns": [
@@ -395,6 +416,12 @@
       "source": "packages/ui/src/styles.css (.ds-alert)"
     },
     {
+      "id": "alert-bar-spec",
+      "name": "AlertBar",
+      "path": "knowledge/specs/components/AlertBar.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-alert-bar)"
+    },
+    {
       "id": "asistente-spec",
       "name": "Asistente",
       "path": "knowledge/specs/components/Asistente.spec.md",
@@ -459,6 +486,12 @@
       "name": "Empty",
       "path": "knowledge/specs/components/Empty.spec.md",
       "source": "packages/ui/src/styles.css (.ds-empty)"
+    },
+    {
+      "id": "filter-field-spec",
+      "name": "FilterField",
+      "path": "knowledge/specs/components/FilterField.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-filter-field)"
     },
     {
       "id": "form-checkable-spec",
@@ -579,6 +612,12 @@
       "name": "TextField",
       "path": "knowledge/specs/components/TextField.spec.md",
       "source": "packages/ui/src/styles.css (.ds-field / .ds-field__input)"
+    },
+    {
+      "id": "toast-spec",
+      "name": "Toast",
+      "path": "knowledge/specs/components/Toast.spec.md",
+      "source": "packages/ui/src/styles.css (.ds-toast)"
     }
   ],
   "governance": [

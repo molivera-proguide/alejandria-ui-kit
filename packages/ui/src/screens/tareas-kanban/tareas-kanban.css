@@ -1,0 +1,127 @@
+.screen-tareas-kanban {
+  background-color: var(--ds-color-pdf-surface);
+  display: flex;
+  min-height: 100vh;
+  position: relative; /* recorta el overlay absoluto de BackgroundTextureDots
+     (002-bg-texture), mismo patrón que screen-home/screen-dashboard */
+}
+
+/* Envuelve topbar + main (retrofit 005-alert-toast-filter), mismo criterio que
+   screen-tareas-pendientes__content. */
+.screen-tareas-kanban__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* fix-002 (2026-08-12, CHK015): ver comentario completo en
+   screens/tareas-pendientes/tareas-pendientes.css — misma causa raíz y mismo
+   fix, medido contra "Alejandria - Agosto 2026.pdf" p.5. min-height 34px =
+   alto de contenido real de .ds-alert-bar (box-sizing content-box, el padding
+   12px arriba/abajo se suma aparte; total 34+24=58px, igual a la altura
+   previa a este fix). */
+.screen-tareas-kanban__topbar {
+  align-items: center;
+  display: flex;
+  gap: var(--ds-space-2);
+  min-height: 34px;
+  padding: 12px 16px;
+  position: relative;
+}
+
+.screen-tareas-kanban__topbar-icon {
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  padding: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.screen-tareas-kanban__topbar-icon img {
+  height: 20px;
+  width: 20px;
+}
+
+.screen-tareas-kanban__topbar .ds-alert-bar {
+  bottom: 12px;
+  height: auto;
+  left: 16px;
+  position: absolute;
+  right: 16px;
+  top: 12px;
+  width: auto;
+  z-index: 0;
+}
+
+.screen-tareas-kanban__main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--ds-space-6);
+  min-width: 0;
+  padding: 24px 32px;
+}
+
+.screen-tareas-kanban__toolbar {
+  display: flex;
+}
+
+.screen-tareas-kanban__columns {
+  align-items: start;
+  display: grid;
+  gap: 24px;
+  /* 3 columnas de ancho fijo (mismo criterio que screen-dashboard__grid con ModuleCard):
+     TaskCard kanban es 225px fijo, la columna necesita margen para el padding propio. */
+  grid-template-columns: repeat(3, 260px);
+}
+
+.screen-tareas-kanban__column {
+  display: grid;
+  gap: var(--ds-space-3);
+}
+
+.screen-tareas-kanban__column-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.screen-tareas-kanban__column-title {
+  color: var(--ds-color-pdf-form-muted);
+  font-family: var(--ds-font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.screen-tareas-kanban__column-menu {
+  color: var(--ds-color-pdf-ink-muted);
+}
+
+/* Barra de progreso por columna — hallazgo del fidelity-check (ver header del
+   .stories.tsx): el PDF muestra una barra bajo cada título pero no anota un %
+   exacto por columna, valores decorativos aproximados en la data del story. */
+.screen-tareas-kanban__column-progress {
+  background: var(--ds-color-pdf-border);
+  height: 3px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.screen-tareas-kanban__column-progress span {
+  background: var(--ds-color-pdf-ink-muted);
+  display: block;
+  height: 100%;
+}
+
+.screen-tareas-kanban__column-tasks {
+  display: grid;
+  gap: var(--ds-space-3);
+}

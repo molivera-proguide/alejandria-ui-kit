@@ -1,4 +1,4 @@
-import type { HTMLAttributes } from "react";
+import type { HTMLAttributes, KeyboardEventHandler, MouseEventHandler } from "react";
 import { cn } from "../utils/cn";
 
 /**
@@ -10,6 +10,17 @@ export type TaskTone = "neutral" | "success" | "warning" | "danger";
  * @description Variantes visuales de `TaskCard` definidas en PDF TARJETAS (p. 3)
  */
 export type TaskVariant = "default" | "kanban" | "resumen";
+
+/**
+ * @description Configuración del botón "VER MÁS" opcional (PDF TARJETAS PENDIENTES p.6/9).
+ * Decorativo por diseño de esta feature (`004-familia-tareas`): el kit no asume navegación
+ * ni lógica de negocio, mismo criterio que `MetricCard`'s `utilities` — el consumidor decide
+ * si cablea una acción real o pasa un no-op.
+ */
+export interface TaskCardViewMoreAction {
+  label: string;
+  onClick: MouseEventHandler<HTMLButtonElement>;
+}
 
 /**
  * @description Props públicas del componente `TaskCard`
@@ -26,6 +37,7 @@ export interface TaskCardProps extends HTMLAttributes<HTMLElement> {
   progress?: number;
   tone?: TaskTone;
   variant?: TaskVariant;
+  viewMore?: TaskCardViewMoreAction;
 }
 
 /**
@@ -45,8 +57,11 @@ export function TaskCard({
   progress: _progress = 0,
   tone = "neutral",
   variant = "default",
+  viewMore,
   className,
   style,
+  onClick,
+  onKeyDown,
   ...props
 }: TaskCardProps) {
   const isDefault = variant === "default";
@@ -59,11 +74,38 @@ export function TaskCard({
   // default — a consumer stretching a wide grid column shouldn't be able to silently
   // override it via inline style.
   const { width: _width, maxWidth: _maxWidth, ...safeStyle } = style ?? {};
+  // fix-001 (2026-08-12, CHK001): la card solo es realmente interactiva cuando el
+  // consumidor le pasa onClick (caso real hoy: TareasPendientes, click abre
+  // DetailSheet) — kanban/resumen y Finalizadas nunca lo reciben, y no deben verse
+  // afectadas. Sin esto, un onClick de mouse quedaba sin equivalente de teclado
+  // (sin tabIndex/role, sin Enter/Espacio) ni feedback visual de hover/foco.
+  const isInteractive = Boolean(onClick);
+
+  const handleKeyDown: KeyboardEventHandler<HTMLElement> = (event) => {
+    onKeyDown?.(event);
+    if (event.defaultPrevented || !onClick) return;
+    if (event.key === "Enter" || event.key === " ") {
+      // dispara un click real (no castea el KeyboardEvent a MouseEvent) para que
+      // cualquier onClick nativo/sintético adjunto se comporte igual que un click de mouse
+      event.preventDefault();
+      event.currentTarget.click();
+    }
+  };
 
   return (
     <article
-      className={cn("ds-task", `ds-task--${tone}`, `ds-task--${variant}`, className)}
+      className={cn(
+        "ds-task",
+        `ds-task--${tone}`,
+        `ds-task--${variant}`,
+        isInteractive && "ds-task--interactive",
+        className
+      )}
       style={safeStyle}
+      onClick={onClick}
+      onKeyDown={isInteractive ? handleKeyDown : onKeyDown}
+      tabIndex={isInteractive ? 0 : undefined}
+      role={isInteractive ? "button" : undefined}
       {...props}
     >
       <header className="ds-task__header">
@@ -85,6 +127,11 @@ export function TaskCard({
           {startDate ? <span>{startDate}</span> : null}
           {endDate ? <span>{endDate}</span> : null}
         </div>
+      ) : null}
+      {viewMore ? (
+        <button type="button" className="ds-task__view-more" onClick={viewMore.onClick}>
+          {viewMore.label}
+        </button>
       ) : null}
     </article>
   );
