@@ -132,7 +132,9 @@ Exclude:
 ## Recommendations
 
 - Usar `DetailSheet` dentro de un contenedor con `max-width` propio si se necesita un ancho
-  distinto al `590px` fijo del patrón — no hay prop de ancho.
+  distinto al `656px` fijo del patrón — no hay prop de ancho. Por debajo de ese ancho, el
+  propio componente se reacomoda solo — ver Responsive Behavior — no hace falta que el
+  consumidor agregue su propio media/container query.
 
 ---
 
@@ -273,9 +275,23 @@ el literal `"a"|"b"|"c"` de `DetailSheetAction`), no props de layout.
 
 # Responsive Behavior
 
-Sin media queries — `max-width: 590px` fijo, `width: 100%` dentro de ese máximo. El grid
-interno (`grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.35fr)`) no colapsa a una
-columna en viewports angostos (no implementado).
+`max-width: 656px` fijo, `width: 100%` dentro de ese máximo. Agregado 2026-08-13
+(`knowledge/design-system-rules.md` Rule 11): el propio `.detail-sheet` declara
+`container-type: inline-size` y define un `@container` — no `@media` — porque este
+componente se reusa a anchos distintos dentro de la misma pantalla (panel lateral angosto
+vs. vista completa), no según el viewport.
+
+Por debajo del rol `narrow` de la escala (640px de ancho renderizado del componente — la
+condición real en CSS es `598.5px`, ajustada por el content-box del propio padding/border;
+ver comentario en `detail-sheet.css`), tanto `.detail-sheet__header` como `.detail-sheet__body`
+colapsan de 2 columnas a 1. Esto evita que `.detail-sheet__metrics` (3 `MetricCard` fijos de
+83px = piso duro de 261px) se desborde del panel. Story `PanelAngosto` en Storybook verifica
+esto con un wrapper de 320px (el addon de Viewport de Storybook no sirve para probar esto —
+mide el iframe completo, no el contenedor real).
+
+**Límite de alcance conocido:** por debajo de ~301px de ancho de contenedor (261px del piso
+de `.detail-sheet__metrics` + 40px de padding), el desborde puede reaparecer incluso apilado —
+no hay un paso más angosto que `narrow` en la escala hoy.
 
 ---
 
@@ -484,6 +500,9 @@ article.detail-sheet[aria-label="Ficha de detalle"]
   explícitamente exportarlo como componente del kit — quedó superseded por esa promoción;
   ver nota en ese archivo y `DECISIONS.md` (2026-08-07).
 - Sin tests unitarios ni de integración (sin framework de test instalado).
+- El colapso a 1 columna vía `@container` (ver Responsive Behavior) no cubre anchos por
+  debajo de ~301px de contenedor — `.detail-sheet__metrics` puede volver a desbordarse ahí.
+  No hay un paso más angosto que `narrow` en `knowledge/design-system-rules.md` Rule 11 hoy.
 
 ---
 

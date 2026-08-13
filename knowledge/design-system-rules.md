@@ -185,6 +185,40 @@ Do not specialize a component until composition has proven insufficient.
 A Pattern should describe how components work together,
 not redefine how they behave.
 
+---
+
+# Rule 11
+
+## Responsive Breakpoints
+
+A component or screen adapts to available space with one of two mechanisms. Never invent a third.
+
+- **`@media`** — when the layout depends on the real viewport: page shells and screen-level layouts in `apps/web` (e.g. Operations Console), dark mode, `prefers-reduced-motion`, print.
+- **`@container`** — when the component is reused across contexts of differing width within the same viewport (e.g. a `packages/ui/src/patterns` component embedded as a sidebar panel vs. rendered full-width). Requires the component's own root, or a wrapping ancestor, to declare `container-type: inline-size` — without it, `@container` rules never match, including inside Storybook decorators.
+
+Do not use `@media` inside a reusable pattern/component whose rendered width is controlled by the consumer. Do not use `@container` for whole-screen shells that have no meaningful "container" narrower than the viewport.
+
+### Breakpoint scale
+
+Three reference widths, taken from existing measured usage rather than invented:
+
+| Role | Value | Existing evidence |
+|--------|------:|--------------------|
+| `narrow` | `640px` | `apps/web/src/app.css` — `.ops-main` padding collapse |
+| `medium` | `880px` | `apps/web/src/app.css` — `.ops-app` grid collapses to `1fr` |
+| `wide` | `1180px` | `apps/web/src/app.css` — `.ops-command` / `.ops-lower` grid collapses to `1fr` |
+
+Use the nearest role's value verbatim in any new `@media` rule.
+
+**`@container` needs an adjustment, not the verbatim value.** A `max-width`/`min-width` container query is evaluated against the query container's **content-box**, not its border-box — if the container element carries its own `padding`/`border` (the common case: the component's root is also the query container), that chrome must be subtracted from the role value before it goes into the condition, or the rule fires at the wrong rendered width — see `packages/ui/src/patterns/detail-sheet/detail-sheet.css` for a real instance (`640px` role → `598.5px` condition after subtracting `40px` padding + `1.5px` border; unadjusted, the rule matched at every width the component could render, and the two-column layout never appeared). Comment the arithmetic at the call site so it can be recomputed if the component's padding/border changes.
+
+Do not introduce a fourth step, or an off-scale value, without registering it here first (Rule 06 — keep the system small). The content-box adjustment above is not a new step — it is the same role, translated into the container's local box model.
+
+### Why there is no `--ds-breakpoint-*` custom property
+
+Unlike color or spacing tokens, these values cannot be consumed with `var()` inside a `@media`/`@container` prelude — CSS custom properties do not resolve inside at-rule conditions, and this project has no build-time preprocessor (no PostCSS `custom-media`, no Sass) to fill that gap. The table above is a **documented literal scale**, not a machine-enforced token: copy the pixel value by hand into the rule, and comment which role it matches — see `detail-sheet.css` for this project's existing convention of commenting non-obvious CSS decisions.
+
+---
 
 # Decision Order
 

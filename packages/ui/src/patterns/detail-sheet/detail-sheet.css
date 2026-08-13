@@ -17,6 +17,10 @@
   max-width: 656px;
   padding: 20px;
   width: 100%;
+  /* container, not viewport — this sheet is reused at varying widths within the same
+     screen (wide side panel vs. full-width), see @container rule + comment at the bottom
+     of this file and knowledge/design-system-rules.md Rule 11. */
+  container-type: inline-size;
 }
 
 /* Ahora es un alias del default (mismos 656px) — se mantiene por claridad semántica
@@ -364,4 +368,40 @@
 .detail-sheet__action-button--c.ds-button:hover:not(:disabled) {
   background: var(--ds-color-pdf-action);
   color: var(--ds-color-white);
+}
+
+/* Agregado 2026-08-13 — knowledge/design-system-rules.md Rule 11. `@container`, no `@media`:
+   DetailSheet se reusa a anchos distintos dentro de la misma pantalla (panel lateral angosto
+   vs. vista completa), así que lo que importa es el ancho del propio elemento, no el del
+   viewport. Rol de referencia: `narrow` (640px) de la escala documentada.
+
+   OJO — 640px NO es el número que va en la condición. Container queries miden el CONTENT-BOX
+   del contenedor (`.detail-sheet` tiene `container-type` en sí mismo), no su border-box. Con
+   `padding: 20px` (×2 = 40px) + `border` `--ds-border-width-hair` (0.75px ×2 = 1.5px), hay que
+   restar ese chroma antes de escribir la condición: 640 − 40 − 1.5 = 598.5px. Verificado en
+   Storybook (2026-08-13): sin este ajuste, el ancho completo del componente (656px border-box
+   = 614.67px content-box) ya caía por debajo de 640px y la regla disparaba SIEMPRE — el layout
+   de 2 columnas nunca llegaba a renderizarse, ni en "Panel Lateral" ni en "Fichas". Si el
+   padding/border de `.detail-sheet` cambia, este número hay que recalcularlo.
+
+   Por debajo del umbral, ambas grillas de dos columnas pasan a una sola columna. Esto le da a
+   `.detail-sheet__metrics` (3 MetricCard de 83px fijos = piso duro de 261px, ver comentario en
+   esa regla más arriba) el ancho completo del panel en vez de la mitad — que es exactamente el
+   escenario que se desbordaba. Nota de alcance: por debajo de ~301px de ancho de contenedor
+   (261px del piso + 2×20px de padding) el desborde puede reaparecer incluso apilado; no hay un
+   paso más angosto que `narrow` en la escala hoy — ver Rule 11 para el criterio antes de
+   inventar uno. */
+@container (max-width: 598.5px) {
+  .detail-sheet__header {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-sheet__header-tools {
+    align-items: start;
+    justify-items: start;
+  }
+
+  .detail-sheet__body {
+    grid-template-columns: 1fr;
+  }
 }

@@ -96,3 +96,26 @@ export const PanelLateral: Story = {
     onClose: () => undefined
   }
 };
+
+/**
+ * @description Verifica knowledge/design-system-rules.md Rule 11 — el `@container` en
+ * detail-sheet.css mide el ancho de ESTE wrapper, no el viewport de Storybook (por eso el
+ * addon de Viewport no sirve para probar esto — hay que angostar el contenedor real). Por
+ * debajo de 640px (paso `narrow` de la escala), header y body colapsan a una columna para
+ * que `.detail-sheet__metrics` (3 MetricCard fijos = piso duro de 261px) tenga el ancho
+ * completo del panel en vez de la mitad.
+ */
+export const PanelAngosto: Story = {
+  args: {
+    content: fichaContent,
+    className: "detail-sheet--wide",
+    onClose: () => undefined
+  },
+  decorators: [
+    (Story) => (
+      <div style={{ width: 320 }}>
+        <Story />
+      </div>
+    )
+  ]
+};
