@@ -801,8 +801,10 @@ and `ProgressRing.spec.md`.
 ## Backlog — patterns (after all components above are done)
 
 - **DetailSheet** (`packages/ui/src/patterns/detail-sheet/`) — PDF "Ficha", p.5
-- `packages/ui/src/patterns/mission/` — still not checked against the PDF for an existing spec
-  page; confirm whether it has one before assuming this pass covers it the same way.
+- `mission` **removed 2026-08-13** — Luna called it a failed screen-generation attempt that
+  never faithfully matched its PDF counterpart. Dropped from the backlog, not just deferred;
+  rebuild from scratch later if it's needed again (see git history for the old
+  `packages/ui/src/patterns/mission/` if useful as a reference, not a starting point).
 
 **Process note (2026-08-05):** wait for the user to actually look at Storybook and say go-ahead
 before committing/pushing a fix — don't push right after a build+screenshot check on my own.

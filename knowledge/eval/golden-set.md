@@ -5,9 +5,13 @@ is an adversarial **gap-probe** that must be reported, not invented. Give each p
 no hints, no pointing at components. Score with `rubric.md`.
 
 Verified against the exported surface at the time of writing: components in `packages/ui/src/index.ts`
-(24 + Icons). **Patterns `DetailSheet` / `Login` / `Mission` are Storybook-only — NOT exported**, so
+(24 + Icons). **Patterns `DetailSheet` / `Login` are Storybook-only — NOT exported**, so
 any "screen" must be composed from primitives. There is no shipped Modal, Tabs, Tooltip, Menu,
 Pagination, Checkbox/Radio, Textarea, or generic-glyph icon set.
+
+Note (2026-08-13): the `Mission` pattern that used to live here was removed — it was a failed
+screen-generation attempt that didn't faithfully match its PDF counterpart. See git history
+(`packages/ui/src/patterns/mission/`) if it needs to be rebuilt from scratch later.
 
 ---
 

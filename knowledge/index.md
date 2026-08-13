@@ -137,7 +137,6 @@ Only patterns with a Storybook composed (or layout-intent) story are documented.
 | Module Grid | [module-grid.md](./patterns/module-grid.md) | `Alejandria/ModuleCard/GridExample` |
 | Chart Gallery | [chart-gallery.md](./patterns/chart-gallery.md) | `Alejandria/ChartCard/Gallery` |
 | Mission Panel | [mission-panel.md](./patterns/mission-panel.md) | `Alejandria/Card/WithActionsAndFooter` |
-| Mission | [mission.md](./patterns/mission.md) | `Alejandria/Patterns/Mission` |
 | Alert Stack | [alert-stack.md](./patterns/alert-stack.md) | `Alejandria/AlertBanner/Tones` |
 | Actionable Alert | [actionable-alert.md](./patterns/actionable-alert.md) | `Alejandria/AlertBanner/WithAction` |
 | Filter Pair | [filter-pair.md](./patterns/filter-pair.md) | `Alejandria/SelectField/CompactFilters` |
@@ -313,14 +312,6 @@ Mission Panel
 ├── Card
 ├── Button
 └── ProgressRing
-
-Mission
-├── Card
-├── Badge
-├── AlertBanner
-├── ProgressRing
-├── TextField
-└── Button
 
 ---
 

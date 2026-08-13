@@ -301,13 +301,6 @@
       "source": "packages/ui/src/components/Card.stories.tsx"
     },
     {
-      "id": "mission",
-      "name": "Mission",
-      "path": "knowledge/patterns/mission.md",
-      "storybook": "Alejandria/Patterns/Mission",
-      "source": "packages/ui/src/patterns/mission/Mission.stories.tsx"
-    },
-    {
       "id": "alert-stack",
       "name": "Alert Stack",
       "path": "knowledge/patterns/alert-stack.md",
