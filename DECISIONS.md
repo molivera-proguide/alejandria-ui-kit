@@ -1276,3 +1276,51 @@ ya establecido en este mismo archivo, sin arquitectura nueva.
 `packages/ui/src/screens/tareas-pendientes/TareasPendientes.stories.tsx`,
 `specs/_registry/features.yaml`
 **Decidido por:** Luna
+
+---
+
+## 2026-08-13 fix-008-carga-formulario-grid-stretch: align-content:normal inflaba filas segun cuanto contenido tuviera la columna de adjuntos
+
+**feature_id:** fix-008-carga-formulario-grid-stretch
+**command_origin:** sdd-fix
+**status:** accepted
+**Gap o motivo:** Luna reporto 2 sintomas en CargaDeFormulario que a primera
+vista parecian distintos: (1) con los archivos mock adjuntos, la columna
+"ADJUNTAR ARCHIVOS" crece mucho y eso afecta como se ven los campos de las
+otras 2 columnas; (2) sin adjuntos, la pantalla se ve bien salvo que queda un
+gap mas grande entre el titulo y el contenido.
+**Diagnostico (antes de tocar CSS):** se midio en vivo con
+getBoundingClientRect en el Browser pane, con y sin archivos adjuntos, antes
+de escribir ningun CSS. Una sola causa raiz para ambos sintomas:
+`.screen-carga-formulario__main` y `.screen-carga-formulario__column` son
+`display: grid` con filas implicitas `auto` y `align-content: normal` (que
+Grid trata como `stretch` cuando sobra alto). `.screen-carga-formulario` usa
+`min-height: 100vh` — cuando el contenido real es mas corto que el viewport
+(sin archivos), sobra alto dentro de `.main`, y ese sobrante se reparte
+inflando sus 2 filas implicitas (titulo + grilla de 3 columnas) en vez de
+quedar compacto: medido, el titulo paso de 59.9px de alto (con archivos) a
+119.4px (sin archivos) con el mismo texto, empujando la grilla hacia abajo.
+Simetricamente, cuando la columna de archivos SI es alta,
+`.screen-carga-formulario__grid` (align-items: stretch, default, correcto —
+asi las 3 columnas quedan parejas) estira las columnas 1/2 a esa misma
+altura, y sin `align-content: start` en `.screen-carga-formulario__column` ese
+sobrante se repartia entre los propios campos de cada columna en vez de
+quedar invisible al final de la columna.
+**Alternativas consideradas:** (1) fijar una altura explicita al titulo o a
+la grilla; (2) `align-content: start` en los 2 grids implicados.
+**Por que se descarto (1):** una altura fija no escala si el contenido del
+titulo o de las columnas cambia (i18n, mas campos a futuro) — es tratar el
+sintoma, no la causa (el stretch por default de Grid).
+**Decision tomada:** (2) — `align-content: start` en
+`.screen-carga-formulario__main` y `.screen-carga-formulario__column`.
+Verificado en vivo primero con un `<style>` de debug temporal (no committeado)
+y despues con el fix real: `titleHeight`/`gridTop` quedan identicos con y sin
+archivos adjuntos, y los gaps entre campos de cada columna respetan el `gap`
+declarado sin importar la altura de la columna vecina.
+**Motivo:** corrige la causa raiz (el comportamiento de stretch por default de
+CSS Grid en filas auto) en vez de compensar sintomas puntuales, con el menor
+cambio de superficie posible (2 propiedades, mismo archivo).
+**Artefactos modificados:**
+`packages/ui/src/screens/carga-de-formulario/carga-de-formulario.css`,
+`specs/_registry/features.yaml`
+**Decidido por:** Luna

@@ -9,6 +9,14 @@
 }
 
 .screen-carga-formulario__main {
+  /* fix-008 (2026-08-13, Luna: gap más grande entre título y contenido sin adjuntos) —
+     sin esto, align-content:normal (≈ stretch para grids con filas auto) reparte el
+     espacio vertical sobrante entre las 2 filas implícitas (título, grilla de 3
+     columnas) cuando .screen-carga-formulario (min-height: 100vh) es más alto que su
+     contenido real — la fila del título se infla mucho más allá del alto de su propio
+     texto, empujando la grilla hacia abajo. align-content: start la deja compacta
+     siempre, sin importar cuánta altura sobre. */
+  align-content: start;
   display: grid;
   flex: 1;
   gap: var(--ds-space-4);
@@ -33,6 +41,13 @@
 }
 
 .screen-carga-formulario__column {
+  /* fix-008 (2026-08-13, Luna: con los archivos mock adjuntos, la columna de
+     ADJUNTAR ARCHIVOS crece mucho — .screen-carga-formulario__grid (align-items:
+     stretch, default) estira las otras 2 columnas para igualar esa altura, y sin
+     esto align-content:normal repartía ese sobrante entre los campos de cada
+     columna, separándolos más de lo que marca `gap`. align-content: start los deja
+     compactos siempre, sin importar cuánto midan las columnas vecinas. */
+  align-content: start;
   display: grid;
   gap: 20px;
   min-width: 0;

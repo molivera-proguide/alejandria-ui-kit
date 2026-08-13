@@ -379,3 +379,39 @@ features:
       el comentario original en tareas-pendientes.css que documentaba el
       hallazgo ahora superado. Sin colisión de equipo — no hay features OPEN
       al momento de este fix.
+
+  - id: fix-008-carga-formulario-grid-stretch
+    type: fix
+    status: CLOSED
+    domain: composed-patterns
+    owner: lvgonzalezprg
+    sprint: null
+    created: 2026-08-13
+    closed: 2026-08-13
+    touches:
+      - packages/ui/src/screens/carga-de-formulario/carga-de-formulario.css
+    decisions:
+      - "2026-08-13: align-content:normal (≈stretch) en 2 grids implícitos inflaba filas/gaps según cuánto contenido tuviera la columna de archivos adjuntos"
+    note: >
+      Luna reportó 2 síntomas relacionados en CargaDeFormulario: (1) con los
+      archivos mock adjuntos, la columna "ADJUNTAR ARCHIVOS" crece mucho y eso
+      afecta cómo se ven los campos de las otras columnas; (2) sin adjuntos,
+      la pantalla se ve bien salvo que queda un gap más grande entre el título
+      y el contenido. Diagnosticado en vivo (Browser pane, getBoundingClientRect
+      antes/después) antes de tocar CSS: una sola causa raíz para ambos —
+      `.screen-carga-formulario__main` y `.screen-carga-formulario__column` son
+      `display: grid` con filas implícitas `auto` y `align-content: normal`
+      (que Grid trata como `stretch`); cuando el contenedor tiene más alto
+      disponible que su contenido real, ese sobrante se reparte inflando las
+      filas — la fila del título se infla mucho más que su propio texto
+      (medido: 59.9px con archivos → 119.4px sin archivos, mismo texto),
+      empujando la grilla de campos hacia abajo; y cuando la columna de
+      archivos estira las 3 columnas a su misma altura (align-items:stretch,
+      default, deseado para columnas parejas), el sobrante en columnas 1/2 se
+      repartía entre sus propios campos en vez de quedar invisible al final.
+      Fix: `align-content: start` en ambos selectores — verificado en vivo
+      (con debug de CSS temporal primero, después con el fix real) que
+      `titleHeight`/`gridTop` quedan idénticos con y sin archivos adjuntos, y
+      que los gaps entre campos de cada columna respetan el `gap` declarado
+      sin importar la altura de la columna vecina. Sin colisión de equipo —
+      no hay features OPEN al momento de este fix.
