@@ -1234,3 +1234,45 @@ screen ni las 2 correcciones previas ya documentadas en este mismo selector.
 **Artefactos modificados:** `packages/ui/src/styles.css`,
 `specs/_registry/features.yaml`
 **Decidido por:** Luna
+
+---
+
+## 2026-08-13 fix-007-detail-overlay-dimming: DetailSheet abre sin oscurecer la grilla, corrige hallazgo de medicion previo
+
+**feature_id:** fix-007-detail-overlay-dimming
+**command_origin:** sdd-fix
+**status:** accepted
+**Gap o motivo:** Luna, comparando contra "Alejandria - Agosto 2026.pdf" p.7
+("detalle abierto"), pidio que al seleccionar una TaskCard el resto de la
+grilla se oscurezca como el backdrop de Modal, salvo la card seleccionada
+(que queda visible sin oscurecerse). El comentario existente en
+tareas-pendientes.css (2026-08-11, medicion original con get_drawings() sobre
+la misma p.7) documentaba lo contrario: "el PDF no muestra dimming, solo el
+borde propio de .detail-sheet".
+**Verificacion antes de implementar:** dado que esto contradice un hallazgo
+ya documentado, se le pregunto explicitamente a Luna si es una relectura del
+mismo PDF o una decision de diseno nueva sin base en la pagina real.
+Confirmo que volvio a mirar el PDF y que si hay dimming — es correccion de
+medicion, no una decision nueva.
+**Alternativas consideradas para el mecanismo de "spotlight":** (1) clonar la
+TaskCard seleccionada como un elemento nuevo por encima del backdrop; (2)
+dejar la card original en su lugar y subirle el z-index por encima del
+backdrop via una clase modificadora.
+**Por que se descartaron:** (1) — duplicar el nodo agrega complejidad de
+sincronizacion (2 copias del mismo contenido, riesgo de que se desincronicen)
+para lograr exactamente el mismo resultado visual que (2) sin ese costo.
+**Decision tomada:** (2) — `.screen-tareas-pendientes__grid-backdrop`
+(background: var(--ds-color-black-a70), mismo token que .ds-modal-backdrop,
+sin token nuevo) posicionado dentro de la grilla ya position:relative;
+`pointer-events: none` para que las cards detras sigan siendo clickeables
+(cambiar de seleccion con el panel abierto no es un flujo modal estricto);
+clase `.ds-task--spotlight` (z-index: 6) en la card seleccionada, entre el
+backdrop (5) y el panel (10) — mismo mecanismo de stacking ya usado para
+.ds-task::before vs. el panel.
+**Motivo:** minimo cambio necesario, reusa tokens y el mecanismo de stacking
+ya establecido en este mismo archivo, sin arquitectura nueva.
+**Artefactos modificados:**
+`packages/ui/src/screens/tareas-pendientes/tareas-pendientes.css`,
+`packages/ui/src/screens/tareas-pendientes/TareasPendientes.stories.tsx`,
+`specs/_registry/features.yaml`
+**Decidido por:** Luna

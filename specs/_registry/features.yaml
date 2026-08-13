@@ -345,3 +345,37 @@ features:
       (align-self/height/position) sin tocar padding/overflow/width, que no
       están relacionados con este bug. Sin colisión de equipo — no hay
       features OPEN al momento de este fix.
+
+  - id: fix-007-detail-overlay-dimming
+    type: fix
+    status: CLOSED
+    domain: composed-patterns
+    owner: lvgonzalezprg
+    sprint: null
+    created: 2026-08-13
+    closed: 2026-08-13
+    touches:
+      - packages/ui/src/screens/tareas-pendientes/tareas-pendientes.css
+      - packages/ui/src/screens/tareas-pendientes/TareasPendientes.stories.tsx
+    decisions:
+      - "2026-08-13: Corrección de hallazgo de medición 2026-08-11 (\"el PDF p.7 no muestra dimming\") — Luna re-chequeó y sí lo hay"
+      - "2026-08-13: Backdrop oscurece toda la grilla salvo la TaskCard seleccionada (spotlight vía z-index, mismo patrón que .ds-task::before vs. el panel)"
+    note: >
+      Luna, comparando contra el PDF p.7 ("detalle abierto"), pidió que al
+      seleccionar una TaskCard el resto de la grilla se oscurezca como el
+      backdrop de Modal, salvo la card seleccionada (que queda visible sin
+      oscurecerse). Esto corrige explícitamente el hallazgo documentado el
+      2026-08-11 en el comentario de .screen-tareas-pendientes__detail-overlay
+      ("el PDF no muestra dimming, solo el borde propio de .detail-sheet") —
+      confirmado con Luna antes de implementar que es una corrección de esa
+      medición, no una decisión de diseño nueva sin base en el PDF. Fix:
+      `.screen-tareas-pendientes__grid-backdrop` (mismo `background:
+      var(--ds-color-black-a70)` que `.ds-modal-backdrop`, sin token nuevo),
+      `pointer-events: none` (las cards detrás siguen siendo clickeables — no
+      es un flujo modal estricto), y una clase `.ds-task--spotlight` (z-index:
+      6, entre el backdrop en 5 y el panel en 10) en la card seleccionada para
+      que "atraviese" visualmente el oscurecimiento — mismo mecanismo de
+      stacking ya usado para .ds-task::before vs. el panel. Corregido también
+      el comentario original en tareas-pendientes.css que documentaba el
+      hallazgo ahora superado. Sin colisión de equipo — no hay features OPEN
+      al momento de este fix.

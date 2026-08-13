@@ -225,8 +225,14 @@ function TareasPendientesScreen({
                 startDate={task.startDate}
                 endDate={task.endDate}
                 onClick={() => setSelectedTask(task)}
+                className={
+                  selectedTask?.code === task.code ? "ds-task--spotlight" : undefined
+                }
               />
             ))}
+            {selectedTask ? (
+              <div className="screen-tareas-pendientes__grid-backdrop" aria-hidden="true" />
+            ) : null}
           </div>
 
           {selectedTask ? (

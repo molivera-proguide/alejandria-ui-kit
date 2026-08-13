@@ -112,6 +112,8 @@
      arma con columnas de ese mismo ancho, no con `1fr` (mismo criterio ya establecido en
      screen-dashboard__grid para ModuleCard). */
   grid-template-columns: repeat(4, 170px);
+  /* fix-007 (2026-08-13): ancla .screen-tareas-pendientes__grid-backdrop, ver abajo. */
+  position: relative;
 }
 
 /* La screen agrega el cursor clickeable acá (no en TaskCard.tsx/styles.css): la
@@ -122,14 +124,45 @@
   cursor: pointer;
 }
 
+/* fix-007 (2026-08-13, Luna: re-chequeó el PDF p.7 y corrige el hallazgo de
+   2026-08-11 documentado más abajo — sí hay dimming). Oscurece toda la grilla
+   (incluida la 1ra columna, visible al costado del panel) salvo la TaskCard
+   seleccionada, mismo `background` que `.ds-modal-backdrop` para no inventar un
+   token nuevo. `inset: 0` sobre la grilla ya cubre también el área donde encima
+   se pinta `.detail-sheet` (columnas 2-4) — ahí no se nota porque el panel es
+   opaco y tiene mayor z-index, así que en la práctica solo se ve sobre la 1ra
+   columna. `pointer-events: none`: las cards detrás siguen siendo clickeables
+   (cambiar de selección con el panel abierto no es un flujo modal estricto). */
+.screen-tareas-pendientes__grid-backdrop {
+  background: var(--ds-color-black-a70);
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 5; /* por debajo del panel (10, ver .screen-tareas-pendientes__detail-overlay),
+    por encima de las TaskCard sin seleccionar (position: relative, z-index: auto → bucket
+    "positioned z-index:auto", que pinta antes que cualquier z-index numérico positivo). */
+}
+
+/* La card seleccionada "atraviesa" el backdrop: mismo mecanismo de stacking que ya usa
+   .screen-tareas-pendientes__detail-overlay contra .ds-task::before (ver ese comentario) —
+   un z-index numérico por encima del backdrop (5) alcanza, sin acercarse al panel (10). */
+.screen-tareas-pendientes__grid .ds-task--spotlight {
+  z-index: 6;
+}
+
 /* Panel lateral superpuesto (PDF p.7) — medido 2026-08-11 contra el PDF real
    (Downloads de Luna, "Alejandria - Agosto 2026.pdf" p.7): el panel NO cubre toda la
    grilla — get_drawings() muestra que la 1ra columna de `TaskCard` (x:131.7-471.7 @2×,
    fuera del rect del panel x:509.65-1822.38 @2×) queda visible al costado, columnas
    2-4 quedan cubiertas. `left` (no `right`) reproduce ese mismo corte: padding del
    `__main` (32px) + 1 columna (170px) + gap (16px) = 218px, sin depender del ancho
-   variable del contenedor flex. Sin `box-shadow` — el PDF no muestra dimming, solo el
-   borde propio de `.detail-sheet` (ya existente, no agregado por esta feature). */
+   variable del contenedor flex.
+   **Corrección 2026-08-13 (fix-007, Luna):** el hallazgo original de este comentario
+   ("el PDF no muestra dimming") era incorrecto — re-chequeado contra la misma p.7, sí
+   hay oscurecimiento del fondo salvo la card seleccionada (ver
+   .screen-tareas-pendientes__grid-backdrop arriba). Se mantiene sin box-shadow propio
+   acá: el dimming vive en la grilla, no en el panel — el borde de `.detail-sheet`
+   sigue siendo el único tratamiento visual del panel en sí. */
 .screen-tareas-pendientes__detail-overlay {
   bottom: 0;
   left: 218px;
