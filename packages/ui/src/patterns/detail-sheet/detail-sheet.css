@@ -384,21 +384,46 @@
    de 2 columnas nunca llegaba a renderizarse, ni en "Panel Lateral" ni en "Fichas". Si el
    padding/border de `.detail-sheet` cambia, este número hay que recalcularlo.
 
-   Por debajo del umbral, ambas grillas de dos columnas pasan a una sola columna. Esto le da a
-   `.detail-sheet__metrics` (3 MetricCard de 83px fijos = piso duro de 261px, ver comentario en
-   esa regla más arriba) el ancho completo del panel en vez de la mitad — que es exactamente el
-   escenario que se desbordaba. Nota de alcance: por debajo de ~301px de ancho de contenedor
+   Por debajo del umbral, `.detail-sheet__body` (dos columnas) pasa a una sola columna. Esto le
+   da a `.detail-sheet__metrics` (3 MetricCard de 83px fijos = piso duro de 261px, ver comentario
+   en esa regla más arriba) el ancho completo del panel en vez de la mitad — que es exactamente
+   el escenario que se desbordaba. Nota de alcance: por debajo de ~301px de ancho de contenedor
    (261px del piso + 2×20px de padding) el desborde puede reaparecer incluso apilado; no hay un
    paso más angosto que `narrow` en la escala hoy — ver Rule 11 para el criterio antes de
-   inventar uno. */
+   inventar uno.
+
+   El header NO colapsa a una columna (corregido 2026-08-13, Luna vio en su Storybook que los
+   íconos de Configuración/Cerrar quedaban debajo del título, pegados a la izquierda — no es
+   dónde tienen que estar). Los íconos son un affordance fijo de la ficha: SIEMPRE en la esquina
+   superior derecha, angosto o no. Lo que sí baja es `.detail-sheet__filters` (Territorio/
+   Período), a su propia fila de ancho completo. Truco: `.detail-sheet__header` mantiene sus 2
+   columnas (`minmax(0,1fr) auto`) pero gana una 2da fila via `grid-template-areas`;
+   `.detail-sheet__header-tools` pasa a `display: contents` para que sus dos hijos
+   (`icon-row`, `filters`) se conviertan en ítems directos de esa grilla y puedan ir cada uno a
+   un área distinta — si no, quedan atados a la misma celda que su padre `header-tools`, que es
+   justo el bug que se estaba viendo. */
 @container (max-width: 598.5px) {
   .detail-sheet__header {
-    grid-template-columns: 1fr;
+    grid-template-areas:
+      "main icons"
+      "filters filters";
   }
 
   .detail-sheet__header-tools {
-    align-items: start;
-    justify-items: start;
+    display: contents;
+  }
+
+  .detail-sheet__header-main {
+    grid-area: main;
+  }
+
+  .detail-sheet__icon-row {
+    grid-area: icons;
+    justify-self: end;
+  }
+
+  .detail-sheet__filters {
+    grid-area: filters;
   }
 
   .detail-sheet__body {
