@@ -1582,3 +1582,32 @@ propio contenido (`width: fit-content; min-width: 100
 **Alcance:** este fix vive en `.ds-form-field__control` (styles.css), compartido por toda la familia Form* — beneficia a cualquier consumidor futuro de estos componentes, no solo CargaDeFormulario.
 **Artefactos modificados:** `packages/ui/src/styles.css`, `specs/_registry/features.yaml`
 **Decidido por:** Luna
+
+---
+
+## 2026-08-13 fix-012-background-scroll-rollout: extendido el fix de fondo/scroll de fix-010 al resto de las screens
+
+**feature_id:** fix-012-background-scroll-rollout
+**command_origin:** pedido directo de Luna ("extendé el fix del fondo y scroll a las otras screens")
+**status:** accepted
+**Ejecutado:** mismo mecanismo de fix-010 (screen-carga-formulario), aplicado a TareasPendientes, TareasKanban, TareasFinalizadas, Home y Dashboard. `width: fit-content; min-width: 100%` en el root de cada screen (el mismo elemento que pinta el gradiente) — así crece junto con su contenido cuando desborda, en vez de dejar el área revelada por el scroll sin fondo. Login queda excluido (decisión ya registrada en fix-004: `.login-screen` no tiene background propio).
+**Fix adicional solo en Home:** `.screen-home__layout` y `.screen-home__sections` usaban `minmax(0, 1fr)` — mismo riesgo de solape que tenía CargaDeFormulario (fix-011), ya que sí tienen columnas flexibles con contenido de ancho fijo (CalendarCard, MetricCard, ChartCard) adentro. Cambiado a `minmax(min-content, 1fr)`. Las 3 screens de Tareas y Dashboard usan grillas de ancho fijo (no `1fr`), así que no tenían ese riesgo — solo necesitaban el fix de fondo.
+**Verificado en vivo:** las 5 screens, en un ancho que fuerza overflow (750-850px según la screen): el elemento que pinta el fondo crece exactamente hasta `bodyScrollWidth`, con el gradiente intacto — sin hueco al aparecer el scroll horizontal.
+**Hallazgo menor, no resuelto (fuera de alcance de este fix):** en Home a 850px aparece un solape de ~5.6px dentro de una ChartCard/DonutChartCard (dentro de `.screen-home__sections`) — mucho más chico que el bug original, probablemente un min-content no del todo preciso dentro del propio componente ChartCard, no de la grilla de la screen. Queda para revisar aparte si se prioriza.
+**Artefactos modificados:** `packages/ui/src/screens/tareas-pendientes/tareas-pendientes.css`, `packages/ui/src/screens/tareas-kanban/tareas-kanban.css`, `packages/ui/src/screens/tareas-finalizadas/tareas-finalizadas.css`, `packages/ui/src/screens/home/home.css`, `packages/ui/src/screens/dashboard/dashboard.css`, `specs/_registry/features.yaml`
+**Decidido por:** Luna
+
+---
+
+## 2026-08-13 fix-013-sidebar-horizontal-scroll: revertido left:0 de fix-010 — la sidebar se mezclaba con el contenido al scrollear
+
+**feature_id:** fix-013-sidebar-horizontal-scroll
+**command_origin:** reporte directo de Luna, con capturas de TareasPendientes y Home mostrando la sidebar mezclada con contenido scrolleado
+**status:** accepted
+**Gap o motivo:** fix-010 le agregó `left: 0` a `.ds-sidebar` (además del `top: 0` ya existente de fix-006) para que se mantuviera fija también en scroll horizontal. Luna reportó que eso hace que, al scrollear a la derecha, el contenido que pasa por detrás/encima de la sidebar se mezcle visualmente con ella (texto ilegible, superpuesto) — pidió que la sidebar se desplace normalmente hasta dejar de verse, o si se queda fija, que quede claramente delante de todo (sin mezcla).
+**Alternativas consideradas:** (1) mantener `left: 0` y en cambio subir el z-index / reforzar el fondo opaco de la sidebar para que "gane" siempre contra cualquier contenido detrás; (2) revertir `left: 0`, volviendo al comportamiento normal (la sidebar se desplaza con el resto de la fila en el eje horizontal, como cualquier elemento no fijado).
+**Por qué se descartó (1):** ya tiene fondo opaco (`--ds-color-pdf-shell`) y participa correctamente en el stacking (`position: sticky` cuenta como posicionado) — el problema no es un z-index puntual sino la superposición conceptual entre "sidebar siempre fija" y "contenido que scrollea libremente por su columna", que en la práctica se ve como una mezcla confusa sin importar cuánto se refuerce el z-index. Diagnosticar y garantizar "siempre gana" en todos los casos agrega riesgo sin necesidad, cuando Luna misma ofreció la alternativa más simple como preferida.
+**Decisión tomada:** (2) — revertido `left: 0` de `.ds-sidebar`. El `top: 0` (fix-006, ancla vertical) no se tocó. Verificado en vivo: al scrollear al máximo horizontal, la sidebar se desplaza de `left:0` a `left:-95px` junto con el resto de la fila, quedando fuera de vista — sin mezcla con el contenido.
+**Motivo:** cambio mínimo (revertir 1 declaración agregada hace poco) que resuelve el problema reportado exactamente como Luna lo pidió, sin inventar un mecanismo de z-index nuevo para un problema que es conceptual, no de capas.
+**Artefactos modificados:** `packages/ui/src/styles.css`, `specs/_registry/features.yaml`
+**Decidido por:** Luna

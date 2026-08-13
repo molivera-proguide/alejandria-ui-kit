@@ -4,8 +4,16 @@
   background: linear-gradient(180deg, var(--ds-color-pdf-surface) 0%, var(--ds-color-pdf-surface-warm) 100%);
   display: flex;
   min-height: 100vh;
+  /* fix-012 (2026-08-13) — mismo fix de fondo que fix-010 en screen-carga-formulario
+     (ver DECISIONS.md): sin esto, si el contenido es más ancho que el viewport, el
+     desborde queda detrás de este elemento en vez de que el gradiente lo cubra.
+     width: fit-content deja que este mismo elemento (el que pinta el fondo) crezca
+     junto con su contenido; min-width: 100% evita que se achique por debajo del
+     viewport cuando el contenido entra normalmente. */
+  min-width: 100%;
   position: relative; /* recorta el overlay absoluto de BackgroundTextureDots
      (002-bg-texture), mismo patrón que screen-carga-formulario */
+  width: fit-content;
 }
 
 .screen-home__main {
@@ -18,7 +26,12 @@
 .screen-home__layout {
   display: grid;
   gap: 32px;
-  grid-template-columns: minmax(0, 1fr) 260px;
+  /* fix-012 (2026-08-13): minmax(0, 1fr) → minmax(min-content, 1fr) — mismo fix que
+     .screen-carga-formulario__grid (fix-010, ver DECISIONS.md): con minmax(0, 1fr) la
+     columna izquierda podía achicarse sin límite, superponiendo contenido de ancho
+     fijo (CalendarCard, MetricCard) sobre la columna derecha (260px fijo) en vez de
+     pedir más espacio o activar scroll horizontal. */
+  grid-template-columns: minmax(min-content, 1fr) 260px;
   width: 100%;
 }
 
@@ -44,7 +57,9 @@
 .screen-home__sections {
   display: grid;
   gap: var(--ds-space-6);
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* fix-012 (2026-08-13): minmax(0, 1fr) → minmax(min-content, 1fr), mismo motivo que
+     .screen-home__layout arriba. */
+  grid-template-columns: repeat(2, minmax(min-content, 1fr));
 }
 
 .screen-home__events-grid {

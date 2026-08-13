@@ -519,3 +519,63 @@ features:
       composición de la screen — beneficia a cualquier consumidor futuro de
       esta familia. Sin colisión de equipo — no hay features OPEN al momento
       de este fix.
+
+  - id: fix-012-background-scroll-rollout
+    type: fix
+    status: CLOSED
+    domain: composed-patterns
+    owner: lvgonzalezprg
+    sprint: null
+    created: 2026-08-13
+    closed: 2026-08-13
+    touches:
+      - packages/ui/src/screens/tareas-pendientes/tareas-pendientes.css
+      - packages/ui/src/screens/tareas-kanban/tareas-kanban.css
+      - packages/ui/src/screens/tareas-finalizadas/tareas-finalizadas.css
+      - packages/ui/src/screens/home/home.css
+      - packages/ui/src/screens/dashboard/dashboard.css
+    decisions:
+      - "2026-08-13: fix-010 (fondo width:fit-content) extendido a TareasPendientes/Kanban/Finalizadas/Home/Dashboard — Login queda fuera (fix-004, sin background propio)"
+      - "2026-08-13: fix-011 (minmax(min-content,1fr) contra solape) aplicado solo en Home (.__layout/.__sections) — las 3 Tareas* y Dashboard usan grillas de ancho fijo, sin ese riesgo"
+    note: >
+      Pedido directo de Luna: extender el fix de fondo/scroll horizontal
+      (fix-010) al resto de las screens con `background`. Rollout mecánico de
+      `width: fit-content; min-width: 100%` en el root de cada screen — mismo
+      elemento que pinta el gradiente, crece con su contenido en vez de dejar
+      el área de scroll sin fondo. Home además necesitó el fix de
+      `minmax(min-content, 1fr)` (como fix-011 en CargaDeFormulario) porque
+      sus 2 grids (`__layout`, `__sections`) sí tienen columnas `1fr` con
+      contenido de ancho fijo adentro (CalendarCard/MetricCard/ChartCard) —
+      mismo riesgo de solape. Las 3 screens de Tareas y Dashboard usan grillas
+      de ancho fijo (no `1fr`), así que no lo necesitaban. Verificado en vivo
+      en las 5 screens a un ancho que fuerza overflow real (750-850px según
+      la screen): el fondo siempre crece exactamente hasta cubrir lo
+      scrolleable. Hallazgo menor sin resolver: en Home aparece un solape de
+      ~5.6px dentro de una ChartCard a 850px — mucho más chico, probablemente
+      un min-content impreciso dentro del propio componente ChartCard, no de
+      la grilla de la screen; queda para revisar aparte. Sin colisión de
+      equipo — no hay otras features OPEN al momento de este fix.
+
+  - id: fix-013-sidebar-horizontal-scroll
+    type: fix
+    status: CLOSED
+    domain: component-catalog
+    owner: lvgonzalezprg
+    sprint: null
+    created: 2026-08-13
+    closed: 2026-08-13
+    touches:
+      - packages/ui/src/styles.css
+    decisions:
+      - "2026-08-13: left:0 agregado en fix-010 hacía que el contenido scrolleado se mezclara visualmente con la sidebar fija — revertido, vuelve a desplazarse con el resto de la fila"
+    note: >
+      Luna reportó (con capturas de TareasPendientes y Home) que al scrollear
+      horizontalmente la sidebar se mantiene fija y el contenido que scrollea
+      por detrás/encima se mezcla visualmente con ella (texto ilegible,
+      superpuesto). Causa: `left: 0` agregado en fix-010 para fijarla también
+      en el eje horizontal. Revertido — la sidebar vuelve a desplazarse
+      normalmente junto con el resto de la fila en el eje horizontal (el
+      `top: 0` de fix-006, anclaje vertical, no se tocó). Verificado en vivo:
+      al scrollear al máximo horizontal, la sidebar pasa de `left:0` a
+      `left:-95px`, quedando fuera de vista sin mezclarse con nada. Sin
+      colisión de equipo — no hay otras features OPEN al momento de este fix.

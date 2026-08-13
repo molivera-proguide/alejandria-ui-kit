@@ -1873,10 +1873,14 @@
     overflow: hidden;
     padding: 10px 0; /* calibrated ÷2 — PDF 20px; horizontal inset moved onto each row (item/menu-heading)
       so the selected-item accent line and hover highlight can span flush to the sidebar's own edge */
-    left: 0; /* fix-010 (2026-08-13): además de top, ancla también al borde izquierdo del
-      viewport cuando la screen entra en scroll horizontal (ver carga-de-formulario.css)
-      — sin esto la sidebar se desplazaría junto con el resto de la fila al scrollear a
-      la derecha, dejando de estar visible. */
+    /* fix-013 (2026-08-13, Luna: al scrollear horizontalmente la sidebar seguía
+       visible y se mezclaba con el contenido que scrollea por detrás/encima de ella)
+       — fix-010 le había agregado `left: 0` para que se mantenga fija también en el
+       eje horizontal; eso es justo lo que causaba la mezcla visual (contenido
+       scrolleado quedando pintado sobre/bajo la sidebar de forma inconsistente).
+       Revertido: la sidebar vuelve a comportarse como un elemento normal en el eje
+       horizontal — se desplaza junto con el resto de la fila y deja de verse al
+       scrollear a la derecha, en vez de quedar fija sobre el contenido. */
     position: sticky; /* también resuelve el fix de stacking de 006-sidebar-ancho-toggle
       (BackgroundTextureDots, position: absolute, pinta detrás de elementos posicionados
       — sticky cuenta como posicionado igual que relative) sin perder el anclaje al

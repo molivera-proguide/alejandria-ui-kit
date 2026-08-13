@@ -4,8 +4,16 @@
   background: linear-gradient(180deg, var(--ds-color-pdf-surface) 0%, var(--ds-color-pdf-surface-warm) 100%);
   display: flex;
   min-height: 100vh;
+  /* fix-012 (2026-08-13) — mismo fix de fondo que fix-010 en screen-carga-formulario
+     (ver DECISIONS.md): sin esto, si el contenido (3 columnas de 260px fijo) es más
+     ancho que el viewport, el desborde queda detrás de este elemento en vez de que
+     el gradiente lo cubra. width: fit-content deja que este mismo elemento (el que
+     pinta el fondo) crezca junto con su contenido; min-width: 100% evita que se
+     achique por debajo del viewport cuando el contenido entra normalmente. */
+  min-width: 100%;
   position: relative; /* recorta el overlay absoluto de BackgroundTextureDots
      (002-bg-texture), mismo patrón que screen-home/screen-dashboard */
+  width: fit-content;
 }
 
 /* Envuelve topbar + main (retrofit 005-alert-toast-filter), mismo criterio que
