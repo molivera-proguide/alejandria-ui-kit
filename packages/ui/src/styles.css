@@ -798,6 +798,19 @@
     gap: 10px /* calibrated ÷2 */;
     height: 194px /* calibrated ÷2 — PDF vector path (388.6pt @2× square card), was min-height 130px (invented, never measured — same fit-content-adjacent bug as .ds-task/.ds-investigation-card: a min-height/min-width floor with no matching fixed size let cards vary with content, "distintos tamaños" per longer/shorter titles) */;
     padding: 25px 10px /* calibrated ÷2 */ 12.5px 10px /* calibrated ÷2 */;
+    /* fix-005 (2026-08-13, Luna: "la animación del fondo se ve por encima de las
+       ModuleCard" en screens/dashboard/): sin position propio, .ds-module-card
+       quedaba `static`, y BackgroundTextureDots (position: absolute) se pinta
+       siempre por encima de contenido static sin importar el orden real en el
+       DOM (la textura es el primer hijo del screen, las cards vienen después).
+       Mismo bug de fondo ya documentado y resuelto para .ds-task (ver su
+       comentario más abajo) — a .ds-module-card nunca se le había aplicado. Con
+       position: relative, la card entra en la misma capa de "positioned,
+       z-index: auto" que la textura y gana por orden de DOM (viene después).
+       No hace falta isolation: isolate acá — a diferencia de .ds-task, esta card
+       no tiene ningún hijo/pseudo-elemento con z-index propio que necesite
+       contenerse. */
+    position: relative;
     text-align: center;
     transition: transform var(--ds-duration-md) var(--ds-ease-standard), box-shadow var(--ds-duration-md) var(--ds-ease-standard), border-color var(--ds-duration-md) var(--ds-ease-standard);
     width: 194px /* calibrated ÷2 — PDF vector path (388.6pt @2×), was min-width 130px */;
@@ -1833,31 +1846,38 @@
   }
 
   .ds-sidebar {
+    /* fix-006 (2026-08-13, Luna: "la sidebar se extiende al tamaño del contenido, hay
+       que scrollear para ver los botones de abajo") — sin esto, align-items:stretch
+       (default del row en screens/*) fuerza a .ds-sidebar a igualar la altura de su
+       hermano de contenido; si ese contenido es más alto que el viewport (grillas
+       largas de TaskCard), la sidebar entera se estira con él y sus ítems del final
+       (Notificaciones/Mi cuenta/Configuración) quedan debajo del fold. align-self:
+       flex-start saca a esta card del stretch del row — su altura la fija `height`
+       abajo, no su hermano. */
+    align-self: flex-start;
     background: var(--ds-color-pdf-shell);
     box-sizing: border-box;
     box-shadow: 4px 0 16px var(--ds-color-black-a24); /* PDF "Sombra derecha" — no blur/spread measurement given, provisional */
     color: var(--ds-color-pdf-ink-muted);
     display: flex;
     flex-direction: column;
-    height: auto; /* 006-sidebar-ancho-toggle regression fix: was height:100%, which only
-      resolves against a parent with a *definite* height. Every real consumer (the 6
-      screens + this component's own Storybook decorator) is a flex row — with
-      height:auto the default align-items:stretch fills the parent's actual cross size
-      regardless of whether that size came from `height` or `min-height` (all 6 screens
-      use `min-height: 100vh`, which never gave height:100% anything definite to resolve
-      against once .ds-sidebar-shell — a flex item with height:auto, always stretched —
-      stopped being the direct flex child). min-height:100% below covers the one non-flex
-      case (a plain block parent with a definite height) that align-items:stretch can't. */
-    min-height: 100%;
+    /* fix-006: reemplaza el height:auto + min-height:100% de 006-sidebar-ancho-toggle
+       (que dependía de align-items:stretch para llenar la altura del row — ver
+       Changelog 0.2.0 en knowledge/components/SideBar.md). Ese mecanismo es
+       justamente la causa del bug: la sidebar quedaba tan alta como
+       screens/*__content, nunca capada al viewport. height: 100vh + position: sticky
+       (abajo) la ancla siempre entera en el viewport sin importar cuánto mida su
+       hermano — el scroll de contenido largo pasa por screens/*__content, no por
+       la sidebar. */
+    height: 100vh;
     overflow: hidden;
     padding: 10px 0; /* calibrated ÷2 — PDF 20px; horizontal inset moved onto each row (item/menu-heading)
       so the selected-item accent line and hover highlight can span flush to the sidebar's own edge */
-    position: relative; /* 006-sidebar-ancho-toggle regression fix: restores the stacking
-      behavior .ds-sidebar-shell used to provide. Positioned elements always paint above
-      unpositioned ones regardless of DOM order — BackgroundTextureDots (position: absolute)
-      relies on exactly that to paint *behind* whatever comes after it. Without this,
-      .ds-sidebar (now unpositioned) fell into the "paints before positioned siblings"
-      bucket and the animated dots showed through on top of it. */
+    position: sticky; /* también resuelve el fix de stacking de 006-sidebar-ancho-toggle
+      (BackgroundTextureDots, position: absolute, pinta detrás de elementos posicionados
+      — sticky cuenta como posicionado igual que relative) sin perder el anclaje al
+      viewport que pide este fix. */
+    top: 0;
     transition: width var(--ds-duration-md) var(--ds-ease-standard);
     width: var(--ds-size-sidebar-expanded-w); /* measured — see token comment */
   }

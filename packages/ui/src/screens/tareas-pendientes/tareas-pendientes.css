@@ -1,5 +1,10 @@
 .screen-tareas-pendientes {
-  background-color: var(--ds-color-pdf-surface);
+  /* fix-003/fix-004 (2026-08-13) — gradiente negro→gris contra el PDF (lineal
+     vertical: negro arriba → gris abajo), aprobado por Luna en Storybook y
+     replicado en el resto de las screens con el mismo fondo plano (ver
+     DECISIONS.md). Reusa los 2 tokens de superficie ya existentes, sin token
+     nuevo. */
+  background: linear-gradient(180deg, var(--ds-color-pdf-surface) 0%, var(--ds-color-pdf-surface-warm) 100%);
   display: flex;
   min-height: 100vh;
   position: relative; /* recorta el overlay absoluto de BackgroundTextureDots

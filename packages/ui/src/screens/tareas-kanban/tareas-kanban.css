@@ -1,5 +1,7 @@
 .screen-tareas-kanban {
-  background-color: var(--ds-color-pdf-surface);
+  /* fix-004 (2026-08-13) — gradiente negro→gris, mismo tratamiento aprobado en
+     screen-tareas-pendientes (ver DECISIONS.md), reusa los 2 tokens existentes. */
+  background: linear-gradient(180deg, var(--ds-color-pdf-surface) 0%, var(--ds-color-pdf-surface-warm) 100%);
   display: flex;
   min-height: 100vh;
   position: relative; /* recorta el overlay absoluto de BackgroundTextureDots

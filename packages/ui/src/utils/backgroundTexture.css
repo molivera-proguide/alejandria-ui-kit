@@ -19,6 +19,12 @@
   animation-iteration-count: infinite;
   animation-name: ds-bg-texture-breathe;
   animation-timing-function: ease-in-out;
+  /* fix-003 2026-08-13: puntos reportados "muy chicos" — escala 1.8× alrededor del
+     propio centro de cada punto (fill-box), sin mover su posición en la grilla ni
+     tocar los d/cx/cy/rx/ry medidos del SVG fuente. */
+  transform: scale(1.8);
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 @keyframes ds-bg-texture-breathe {

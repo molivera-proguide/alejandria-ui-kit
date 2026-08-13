@@ -229,3 +229,119 @@ features:
       "Alejandria - Agosto 2026.pdf" p.5 (get_drawings() — el ícono real queda
       superpuesto sobre la barra, no al costado). Mismo owner que ambas features
       OPEN, no colisión de equipo. Verificado en las 3 screens en vivo.
+
+  - id: fix-003-bg-texture-visibility
+    type: fix
+    status: CLOSED
+    domain: design-tokens
+    owner: lvgonzalezprg
+    sprint: null
+    created: 2026-08-13
+    closed: 2026-08-13
+    touches:
+      - packages/ui/src/utils/backgroundTexture.tsx
+      - packages/ui/src/utils/backgroundTexture.css
+      - packages/ui/src/screens/tareas-pendientes/tareas-pendientes.css
+    decisions:
+      - "2026-08-13: Gradiente negro→gris agregado al fondo de Tareas Pendientes (lineal vertical, tokens ya existentes)"
+      - "2026-08-13: Puntos de BackgroundTextureDots agrandados 1.8× y BASE_DUR 6.0→2.2 (muy chicos/lentos para percibir movimiento)"
+    note: >
+      Encontrado por Luna en vivo (no en /sdd-checklist): con el fondo plano
+      --ds-color-pdf-surface, la textura animada de 002-bg-texture (ya CLOSED) era
+      casi imperceptible. Dos ajustes en la misma sesión: (1) gradiente en el root
+      de screen-tareas-pendientes solo, como prueba antes de decidir si se expande
+      a Kanban/Finalizadas/Home/Dashboard/Login/CargaDeFormulario; (2) tamaño y
+      velocidad de los puntos, vía la fórmula ya documentada en backgroundTexture.tsx
+      (no requiere re-leer Textura fondo.svg). Sin colisión de equipo — no hay
+      features OPEN al momento de este fix.
+
+  - id: fix-004-bg-gradient-rollout
+    type: fix
+    status: CLOSED
+    domain: composed-patterns
+    owner: lvgonzalezprg
+    sprint: null
+    created: 2026-08-13
+    closed: 2026-08-13
+    touches:
+      - packages/ui/src/screens/home/home.css
+      - packages/ui/src/screens/dashboard/dashboard.css
+      - packages/ui/src/screens/tareas-kanban/tareas-kanban.css
+      - packages/ui/src/screens/tareas-finalizadas/tareas-finalizadas.css
+      - packages/ui/src/screens/carga-de-formulario/carga-de-formulario.css
+    decisions:
+      - "2026-08-13: Excede el límite de 3 archivos de /sdd-fix (5 tocados) — override explícito de Luna, ver DECISIONS.md"
+      - "2026-08-13: Login (patterns/login/) excluido del rollout — estructura distinta (sin canvas de screen, background: var(--ds-color-pdf-surface) vive en .login-card, no en .login-screen)"
+    note: >
+      Luna aprobó el gradiente probado en fix-003 sobre screen-tareas-pendientes
+      y pidió aplicarlo "a las otras screens también". Rollout mecánico de la
+      misma declaración ya decidida (mismo linear-gradient, mismos 2 tokens) a
+      las 5 screens restantes que comparten el mismo fondo plano
+      (background-color: var(--ds-color-pdf-surface) en su root). Sin decisión
+      de diseño nueva — por eso se registra como fix aunque toque 5 archivos,
+      no como feature nueva vía /sdd-refine. patterns/login/login.css quedó
+      fuera: su `.login-screen` no tiene background propio (las cards
+      `.login-card` sí, pero son superficies de componente, no el canvas de
+      screen) — a confirmar con Luna si también se quiere ahí antes de tocarlo.
+      Sin colisión de equipo — no hay features OPEN al momento de este fix.
+
+  - id: fix-005-modulecard-stacking
+    type: fix
+    status: CLOSED
+    domain: component-catalog
+    owner: lvgonzalezprg
+    sprint: null
+    created: 2026-08-13
+    closed: 2026-08-13
+    touches:
+      - packages/ui/src/styles.css
+    decisions:
+      - "2026-08-13: ModuleCard sin position propio → BackgroundTextureDots (absolute) se pintaba por encima en Dashboard, no por debajo"
+    note: >
+      Luna reportó en Dashboard (fix-004, verificación del rollout del
+      gradiente) que la textura animada se ve por encima de las ModuleCard, no
+      detrás. Causa raíz: `.ds-module-card` no fijaba `position` (quedaba
+      `static`), y un `position: absolute` con z-index auto se pinta siempre
+      por encima de contenido `static` sin importar el orden real en el DOM —
+      mismo bug de fondo ya documentado y resuelto para `.ds-task` (ver su
+      comentario en styles.css), nunca aplicado a ModuleCard porque hasta ahora
+      ningún screen combinaba ModuleCard con BackgroundTextureDots. Fix: agregar
+      `position: relative` a `.ds-module-card` (sin `isolation: isolate` — no
+      tiene hijos/pseudo-elementos con z-index propio que necesiten
+      contenerse, a diferencia de .ds-task). Sin colisión de equipo — no hay
+      features OPEN al momento de este fix.
+
+  - id: fix-006-sidebar-viewport-height
+    type: fix
+    status: CLOSED
+    domain: component-catalog
+    owner: lvgonzalezprg
+    sprint: null
+    created: 2026-08-13
+    closed: 2026-08-13
+    touches:
+      - packages/ui/src/styles.css
+    decisions:
+      - "2026-08-13: SideBar se estiraba a la altura de su hermano de contenido (align-items:stretch) en vez de quedar capada al viewport"
+    note: >
+      Luna reportó que la SideBar se extiende al tamaño del contenido (grillas
+      largas de TaskCard), obligando a scrollear la página entera para ver los
+      ítems del final (Notificaciones/Mi cuenta/Configuración). Causa raíz:
+      `.ds-sidebar` usaba `height: auto` + `min-height: 100%`, dependiendo de
+      `align-items: stretch` (default del row en screens/*) para llenar la
+      altura del row — exactamente lo que hacía que se estirara junto con su
+      hermano de contenido en vez de quedar fija al viewport. Ese mecanismo
+      venía de 006-sidebar-ancho-toggle (ver Changelog 0.2.0 en
+      knowledge/components/SideBar.md) — no se revierte esa feature, se
+      reemplaza su mecanismo por uno que sí cumple el objetivo real ("sidebar
+      siempre entera en el viewport, el scroll lo maneja el contenido"). Fix:
+      `align-self: flex-start` (sale del stretch del row) + `height: 100vh` +
+      `position: sticky; top: 0` (mismo rol de "positioned" que ya cumplía
+      `position: relative` para el fix de stacking con BackgroundTextureDots de
+      esa misma feature — no se pierde). Tocado con cuidado: esta zona exacta
+      de `.ds-sidebar` ya acumula 3 regresiones documentadas en
+      006-sidebar-ancho-toggle (padding de labels, height/min-height, stacking
+      del fondo animado) — el cambio se acota a las 3 propiedades
+      (align-self/height/position) sin tocar padding/overflow/width, que no
+      están relacionados con este bug. Sin colisión de equipo — no hay
+      features OPEN al momento de este fix.

@@ -1068,3 +1068,169 @@ verificado.
 **Artefactos modificados:** `specs/006-sidebar-ancho-toggle/checklist.md`,
 `knowledge/component-roadmap.md`
 **Decidido por:** Luna
+
+---
+
+## 2026-08-13 fix-003-bg-texture-visibility: Fondo con textura animada casi imperceptible
+
+**feature_id:** fix-003-bg-texture-visibility
+**command_origin:** sdd-fix
+**status:** accepted
+**Gap o motivo:** Luna, viendo Tareas Pendientes en Storybook, reportó que la
+textura animada de fondo (`BackgroundTextureDots`, 002-bg-texture, ya CLOSED) es
+dificil de ver sobre `--ds-color-pdf-surface` plano, y que en el PDF de referencia
+el fondo tiene un gradiente negro-a-gris. Se probó primero el gradiente solo (sin
+tocar la animacion) para aislar la variable — confirmado como mejora, pero
+insuficiente: los puntos siguen "muy chicos y muy lentos" para percibir
+movimiento.
+**Alternativas consideradas:** (1) tocar solo el color/opacidad del grupo
+(`.ds-bg-texture-dots__group`, hoy `.05`); (2) reescribir la geometria de los 32
+puntos con radios mas grandes; (3) escalar cada punto 1.8x alrededor de su propio
+centro via `transform: scale()` + `transform-box: fill-box` y recalcular
+duracion/delay con la formula ya documentada (BASE_DUR 6.0 -> 2.2).
+**Por que se descartaron:** (1) no resuelve el problema de tamano reportado, solo
+intensidad; (2) reescribir cada `d`/`cx`/`cy`/`rx`/`ry` a mano pierde la trazabilidad
+contra `Textura fondo.svg` (32 puntos medidos) sin necesidad, cuando un transform
+CSS logra el mismo resultado visual sin tocar la fuente de verdad geometrica.
+**Decision tomada:** (3) — grafico igual a las 2 alternativas pero puramente
+aditivo/reversible: transform de escala en CSS (no en el SVG fuente) + BASE_DUR
+nuevo aplicado con la formula ya documentada en `backgroundTexture.tsx` para los
+32 elementos. Ademas, gradiente lineal vertical (negro arriba -> gris abajo, con
+los 2 tokens `--ds-color-pdf-surface`/`--ds-color-pdf-surface-warm` ya existentes)
+solo en `screen-tareas-pendientes` por ahora — expansion a las demas screens
+queda pendiente de aprobacion visual de Luna en Storybook.
+**Motivo:** mantener el helper compartido regenerable segun su propia
+documentacion (formula BASE_DUR), sin introducir un color/token nuevo para el
+gradiente, y sin expandir el cambio a mas screens hasta confirmar en vivo.
+**Artefactos modificados:** `packages/ui/src/utils/backgroundTexture.tsx`,
+`packages/ui/src/utils/backgroundTexture.css`,
+`packages/ui/src/screens/tareas-pendientes/tareas-pendientes.css`,
+`specs/_registry/features.yaml`
+**Decidido por:** Luna
+
+---
+
+## 2026-08-13 fix-004-bg-gradient-rollout: Rollout del gradiente a 5 screens, excede el limite de archivos de /sdd-fix
+
+**feature_id:** fix-004-bg-gradient-rollout
+**command_origin:** sdd-fix
+**status:** accepted
+**Gap o motivo:** Luna aprobo el gradiente negro-a-gris probado en
+fix-003 sobre `screen-tareas-pendientes` y pidio aplicarlo "a las otras screens
+tambien". Eso implica tocar `home.css`, `dashboard.css`, `tareas-kanban.css`,
+`tareas-finalizadas.css` y `carga-de-formulario.css` — 5 archivos, por encima del
+limite de "<=3 archivos de produccion" que define la elegibilidad de /sdd-fix.
+**Alternativas consideradas:** (1) parar y escalar a /sdd-refine por exceder el
+limite; (2) partir el rollout en 2 fixes separados de <=3 archivos cada uno para
+cumplir la letra de la regla; (3) proceder como un solo fix, documentando el
+override explicito.
+**Por que se descartaron:** (1) — es un ciclo completo (refine -> generate ->
+validate -> implement -> review) para replicar una sola declaracion CSS ya
+decidida y aprobada, sin ninguna decision de diseno nueva; puro overhead. (2) —
+dividir artificialmente el mismo cambio mecanico en 2 registros no agrega
+trazabilidad real, solo ruido en el registro.
+**Decision tomada:** (3) — un solo fix, con el override anotado explicitamente en
+`decisions` y en esta entrada. Ademas, `patterns/login/login.css` quedo
+excluido del rollout: su `.login-screen` no tiene background propio (a
+diferencia de las otras 6 screens, que sí lo tienen en su root) — el token
+`--ds-color-pdf-surface` ahi vive en `.login-card` (superficie de componente,
+206.5px de alto), no en el canvas de pantalla completa. Aplicar el mismo
+gradiente lineal vertical ahi cambiaria la escala/lectura visual del efecto sin
+que Luna lo haya visto — queda pendiente de decision aparte.
+**Motivo:** el pedido explicito de Luna ("aplica el gradiente a las otras
+screens tambien") es la confirmacion humana que exige el gate cuando se excede
+un limite de proceso — no hace falta un ciclo completo para un cambio sin
+riesgo arquitectonico ni ambiguedad de diseno.
+**Artefactos modificados:** `packages/ui/src/screens/home/home.css`,
+`packages/ui/src/screens/dashboard/dashboard.css`,
+`packages/ui/src/screens/tareas-kanban/tareas-kanban.css`,
+`packages/ui/src/screens/tareas-finalizadas/tareas-finalizadas.css`,
+`packages/ui/src/screens/carga-de-formulario/carga-de-formulario.css`,
+`specs/_registry/features.yaml`
+**Decidido por:** Luna
+
+---
+
+## 2026-08-13 fix-005-modulecard-stacking: Textura animada pintaba por encima de ModuleCard en Dashboard
+
+**feature_id:** fix-005-modulecard-stacking
+**command_origin:** sdd-fix
+**status:** accepted
+**Gap o motivo:** Luna, verificando el rollout del gradiente (fix-004) sobre
+Dashboard, reporto que la textura animada de fondo se ve por encima de las
+ModuleCard en vez de detras.
+**Causa raiz:** `.ds-module-card` no fijaba `position` (quedaba en `static` por
+defecto). `BackgroundTextureDots` es `position: absolute` con z-index `auto` —
+segun el algoritmo de stacking de CSS, un elemento posicionado con z-index auto
+se pinta SIEMPRE por encima de contenido static, sin importar el orden real en
+el arbol del DOM (la textura es el primer hijo del screen, las cards vienen
+despues, pero eso no importa si las cards son static). Es el mismo bug de fondo
+ya encontrado y documentado para `.ds-task` (ver su comentario en styles.css,
+fix originado durante 004-familia-tareas/005-alert-toast-filter) — nunca se
+habia notado en ModuleCard porque, hasta el rollout del gradiente de esta
+sesion, ningun screen combinaba ModuleCard con BackgroundTextureDots a la vez.
+**Alternativas consideradas:** (1) z-index negativo directo en
+`BackgroundTextureDots` (fix sistemico, unico lugar, pero requeriria ademas
+`isolation`/`z-index:0` en cada screen root para contener el efecto, tocando 7-8
+archivos); (2) `position: relative` solo en `.ds-module-card` (fix local,
+mismo patron que `.ds-task`, 1 archivo).
+**Por que se descartaron:** (1) — mas archivos tocados para un problema que hoy
+solo se reprodujo en un componente; ademas se aparta del patron ya establecido
+en el codebase (fix reactivo por componente cuando aparece, no un mecanismo
+global nuevo sin decision de diseno explicita).
+**Decision tomada:** (2) — `position: relative` en `.ds-module-card`, sin
+`isolation: isolate` (a diferencia de `.ds-task`, esta card no tiene ningun
+hijo/pseudo-elemento con z-index propio que necesite contenerse).
+**Motivo:** consistencia con el fix ya documentado de `.ds-task` — mismo
+diagnostico, misma solucion minima, mismo componente-por-componente en vez de
+un mecanismo nuevo no decidido.
+**Artefactos modificados:** `packages/ui/src/styles.css`,
+`specs/_registry/features.yaml`
+**Decidido por:** Luna
+
+---
+
+## 2026-08-13 fix-006-sidebar-viewport-height: SideBar se estira con el contenido en vez de quedar capada al viewport
+
+**feature_id:** fix-006-sidebar-viewport-height
+**command_origin:** sdd-fix
+**status:** accepted
+**Gap o motivo:** Luna reporto que la SideBar se extiende al tamano del
+contenido (grillas largas de TaskCard en Tareas Pendientes), obligando a
+scrollear la pagina entera para ver los items del final (Notificaciones/Mi
+cuenta/Configuracion). Pidio que la SideBar se muestre siempre entera en el
+viewport y que el scroll aplique al contenido de la pantalla, no a la sidebar.
+**Causa raiz:** `.ds-sidebar` usaba `height: auto` + `min-height: 100%`,
+mecanismo que depende de `align-items: stretch` (default del row flex en
+screens/*) para llenar la altura real del row — ese mismo mecanismo hace que
+la sidebar se estire junto con su hermano de contenido cuando ese contenido es
+mas alto que el viewport, en vez de quedar fija a 100vh. Este mecanismo venia
+de 006-sidebar-ancho-toggle (Changelog 0.2.0, knowledge/components/SideBar.md)
+y resolvia un problema distinto (la sidebar se achicaba a ~408px sin el, tras
+sacar `.ds-sidebar-shell`) — no es que 006 estuviera mal, es que el mismo
+mecanismo tiene este efecto colateral que nadie habia notado hasta una grilla
+lo bastante alta.
+**Alternativas consideradas:** (1) cambiar la arquitectura de layout completa
+(cada screens/*.css a `height: 100vh; overflow: hidden` en el root +
+`overflow-y: auto` en su wrapper de contenido) — patron "app shell" clasico;
+(2) `align-self: flex-start` + `height: 100vh` + `position: sticky` solo en
+`.ds-sidebar`, sin tocar ningun screen.
+**Por que se descartaron:** (1) — toca 7-8 archivos (styles.css de cada
+screen) para un cambio estructural de layout en cada consumidor, cuando el
+bug real es un solo componente estirandose mas de lo que deberia; ademas esta
+exacta zona de .ds-sidebar ya acumula 3 regresiones documentadas en
+006-sidebar-ancho-toggle — un cambio de superficie minima es mas seguro que
+reabrir el layout de 7 screens a la vez.
+**Decision tomada:** (2) — 1 solo archivo (styles.css), 3 propiedades
+cambiadas en `.ds-sidebar` (align-self, height, position), sin tocar
+padding/overflow/width (no relacionados a este bug, y overflow: hidden en
+particular resuelve el fix de badge cortado de 006 — tocarlo reabriria ese
+bug). `position: sticky` conserva el rol de "positioned" que `position:
+relative` ya cumplia para el fix de stacking con BackgroundTextureDots de la
+misma feature (2026-08-12) — no se pierde esa correccion.
+**Motivo:** minimizar superficie de cambio en una zona con historial de
+regresiones, resolviendo el bug reportado sin reabrir el layout de cada
+screen ni las 2 correcciones previas ya documentadas en este mismo selector.
+**Artefactos modificados:** `packages/ui/src/styles.css`,
+`specs/_registry/features.yaml`
+**Decidido por:** Luna
