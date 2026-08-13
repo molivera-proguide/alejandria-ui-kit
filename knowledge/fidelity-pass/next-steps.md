@@ -1,5 +1,58 @@
 # Fidelity pass — next steps
 
+## 🚨 Session handoff — pick up here (2026-08-13, TOP PRIORITY, supersedes everything below)
+
+**Open design question, unresolved — code is back to baseline (÷2), don't assume
+otherwise.** Luna reported `CargaDeFormulario`'s text is too small to read.
+Measured live: labels 5px, field values 8px, descriptions 6px — real numbers.
+Traced to `knowledge/specs/README.md`'s "Scale calibration" rule (`display px =
+PDF annotation ÷ 2`), applied via every `/* calibrated ÷2 */` comment across
+**the entire kit**. That rule assumed the PDF is a "@2× artboard" (1920×1080 =
+2×960×540) — never confirmed with the designer, only assumed at project start.
+
+**Round 1 — confirmed the canvas size, tried removing the ÷2 entirely, got
+rejected on sight.** Asked Luna to confirm the real artboard size before
+touching anything; she confirmed directly with the designer: **the canvas is
+1920×1080 real**, not a 2× export. So `display px = PDF annotation` (no
+division) seemed like the fix. Applied it to the `FormTextInput`/`FormSelect`/
+`FormCheckable`(+`Group`)/`FormFileUpload`/`FormDatePicker` family (only
+consumer: `CargaDeFormulario`) — fonts went from 5-8px to 10-20px, verified live
+via `getComputedStyle`, no overflow at 1920px viewport. **Luna looked at it in
+her own Storybook and rejected it**: "se ve enorme y solapado todo... se veían
+visualmente más fieles antes de multiplicar x2" (screenshot showed real
+overlap: "ACCESO A MÓDULOS" text over the switch labels, FormFileUpload
+thumbnails spilling into the neighboring column). **Reverted immediately** via
+`git checkout --` (nothing had been committed yet) — `packages/ui/src/styles.css`
+and `carga-de-formulario.css` are back to the pre-session ÷2 state, no net
+code change from before this session.
+
+**Why "confirmed 1920×1080 canvas" didn't settle it:** knowing the canvas's own
+pixel dimensions doesn't tell you the *viewing* assumption baked into it. A
+1920px-wide frame authored assuming a HiDPI/Retina display (2x OS scaling)
+would need roughly the same ÷2 step to land at a sane CSS px size — "the
+designer confirmed 1920×1080" resolves the canvas size, not the canvas→CSS-px
+ratio, which is a separate, still-unconfirmed variable. Luna's live visual
+judgment (rejecting the un-halved result) is the strongest signal available
+right now, and it points toward the *opposite* conclusion from round 1's
+literal-pixel-math.
+
+**Where this stands — DO NOT re-attempt "no division" on any other component
+without a fresh explicit decision from Luna.** She was offered (and didn't take,
+preferring to keep thinking about a unified ratio first) a smaller/safer
+middle path: a **minimum legibility floor on text only** (e.g. 11–12px),
+applied just where the existing ÷2 font-size falls below it, leaving every
+other dimension (component sizes, paddings, icon sizes) at the ÷2 values that
+already look right. That's still on the table if she comes back to it.
+
+**Next up:** whatever Luna decides about the ratio question — could be the
+legibility-floor path above, a different explicit ratio she settles on (with or
+without the designer's further input on the *viewing* assumption, not just the
+canvas size), or something else entirely. Don't restart the "double everything"
+approach on another component on your own judgment — this needs her sign-off
+given round 1's result. Full reasoning trail: `DECISIONS.md` 2026-08-13,
+2 entries under `fix-009-scale-calibration-correction` (round 1 doubling +
+round 2 rejection/revert).
+
 ## 💡 Idea a evaluar, no decidida (2026-08-11): pilotear el modelo Fable
 
 Luna sugirió probar el modelo Fable (Claude 5 family, `claude-fable-5`) para el

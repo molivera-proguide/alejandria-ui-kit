@@ -4,8 +4,19 @@
   background: linear-gradient(180deg, var(--ds-color-pdf-surface) 0%, var(--ds-color-pdf-surface-warm) 100%);
   display: flex;
   min-height: 100vh;
+  /* fix-010 (2026-08-13, Luna: en navegador angosto la 2da/3ra columna se
+     solapan en vez de scrollear, y el fondo no cubre el área nueva al aparecer
+     scroll horizontal) — min-width: 100% mantiene el ancho normal (viewport)
+     cuando el contenido entra; width: fit-content deja que ESTE elemento (el
+     que pinta el gradiente) crezca junto con su contenido cuando no entra, en
+     vez de quedarse fijo al viewport mientras el contenido se desborda por
+     detrás. Con esto el scroll horizontal nativo de la página aparece solo,
+     y el fondo (este mismo elemento) siempre cubre exactamente lo que hay para
+     scrollear — no hay un contenedor de scroll separado sin su propio fondo. */
+  min-width: 100%;
   position: relative; /* recorta el overlay absoluto de BackgroundTextureDots
      (002-bg-texture) — reemplazó el enfoque de className + background-image */
+  width: fit-content;
 }
 
 .screen-carga-formulario__main {
@@ -20,7 +31,10 @@
   display: grid;
   flex: 1;
   gap: var(--ds-space-4);
-  min-width: 0;
+  /* fix-010: min-width: 0 sacado a propósito — era lo que permitía que esta columna
+     (y la grilla de 3 columnas adentro) se achicara sin límite, superponiendo
+     contenido de ancho fijo en vez de pedir más espacio (ver .screen-carga-formulario
+     arriba para la otra mitad del fix). */
   padding: 24px 32px;
 }
 
@@ -37,7 +51,12 @@
 .screen-carga-formulario__grid {
   display: grid;
   gap: 32px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* fix-010: minmax(0, 1fr) → minmax(min-content, 1fr) — cada columna ya no puede
+     achicarse más allá de lo que su propio contenido necesita (ej. FormFileUpload,
+     253px fijos, o los 2 campos de FormDatePicker lado a lado); ver
+     .screen-carga-formulario arriba para cómo se resuelve el ancho sobrante (scroll
+     horizontal con fondo, no compresión/superposición). */
+  grid-template-columns: repeat(3, minmax(min-content, 1fr));
 }
 
 .screen-carga-formulario__column {
@@ -50,13 +69,18 @@
   align-content: start;
   display: grid;
   gap: 20px;
-  min-width: 0;
+  /* fix-010: min-width: 0 sacado — ver .screen-carga-formulario arriba, mismo
+     motivo que en __main. */
 }
 
 .screen-carga-formulario__section-title {
   color: var(--ds-color-pdf-form-muted);
   font-family: var(--ds-font-mono);
-  font-size: 8px;
+  /* fix-009 ronda 8 (2026-08-13): quedó en 8px por descuido entre reversiones,
+     mientras .screen-carga-formulario__section-copy se subió a 10px — mismo problema
+     de jerarquía que .ds-form-checkable__label vs __description. Igualado a
+     .ds-form-checkable-group__title (mismo rol de encabezado de sección). */
+  font-size: 12px;
   font-weight: 300;
   margin: 0 0 4px;
   text-transform: uppercase;
@@ -65,7 +89,8 @@
 .screen-carga-formulario__section-copy {
   color: var(--ds-color-pdf-line);
   font-family: var(--ds-font-body);
-  font-size: 7px;
+  font-size: 10px; /* fix-009 ronda 7 (2026-08-13): piso subido a 10px, igualado a
+    .ds-form-checkable__description, era 7px */
   line-height: var(--ds-leading-body);
   margin: 0 0 8px;
 }

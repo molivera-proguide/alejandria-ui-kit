@@ -21,6 +21,23 @@ When sources disagree, both values are recorded as a **delta**. This layer does 
 
 ## Scale calibration
 
+> **⚠️ OPEN QUESTION as of 2026-08-13 (fix-009) — the ÷2 rule below is unconfirmed,
+> but still the ACTIVE rule. Do not change it without Luna's explicit sign-off.**
+> Luna confirmed with the designer that the design canvas is 1920×1080 real, not a
+> 2× export of 960×540 — which raised the question of whether the `÷2` step below
+> is wrong. It was tried (removed entirely, `display px = PDF annotation` with no
+> division) on the `FormTextInput`/`FormSelect`/`FormCheckable`/`FormFileUpload`/
+> `FormDatePicker` family (`screens/carga-de-formulario/`, its only screen
+> consumer) and **rejected on live visual review**: "se ve enorme y solapado
+> todo... se veían visualmente más fieles antes de multiplicar x2". Reverted —
+> **the ÷2 rule below is still what every current `/* calibrated ÷2 */` value in
+> the kit uses, unchanged.** Why "confirmed 1920×1080" didn't settle it: the
+> canvas's own pixel size doesn't tell you the *viewing*/density assumption baked
+> into it (a HiDPI-authored 1920px frame would still roughly need a ÷2 step to
+> land at a sane CSS px size) — that's a separate, still-open variable. Full
+> reasoning in `DECISIONS.md` 2026-08-13 (`fix-009-scale-calibration-correction`,
+> 2 entries) and `knowledge/fidelity-pass/next-steps.md`'s handoff.
+
 The design-reference PDF is a **@2× artboard** (page size 1920×1080 = 2×960×540). Absolute annotations in the PDF (`padding 40px`, value `84pt`/`52pt`, icons `180px`, login input `20pt`, etc.) are @2× coordinates.
 
 **Rule:** `display px = PDF annotation ÷ 2`.

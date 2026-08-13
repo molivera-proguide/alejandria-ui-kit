@@ -415,3 +415,107 @@ features:
       que los gaps entre campos de cada columna respetan el `gap` declarado
       sin importar la altura de la columna vecina. Sin colisión de equipo —
       no hay features OPEN al momento de este fix.
+
+  - id: fix-009-scale-calibration-correction
+    type: fix
+    status: OPEN
+    domain: design-tokens
+    owner: lvgonzalezprg
+    sprint: null
+    created: 2026-08-13
+    closed: null
+    touches:
+      - knowledge/specs/README.md
+      - knowledge/fidelity-pass/next-steps.md
+    decisions:
+      - "2026-08-13: El artboard del PDF es 1920×1080 real (confirmado con el diseñador), no @2× de 960×540 — pero eso NO resuelve el ratio canvas→CSS-px (podría seguir siendo ÷2 si el canvas asume una pantalla HiDPI)"
+      - "2026-08-13: Ronda 1 (÷1, sin dividir) probada en la familia Form*/CargaDeFormulario — Luna la rechazó en vivo (\"se ve enorme y solapado\", \"se veían más fieles antes\"), revertida vía git checkout"
+      - "2026-08-13: Ratio general sigue sin resolver — Luna eligió seguir pensándolo antes de tocar código de nuevo, en vez de un piso mínimo de legibilidad solo en texto"
+      - "2026-08-13: Ronda 3 (ratio 0.75 + piso 12px) probada en la misma familia — también rechazada en vivo (\"se ve grande y solapado aún\"), revertida"
+      - "2026-08-13: Ronda 4 — piso de 12px aplicado SOLO a font-size, todo lo demás (paddings/anchos/iconos) vuelve a ÷2 sin tocar — pendiente de confirmación visual de Luna"
+    note: >
+      status OPEN a propósito — pregunta de diseño sin resolver, NO un fix de
+      una sesión. `knowledge/specs/README.md` § Scale calibration documenta el
+      hallazgo (el canvas es 1920×1080 real) pero también que eso no alcanza
+      para derivar el ratio correcto a CSS px — ver el handoff top de
+      knowledge/fidelity-pass/next-steps.md para el detalle completo. 3 rondas
+      de re-escala completa (÷1, ratio 0.75) fueron rechazadas en vivo por
+      Luna, cada una revertida sin dejar residuo de código. Ronda 4 (actual):
+      piso de 12px SOLO en `font-size` de la familia Form*/CargaDeFormulario,
+      cero cambios a ningún otro tamaño — pendiente de que Luna lo confirme en
+      su propio Storybook antes de considerar extenderlo a otros componentes.
+      Sin colisión de equipo — no hay otras features OPEN al momento de crear
+      este fix.
+
+  - id: fix-010-carga-formulario-horizontal-overflow
+    type: fix
+    status: CLOSED
+    domain: composed-patterns
+    owner: lvgonzalezprg
+    sprint: null
+    created: 2026-08-13
+    closed: 2026-08-13
+    touches:
+      - packages/ui/src/screens/carga-de-formulario/carga-de-formulario.css
+      - packages/ui/src/styles.css
+    decisions:
+      - "2026-08-13: min-width:0 en __main/__column permitía que las columnas se comprimieran sin límite en vez de forzar scroll — causaba superposición de contenido de ancho fijo (FormFileUpload, FormDatePicker)"
+      - "2026-08-13: el fondo (gradiente) vivía en un elemento de ancho fijo al viewport; al desbordar el contenido, el área revelada por el scroll quedaba sin fondo (mismo bug reportado en otras screens con background)"
+    note: >
+      Luna reportó que en navegador angosto la 2da/3ra columna se superponen en
+      vez de generar scroll horizontal, y que de agregar scroll el fondo no
+      cubriría el área nueva (mismo bug ya visto en otras screens con
+      background). Causa raíz doble: (1) `min-width: 0` en
+      `.screen-carga-formulario__main`/`__column` + `grid-template-columns:
+      repeat(3, minmax(0, 1fr))` permitían comprimir las columnas por debajo de
+      lo que su propio contenido de ancho fijo necesita (FormFileUpload 253px,
+      los 2 campos de FormDatePicker lado a lado ~277px) — se solapaban en vez
+      de forzar más espacio; (2) el gradiente de fondo vive en
+      `.screen-carga-formulario`, un elemento con ancho fijo al viewport (no a
+      su contenido) — cuando el contenido se desbordaba, el área extra quedaba
+      sin ese fondo (se veía el canvas de Storybook detrás). Fix: `min-width: 0`
+      sacado de `__main`/`__column`, `minmax(0, 1fr)` → `minmax(min-content,
+      1fr)` en la grilla (cada columna respeta su propio mínimo real);
+      `.screen-carga-formulario` pasa a `width: fit-content; min-width: 100%`
+      (crece con su contenido cuando no entra, sin encogerse por debajo del
+      viewport cuando sí entra) — así el gradiente, pintado sobre este mismo
+      elemento, siempre cubre exactamente el área scrolleable, sin contenedor
+      de scroll separado. `.ds-sidebar` (styles.css, compartido) ganó `left: 0`
+      además de su `top: 0` ya existente (fix-006) para seguir fijo también en
+      scroll horizontal. Verificado en vivo (768px de viewport, el punto donde
+      empieza a desbordar 9px): aparece scroll nativo, la sidebar queda fija
+      en ambos ejes, el fondo se mueve junto con el contenido sin dejar hueco.
+      Alcance de este fix: solo CargaDeFormulario (la screen reportada) + el
+      fix compartido de SideBar — el mismo problema de fondo probablemente
+      existe en las otras screens con `background` (Tareas*, Home, Dashboard),
+      pendiente de extenderse si Luna lo confirma. Sin colisión de equipo — no
+      hay features OPEN al momento de este fix.
+
+  - id: fix-011-form-field-control-min-width
+    type: fix
+    status: CLOSED
+    domain: component-catalog
+    owner: lvgonzalezprg
+    sprint: null
+    created: 2026-08-13
+    closed: 2026-08-13
+    touches:
+      - packages/ui/src/styles.css
+    decisions:
+      - "2026-08-13: .ds-form-field__control sin min-width:0 impedía que el label (nowrap + ellipsis ya preparado) truncara — el control se desbordaba fuera de su columna en vez de encogerse"
+    note: >
+      Después de fix-010 (grilla + fondo de la screen), Luna reportó que la 1ra
+      columna todavía se solapa con la 2da en viewport angosto — bug distinto,
+      un nivel más adentro. Causa raíz: `.ds-form-field__control` (flex row
+      label+input, compartido por FormTextInput/FormSelect/FormDatePicker) no
+      tenía `min-width: 0` — su label (`white-space: nowrap`, con
+      `overflow: hidden; text-overflow: ellipsis` ya preparado) nunca llegaba
+      a truncar porque el control se desbordaba por fuera de la columna en vez
+      de respetar el ancho que la grilla ya le asignaba correctamente (fix-010).
+      Verificado en vivo: a 820px, 9 elementos se desbordaban hasta 99px hacia
+      la columna vecina; con el fix, 0 desbordes a 820px y 700px, con labels
+      largos ("TIPO DE USUARIO") truncando a "…" como estaba diseñado. Fix de
+      una sola línea (`min-width: 0`) en el componente compartido, no en la
+      composición de la screen — beneficia a cualquier consumidor futuro de
+      esta familia. Sin colisión de equipo — no hay features OPEN al momento
+      de este fix.

@@ -1324,3 +1324,261 @@ cambio de superficie posible (2 propiedades, mismo archivo).
 `packages/ui/src/screens/carga-de-formulario/carga-de-formulario.css`,
 `specs/_registry/features.yaml`
 **Decidido por:** Luna
+
+---
+
+## 2026-08-13 fix-009-scale-calibration-correction: El artboard del PDF es 1920x1080 real, no @2x de 960x540 — TODO el "/* calibrated ÷2 */" del kit esta a la mitad
+
+**feature_id:** fix-009-scale-calibration-correction
+**command_origin:** conversacion directa con Luna (pedido: pasada de fidelidad de tamanos + legibilidad de fuente en CargaDeFormulario)
+**status:** accepted — CORRECCION MAYOR DE DOCTRINA, afecta todo el kit
+**Gap o motivo:** Luna reporto que Carga de Formulario tiene letra muy chica y
+cuesta leerla. Medido en vivo antes de tocar nada: labels 5px, valores de campo
+8px, descripciones 6px — numeros reales, no percepcion. Investigando la causa:
+no es un bug puntual de esta pantalla, es el resultado esperado de la regla
+`display px = PDF annotation ÷ 2` documentada en knowledge/specs/README.md
+desde el inicio del proyecto y aplicada (documentada como "/* calibrated ÷2 */")
+en decenas de declaraciones en todo packages/ui/src/styles.css.
+**Verificacion antes de actuar:** esa regla parte de la premisa "el PDF es un
+artboard @2× (1920×1080 = 2×960×540)" — nunca confirmada con el diseñador,
+solo asumida al inicio del proyecto. Se le pregunto a Luna directamente si
+podia confirmar el ancho real del artboard antes de tocar nada. **Confirmo con
+el diseñador: el diseño esta hecho en 1920x1080 real**, no es un export @2x de
+un canvas mas chico. Esto invalida la premisa de origen — la regla correcta es
+`display px = PDF annotation` (sin dividir).
+**Alcance del impacto:** esto no es "el formulario tiene la letra chica" — es
+cada valor `/* calibrated ÷2 */` en TODO el kit (TaskCard, InvestigationCard,
+ModuleCard, MetricCard, Asistente, SideBar, CalendarCard, y toda la familia
+Form*) esta a la mitad de lo que deberia. Dado el tamaño (decenas de
+componentes, cientos de declaraciones), se descarto encarar todo el kit de una
+sola vez — Luna eligio arrancar por Carga de Formulario (la screen que
+disparo el reclamo) y seguir componente por componente en proximas sesiones,
+mismo metodo ya usado en todo el fidelity-pass track.
+**Ejecutado en esta sesion (fix-009):** re-calibrada (duplicado cada valor
+`/* calibrated ÷2 */`, con su comentario actualizado) la familia completa
+FormTextInput/FormSelect/FormCheckable(+Group)/FormFileUpload/FormDatePicker
+(unico consumidor real: screens/carga-de-formulario/) mas el titulo/section-
+title/section-copy propios de esa screen. Verificado en vivo (Browser pane,
+getComputedStyle/getBoundingClientRect): fuentes ahora 10-20px (antes 5-10px),
+sin overflow a 1920px de viewport (el ancho real del diseño) — a 1280px si
+hay overflow horizontal, pero es la misma limitacion "sin layout responsivo"
+ya documentada en cada knowledge/screens/*.md de este kit, no un bug nuevo.
+**Pendiente, NO tocado en esta sesion:** el resto del kit (TaskCard,
+InvestigationCard, ModuleCard, MetricCard, Asistente, SideBar, CalendarCard,
+Modal, Login) sigue con sus valores `/* calibrated ÷2 */` sin corregir —
+queda comprometido a la mitad de su tamaño real hasta que se procese cada uno,
+mismo metodo, en sesiones futuras. Tambien quedaron sin verificar 3 valores
+puntuales de FormFileUpload/FormDatePicker que no tenian cita de PDF propia
+(`.ds-form-file__upload-button` no tiene font-size declarado en absoluto — bug
+preexistente separado — `.ds-form-date__month-nav button`/`.ds-form-date__
+spinner-column button` no se pudieron medir en esta sesion porque sus paneles
+no estaban abiertos en el story usado).
+**Decision tomada:** aceptar la correccion de escala como valida (confirmada
+por el diseñador, no una suposicion), ejecutarla componente por componente
+empezando por Carga de Formulario, actualizar la doctrina en
+knowledge/specs/README.md (marcada la seccion "Scale calibration" anterior
+como superseded, con el hallazgo y el nuevo estado documentados arriba) para
+que ningun trabajo futuro repita el ÷2 sobre un componente nuevo.
+**Motivo:** un hallazgo de esta magnitud (toda la doctrina de escala del design
+system) exige confirmacion explicita de la fuente autoritativa (el diseñador)
+antes de tocar codigo — exactamente el tipo de ambiguedad que CLAUDE.md pide
+resolver preguntando, no asumiendo.
+**Artefactos modificados:**
+`knowledge/specs/README.md`,
+`packages/ui/src/styles.css` (familia .ds-form-field/.ds-form-checkable/.ds-form-file/.ds-form-date),
+`packages/ui/src/screens/carga-de-formulario/carga-de-formulario.css`,
+`knowledge/fidelity-pass/next-steps.md`
+**Decidido por:** Luna
+
+---
+
+## 2026-08-13 fix-009 (ronda 2): "1920x1080 real" rechazado en la practica — revertido, ratio sigue abierto
+
+**feature_id:** fix-009-scale-calibration-correction
+**command_origin:** revision visual directa de Luna en Storybook
+**status:** accepted (revertir), pregunta de fondo sigue OPEN
+**Gap o motivo:** tras aplicar `display px = PDF annotation` (sin dividir) a la
+familia Form* (ronda 1, mas arriba), Luna miro el resultado en vivo: "se ve
+enorme y solapado todo" — capturas mostraron ACCESO A MODULOS superpuesto con
+Admin, texto de FormSelect cortado, thumbnails de FormFileUpload invadiendo la
+columna vecina. Su comparacion directa: "se veian visualmente mas fieles antes
+de multiplicar x2".
+**Por que la premisa "1920x1080 confirmado" no alcanzaba:** que el diseñador
+confirme el tamaño del lienzo no resuelve a que densidad/zoom estaba pensado
+para verse. Un canvas de 1920px puede estar autorado asumiendo una pantalla
+HiDPI (escalado 2x del SO), en cuyo caso 1 unidad del archivo de diseño
+equivale a MEDIO px CSS real — que es, en la practica, lo que la regla ÷2
+ya hacia. La confirmacion del diseñador resuelve el tamaño del canvas, no
+la relacion canvas-a-CSS-px, que es una variable distinta y todavia sin dato
+duro.
+**Decision tomada:** revertir el codigo de la ronda 1
+(`packages/ui/src/styles.css` § familia Form*,
+`packages/ui/src/screens/carga-de-formulario/carga-de-formulario.css`) al
+estado ÷2 anterior via `git checkout --` (nada se habia commiteado todavia).
+Luna eligio seguir pensando el ratio general antes de tocar codigo de nuevo —
+se le ofrecio como alternativa mas chica/reversible un piso minimo de
+legibilidad (11-12px) solo en texto, dejando tamaños de componente en ÷2;
+prefirio no decidir todavia y seguir evaluando un ratio unificado.
+**Estado real del kit ahora mismo:** TODO el kit (incluida la familia Form*)
+sigue en ÷2, sin cambios netos respecto a antes de esta sesion. `fix-009` sigue
+`OPEN` en el registro pero SIN ejecucion pendiente hasta que se resuelva la
+pregunta del ratio — no continuar re-calibrando otros componentes con la
+regla "sin dividir" hasta nueva decision explicita de Luna.
+**Motivo:** la evidencia visual en vivo pesa mas que una premisa dimensional
+confirmada mas no validada contra el resultado real — mismo criterio que
+"review-before-push": el juicio visual de Luna sobre fidelidad tiene prioridad
+sobre un calculo que no lo contempla.
+**Artefactos modificados:** `DECISIONS.md`,
+`specs/_registry/features.yaml` (nota actualizada),
+`knowledge/fidelity-pass/next-steps.md` (handoff corregido) —
+`packages/ui/src/styles.css` y `carga-de-formulario.css` REVERTIDOS, no
+modificados netamente.
+**Decidido por:** Luna
+
+---
+
+## 2026-08-13 fix-009 (ronda 4): piso de 12px SOLO en font-size, todo lo demas vuelve a ÷2
+
+**feature_id:** fix-009-scale-calibration-correction
+**command_origin:** pedido directo de Luna tras rechazar tambien el ratio 0.75 (ronda 3)
+**status:** accepted, a confirmar visualmente por Luna
+**Gap o motivo:** ronda 3 (ratio 0.75 + piso) tambien se vio "grande y solapado
+aun" en captura real. Luna pidio explicitamente: volver todo a ÷2 y aplicar
+SOLO el piso de legibilidad a font-size, sin tocar ningun otro tamaño
+(paddings, anchos, iconos, alto de controles).
+**Ejecutado:** revertido via git checkout a ÷2 (limpio, nada commiteado de
+ronda 3), despues aplicado piso de 12px UNICAMENTE a declaraciones
+font-size de la familia Form*/CargaDeFormulario que dieran menos de 12px con
+÷2 (labels 8→12, active-label 5→12, descripciones 6→12, meta/formats 5-7→12,
+botones de navegacion del datepicker 6-8→12, etc.). 2 casos necesitaron un
+ajuste dependiente para no clippear verticalmente al agrandar solo la fuente:
+`.ds-form-date__day` (line-height 10→14px) y `.ds-form-date__spinner-value`
+(height 10→14px, con su `max-height` de lista recalculada a 7×14=98px) — son
+filas de grilla auto-height, no rompen ningun tamaño fijo de componente.
+El titulo de la screen (`.screen-carga-formulario__title`, 10px) se dejo sin
+tocar a proposito: es un heading, no texto de cuerpo/label, y no fue señalado
+como ilegible.
+**Verificado en vivo:** todas las fuentes de cuerpo/label ahora en 12px
+(antes 5-8px); sin overflow a 1280px (bodyScrollWidth=innerWidth=1280); las 3
+columnas de la grilla miden 372px cada una y `FormFileUpload` (253px, sin
+tocar) entra con margen.
+**Motivo:** es exactamente el "piso minimo de legibilidad" ofrecido desde el
+principio de esta conversacion (antes de probar el ratio 0.75 y el 1:1 sin
+dividir) — con evidencia de 2 rondas previas rechazadas, es el camino mas
+chico y menos riesgoso: no toca ningun tamaño de componente que ya se había
+confirmado como visualmente fiel.
+**Artefactos modificados:**
+`packages/ui/src/styles.css` (familia Form*, solo font-size + 2 ajustes
+dependientes),
+`packages/ui/src/screens/carga-de-formulario/carga-de-formulario.css` (solo
+font-size),
+`specs/_registry/features.yaml`
+**Decidido por:** Luna
+
+---
+
+## 2026-08-13 fix-009 (ronda 5): piso bajado de 12px a 10px, mismo criterio
+
+**feature_id:** fix-009-scale-calibration-correction
+**command_origin:** pedido directo de Luna
+**status:** accepted, a confirmar visualmente
+**Gap o motivo:** Luna pidio probar el mismo piso de legibilidad de ronda 4
+pero con 10px en vez de 12px.
+**Ejecutado:** mismo mecanismo que ronda 4 (piso SOLO en font-size, todo lo
+demas en ÷2), bajando el numero de piso a 10px. Un caso ya no necesito ningun
+cambio (`.ds-form-field--login .ds-form-field__label`, cuyo ÷2 ya da
+exactamente 10px). Los 2 ajustes dependientes de ronda 4 (line-height/height
+para evitar clipping en `.ds-form-date__day`/`.ds-form-date__spinner-value`,
+mas el `max-height` del spinner) se recalcularon para el font-size mas chico:
+14px→12px de alto de fila, max-height del spinner 98px→84px (7×12).
+**Verificado en vivo:** labels/valores/descripciones en 10px, sin overflow a
+1280px.
+**Artefactos modificados:** `packages/ui/src/styles.css`,
+`packages/ui/src/screens/carga-de-formulario/carga-de-formulario.css`
+**Decidido por:** Luna
+
+---
+
+## 2026-08-13 fix-009 (ronda 6): piso bajado a 8px
+
+**feature_id:** fix-009-scale-calibration-correction
+**command_origin:** pedido directo de Luna, para comparar visualmente
+**status:** accepted, a confirmar visualmente
+**Ejecutado:** mismo mecanismo de rondas 4-5, piso bajado a 8px (coincide con
+la mayoria de los valores ÷2 ya existentes — solo sube los que estaban por
+debajo: 5-7px). A este piso, `.ds-form-date__day`/`.ds-form-date__spinner-value`
+ya no necesitan el ajuste de line-height/height de rondas 4-5 (el ÷2 original
+ya tenia margen de sobra para un font-size de 8px).
+**Verificado en vivo:** labels/valores/descripciones en 8px, sin overflow a
+1280px.
+**Decidido por:** Luna
+
+---
+
+## 2026-08-13 fix-010-carga-formulario-horizontal-overflow: solape en navegador angosto + fondo sin cubrir el area de scroll
+
+**feature_id:** fix-010-carga-formulario-horizontal-overflow
+**command_origin:** reporte directo de Luna
+**status:** accepted
+**Gap o motivo:** en navegador angosto, la 2da/3ra columna de CargaDeFormulario
+se superponen en vez de generar scroll horizontal. Ademas, Luna anticipo que
+si se agrega scroll, el fondo no cubriria el area nueva revelada — mismo bug
+que ya notó en otras screens con background.
+**Causa raiz (2 partes):** (1) `min-width: 0` en
+`.screen-carga-formulario__main`/`__column` + `grid-template-columns:
+repeat(3, minmax(0, 1fr))` permitian que las 3 columnas se comprimieran sin
+limite — el contenido de ancho fijo (FormFileUpload 253px, los 2 campos de
+FormDatePicker lado a lado ~277px) no podia entrar en la columna comprimida
+y se dibujaba superpuesto sobre la columna vecina en vez de forzar mas
+espacio. (2) el gradiente de fondo vive en `.screen-carga-formulario`, un
+elemento de ancho fijo al viewport (no a su contenido) — cuando el contenido
+se desbordaba, el area extra quedaba detras de ese elemento, mostrando lo que
+hubiera atras (el canvas de Storybook) en vez del gradiente.
+**Alternativas consideradas:** (1) agregar `overflow-x: auto` a un
+contenedor interno nuevo, con su propio fondo replicado ahi; (2) dejar que el
+elemento que ya pinta el fondo (`.screen-carga-formulario`) crezca con su
+propio contenido (`width: fit-content; min-width: 100
+---
+
+## 2026-08-13 fix-010-carga-formulario-horizontal-overflow: solape en navegador angosto + fondo sin cubrir el area de scroll
+
+**feature_id:** fix-010-carga-formulario-horizontal-overflow
+**command_origin:** reporte directo de Luna
+**status:** accepted
+**Gap o motivo:** en navegador angosto, la 2da/3ra columna de CargaDeFormulario se superponen en vez de generar scroll horizontal. Ademas, Luna anticipo que si se agrega scroll, el fondo no cubriria el area nueva revelada — mismo bug que ya noto en otras screens con background.
+**Causa raiz (2 partes):** (1) `min-width: 0` en `.screen-carga-formulario__main`/`__column` + `grid-template-columns: repeat(3, minmax(0, 1fr))` permitian que las 3 columnas se comprimieran sin limite — el contenido de ancho fijo (FormFileUpload 253px, los 2 campos de FormDatePicker lado a lado ~277px) no podia entrar en la columna comprimida y se dibujaba superpuesto sobre la columna vecina en vez de forzar mas espacio. (2) el gradiente de fondo vive en `.screen-carga-formulario`, un elemento de ancho fijo al viewport (no a su contenido) — cuando el contenido se desbordaba, el area extra quedaba detras de ese elemento, mostrando lo que hubiera atras (el canvas de Storybook) en vez del gradiente.
+**Alternativas consideradas:** (1) agregar `overflow-x: auto` a un contenedor interno nuevo, con su propio fondo replicado ahi; (2) dejar que el elemento que ya pinta el fondo (`.screen-carga-formulario`) crezca con su propio contenido (`width: fit-content; min-width: 100%`), sin agregar ningun contenedor de scroll nuevo.
+**Por que se descarto (1):** duplicar el fondo en un contenedor nuevo agrega una segunda fuente de verdad para el mismo gradiente (riesgo de que se desincronicen si alguien cambia uno y no el otro) para lograr exactamente lo mismo que (2) consigue con el elemento que ya existe.
+**Decision tomada:** (2) — `min-width: 0` sacado de `.screen-carga-formulario__main`/`__column`; `minmax(0, 1fr)` -> `minmax(min-content, 1fr)` en la grilla (cada columna respeta su propio minimo real, no un piso arbitrario inventado); `.screen-carga-formulario` pasa a `width: fit-content; min-width: 100%` — crece con su contenido cuando no entra en el viewport (activando el scroll horizontal nativo de la pagina), sin encogerse por debajo del viewport cuando si entra. El gradiente, pintado sobre ese mismo elemento, siempre cubre exactamente lo scrolleable. `.ds-sidebar` (styles.css, compartido por todas las screens) gano `left: 0` ademas de su `top: 0` ya existente (fix-006) para seguir fijo tambien en scroll horizontal.
+**Verificado en vivo:** a 768px de viewport (el punto donde el contenido empieza a desbordar, ~9px) aparece scroll horizontal nativo, la sidebar queda fija en ambos ejes al scrollear, y el fondo (incluyendo BackgroundTextureDots, que hereda el mismo position:relative como contenedor) se mueve junto con el contenido sin dejar hueco.
+**Motivo:** resuelve la causa raiz (compresion sin limite + fondo de ancho fijo) en lugar de parchear cada sintoma por separado, reusando el mismo elemento que ya pintaba el fondo en vez de agregar una capa nueva.
+**Alcance:** solo CargaDeFormulario (la screen reportada) + el ajuste compartido de SideBar. El mismo patron de bug probablemente existe en las otras screens con `background` (Tareas*, Home, Dashboard) — queda pendiente extenderlo si Luna lo confirma, no asumido de antemano.
+**Artefactos modificados:** `packages/ui/src/screens/carga-de-formulario/carga-de-formulario.css`, `packages/ui/src/styles.css` (.ds-sidebar), `specs/_registry/features.yaml`
+**Decidido por:** Luna
+
+---
+
+## 2026-08-13 fix-009 (ronda 7): piso vuelto a 10px
+
+**feature_id:** fix-009-scale-calibration-correction
+**command_origin:** pedido directo de Luna
+**status:** accepted
+**Ejecutado:** mismo mecanismo de rondas 4-6, piso subido de 8px (ronda 6) a 10px. `.ds-form-date__day`/`.ds-form-date__spinner-value` recuperan el ajuste dependiente de line-height/height (12px, mismo valor que ronda 5) para que el font-size de 10px no quede pegado al borde de su celda.
+**Verificado en vivo:** labels/valores/descripciones en 10px, sin overflow a 1280px.
+**Decidido por:** Luna
+
+---
+
+## 2026-08-13 fix-011-form-field-control-min-width: la 1ra columna se solapaba con la 2da (causa más profunda que fix-010)
+
+**feature_id:** fix-011-form-field-control-min-width
+**command_origin:** reporte directo de Luna
+**status:** accepted
+**Gap o motivo:** después de fix-010 (grilla + fondo), Luna reportó que la 1ra columna todavía se solapa con la 2da si el viewport es muy angosto — un bug distinto, más profundo.
+**Causa raiz:** `.ds-form-field__control` (el flex row con label + input dentro de cada campo) no tenía `min-width: 0`. Su hijo `.ds-form-field__label` usa `white-space: nowrap` (no puede wrappear) y ya tiene `overflow: hidden; text-overflow: ellipsis` preparado para truncar — pero sin `min-width: 0` en el control, el flex row nunca respeta el ancho que `.screen-carga-formulario__grid` (fix-010, `minmax(min-content, 1fr)`) ya le asigna correctamente a la columna: el control se desborda por fuera de su propia columna en vez de dejar que el label trunque con "…".
+**Verificado en vivo:** a 820px, 9 elementos de la columna 1 (controles + inputs) se desbordaban hasta 99px más allá del borde de su columna, invadiendo visualmente la columna 2. Con el fix: 0 desbordes a 820px y a 700px (labels como "TIPO DE USUARIO" truncan correctamente a "TIPO DE USUAR…", sin overlap ni scroll de página innecesario en anchos donde el truncado alcanza).
+**Decisión tomada:** `min-width: 0` agregado a `.ds-form-field__control` (styles.css, compartido por FormTextInput/FormSelect/FormDatePicker vía la misma clase) — deja que el control respete el ancho real de su columna, activando el `ellipsis` que el label ya tenía listo.
+**Motivo:** es el mismo patrón "min-width:0 en cada eslabón de la cadena flex/grid" ya aplicado en fix-010 a nivel de screen — esta vez un nivel más adentro, en el componente compartido, no en la composición de la screen.
+**Alcance:** este fix vive en `.ds-form-field__control` (styles.css), compartido por toda la familia Form* — beneficia a cualquier consumidor futuro de estos componentes, no solo CargaDeFormulario.
+**Artefactos modificados:** `packages/ui/src/styles.css`, `specs/_registry/features.yaml`
+**Decidido por:** Luna

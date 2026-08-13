@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;700&family=Source+Code+Pro:wght@300;400;600;700&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;700&family=Source+Code+Pro:wght@300;400;600;700&display=swap');
 
 @layer ds.tokens, ds.components;
 
@@ -1873,6 +1873,10 @@
     overflow: hidden;
     padding: 10px 0; /* calibrated ÷2 — PDF 20px; horizontal inset moved onto each row (item/menu-heading)
       so the selected-item accent line and hover highlight can span flush to the sidebar's own edge */
+    left: 0; /* fix-010 (2026-08-13): además de top, ancla también al borde izquierdo del
+      viewport cuando la screen entra en scroll horizontal (ver carga-de-formulario.css)
+      — sin esto la sidebar se desplazaría junto con el resto de la fila al scrollear a
+      la derecha, dejando de estar visible. */
     position: sticky; /* también resuelve el fix de stacking de 006-sidebar-ancho-toggle
       (BackgroundTextureDots, position: absolute, pinta detrás de elementos posicionados
       — sticky cuenta como posicionado igual que relative) sin perder el anclaje al
@@ -2664,6 +2668,15 @@
     display: flex;
     gap: var(--ds-space-2); /* espacio entre label(+divisor activo) y valor */
     min-height: 15px; /* calibrated ÷2 — PDF control (variante default) 30pt @2×, era 44px sin medir (~2.9× oversized) */
+    /* fix-011 (2026-08-13, Luna: "la 1ra columna se solapa con la 2da si el viewport
+       es angosto") — sin esto, este flex row (label nowrap + input) no se achica más
+       allá de lo que su label necesita SIN truncar (aunque .ds-form-field__label ya
+       tiene overflow:hidden/ellipsis listo para eso), y se desborda por fuera de la
+       columna que .screen-carga-formulario__grid ya calcula correctamente vía
+       minmax(min-content, 1fr) (fix-010). min-width: 0 deja que este control respete
+       el ancho real de su columna, dejando que el label trunque con "…" en vez de
+       empujar el input hacia la columna vecina. */
+    min-width: 0;
     padding: 0 5px; /* calibrated ÷2 — inset label/texto ~8.95pt @2× ≈ 4.5px (7+ instancias), era 11px sin medir */
     position: relative;
     transition: border-color var(--ds-duration-md) var(--ds-ease-standard); /* "sumarle animación al pase entre estático y activo" — timing/easing not specified, see DECISIONS.md */
@@ -2692,7 +2705,9 @@
     cursor: inherit;
     flex: 1 1 auto;
     font-family: var(--ds-font-body);
-    font-size: 8px; /* calibrated ÷2 — PDF 16pt */
+    font-size: 12px; /* fix-009 ronda 8 (2026-08-13): quedó en 8px por descuido entre
+      reversiones — nunca se había tocado desde el ÷2 original, ver DECISIONS.md.
+      El valor tipeado necesita leerse igual o más grande que el label activo (10px). */
     min-width: 0;
     padding: 0;
     text-align: left;
@@ -2724,7 +2739,15 @@
     color: var(--ds-color-pdf-form-muted); /* "Label: ... #8d8d8d" */
     flex: 0 1 auto;
     font-family: var(--ds-font-mono); /* Source Code (Light) */
-    font-size: 8px; /* calibrated ÷2 — PDF 16pt static label */
+    /* fix-009 ronda 8 (2026-08-13, Luna: "el label es más chico cuando NO está
+       seleccionado que cuando tiene valor" — al revés de lo esperado). Este selector
+       (estado estático/vacío) había quedado en 8px por descuido entre reversiones —
+       nunca se había tocado desde el ÷2 original — mientras que
+       .ds-form-field__label--active (el que se ve al completar el campo, ya
+       encogido a propósito) sí se había subido a 10px en rondas anteriores. Subido a
+       12px para que sea el más grande de los dos, restaurando el efecto de
+       "encogerse al activarse" (ver DECISIONS.md). */
+    font-size: 12px;
     font-weight: var(--ds-font-weight-light);
     min-width: 0;
     order: -1;
@@ -2741,7 +2764,9 @@
   .ds-form-field__textarea:focus ~ .ds-form-field__label,
   .ds-form-field__textarea:not(:placeholder-shown) ~ .ds-form-field__label,
   .ds-form-field__label--active {
-    font-size: 5px; /* calibrated ÷2 — PDF 10pt "Input Activo - Label Activo" */
+    font-size: 10px; /* fix-009 ronda 7 (2026-08-13): piso subido de nuevo a 10px (ver
+      DECISIONS.md, rondas 4-6 probaron 12/10/8px), SOLO en font-size, todo lo demás
+      sigue en ÷2 sin tocar. Era 5px (PDF 10pt÷2). */
   }
 
   /* Divisor vertical entre el label activo y el valor — PDF dibuja una línea entre
@@ -2773,13 +2798,15 @@
 
   .ds-form-field--login .ds-form-field__label {
     color: var(--ds-color-pdf-ink-bright); /* "Label: ... #f6f6f6" */
-    font-size: 10px; /* calibrated ÷2 — PDF 20pt */
+    font-size: 14px; /* fix-009 ronda 8: era 10px (PDF 20pt÷2), igual al label activo —
+      mismo problema de jerarquía que .ds-form-field__label, subido para que el label
+      estático quede más grande que el activo (10px) */
   }
 
   .ds-form-field--login .ds-form-field__input:focus ~ .ds-form-field__label,
   .ds-form-field--login .ds-form-field__input:not(:placeholder-shown) ~ .ds-form-field__label {
     color: var(--ds-color-pdf-form-muted); /* login's own "activo" label is #8d8d8d, same as default variant */
-    font-size: 5px;
+    font-size: 10px; /* fix-009 ronda 7: piso subido a 10px, era 5px */
   }
 
   .ds-form-field--invalid .ds-form-field__control {
@@ -2807,7 +2834,9 @@
      "Input Activo - Label Activo" line (FormFileUpload p.20): sits above the
      control as a normal block label instead of absolutely over it. */
   .ds-form-field__label--static {
-    font-size: 8px; /* calibrated ÷2 — PDF 16pt, this family has no separate "activo" size */
+    font-size: 12px; /* fix-009 ronda 8: quedó en 8px por descuido, era el label base
+      antes de subirlo — este subvariant no tiene estado "activo" para comparar, igualado
+      a .ds-form-field__label */
     left: auto;
     pointer-events: auto;
     position: static;
@@ -2862,7 +2891,8 @@
     cursor: pointer;
     display: flex;
     font-family: var(--ds-font-body);
-    font-size: 8px;
+    font-size: 12px; /* fix-009 ronda 8: quedó en 8px por descuido, igualado al valor
+      tipeado (.ds-form-field__input) — un ítem del listbox debe leerse igual */
     justify-content: space-between;
     padding: 10px 5px; /* calibrated ÷2 — inset horizontal ~4.5px, era 11px, ver .ds-form-field__control */
     text-align: left;
@@ -2915,13 +2945,18 @@
   .ds-form-checkable__label {
     color: var(--ds-color-white); /* "Label: Montserrat Regular - 16pt - #ffffff" */
     font-family: var(--ds-font-body);
-    font-size: 8px; /* calibrated ÷2 — PDF 16pt */
+    /* fix-009 ronda 8 (2026-08-13, Luna: "los títulos del radiobutton/switch quedaron
+       más chicos que la descripción, queda raro") — este título había quedado en 8px
+       por descuido entre reversiones mientras .ds-form-checkable__description se
+       subió a 10px en rondas anteriores. Subido a 12px para quedar por encima de la
+       descripción, restaurando la jerarquía título>descripción (ver DECISIONS.md). */
+    font-size: 12px;
   }
 
   .ds-form-checkable__description {
     color: var(--ds-color-pdf-form-muted); /* "Descripción: Montserrat Regular - 12pt - #8d8d8d" */
     font-family: var(--ds-font-body);
-    font-size: 6px; /* calibrated ÷2 — PDF 12pt */
+    font-size: 10px; /* fix-009 ronda 7: piso subido a 10px, era 6px (PDF 12pt÷2) */
     line-height: var(--ds-leading-body);
   }
 
@@ -3046,7 +3081,8 @@
   .ds-form-checkable-group__title {
     color: var(--ds-color-pdf-form-muted); /* "Título grupo: Source Code Light - 16pt - #8d8d8d" */
     font-family: var(--ds-font-mono);
-    font-size: 8px; /* calibrated ÷2 — PDF 16pt */
+    font-size: 12px; /* fix-009 ronda 8: quedó en 8px por descuido, igualado a
+      .ds-form-checkable__label (mismo rol de "título" dentro del grupo) */
     font-weight: var(--ds-font-weight-light);
     padding: 0;
     text-transform: uppercase;
@@ -3115,7 +3151,8 @@
   .ds-form-file__list-label {
     color: var(--ds-color-pdf-line); /* "ADJUNTAR ARCHIVOS" — measured span color #c1c1c1 */
     font-family: var(--ds-font-mono);
-    font-size: 8px; /* calibrated ÷2 — PDF 16pt */
+    font-size: 12px; /* fix-009 ronda 8: quedó en 8px por descuido, igualado a
+      .ds-form-checkable-group__title (mismo rol de encabezado) */
     font-weight: var(--ds-font-weight-light);
     text-transform: uppercase;
   }
@@ -3163,7 +3200,8 @@
   .ds-form-file__name {
     color: var(--ds-color-white); /* "Nombre archivo: Montserrat Regular - 16pt - #ffffff" */
     font-family: var(--ds-font-body);
-    font-size: 8px; /* calibrated ÷2 — PDF 16pt */
+    font-size: 12px; /* fix-009 ronda 8: quedó en 8px por descuido, igualado a
+      .ds-form-field__input (mismo rol de contenido principal, no metadata) */
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -3172,7 +3210,7 @@
   .ds-form-file__meta {
     color: var(--ds-color-pdf-line); /* measured span color #c1c1c1 — legend says #8d8d8d, span wins */
     font-family: var(--ds-font-body);
-    font-size: 5px; /* calibrated ÷2 — PDF 10pt */
+    font-size: 10px; /* fix-009 ronda 7: piso subido a 10px, era 5px (PDF 10pt÷2) */
     text-transform: uppercase;
   }
 
@@ -3244,7 +3282,7 @@
   .ds-form-file__empty-label {
     color: var(--ds-color-pdf-form-muted); /* "ADJUNTAR" own small label, measured #8d8d8d */
     font-family: var(--ds-font-mono);
-    font-size: 5px; /* calibrated ÷2 — PDF 10pt */
+    font-size: 10px; /* fix-009 ronda 7: piso subido a 10px, era 5px (PDF 10pt÷2) */
     left: 5px; /* calibrated ÷2 — inset ~8.9pt @2× ≈ 4.45px, era 8px sin medir */
     position: absolute;
     text-transform: uppercase;
@@ -3271,7 +3309,8 @@
   .ds-form-file__empty-line {
     color: var(--ds-color-pdf-line-light); /* measured span color #e6e6e6 — legend says #8d8d8d */
     font-family: var(--ds-font-body);
-    font-size: 8px; /* calibrated ÷2 — PDF 16pt */
+    font-size: 12px; /* fix-009 ronda 8: quedó en 8px por descuido, igualado a
+      .ds-form-file__name (mismo rol de texto instructivo principal) */
     font-weight: var(--ds-font-weight-bold);
     margin: 0;
   }
@@ -3279,7 +3318,7 @@
   .ds-form-file__formats {
     color: var(--ds-color-pdf-line-light); /* measured span color #e6e6e6 */
     font-family: var(--ds-font-body);
-    font-size: 7px; /* calibrated ÷2 — PDF 14pt */
+    font-size: 10px; /* fix-009 ronda 7: piso subido a 10px, era 7px (PDF 14pt÷2) */
     font-weight: var(--ds-font-weight-light);
     margin: 4px 0 0;
   }
@@ -3368,7 +3407,7 @@
   .ds-form-date__panel-label {
     color: var(--ds-color-pdf-form-muted); /* "Input activo - Label: ... 12pt - #8d8d8d" */
     font-family: var(--ds-font-mono);
-    font-size: 6px; /* calibrated ÷2 — PDF 12pt */
+    font-size: 10px; /* fix-009 ronda 7: piso subido a 10px, era 6px (PDF 12pt÷2) */
     font-weight: var(--ds-font-weight-light);
     text-transform: uppercase;
   }
@@ -3386,7 +3425,8 @@
     color: var(--ds-color-white);
     cursor: pointer;
     flex: 0 0 auto;
-    font-size: 8px;
+    font-size: 10px; /* fix-009 ronda 8: quedó en 8px por descuido, subido al piso
+      general (es un ícono de navegación, no contenido — no necesita el tier de 12px) */
     line-height: 1;
     padding: 0 2px;
   }
@@ -3396,7 +3436,7 @@
     border: 0;
     color: var(--ds-color-white); /* "Mes - año: Montserrat Bold - 12pt - #ffffff" */
     font-family: var(--ds-font-body);
-    font-size: 6px; /* calibrated ÷2 — PDF 12pt */
+    font-size: 10px; /* fix-009 ronda 7: piso subido a 10px, era 6px (PDF 12pt÷2) */
     font-weight: var(--ds-font-weight-bold);
     min-width: 0;
     text-transform: uppercase;
@@ -3412,7 +3452,7 @@
   .ds-form-date__weekdays span {
     color: var(--ds-color-pdf-form-muted); /* "Números y días: Montserrat Regular - 12pt - #8d8d8d" */
     font-family: var(--ds-font-body);
-    font-size: 6px;
+    font-size: 10px; /* fix-009 ronda 7: piso subido a 10px, era 6px */
     text-align: center;
   }
 
@@ -3422,8 +3462,10 @@
     color: var(--ds-color-pdf-form-muted);
     cursor: pointer;
     font-family: var(--ds-font-body);
-    font-size: 6px;
-    line-height: 10px; /* calibrated ÷2 — PDF row pitch ~19.8pt @2× */
+    font-size: 10px; /* fix-009 ronda 7: piso subido a 10px, era 6px */
+    line-height: 12px; /* fix-009 ronda 7: subido de 10px a 12px para que el font-size
+      de 10px no quede pegado al borde de la celda — la grilla de días es auto-height,
+      no rompe ningún tamaño fijo */
     padding: 0;
     text-align: center;
   }
@@ -3453,7 +3495,7 @@
     border: 0;
     color: var(--ds-color-pdf-form-muted);
     cursor: pointer;
-    font-size: 6px;
+    font-size: 10px; /* fix-009 ronda 7: piso subido a 10px, era 6px */
     line-height: 1;
     padding: 2px;
   }
@@ -3463,7 +3505,8 @@
     gap: 0;
     list-style: none;
     margin: 0;
-    max-height: 70px; /* 7 visible rows × 10px */
+    max-height: 84px; /* fix-009 ronda 7: 7 visible rows × 12px (ver
+      .ds-form-date__spinner-value), era 70px/7×10px */
     /* overflow-y comes from .ds-scroll-area--y (applied in FormDatePicker.tsx) — themed
        scrollbar (--ds-color-pdf-action thumb) instead of the browser's default light one */
     padding: 0;
@@ -3476,8 +3519,9 @@
     color: var(--ds-color-pdf-form-muted); /* "Horas: Montserrat Regular - 14pt - #8d8d8d" */
     cursor: pointer;
     font-family: var(--ds-font-body);
-    font-size: 7px; /* calibrated ÷2 — PDF 14pt */
-    height: 10px; /* calibrated ÷2 — PDF row pitch ~19.8pt @2× */
+    font-size: 10px; /* fix-009 ronda 7: piso subido a 10px, era 7px (PDF 14pt÷2) */
+    height: 12px; /* fix-009 ronda 7: subido de 10px a 12px para que el font-size no
+      quede pegado al borde — mismo criterio que .ds-form-date__day */
     padding: 0 4px;
     scroll-snap-align: center;
     text-align: center;
@@ -3492,7 +3536,7 @@
   .ds-form-date__spinner-separator {
     color: var(--ds-color-pdf-form-muted);
     font-family: var(--ds-font-body);
-    font-size: 7px;
+    font-size: 10px; /* fix-009 ronda 7: piso subido a 10px, era 7px */
   }
 
   /* ============================================================
